@@ -252,6 +252,8 @@ with st.container():
     if query:
         response = st.session_state.assistant.ask(query)
         st.session_state.chat_history.append({"user": query, "bot": response})
-        st.experimental_rerun()
+        st.rerun()
 
     st.markdown("</div>", unsafe_allow_html=True)
+
+
