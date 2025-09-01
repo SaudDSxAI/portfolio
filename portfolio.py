@@ -285,124 +285,84 @@ with col2:
 st.markdown("---")
 st.markdown("<div style='text-align: center; color: #888;'>Built with using <strong>Streamlit</strong></div>", unsafe_allow_html=True)
 
-# ------------------ CHATBOT (Streamlit-native, fixed section) ------------------ #
-
-
+# ------------------ CHATBOT (Streamlit-native, collapsible section) ------------------ #
+if "show_chat" not in st.session_state:
+    st.session_state.show_chat = True
 
 with st.sidebar:
     st.markdown("""
     <style>
-    .chat-bubble-user {
-        background: linear-gradient(135deg, #66fcf1 60%, #3a86ff 100%);
-        color: white;
-        border-radius: 18px;
-        padding: 10px 16px;
-        margin: 8px 0 8px auto;
-        max-width: 80%;
-        text-align: right;
-        box-shadow: 0 2px 8px rgba(102,252,241,0.15);
-        animation: fadeIn 0.5s;
-    }
-    .chat-bubble-ai {
-        background: #f3f3f3;
-        color: #222;
-        border-radius: 18px;
-        padding: 10px 16px;
-        margin: 8px auto 8px 0;
-        max-width: 80%;
-        text-align: left;
-        box-shadow: 0 2px 8px rgba(0,0,0,0.08);
-        animation: fadeIn 0.5s;
-    }
-    @keyframes fadeIn {
-        from { opacity: 0; transform: translateY(10px); }
-        to { opacity: 1; transform: translateY(0); }
-    }
-    .chat-input-bar {
-        display: flex;
-        gap: 8px;
-        align-items: center;
-        margin-top: 12px;
-    }
-    .chat-input-box {
-        flex: 1;
-        border-radius: 12px;
-        border: 1px solid #eee;
-        padding: 10px;
-        font-size: 15px;
-        background: #fff;
-        color: #222;
-    }
-    .chat-send-btn {
-        background: #66fcf1;
-        border: none;
-        border-radius: 50%;
-        width: 38px;
-        height: 38px;
+    .chat-toggle-btn {
         display: flex;
         align-items: center;
         justify-content: center;
         cursor: pointer;
-        font-size: 20px;
-        box-shadow: 0 2px 8px rgba(102,252,241,0.15);
+        font-size: 28px;
+        margin-bottom: 8px;
+        color: #66fcf1;
+        transition: color 0.2s;
+    }
+    .chat-toggle-btn:hover {
+        color: #3a86ff;
+    }
+    .chat-arrow {
+        font-size: 18px;
+        margin-left: 8px;
+        transition: transform 0.3s;
     }
     </style>
     """, unsafe_allow_html=True)
-    st.markdown("<h3 style='text-align:center;'>💬 Chat with Saud</h3>", unsafe_allow_html=True)
-    if "assistant" not in st.session_state:
-        st.session_state.assistant = ResumeAssistant()
-    if "chat_history" not in st.session_state:
-        st.session_state.chat_history = []
-    if "chat_input_value" not in st.session_state:
-        st.session_state.chat_input_value = ""
-    if "chat_thinking" not in st.session_state:
-        st.session_state.chat_thinking = False
-    if "chat_stream" not in st.session_state:
-        st.session_state.chat_stream = ""
-    # Display chat history
-    for msg in st.session_state.chat_history:
-        st.markdown(f"<div class='chat-bubble-user'>{msg['user']}</div>", unsafe_allow_html=True)
-        st.markdown(f"<div class='chat-bubble-ai'>{msg['bot']}</div>", unsafe_allow_html=True)
-    # Show streaming AI response
-    if st.session_state.chat_thinking:
-        st.markdown(f"<div class='chat-bubble-ai'>{st.session_state.chat_stream or '<em>Saud is thinking...</em>'}</div>", unsafe_allow_html=True)
-    # Chat input bar
-    import streamlit as st
-    import time
-    import base64
-    def send_icon():
-        return base64.b64encode(bytes([
-            0xF0,0x9F,0x9A,0x80
-        ])).decode()
-    def stream_response(text):
-        st.session_state.chat_stream = ""
-        for word in text.split():
-            st.session_state.chat_stream += word + " "
-            time.sleep(0.07)
-            st.experimental_rerun()
-        st.session_state.chat_thinking = False
-        st.session_state.chat_stream = ""
-    # Input box with send button
-    chat_col1, chat_col2 = st.columns([8,1])
-    with chat_col1:
-        user_input = st.text_area("", st.session_state.chat_input_value, key="chat_input", placeholder="Send a message...", height=38)
-    with chat_col2:
-        send_clicked = st.button("✈️", key="send_btn", help="Send")
-    # Enter to send, Shift+Enter for new line
-    if user_input and (not st.session_state.chat_history or st.session_state.chat_history[-1]["user"] != user_input):
-        if send_clicked or (user_input and st.session_state.chat_input_value != "" and st.session_state.chat_input_value == user_input):
-            st.session_state.chat_thinking = True
-            st.session_state.chat_input_value = user_input
+    # Chatbot icon and toggle arrow
+    chat_arrow = "▼" if st.session_state.show_chat else "▲"
+    if st.button(f"💬 <span class='chat-arrow'>{chat_arrow}</span>", key="toggle_chat", help="Toggle chat", use_container_width=True):
+        st.session_state.show_chat = not st.session_state.show_chat
+    if st.session_state.show_chat:
+        st.markdown("<h3 style='text-align:center;'>Chat with Saud</h3>", unsafe_allow_html=True)
+        if "assistant" not in st.session_state:
+            st.session_state.assistant = ResumeAssistant()
+        if "chat_history" not in st.session_state:
+            st.session_state.chat_history = []
+        if "chat_input_value" not in st.session_state:
+            st.session_state.chat_input_value = ""
+        if "chat_thinking" not in st.session_state:
+            st.session_state.chat_thinking = False
+        if "chat_stream" not in st.session_state:
+            st.session_state.chat_stream = ""
+        # Display chat history
+        for msg in st.session_state.chat_history:
+            st.markdown(f"<div class='chat-bubble-user'>{msg['user']}</div>", unsafe_allow_html=True)
+            st.markdown(f"<div class='chat-bubble-ai'>{msg['bot']}</div>", unsafe_allow_html=True)
+        # Show streaming AI response
+        if st.session_state.chat_thinking:
+            st.markdown(f"<div class='chat-bubble-ai'>{st.session_state.chat_stream or '<em>Saud is thinking...</em>'}</div>", unsafe_allow_html=True)
+        # Chat input bar
+        import time
+        def stream_response(text):
+            st.session_state.chat_stream = ""
+            for word in text.split():
+                st.session_state.chat_stream += word + " "
+                time.sleep(0.07)
+                st.experimental_rerun()
+            st.session_state.chat_thinking = False
+            st.session_state.chat_stream = ""
+        chat_col1, chat_col2 = st.columns([8,1])
+        with chat_col1:
+            user_input = st.text_area("", st.session_state.chat_input_value, key="chat_input", placeholder="Send a message...", height=38)
+        with chat_col2:
+            send_clicked = st.button("💬", key="send_btn", help="Send")
+        if user_input and (not st.session_state.chat_history or st.session_state.chat_history[-1]["user"] != user_input):
+            if send_clicked or (user_input and st.session_state.chat_input_value != "" and st.session_state.chat_input_value == user_input):
+                st.session_state.chat_thinking = True
+                st.session_state.chat_input_value = user_input
+                st.session_state.chat_stream = ""
+                st.experimental_rerun()
+        elif st.session_state.chat_thinking:
+            response = st.session_state.assistant.ask(st.session_state.chat_input_value)
+            stream_response(response)
+            st.session_state.chat_history.append({"user": st.session_state.chat_input_value, "bot": response})
+            st.session_state.chat_input_value = ""
+            st.session_state.chat_thinking = False
             st.session_state.chat_stream = ""
             st.experimental_rerun()
-    elif st.session_state.chat_thinking:
-        response = st.session_state.assistant.ask(st.session_state.chat_input_value)
-        # Stream word-by-word
-        stream_response(response)
-        st.session_state.chat_history.append({"user": st.session_state.chat_input_value, "bot": response})
-        st.session_state.chat_input_value = ""
-        st.session_state.chat_thinking = False
-        st.session_state.chat_stream = ""
-        st.experimental_rerun()
-    else:
-        st.session_state.chat_input_value = user_input
+        else:
+            st.session_state.chat_input_value = user_input
