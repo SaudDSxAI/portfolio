@@ -240,13 +240,18 @@ with st.sidebar:
         st.session_state.assistant = ResumeAssistant()
     if "chat_history" not in st.session_state:
         st.session_state.chat_history = []
+    if "chat_input_value" not in st.session_state:
+        st.session_state.chat_input_value = ""
     # Display chat history
     for msg in st.session_state.chat_history:
         st.markdown(f"<div class='msg-user'>{msg['user']}</div>", unsafe_allow_html=True)
         st.markdown(f"<div class='msg-bot'>{msg['bot']}</div>", unsafe_allow_html=True)
     # Chat input
-    user_input = st.text_input("Type a message and press Enter", "", key="chat_input")
-    if user_input:
+    user_input = st.text_input("Type a message and press Enter", st.session_state.chat_input_value, key="chat_input")
+    if user_input and (not st.session_state.chat_history or st.session_state.chat_history[-1]["user"] != user_input):
         response = st.session_state.assistant.ask(user_input)
         st.session_state.chat_history.append({"user": user_input, "bot": response})
+        st.session_state.chat_input_value = ""
         st.experimental_rerun()
+    else:
+        st.session_state.chat_input_value = user_input
