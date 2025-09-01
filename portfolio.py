@@ -265,7 +265,7 @@ with st.sidebar:
     if user_input and (not st.session_state.chat_history or st.session_state.chat_history[-1]["user"] != user_input):
         st.session_state.chat_thinking = True
         st.session_state.chat_input_value = user_input
-        st.experimental_rerun()
+        st.rerun()
     elif st.session_state.chat_thinking:
         response = st.session_state.assistant.ask(st.session_state.chat_input_value)
         st.session_state.chat_history.append({"user": st.session_state.chat_input_value, "bot": response})
