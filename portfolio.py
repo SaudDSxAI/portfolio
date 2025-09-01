@@ -1,6 +1,7 @@
 import streamlit as st
 from assistant import ResumeAssistant
 import streamlit.components.v1 as components
+from streamlit.components.v1 import html
 
 # Streamlit Page Configuration
 st.set_page_config(page_title="Saud Ahmad | AI & Robotics", page_icon="", layout="wide")
@@ -231,8 +232,8 @@ st.markdown("---")
 st.markdown("<div style='text-align: center; color: #888;'>Built with using <strong>Streamlit</strong></div>", unsafe_allow_html=True)
 
 # ------------------ CHATBOT (Streamlit-native, fixed section) ------------------ #
-import streamlit as st
-from streamlit.components.v1 import html
+
+
 
 with st.sidebar:
     st.markdown("<h3 style='text-align:center;'>💬 Chat with Saud</h3>", unsafe_allow_html=True)
