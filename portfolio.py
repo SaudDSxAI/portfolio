@@ -231,9 +231,6 @@ st.markdown("---")
 st.markdown("<div style='text-align: center; color: #888;'>Built with using <strong>Streamlit</strong></div>", unsafe_allow_html=True)
 
 # ------------------ CHATBOT ------------------ #
-import streamlit as st
-import streamlit.components.v1 as components
-from assistant import ResumeAssistant
 
 # ---------------- INIT SESSION ---------------- #
 if "assistant" not in st.session_state:
@@ -245,7 +242,6 @@ if "chat_history" not in st.session_state:
 # ---------------- CSS ---------------- #
 chat_css = """
 <style>
-/* Floating button */
 #chat-toggle {
   position: fixed;
   bottom: 20px;
@@ -262,8 +258,6 @@ chat_css = """
   box-shadow: 0px 4px 10px rgba(0,0,0,0.4);
   z-index: 9999;
 }
-
-/* Popup */
 #chat-popup {
   display: none;
   flex-direction: column;
@@ -278,8 +272,6 @@ chat_css = """
   overflow: hidden;
   z-index: 10000;
 }
-
-/* Header */
 .chat-header {
   background: #66fcf1;
   color: black;
@@ -287,8 +279,6 @@ chat_css = """
   font-weight: bold;
   text-align: center;
 }
-
-/* Chat body */
 .chat-body {
   flex: 1;
   padding: 10px;
@@ -299,8 +289,6 @@ chat_css = """
   flex-direction: column;
   gap: 10px;
 }
-
-/* Chat bubbles */
 .msg-user {
   align-self: flex-end;
   background: #3a86ff;
@@ -317,8 +305,6 @@ chat_css = """
   max-width: 80%;
   color: #eaeaea;
 }
-
-/* Input */
 .chat-input {
   display: flex;
   border-top: 1px solid #444;
@@ -358,8 +344,6 @@ function toggleChat() {
   var popup = document.getElementById("chat-popup");
   popup.style.display = (popup.style.display === "flex") ? "none" : "flex";
 }
-
-// Send message to Streamlit
 function sendMessage() {
   var input = document.getElementById("chat-input");
   var text = input.value.trim();
@@ -374,8 +358,9 @@ function sendMessage() {
 components.html(chat_css + chat_html, height=600)
 
 # ---------------- BACKEND HANDLER ---------------- #
-# Capture incoming message (via Streamlit's built-in hack)
-message = st.experimental_get_query_params().get("chat_msg", [""])[0]
+# Use new API (no "experimental")
+params = st.query_params
+message = params.get("chat_msg", "")
 
 if message and (len(st.session_state.chat_history) == 0 or st.session_state.chat_history[-1]["user"] != message):
     response = st.session_state.assistant.ask(message)
