@@ -1,5 +1,6 @@
 import streamlit as st
 from assistant import ResumeAssistant
+import streamlit.components.v1 as components
 
 # Streamlit Page Configuration
 st.set_page_config(page_title="Saud Ahmad | AI & Robotics", page_icon="", layout="wide")
@@ -230,30 +231,129 @@ st.markdown("---")
 st.markdown("<div style='text-align: center; color: #888;'>Built with using <strong>Streamlit</strong></div>", unsafe_allow_html=True)
 
 # ------------------ CHATBOT ------------------ #
-
-# Chatbot container (bottom-right widget style)
-st.markdown("<div class='section-title'>Chat with me</div>", unsafe_allow_html=True)
-
+# Ensure state
 if "assistant" not in st.session_state:
     st.session_state.assistant = ResumeAssistant()
 
 if "chat_history" not in st.session_state:
     st.session_state.chat_history = []
 
-# Chat UI
-with st.container():
-    st.markdown("<div class='chat-container'>", unsafe_allow_html=True)
+# CSS + HTML for floating chat
+chat_css = """
+<style>
+.chat-button {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  background: #66fcf1;
+  color: black;
+  border-radius: 50%;
+  width: 60px;
+  height: 60px;
+  font-size: 28px;
+  text-align: center;
+  line-height: 60px;
+  cursor: pointer;
+  box-shadow: 0px 4px 10px rgba(0,0,0,0.3);
+  z-index: 9999;
+}
+.chat-popup {
+  display: none;
+  position: fixed;
+  bottom: 90px;
+  right: 20px;
+  width: 350px;
+  max-height: 500px;
+  border-radius: 15px;
+  background: #1e1e2f;
+  box-shadow: 0px 8px 20px rgba(0,0,0,0.4);
+  z-index: 10000;
+  overflow: hidden;
+  flex-direction: column;
+}
+.chat-header {
+  background: #66fcf1;
+  color: black;
+  padding: 10px;
+  font-weight: bold;
+  text-align: center;
+}
+.chat-body {
+  padding: 10px;
+  height: 350px;
+  overflow-y: auto;
+  color: white;
+  font-size: 14px;
+}
+.chat-input {
+  display: flex;
+  border-top: 1px solid #444;
+}
+.chat-input input {
+  flex: 1;
+  padding: 10px;
+  border: none;
+  outline: none;
+  font-size: 14px;
+}
+.chat-input button {
+  background: #66fcf1;
+  border: none;
+  padding: 10px;
+  cursor: pointer;
+}
+</style>
+"""
 
-    for msg in st.session_state.chat_history:
-        st.markdown(f"**You:** {msg['user']}")
-        st.markdown(f"**Saud:** {msg['bot']}")
+chat_html = """
+<div class="chat-button" onclick="toggleChat()">💬</div>
 
-    query = st.text_input("Ask me about my resume:", key="chat_input")
-    if query:
-        response = st.session_state.assistant.ask(query)
-        st.session_state.chat_history.append({"user": query, "bot": response})
-        st.rerun()
+<div class="chat-popup" id="chatPopup" style="display:none;flex-direction:column;">
+  <div class="chat-header">Chat with Saud</div>
+  <div class="chat-body" id="chatBody"></div>
+  <div class="chat-input">
+    <input id="chatInput" type="text" placeholder="Type a message..." 
+           onkeydown="if(event.key==='Enter'){sendMessage()}">
+    <button onclick="sendMessage()">➤</button>
+  </div>
+</div>
 
-    st.markdown("</div>", unsafe_allow_html=True)
+<script>
+function toggleChat() {
+  var popup = document.getElementById("chatPopup");
+  popup.style.display = (popup.style.display === "flex") ? "none" : "flex";
+}
 
+function sendMessage() {
+  var input = document.getElementById("chatInput");
+  var text = input.value.trim();
+  if (text !== "") {
+    var chatBody = document.getElementById("chatBody");
+    chatBody.innerHTML += "<p><b>You:</b> " + text + "</p>";
+    input.value = "";
+    window.parent.postMessage({type: "streamlit_chat", text: text}, "*");
+  }
+}
+</script>
+"""
 
+components.html(chat_css + chat_html, height=600)
+
+# Hidden Streamlit input to receive JS messages
+message = st.experimental_get_query_params().get("chat_msg", [""])[0]
+
+if message:
+    response = st.session_state.assistant.ask(message)
+    st.session_state.chat_history.append({"user": message, "bot": response})
+
+# Render past conversation into the chat body
+chat_history_html = ""
+for msg in st.session_state.chat_history:
+    chat_history_html += f"<p><b>You:</b> {msg['user']}</p>"
+    chat_history_html += f"<p><b>Saud:</b> {msg['bot']}</p>"
+
+# Inject updated chat into frontend
+components.html(
+    f"<script>document.getElementById('chatBody').innerHTML = `{chat_history_html}`;</script>",
+    height=0,
+)
