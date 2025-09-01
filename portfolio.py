@@ -231,46 +231,55 @@ st.markdown("---")
 st.markdown("<div style='text-align: center; color: #888;'>Built with using <strong>Streamlit</strong></div>", unsafe_allow_html=True)
 
 # ------------------ CHATBOT ------------------ #
-# Ensure state
+import streamlit as st
+import streamlit.components.v1 as components
+from assistant import ResumeAssistant
+
+# ---------------- INIT SESSION ---------------- #
 if "assistant" not in st.session_state:
     st.session_state.assistant = ResumeAssistant()
 
 if "chat_history" not in st.session_state:
     st.session_state.chat_history = []
 
-# CSS + HTML for floating chat
+# ---------------- CSS ---------------- #
 chat_css = """
 <style>
-.chat-button {
+/* Floating button */
+#chat-toggle {
   position: fixed;
   bottom: 20px;
   right: 20px;
   background: #66fcf1;
   color: black;
   border-radius: 50%;
-  width: 60px;
-  height: 60px;
-  font-size: 28px;
+  width: 55px;
+  height: 55px;
+  font-size: 26px;
   text-align: center;
-  line-height: 60px;
+  line-height: 55px;
   cursor: pointer;
-  box-shadow: 0px 4px 10px rgba(0,0,0,0.3);
+  box-shadow: 0px 4px 10px rgba(0,0,0,0.4);
   z-index: 9999;
 }
-.chat-popup {
+
+/* Popup */
+#chat-popup {
   display: none;
+  flex-direction: column;
   position: fixed;
   bottom: 90px;
   right: 20px;
-  width: 350px;
+  width: 340px;
   max-height: 500px;
   border-radius: 15px;
   background: #1e1e2f;
-  box-shadow: 0px 8px 20px rgba(0,0,0,0.4);
-  z-index: 10000;
+  box-shadow: 0px 8px 20px rgba(0,0,0,0.5);
   overflow: hidden;
-  flex-direction: column;
+  z-index: 10000;
 }
+
+/* Header */
 .chat-header {
   background: #66fcf1;
   color: black;
@@ -278,13 +287,38 @@ chat_css = """
   font-weight: bold;
   text-align: center;
 }
+
+/* Chat body */
 .chat-body {
+  flex: 1;
   padding: 10px;
-  height: 350px;
   overflow-y: auto;
   color: white;
   font-size: 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
 }
+
+/* Chat bubbles */
+.msg-user {
+  align-self: flex-end;
+  background: #3a86ff;
+  padding: 8px 12px;
+  border-radius: 12px;
+  max-width: 80%;
+  color: white;
+}
+.msg-bot {
+  align-self: flex-start;
+  background: #2b2b3c;
+  padding: 8px 12px;
+  border-radius: 12px;
+  max-width: 80%;
+  color: #eaeaea;
+}
+
+/* Input */
 .chat-input {
   display: flex;
   border-top: 1px solid #444;
@@ -299,20 +333,21 @@ chat_css = """
 .chat-input button {
   background: #66fcf1;
   border: none;
-  padding: 10px;
+  padding: 10px 15px;
   cursor: pointer;
 }
 </style>
 """
 
+# ---------------- HTML ---------------- #
 chat_html = """
-<div class="chat-button" onclick="toggleChat()">💬</div>
+<div id="chat-toggle" onclick="toggleChat()">💬</div>
 
-<div class="chat-popup" id="chatPopup" style="display:none;flex-direction:column;">
+<div id="chat-popup">
   <div class="chat-header">Chat with Saud</div>
-  <div class="chat-body" id="chatBody"></div>
+  <div id="chat-body" class="chat-body"></div>
   <div class="chat-input">
-    <input id="chatInput" type="text" placeholder="Type a message..." 
+    <input id="chat-input" type="text" placeholder="Type a message..."
            onkeydown="if(event.key==='Enter'){sendMessage()}">
     <button onclick="sendMessage()">➤</button>
   </div>
@@ -320,18 +355,17 @@ chat_html = """
 
 <script>
 function toggleChat() {
-  var popup = document.getElementById("chatPopup");
+  var popup = document.getElementById("chat-popup");
   popup.style.display = (popup.style.display === "flex") ? "none" : "flex";
 }
 
+// Send message to Streamlit
 function sendMessage() {
-  var input = document.getElementById("chatInput");
+  var input = document.getElementById("chat-input");
   var text = input.value.trim();
   if (text !== "") {
-    var chatBody = document.getElementById("chatBody");
-    chatBody.innerHTML += "<p><b>You:</b> " + text + "</p>";
-    input.value = "";
     window.parent.postMessage({type: "streamlit_chat", text: text}, "*");
+    input.value = "";
   }
 }
 </script>
@@ -339,21 +373,21 @@ function sendMessage() {
 
 components.html(chat_css + chat_html, height=600)
 
-# Hidden Streamlit input to receive JS messages
+# ---------------- BACKEND HANDLER ---------------- #
+# Capture incoming message (via Streamlit's built-in hack)
 message = st.experimental_get_query_params().get("chat_msg", [""])[0]
 
-if message:
+if message and (len(st.session_state.chat_history) == 0 or st.session_state.chat_history[-1]["user"] != message):
     response = st.session_state.assistant.ask(message)
     st.session_state.chat_history.append({"user": message, "bot": response})
 
-# Render past conversation into the chat body
+# ---------------- RENDER CHAT HISTORY ---------------- #
 chat_history_html = ""
 for msg in st.session_state.chat_history:
-    chat_history_html += f"<p><b>You:</b> {msg['user']}</p>"
-    chat_history_html += f"<p><b>Saud:</b> {msg['bot']}</p>"
+    chat_history_html += f"<div class='msg-user'>{msg['user']}</div>"
+    chat_history_html += f"<div class='msg-bot'>{msg['bot']}</div>"
 
-# Inject updated chat into frontend
 components.html(
-    f"<script>document.getElementById('chatBody').innerHTML = `{chat_history_html}`;</script>",
+    f"<script>document.getElementById('chat-body').innerHTML = `{chat_history_html}`;</script>",
     height=0,
 )
