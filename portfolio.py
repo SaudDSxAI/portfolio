@@ -45,14 +45,6 @@ st.markdown("""
             margin-top: 2rem;
             text-shadow: 1px 1px 3px rgba(102, 252, 241, 0.4);
         }
-        .msg-user {
-            text-align: right;
-            margin: 0.5rem 0;
-        }
-        .msg-bot {
-            text-align: left;
-            margin: 0.5rem 0;
-        }
     </style>
 """, unsafe_allow_html=True)
 
@@ -251,26 +243,16 @@ with st.sidebar:
         st.session_state.chat_history = []
     if "chat_input_value" not in st.session_state:
         st.session_state.chat_input_value = ""
-    if "chat_thinking" not in st.session_state:
-        st.session_state.chat_thinking = False
     # Display chat history
     for msg in st.session_state.chat_history:
         st.markdown(f"<div class='msg-user'>{msg['user']}</div>", unsafe_allow_html=True)
         st.markdown(f"<div class='msg-bot'>{msg['bot']}</div>", unsafe_allow_html=True)
-    # Show 'thinking...' indicator if bot is generating response
-    if st.session_state.chat_thinking:
-        st.markdown("<div class='msg-bot'><em>Saud is thinking...</em></div>", unsafe_allow_html=True)
     # Chat input
     user_input = st.text_input("Type a message and press Enter", st.session_state.chat_input_value, key="chat_input")
     if user_input and (not st.session_state.chat_history or st.session_state.chat_history[-1]["user"] != user_input):
-        st.session_state.chat_thinking = True
-        st.session_state.chat_input_value = user_input
-        st.rerun()
-    elif st.session_state.chat_thinking:
-        response = st.session_state.assistant.ask(st.session_state.chat_input_value)
-        st.session_state.chat_history.append({"user": st.session_state.chat_input_value, "bot": response})
+        response = st.session_state.assistant.ask(user_input)
+        st.session_state.chat_history.append({"user": user_input, "bot": response})
         st.session_state.chat_input_value = ""
-        st.session_state.chat_thinking = False
         st.rerun()
     else:
         st.session_state.chat_input_value = user_input
