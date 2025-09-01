@@ -1,4 +1,5 @@
 import streamlit as st
+from assistant import ResumeAssistant
 
 # Streamlit Page Configuration
 st.set_page_config(page_title="Saud Ahmad | AI & Robotics", page_icon="", layout="wide")
@@ -227,3 +228,30 @@ with col2:
 # ------------------ FOOTER ------------------ #
 st.markdown("---")
 st.markdown("<div style='text-align: center; color: #888;'>Built with using <strong>Streamlit</strong></div>", unsafe_allow_html=True)
+
+# ------------------ CHATBOT ------------------ #
+
+# Chatbot container (bottom-right widget style)
+st.markdown("<div class='section-title'>Chat with me</div>", unsafe_allow_html=True)
+
+if "assistant" not in st.session_state:
+    st.session_state.assistant = ResumeAssistant()
+
+if "chat_history" not in st.session_state:
+    st.session_state.chat_history = []
+
+# Chat UI
+with st.container():
+    st.markdown("<div class='chat-container'>", unsafe_allow_html=True)
+
+    for msg in st.session_state.chat_history:
+        st.markdown(f"**You:** {msg['user']}")
+        st.markdown(f"**Saud:** {msg['bot']}")
+
+    query = st.text_input("Ask me about my resume:", key="chat_input")
+    if query:
+        response = st.session_state.assistant.ask(query)
+        st.session_state.chat_history.append({"user": query, "bot": response})
+        st.experimental_rerun()
+
+    st.markdown("</div>", unsafe_allow_html=True)
