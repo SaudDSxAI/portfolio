@@ -230,142 +230,23 @@ with col2:
 st.markdown("---")
 st.markdown("<div style='text-align: center; color: #888;'>Built with using <strong>Streamlit</strong></div>", unsafe_allow_html=True)
 
-# ------------------ CHATBOT ------------------ #
+# ------------------ CHATBOT (Streamlit-native, fixed section) ------------------ #
+import streamlit as st
+from streamlit.components.v1 import html
 
-# ---------------- INIT SESSION ---------------- #
-if "assistant" not in st.session_state:
-    st.session_state.assistant = ResumeAssistant()
-
-if "chat_history" not in st.session_state:
-    st.session_state.chat_history = []
-
-# ---------------- CSS & HTML ---------------- #
-chat_css = """
-<style>
-#chat-toggle {
-  position: fixed;
-  bottom: 20px;
-  right: 20px;
-  background: #66fcf1;
-  color: black;
-  border-radius: 50%;
-  width: 55px;
-  height: 55px;
-  font-size: 26px;
-  text-align: center;
-  line-height: 55px;
-  cursor: pointer;
-  box-shadow: 0px 4px 10px rgba(0,0,0,0.4);
-  z-index: 9999;
-}
-#chat-popup {
-  display: none;
-  flex-direction: column;
-  position: fixed;
-  bottom: 90px;
-  right: 20px;
-  width: 340px;
-  max-height: 500px;
-  border-radius: 15px;
-  background: #1e1e2f;
-  box-shadow: 0px 8px 20px rgba(0,0,0,0.5);
-  overflow: hidden;
-  z-index: 10000;
-}
-.chat-header {
-  background: #66fcf1;
-  color: black;
-  padding: 10px;
-  font-weight: bold;
-  text-align: center;
-}
-.chat-body {
-  flex: 1;
-  padding: 10px;
-  overflow-y: auto;
-  color: white;
-  font-size: 14px;
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-}
-.msg-user {
-  align-self: flex-end;
-  background: #3a86ff;
-  padding: 8px 12px;
-  border-radius: 12px;
-  max-width: 80%;
-  color: white;
-}
-.msg-bot {
-  align-self: flex-start;
-  background: #2b2b3c;
-  padding: 8px 12px;
-  border-radius: 12px;
-  max-width: 80%;
-  color: #eaeaea;
-}
-.chat-input {
-  display: flex;
-  border-top: 1px solid #444;
-}
-.chat-input input {
-  flex: 1;
-  padding: 10px;
-  border: none;
-  outline: none;
-  font-size: 14px;
-}
-.chat-input button {
-  background: #66fcf1;
-  border: none;
-  padding: 10px 15px;
-  cursor: pointer;
-}
-</style>
-"""
-
-# Render chat history as HTML for the popup
-chat_history_html = ""
-for msg in st.session_state.chat_history:
-    chat_history_html += f"<div class='msg-user'>{msg['user']}</div>"
-    chat_history_html += f"<div class='msg-bot'>{msg['bot']}</div>"
-
-chat_html = (
-    "<div id='chat-toggle' onclick=\"toggleChat()\">💬</div>"
-    "<div id='chat-popup' style='display:none;'>"
-    "  <div class='chat-header'>Chat with Saud</div>"
-    f"  <div id='chat-body' class='chat-body'>{chat_history_html}</div>"
-    "  <div class='chat-input'>"
-    "    <input id='chat-input' type='text' placeholder='Type a message...'"
-    "           onkeydown=\"if(event.key==='Enter'){sendMessage()}\">"
-    "    <button onclick=\"sendMessage()\">➤</button>"
-    "  </div>"
-    "</div>"
-    "<script>"
-    "function toggleChat() {"
-    "  var popup = document.getElementById('chat-popup');"
-    "  popup.style.display = (popup.style.display === 'flex') ? 'none' : 'flex';"
-    "  popup.style.flexDirection = 'column';"
-    "}"
-    "function sendMessage() {"
-    "  var input = document.getElementById('chat-input');"
-    "  var text = input.value.trim();"
-    "  if (text !== '') {"
-    "    window.parent.postMessage({type: 'streamlit_chat', text: text}, '*');"
-    "    input.value = '';"
-    "  }"
-    "}"
-    "</script>"
-)
-
-components.html(chat_css + chat_html, height=600)
-
-# ---------------- BACKEND HANDLER ---------------- #
-params = st.query_params
-message = params.get("chat_msg", "")
-
-if message and (len(st.session_state.chat_history) == 0 or st.session_state.chat_history[-1]["user"] != message):
-    response = st.session_state.assistant.ask(message)
-    st.session_state.chat_history.append({"user": message, "bot": response})
-    st.experimental_rerun()  # Rerun to update chat popup
+with st.sidebar:
+    st.markdown("<h3 style='text-align:center;'>💬 Chat with Saud</h3>", unsafe_allow_html=True)
+    if "assistant" not in st.session_state:
+        st.session_state.assistant = ResumeAssistant()
+    if "chat_history" not in st.session_state:
+        st.session_state.chat_history = []
+    # Display chat history
+    for msg in st.session_state.chat_history:
+        st.markdown(f"<div class='msg-user'>{msg['user']}</div>", unsafe_allow_html=True)
+        st.markdown(f"<div class='msg-bot'>{msg['bot']}</div>", unsafe_allow_html=True)
+    # Chat input
+    user_input = st.text_input("Type a message and press Enter", "", key="chat_input")
+    if user_input:
+        response = st.session_state.assistant.ask(user_input)
+        st.session_state.chat_history.append({"user": user_input, "bot": response})
+        st.experimental_rerun()
