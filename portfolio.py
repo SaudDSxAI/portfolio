@@ -239,7 +239,7 @@ if "assistant" not in st.session_state:
 if "chat_history" not in st.session_state:
     st.session_state.chat_history = []
 
-# ---------------- CSS ---------------- #
+# ---------------- CSS & HTML ---------------- #
 chat_css = """
 <style>
 #chat-toggle {
@@ -325,54 +325,47 @@ chat_css = """
 </style>
 """
 
-# ---------------- HTML ---------------- #
-chat_html = """
-<div id="chat-toggle" onclick="toggleChat()">💬</div>
+# Render chat history as HTML for the popup
+chat_history_html = ""
+for msg in st.session_state.chat_history:
+    chat_history_html += f"<div class='msg-user'>{msg['user']}</div>"
+    chat_history_html += f"<div class='msg-bot'>{msg['bot']}</div>"
 
-<div id="chat-popup">
-  <div class="chat-header">Chat with Saud</div>
-  <div id="chat-body" class="chat-body"></div>
-  <div class="chat-input">
-    <input id="chat-input" type="text" placeholder="Type a message..."
-           onkeydown="if(event.key==='Enter'){sendMessage()}">
-    <button onclick="sendMessage()">➤</button>
-  </div>
-</div>
-
-<script>
-function toggleChat() {
-  var popup = document.getElementById("chat-popup");
-  popup.style.display = (popup.style.display === "flex") ? "none" : "flex";
-}
-function sendMessage() {
-  var input = document.getElementById("chat-input");
-  var text = input.value.trim();
-  if (text !== "") {
-    window.parent.postMessage({type: "streamlit_chat", text: text}, "*");
-    input.value = "";
-  }
-}
-</script>
-"""
+chat_html = (
+    "<div id='chat-toggle' onclick=\"toggleChat()\">💬</div>"
+    "<div id='chat-popup' style='display:none;'>"
+    "  <div class='chat-header'>Chat with Saud</div>"
+    f"  <div id='chat-body' class='chat-body'>{chat_history_html}</div>"
+    "  <div class='chat-input'>"
+    "    <input id='chat-input' type='text' placeholder='Type a message...'"
+    "           onkeydown=\"if(event.key==='Enter'){sendMessage()}\">"
+    "    <button onclick=\"sendMessage()\">➤</button>"
+    "  </div>"
+    "</div>"
+    "<script>"
+    "function toggleChat() {"
+    "  var popup = document.getElementById('chat-popup');"
+    "  popup.style.display = (popup.style.display === 'flex') ? 'none' : 'flex';"
+    "  popup.style.flexDirection = 'column';"
+    "}"
+    "function sendMessage() {"
+    "  var input = document.getElementById('chat-input');"
+    "  var text = input.value.trim();"
+    "  if (text !== '') {"
+    "    window.parent.postMessage({type: 'streamlit_chat', text: text}, '*');"
+    "    input.value = '';"
+    "  }"
+    "}"
+    "</script>"
+)
 
 components.html(chat_css + chat_html, height=600)
 
 # ---------------- BACKEND HANDLER ---------------- #
-# Use new API (no "experimental")
 params = st.query_params
 message = params.get("chat_msg", "")
 
 if message and (len(st.session_state.chat_history) == 0 or st.session_state.chat_history[-1]["user"] != message):
     response = st.session_state.assistant.ask(message)
     st.session_state.chat_history.append({"user": message, "bot": response})
-
-# ---------------- RENDER CHAT HISTORY ---------------- #
-chat_history_html = ""
-for msg in st.session_state.chat_history:
-    chat_history_html += f"<div class='msg-user'>{msg['user']}</div>"
-    chat_history_html += f"<div class='msg-bot'>{msg['bot']}</div>"
-
-components.html(
-    f"<script>document.getElementById('chat-body').innerHTML = `{chat_history_html}`;</script>",
-    height=0,
-)
+    st.experimental_rerun()  # Rerun to update chat popup
