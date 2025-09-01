@@ -252,6 +252,6 @@ with st.sidebar:
         response = st.session_state.assistant.ask(user_input)
         st.session_state.chat_history.append({"user": user_input, "bot": response})
         st.session_state.chat_input_value = ""
-        st.experimental_rerun()
+        st.rerun()
     else:
         st.session_state.chat_input_value = user_input
