@@ -322,7 +322,7 @@ components.html('''
 if st.session_state.chat_open or True:  # Always render for now
     chat_html = '''
     <style>
-    .chat-popup {
+    .chat-popup {{
       display: flex;
       flex-direction: column;
       position: fixed;
@@ -336,23 +336,23 @@ if st.session_state.chat_open or True:  # Always render for now
       overflow: hidden;
       z-index: 9999;
       animation: fadeIn 0.4s;
-    }
-    .chat-header {
+    }}
+    .chat-header {{
       background: #10a37f;
       color: white;
       padding: 10px;
       font-weight: bold;
       text-align: center;
-    }
-    .chat-body {
+    }}
+    .chat-body {{
       flex: 1;
       padding: 10px;
       overflow-y: auto;
       font-family: sans-serif;
       font-size: 14px;
       background: #f8f8f8;
-    }
-    .chat-message.user {
+    }}
+    .chat-message.user {{
       background: #10a37f;
       color: white;
       padding: 8px 12px;
@@ -361,8 +361,8 @@ if st.session_state.chat_open or True:  # Always render for now
       max-width: 80%;
       margin-left: auto;
       animation: fadeIn 0.3s;
-    }
-    .chat-message.bot {
+    }}
+    .chat-message.bot {{
       background: #e5e5e5;
       color: #111;
       padding: 8px 12px;
@@ -371,14 +371,14 @@ if st.session_state.chat_open or True:  # Always render for now
       max-width: 80%;
       margin-right: auto;
       animation: fadeIn 0.3s;
-    }
-    .chat-input {
+    }}
+    .chat-input {{
       display: flex;
       border-top: 1px solid #ddd;
       align-items: center;
       background: #fff;
-    }
-    .chat-input textarea {
+    }}
+    .chat-input textarea {{
       flex: 1;
       border: none;
       resize: none;
@@ -389,8 +389,8 @@ if st.session_state.chat_open or True:  # Always render for now
       border-radius: 8px;
       margin: 8px;
       background: #f3f3f3;
-    }
-    .chat-input button {
+    }}
+    .chat-input button {{
       background: #10a37f;
       border: none;
       font-size: 18px;
@@ -404,11 +404,11 @@ if st.session_state.chat_open or True:  # Always render for now
       display: flex;
       align-items: center;
       justify-content: center;
-    }
-    @keyframes fadeIn {
-      from { opacity: 0; transform: translateY(8px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
+    }}
+    @keyframes fadeIn {{
+      from {{ opacity: 0; transform: translateY(8px); }}
+      to {{ opacity: 1; transform: translateY(0); }}
+    }}
     </style>
     <div class="chat-popup" id="chat-popup">
       <div class="chat-header">Chat with Saud</div>
@@ -416,19 +416,19 @@ if st.session_state.chat_open or True:  # Always render for now
         {messages}
       </div>
       <form class="chat-input" onsubmit="sendMessage(); return false;">
-        <textarea id="chat-input" rows="1" placeholder="Type a message..." onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();document.getElementById('send-btn').click();}"></textarea>
+        <textarea id="chat-input" rows="1" placeholder="Type a message..." onkeydown="if(event.key==='Enter'&&!event.shiftKey){{event.preventDefault();document.getElementById('send-btn').click();}}"></textarea>
         <button type="submit" id="send-btn">➤</button>
       </form>
     </div>
     <script>
-    function sendMessage() {
+    function sendMessage() {{
       var input = document.getElementById('chat-input');
       var text = input.value.trim();
-      if (text !== '') {
-        window.parent.postMessage({type: 'user_message', text: text}, '*');
+      if (text !== '') {{
+        window.parent.postMessage({{type: 'user_message', text: text}}, '*');
         input.value = '';
-      }
-    }
+      }}
+    }}
     </script>
     '''
     # Render chat history as HTML
