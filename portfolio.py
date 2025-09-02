@@ -287,8 +287,6 @@ st.markdown("<div style='text-align: center; color: #888;'>Built with using <str
 
 # ------------------ CHATBOT (Streamlit-native, fixed section) ------------------ #
 
-
-
 # Initialize assistant + session state
 if "assistant" not in st.session_state:
     from assistant import ResumeAssistant
@@ -296,7 +294,7 @@ if "assistant" not in st.session_state:
 if "chat_history" not in st.session_state:
     st.session_state.chat_history = []
 
-# Build simple ChatGPT-like UI in HTML
+# Build ChatGPT-like floating chat UI
 chat_ui = """
 <style>
 .chat-button {
@@ -319,8 +317,8 @@ chat_ui = """
     position: fixed;
     bottom: 80px;
     right: 20px;
-    width: 350px;
-    max-height: 500px;
+    width: 360px;
+    max-height: 520px;
     background: #fff;
     border-radius: 12px;
     box-shadow: 0 4px 15px rgba(0,0,0,0.2);
@@ -351,6 +349,7 @@ chat_ui = """
     margin: 6px 0;
     max-width: 80%;
     margin-left: auto;
+    animation: fadeIn 0.3s;
 }
 .chat-message.bot {
     background: #e5e5e5;
@@ -360,10 +359,12 @@ chat_ui = """
     margin: 6px 0;
     max-width: 80%;
     margin-right: auto;
+    animation: fadeIn 0.3s;
 }
 .chat-input {
     display: flex;
     border-top: 1px solid #ddd;
+    align-items: center;
 }
 .chat-input textarea {
     flex: 1;
@@ -372,14 +373,23 @@ chat_ui = """
     padding: 10px;
     font-size: 14px;
     outline: none;
+    height: 38px;
 }
 .chat-input button {
-    background: none;
+    background: #10a37f;
     border: none;
-    font-size: 20px;
+    font-size: 18px;
     padding: 10px;
     cursor: pointer;
-    color: #10a37f;
+    color: white;
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    margin: 4px;
+}
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(8px); }
+    to { opacity: 1; transform: translateY(0); }
 }
 </style>
 
@@ -399,6 +409,7 @@ function toggleChat() {
     var popup = document.getElementById("chatPopup");
     popup.style.display = (popup.style.display === "none" || popup.style.display === "") ? "flex" : "none";
 }
+
 function sendMessage() {
     var input = document.getElementById("chatInput");
     var text = input.value.trim();
@@ -407,6 +418,7 @@ function sendMessage() {
         input.value = "";
     }
 }
+
 document.getElementById("chatInput").addEventListener("keydown", function(e) {
     if (e.key === "Enter" && !e.shiftKey) {
         e.preventDefault();
@@ -416,11 +428,13 @@ document.getElementById("chatInput").addEventListener("keydown", function(e) {
 </script>
 """
 
-# Render the floating chat UI
+# Render floating chat UI
 components.html(chat_ui, height=600, width=400)
 
-# Handle messages from frontend
-message = st.experimental_get_query_params().get("last_message", None)
+# Handle messages properly with new API
+query_params = st.query_params  # ✅ new replacement for experimental
+message = query_params.get("last_message", None)
+
 if message:
     response = st.session_state.assistant.ask(message[0])
     st.session_state.chat_history.append({"user": message[0], "bot": response})
