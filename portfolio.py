@@ -289,123 +289,138 @@ st.markdown("<div style='text-align: center; color: #888;'>Built with using <str
 
 
 
-with st.sidebar:
-    st.markdown("""
-    <style>
-    .chat-bubble-user {
-        background: linear-gradient(135deg, #66fcf1 60%, #3a86ff 100%);
-        color: white;
-        border-radius: 18px;
-        padding: 10px 16px;
-        margin: 8px 0 8px auto;
-        max-width: 80%;
-        text-align: right;
-        box-shadow: 0 2px 8px rgba(102,252,241,0.15);
-        animation: fadeIn 0.5s;
-    }
-    .chat-bubble-ai {
-        background: #f3f3f3;
-        color: #222;
-        border-radius: 18px;
-        padding: 10px 16px;
-        margin: 8px auto 8px 0;
-        max-width: 80%;
-        text-align: left;
-        box-shadow: 0 2px 8px rgba(0,0,0,0.08);
-        animation: fadeIn 0.5s;
-    }
-    @keyframes fadeIn {
-        from { opacity: 0; transform: translateY(10px); }
-        to { opacity: 1; transform: translateY(0); }
-    }
-    .chat-input-bar {
-        display: flex;
-        gap: 8px;
-        align-items: center;
-        margin-top: 12px;
-    }
-    .chat-input-box {
-        flex: 1;
-        border-radius: 12px;
-        border: 1px solid #eee;
-        padding: 10px;
-        font-size: 15px;
-        background: #fff;
-        color: #222;
-    }
-    .chat-send-btn {
-        background: #66fcf1;
-        border: none;
-        border-radius: 50%;
-        width: 38px;
-        height: 38px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        cursor: pointer;
-        font-size: 20px;
-        box-shadow: 0 2px 8px rgba(102,252,241,0.15);
-    }
-    </style>
-    """, unsafe_allow_html=True)
-    st.markdown("<h3 style='text-align:center;'>💬 Chat with Saud</h3>", unsafe_allow_html=True)
-    if "assistant" not in st.session_state:
-        st.session_state.assistant = ResumeAssistant()
-    if "chat_history" not in st.session_state:
-        st.session_state.chat_history = []
-    if "chat_input_value" not in st.session_state:
-        st.session_state.chat_input_value = ""
-    if "chat_thinking" not in st.session_state:
-        st.session_state.chat_thinking = False
-    if "chat_stream" not in st.session_state:
-        st.session_state.chat_stream = ""
-    # Display chat history
-    for msg in st.session_state.chat_history:
-        st.markdown(f"<div class='chat-bubble-user'>{msg['user']}</div>", unsafe_allow_html=True)
-        st.markdown(f"<div class='chat-bubble-ai'>{msg['bot']}</div>", unsafe_allow_html=True)
-    # Show streaming AI response
-    if st.session_state.chat_thinking:
-        st.markdown(f"<div class='chat-bubble-ai'>{st.session_state.chat_stream or '<em>Saud is thinking...</em>'}</div>", unsafe_allow_html=True)
-    # Chat input bar
-    import streamlit as st
-    import time
-    import base64
-    def send_icon():
-        return base64.b64encode(bytes([
-            0xF0,0x9F,0x9A,0x80
-        ])).decode()
-    def stream_response(text):
-        st.session_state.chat_stream = ""
-        for word in text.split():
-            st.session_state.chat_stream += word + " "
-            time.sleep(0.07)
-            st.rerun()
+# Initialize assistant + session state
+if "assistant" not in st.session_state:
+    from assistant import ResumeAssistant
+    st.session_state.assistant = ResumeAssistant()
+if "chat_history" not in st.session_state:
+    st.session_state.chat_history = []
 
-        st.session_state.chat_thinking = False
-        st.session_state.chat_stream = ""
-    # Input box with send button
-    chat_col1, chat_col2 = st.columns([8,1])
-    with chat_col1:
-        user_input = st.text_area("", st.session_state.chat_input_value, key="chat_input", placeholder="Send a message...", height=38)
-    with chat_col2:
-        send_clicked = st.button("✈️", key="send_btn", help="Send")
-    # Enter to send, Shift+Enter for new line
-    if user_input and (not st.session_state.chat_history or st.session_state.chat_history[-1]["user"] != user_input):
-        if send_clicked or (user_input and st.session_state.chat_input_value != "" and st.session_state.chat_input_value == user_input):
-            st.session_state.chat_thinking = True
-            st.session_state.chat_input_value = user_input
-            st.session_state.chat_stream = ""
-            st.rerun()
+# Build simple ChatGPT-like UI in HTML
+chat_ui = """
+<style>
+.chat-button {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    background: #10a37f;
+    color: white;
+    border: none;
+    border-radius: 50%;
+    width: 55px;
+    height: 55px;
+    font-size: 24px;
+    cursor: pointer;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+    z-index: 9999;
+}
+.chat-popup {
+    display: none;
+    position: fixed;
+    bottom: 80px;
+    right: 20px;
+    width: 350px;
+    max-height: 500px;
+    background: #fff;
+    border-radius: 12px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+    overflow: hidden;
+    z-index: 9999;
+    display: flex;
+    flex-direction: column;
+}
+.chat-header {
+    background: #10a37f;
+    color: white;
+    padding: 10px;
+    font-weight: bold;
+    text-align: center;
+}
+.chat-body {
+    flex: 1;
+    padding: 10px;
+    overflow-y: auto;
+    font-family: sans-serif;
+    font-size: 14px;
+}
+.chat-message.user {
+    background: #10a37f;
+    color: white;
+    padding: 8px 12px;
+    border-radius: 12px;
+    margin: 6px 0;
+    max-width: 80%;
+    margin-left: auto;
+}
+.chat-message.bot {
+    background: #e5e5e5;
+    color: #111;
+    padding: 8px 12px;
+    border-radius: 12px;
+    margin: 6px 0;
+    max-width: 80%;
+    margin-right: auto;
+}
+.chat-input {
+    display: flex;
+    border-top: 1px solid #ddd;
+}
+.chat-input textarea {
+    flex: 1;
+    border: none;
+    resize: none;
+    padding: 10px;
+    font-size: 14px;
+    outline: none;
+}
+.chat-input button {
+    background: none;
+    border: none;
+    font-size: 20px;
+    padding: 10px;
+    cursor: pointer;
+    color: #10a37f;
+}
+</style>
 
-    elif st.session_state.chat_thinking:
-        response = st.session_state.assistant.ask(st.session_state.chat_input_value)
-        # Stream word-by-word
-        stream_response(response)
-        st.session_state.chat_history.append({"user": st.session_state.chat_input_value, "bot": response})
-        st.session_state.chat_input_value = ""
-        st.session_state.chat_thinking = False
-        st.session_state.chat_stream = ""
-        st.rerun()
+<button class="chat-button" onclick="toggleChat()">💬</button>
 
-    else:
-        st.session_state.chat_input_value = user_input
+<div class="chat-popup" id="chatPopup">
+    <div class="chat-header">Chat with Saud</div>
+    <div class="chat-body" id="chatBody"></div>
+    <div class="chat-input">
+        <textarea id="chatInput" rows="1" placeholder="Type a message..."></textarea>
+        <button onclick="sendMessage()">➤</button>
+    </div>
+</div>
+
+<script>
+function toggleChat() {
+    var popup = document.getElementById("chatPopup");
+    popup.style.display = (popup.style.display === "none" || popup.style.display === "") ? "flex" : "none";
+}
+function sendMessage() {
+    var input = document.getElementById("chatInput");
+    var text = input.value.trim();
+    if (text !== "") {
+        window.parent.postMessage({type: "user_message", text: text}, "*");
+        input.value = "";
+    }
+}
+document.getElementById("chatInput").addEventListener("keydown", function(e) {
+    if (e.key === "Enter" && !e.shiftKey) {
+        e.preventDefault();
+        sendMessage();
+    }
+});
+</script>
+"""
+
+# Render the floating chat UI
+components.html(chat_ui, height=600, width=400)
+
+# Handle messages from frontend
+message = st.experimental_get_query_params().get("last_message", None)
+if message:
+    response = st.session_state.assistant.ask(message[0])
+    st.session_state.chat_history.append({"user": message[0], "bot": response})
