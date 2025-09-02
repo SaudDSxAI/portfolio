@@ -285,7 +285,7 @@ with col2:
 st.markdown("---")
 st.markdown("<div style='text-align: center; color: #888;'>Built with using <strong>Streamlit</strong></div>", unsafe_allow_html=True)
 
-# ------------------ CHATBOT (Floating ChatGPT-style Assistant) ------------------ #
+# ------------------ CHATBOT (Floating ChatGPT-style Assistant, fully interactive) ------------------ #
 if "chat_open" not in st.session_state:
     st.session_state.chat_open = False
 if "chat_history" not in st.session_state:
@@ -293,34 +293,15 @@ if "chat_history" not in st.session_state:
 if "chat_input_value" not in st.session_state:
     st.session_state.chat_input_value = ""
 
-# Floating chat button
-components.html('''
-<style>
-.chat-float-btn {
-  position: fixed;
-  bottom: 20px;
-  right: 20px;
-  background: #10a37f;
-  color: white;
-  border: none;
-  border-radius: 50%;
-  width: 55px;
-  height: 55px;
-  font-size: 28px;
-  cursor: pointer;
-  box-shadow: 0 4px 10px rgba(0,0,0,0.3);
-  z-index: 9999;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-</style>
-<button class="chat-float-btn" onclick="document.getElementById('chat-popup').style.display = (document.getElementById('chat-popup').style.display === 'flex') ? 'none' : 'flex';">💬</button>
-''', height=70)
+# Floating chat button (Streamlit-native, toggles session state)
+chat_btn_col = st.columns([1, 12])[0]
+with chat_btn_col:
+    if st.button("💬", key="float_chat_btn", help="Chat with Saud", use_container_width=True):
+        st.session_state.chat_open = not st.session_state.chat_open
 
-# Chat popup UI
-if st.session_state.chat_open or True:  # Always render for now
-    chat_html = '''
+# Render chat popup only if open
+if st.session_state.chat_open:
+    components.html('''
     <style>
     .chat-popup {
       display: flex;
@@ -430,13 +411,9 @@ if st.session_state.chat_open or True:  # Always render for now
       }
     }
     </script>
-    '''
-    # Render chat history as HTML
-    chat_messages_html = ""
-    for msg in st.session_state.chat_history:
-        chat_messages_html += f'<div class="chat-message user">{msg["user"]}</div>'
-        chat_messages_html += f'<div class="chat-message bot">{msg["bot"]}</div>'
-    components.html(chat_html.format(messages=chat_messages_html), height=600, width=400)
+    '''.format(messages="".join([
+        f'<div class="chat-message user">{msg["user"]}</div>' + f'<div class="chat-message bot">{msg["bot"]}</div>' for msg in st.session_state.chat_history
+    ])), height=600, width=400)
 
 # Handle messages from JS
 query_params = st.query_params
