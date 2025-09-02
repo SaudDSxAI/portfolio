@@ -1,69 +1,12 @@
 import streamlit as st
+from assistant import ResumeAssistant
 import streamlit.components.v1 as components
+from streamlit.components.v1 import html
 
-# ------------------ PAGE CONFIG ------------------ #
+# Streamlit Page Configuration
 st.set_page_config(page_title="Saud Ahmad | AI & Robotics", page_icon="", layout="wide")
 
-# ------------------ CHAT MODE HANDLER ------------------ #
-# st.query_params returns dict of lists, use safe access
-chat_only = st.query_params.get("chat", ["0"])[0] == "1"
-
-def _init_assistant():
-    # import inside the function so the portfolio view doesn't import unless chat-only
-    if "assistant" not in st.session_state:
-        from assistant import ResumeAssistant
-        st.session_state.assistant = ResumeAssistant()
-    if "chat_history" not in st.session_state:
-        st.session_state.chat_history = []
-
-def render_chat_only():
-    """
-    This renders a minimal ChatGPT-like chat page.
-    It's used inside the iframe when the launcher requests ?chat=1.
-    """
-    # Minimal clean styling for chat-only iframe
-    st.markdown("""
-        <style>
-            /* Make the chat iframe look clean like ChatGPT */
-            .stApp { background: #ffffff !important; color: #111 !important; }
-            .block-container { padding-top: 0.6rem; padding-bottom: 0.6rem; max-width: 720px; }
-            .chat-header { padding: 8px 12px; border-bottom: 1px solid #eee; font-weight: 600; font-size: 16px; }
-        </style>
-    """, unsafe_allow_html=True)
-
-    st.markdown("<div class='chat-header'>Chat with Saud</div>", unsafe_allow_html=True)
-
-    _init_assistant()
-
-    # Render stored history (if any)
-    for m in st.session_state.chat_history:
-        # user message
-        with st.chat_message("user"):
-            st.markdown(m["user"])
-        # assistant message
-        with st.chat_message("assistant"):
-            st.markdown(m["bot"])
-
-    # chat_input: Enter sends, Shift+Enter newline, clears after send (Streamlit behavior)
-    if prompt := st.chat_input("Message Saud..."):
-        # show user's message immediately
-        with st.chat_message("user"):
-            st.markdown(prompt)
-        # call your assistant (blocking)
-        reply = st.session_state.assistant.ask(prompt)
-        # show assistant reply
-        with st.chat_message("assistant"):
-            st.markdown(reply)
-        # persist to history
-        st.session_state.chat_history.append({"user": prompt, "bot": reply})
-
-# If we're in chat-only mode, render chat and stop the rest (so iframe is pure chat)
-if chat_only:
-    render_chat_only()
-    st.stop()
-
-
-# ------------------ PORTFOLIO MAIN STYLES (only when not chat-only) ------------------ #
+# ------------------ CUSTOM STYLES ------------------ #
 st.markdown("""
     <style>
         .stApp {
@@ -101,6 +44,60 @@ st.markdown("""
             color: #66fcf1;
             margin-top: 2rem;
             text-shadow: 1px 1px 3px rgba(102, 252, 241, 0.4);
+        }
+        .chat-bubble-user {
+            background: linear-gradient(135deg, #66fcf1 60%, #3a86ff 100%);
+            color: white;
+            border-radius: 18px;
+            padding: 10px 16px;
+            margin: 8px 0 8px auto;
+            max-width: 80%;
+            text-align: right;
+            box-shadow: 0 2px 8px rgba(102,252,241,0.15);
+            animation: fadeIn 0.5s;
+        }
+        .chat-bubble-ai {
+            background: #f3f3f3;
+            color: #222;
+            border-radius: 18px;
+            padding: 10px 16px;
+            margin: 8px auto 8px 0;
+            max-width: 80%;
+            text-align: left;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+            animation: fadeIn 0.5s;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .chat-input-bar {
+            display: flex;
+            gap: 8px;
+            align-items: center;
+            margin-top: 12px;
+        }
+        .chat-input-box {
+            flex: 1;
+            border-radius: 12px;
+            border: 1px solid #eee;
+            padding: 10px;
+            font-size: 15px;
+            background: #fff;
+            color: #222;
+        }
+        .chat-send-btn {
+            background: #66fcf1;
+            border: none;
+            border-radius: 50%;
+            width: 38px;
+            height: 38px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            font-size: 20px;
+            box-shadow: 0 2px 8px rgba(102,252,241,0.15);
         }
     </style>
 """, unsafe_allow_html=True)
@@ -288,82 +285,163 @@ with col2:
 st.markdown("---")
 st.markdown("<div style='text-align: center; color: #888;'>Built with using <strong>Streamlit</strong></div>", unsafe_allow_html=True)
 
+# ------------------ CHATBOT (Floating ChatGPT-style Assistant) ------------------ #
+if "chat_open" not in st.session_state:
+    st.session_state.chat_open = False
+if "chat_history" not in st.session_state:
+    st.session_state.chat_history = []
+if "chat_input_value" not in st.session_state:
+    st.session_state.chat_input_value = ""
 
-# ------------------ FLOATING CHAT LAUNCHER (bottom-right) ------------------ #
-# This injects a fixed-position launcher + iframe. The iframe src is set to the app URL + ?chat=1
-launcher_html = r"""
+# Floating chat button
+components.html('''
 <style>
-  #saud-chat-launcher, #saud-chat-frame {
-    position: fixed; z-index: 999999; font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
-  }
-  #saud-chat-launcher {
-    bottom: 20px; right: 20px;
-  }
-  #saud-chat-btn {
-    width: 56px; height: 56px; border-radius: 50%;
-    border: none; cursor: pointer; font-size: 22px;
-    background: #10a37f; color: #fff;
-    box-shadow: 0 6px 18px rgba(0,0,0,0.25);
-  }
-  #saud-chat-frame {
-    bottom: 92px; right: 20px;
-    width: 380px; height: 640px;
-    border: 1px solid #ddd; border-radius: 12px; overflow: hidden;
-    display: none; background: #fff;
-    box-shadow: 0 12px 28px rgba(0,0,0,0.28);
-  }
-  #saud-chat-close {
-    position: absolute; top: 8px; right: 10px; z-index: 2;
-    background: transparent; border: none; font-size: 20px; cursor: pointer;
-  }
-  /* Responsive */
-  @media (max-width: 480px) {
-    #saud-chat-frame { width: 95vw; height: 70vh; right: 2.5vw; bottom: 80px; }
-    #saud-chat-launcher { bottom: 12px; right: 12px; }
-  }
+.chat-float-btn {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  background: #10a37f;
+  color: white;
+  border: none;
+  border-radius: 50%;
+  width: 55px;
+  height: 55px;
+  font-size: 28px;
+  cursor: pointer;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+  z-index: 9999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
 </style>
+<button class="chat-float-btn" onclick="document.getElementById('chat-popup').style.display = (document.getElementById('chat-popup').style.display === 'flex') ? 'none' : 'flex';">💬</button>
+''', height=70)
 
-<div id="saud-chat-launcher" aria-hidden="false">
-  <button id="saud-chat-btn" title="Chat">💬</button>
-</div>
-
-<div id="saud-chat-frame" role="dialog" aria-label="Chat window">
-  <button id="saud-chat-close" aria-label="Close">✕</button>
-  <iframe id="saud-chat-iframe" src="" style="width:100%;height:100%;border:0;border-radius:12px;"></iframe>
-</div>
-
-<script>
-(function() {
-  const btn = document.getElementById('saud-chat-btn');
-  const frameWrap = document.getElementById('saud-chat-frame');
-  const closeBtn = document.getElementById('saud-chat-close');
-  const iframe = document.getElementById('saud-chat-iframe');
-
-  // compute parent app URL (remove existing query string)
-  let parentHref = null;
-  try {
-    // try to get parent location (should be same origin)
-    parentHref = window.parent.location.href;
-  } catch (e) {
-    // fallback to current location
-    parentHref = window.location.href;
-  }
-  const base = parentHref.split('?')[0];
-  iframe.src = base + '?chat=1';
-
-  btn.addEventListener('click', () => {
-    frameWrap.style.display = (frameWrap.style.display === 'none' || frameWrap.style.display === '') ? 'block' : 'none';
-    // focus into iframe when opened (best-effort)
-    if (frameWrap.style.display === 'block') {
-      setTimeout(()=> { iframe.contentWindow.focus(); }, 300);
+# Chat popup UI
+if st.session_state.chat_open or True:  # Always render for now
+    chat_html = '''
+    <style>
+    .chat-popup {
+      display: flex;
+      flex-direction: column;
+      position: fixed;
+      bottom: 80px;
+      right: 20px;
+      width: 360px;
+      max-height: 520px;
+      background: #fff;
+      border-radius: 12px;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+      overflow: hidden;
+      z-index: 9999;
+      animation: fadeIn 0.4s;
     }
-  });
-  closeBtn.addEventListener('click', () => { frameWrap.style.display = 'none'; });
-  // ESC to close
-  document.addEventListener('keydown', (e) => { if (e.key === 'Escape') frameWrap.style.display = 'none'; });
-})();
-</script>
-"""
+    .chat-header {
+      background: #10a37f;
+      color: white;
+      padding: 10px;
+      font-weight: bold;
+      text-align: center;
+    }
+    .chat-body {
+      flex: 1;
+      padding: 10px;
+      overflow-y: auto;
+      font-family: sans-serif;
+      font-size: 14px;
+      background: #f8f8f8;
+    }
+    .chat-message.user {
+      background: #10a37f;
+      color: white;
+      padding: 8px 12px;
+      border-radius: 12px;
+      margin: 6px 0;
+      max-width: 80%;
+      margin-left: auto;
+      animation: fadeIn 0.3s;
+    }
+    .chat-message.bot {
+      background: #e5e5e5;
+      color: #111;
+      padding: 8px 12px;
+      border-radius: 12px;
+      margin: 6px 0;
+      max-width: 80%;
+      margin-right: auto;
+      animation: fadeIn 0.3s;
+    }
+    .chat-input {
+      display: flex;
+      border-top: 1px solid #ddd;
+      align-items: center;
+      background: #fff;
+    }
+    .chat-input textarea {
+      flex: 1;
+      border: none;
+      resize: none;
+      padding: 10px;
+      font-size: 14px;
+      outline: none;
+      height: 38px;
+      border-radius: 8px;
+      margin: 8px;
+      background: #f3f3f3;
+    }
+    .chat-input button {
+      background: #10a37f;
+      border: none;
+      font-size: 18px;
+      padding: 10px;
+      cursor: pointer;
+      color: white;
+      border-radius: 50%;
+      width: 40px;
+      height: 40px;
+      margin: 4px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(8px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    </style>
+    <div class="chat-popup" id="chat-popup">
+      <div class="chat-header">Chat with Saud</div>
+      <div class="chat-body" id="chat-body">
+        {messages}
+      </div>
+      <form class="chat-input" onsubmit="sendMessage(); return false;">
+        <textarea id="chat-input" rows="1" placeholder="Type a message..." onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();document.getElementById('send-btn').click();}"></textarea>
+        <button type="submit" id="send-btn">➤</button>
+      </form>
+    </div>
+    <script>
+    function sendMessage() {
+      var input = document.getElementById('chat-input');
+      var text = input.value.trim();
+      if (text !== '') {
+        window.parent.postMessage({type: 'user_message', text: text}, '*');
+        input.value = '';
+      }
+    }
+    </script>
+    '''
+    # Render chat history as HTML
+    chat_messages_html = ""
+    for msg in st.session_state.chat_history:
+        chat_messages_html += f'<div class="chat-message user">{msg["user"]}</div>'
+        chat_messages_html += f'<div class="chat-message bot">{msg["bot"]}</div>'
+    components.html(chat_html.format(messages=chat_messages_html), height=600, width=400)
 
-# Use components.html to inject the launcher; a tiny height keeps the layout compact.
-components.html(launcher_html, height=1)
+# Handle messages from JS
+query_params = st.query_params
+message = query_params.get("last_message", None)
+if message:
+    response = st.session_state.assistant.ask(message[0])
+    st.session_state.chat_history.append({"user": message[0], "bot": response})
+    st.session_state.chat_input_value = ""
