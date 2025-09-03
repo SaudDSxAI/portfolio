@@ -97,7 +97,7 @@ def render_assistant(content: str):
 for role, content in st.session_state["messages"]:
     if role == "user":
         st.markdown(
-            f"<div class='user-msg'><span class='chat-avatar user-avatar'></span>{content}</div>",
+            f"<div class='user-msg'>{content}</div>",
             unsafe_allow_html=True,
         )
     elif role == "assistant":
@@ -109,7 +109,7 @@ for role, content in st.session_state["messages"]:
 if prompt := st.chat_input("Type your question here..."):
     st.session_state["messages"].append(("user", prompt))
     st.markdown(
-        f"<div class='user-msg'><span class='chat-avatar user-avatar'></span>{prompt}</div>",
+        f"<div class='user-msg'>{prompt}</div>",
         unsafe_allow_html=True,
     )
 
