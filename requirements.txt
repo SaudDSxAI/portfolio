@@ -1,11 +1,28 @@
+# Environment and config
 python-dotenv
+
+# LangChain core
 langchain
-langchain-openai
-langchain-community
 langchain-core
+langchain-community
+langchain-openai
 langchain-text-splitters
+
+# Vector store
 faiss-cpu
+
+# Document loaders & processing
 pypdf
 tiktoken
 typing-extensions
+
+# GitHub API
+PyGithub
+
+# Utils
+requests
+numpy
+pandas
+
+# UI (optional but included here)
 streamlit

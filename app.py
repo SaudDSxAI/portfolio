@@ -1,8 +1,7 @@
 import streamlit as st
-import time
 import re
 import json
-from assistant import answer  # import the new answer() function
+from main_assistant import answer  # backend function
 
 # --- Page Setup ---
 st.set_page_config(page_title="Saud's Assistant", page_icon="🤖", layout="wide")
@@ -27,7 +26,7 @@ st.markdown(
     """
     <style>
         .user-msg {
-            background: linear-gradient(135deg, #E5E7EB, #F3F4F6); /* light gray gradient */
+            background: linear-gradient(135deg, #E5E7EB, #F3F4F6);
             color: #2D2D2D;
             padding: 12px 16px;
             border-radius: 16px;
@@ -38,7 +37,7 @@ st.markdown(
             line-height: 1.4;
         }
         .bot-msg {
-            background: linear-gradient(135deg, #F5E6D3, #EED6B7); /* light brown gradient */
+            background: linear-gradient(135deg, #F5E6D3, #EED6B7);
             color: #2D2D2D;
             padding: 12px 16px;
             border-radius: 16px;
@@ -55,30 +54,19 @@ st.markdown(
             text-align: center;
             font-style: italic;
         }
-        .chat-avatar {
-            width: 28px;
-            height: 28px;
-            border-radius: 50%;
-            display: inline-block;
-            text-align: center;
-            line-height: 28px;
-            font-size: 14px;
-            margin-right: 6px;
-        }
-        .user-avatar { background: #A0522D; color: white; }
-        .bot-avatar { background: #8B5C2A; color: white; }
     </style>
     """,
     unsafe_allow_html=True,
 )
 
 # --- Title ---
-st.title("Hello! I'm Saud's AI Assistant ")
+st.title("Hello! I'm Saud's AI Assistant 🤖")
 st.markdown("Ask me anything about Saud's resume!")
 
 # --- Session State ---
 if "messages" not in st.session_state:
     st.session_state["messages"] = []
+
 
 # --- Helper: render assistant safely ---
 def render_assistant(content: str):
@@ -90,33 +78,26 @@ def render_assistant(content: str):
     elif content.strip().startswith("#include") or "int main" in content:
         st.code(content, language="cpp")
     else:
-        # Always render as plain Markdown, no color, no design
         st.markdown(content, unsafe_allow_html=False)
+
 
 # --- Chat History ---
 for role, content in st.session_state["messages"]:
     if role == "user":
-        st.markdown(
-            f"<div class='user-msg'>{content}</div>",
-            unsafe_allow_html=True,
-        )
+        st.markdown(f"<div class='user-msg'>{content}</div>", unsafe_allow_html=True)
     elif role == "assistant":
         render_assistant(content)
     else:
         st.markdown(f"<div class='system-msg'>{content}</div>", unsafe_allow_html=True)
 
+
 # --- Input Box ---
 if prompt := st.chat_input("Type your question here..."):
     st.session_state["messages"].append(("user", prompt))
-    st.markdown(
-        f"<div class='user-msg'>{prompt}</div>",
-        unsafe_allow_html=True,
-    )
+    st.markdown(f"<div class='user-msg'>{prompt}</div>", unsafe_allow_html=True)
 
     with st.spinner("🤖 Thinking..."):
-        final_response = answer(prompt)  # use assistant.py function
+        final_response = answer(prompt)
 
-        # Show the full Markdown reply at once, no typing effect, no color/design
-        st.markdown(final_response, unsafe_allow_html=False)
-
+    render_assistant(final_response)
     st.session_state["messages"].append(("assistant", final_response))
