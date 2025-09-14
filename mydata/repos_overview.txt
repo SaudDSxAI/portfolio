@@ -1,0 +1,415 @@
+===== REPO: address-book-c- =====
+Full Name: SaudDSxAI/address-book-c-
+URL: https://github.com/SaudDSxAI/address-book-c-
+
+--- README ---
+# Address_Book
+Address book implementation using c++, 
+
+--- END README ---
+===== END OF REPO =====
+
+===== REPO: agentic-ai =====
+Full Name: SaudDSxAI/agentic-ai
+URL: https://github.com/SaudDSxAI/agentic-ai
+
+--- README ---
+# Agentic AI Projects
+**Autonomous, intelligent agents in action—experimentation, learning, and real-world automation.**
+This repository showcases an evolving collection of **Agentic AI projects**—autonomous agents built for real-world tasks using modern AI frameworks. Each project demonstrates a unique capability, from web scraping to resume parsing and conversational agents, designed as foundations for future innovation.
+
+## Projects Overview
+
+- **agentic-webscraper** – Autonomous web-crawling agent capable of fetching and parsing content from target websites.
+- **first-resume-parser** – A prototype parser to extract structured resume information (e.g., emails, names, skills).
+- **phidata-resume-parser** – An advanced version, built with more robustness, data handling, or feature enhancements.
+- **langchain-assistant** – Agent built using LangChain for multi-step workflows, tool integration, and memory.
+- **langgraph-chatbot** – Chat agent with stateful workflows and branching logic, powered by LangGraph.
+- **seerah-assistant** – Domain-specific assistant (e.g., for Seerah content), showcasing contextual QA or task execution.
+
+## Key Themes & Frameworks
+
+- **Agentic AI paradigms**: autonomous reasoning, tool integration, memory, and iterative workflows.
+- **LangChain & LangGraph**: building blocks for multimodal, memory-augmented, multi-step agents.  
+  - LangChain empowers agents with tools, memory, and prompt chaining. :contentReference[oaicite:2]{index=2}  
+  - LangGraph enables stateful, directed-graph workflows—ideal for orchestrating complex agent behavior. :contentReference[oaicite:3]{index=3}
+- **Real-world relevance**: These agents align with the evolving landscape of autonomous AI systems, observable in frameworks like OpenAI Agents SDK (multi-agent orchestration with tracing) :contentReference[oaicite:4]{index=4} and industry trends of replacing static models with adaptable agents. :contentReference[oaicite:5]{index=5}
+
+--- END README ---
+===== END OF REPO =====
+
+===== REPO: deep_learning =====
+Full Name: SaudDSxAI/deep_learning
+URL: https://github.com/SaudDSxAI/deep_learning
+
+(No README found)
+===== END OF REPO =====
+
+===== REPO: dw_project =====
+Full Name: SaudDSxAI/dw_project
+URL: https://github.com/SaudDSxAI/dw_project
+
+--- README ---
+# dw_project
+--- END README ---
+===== END OF REPO =====
+
+===== REPO: data_mining =====
+Full Name: SaudDSxAI/data_mining
+URL: https://github.com/SaudDSxAI/data_mining
+
+(No README found)
+===== END OF REPO =====
+
+===== REPO: coal_alu =====
+Full Name: SaudDSxAI/coal_alu
+URL: https://github.com/SaudDSxAI/coal_alu
+
+--- README ---
+# COAL_PROJECT
+Arithmetic and logic unit in addition with multiplier circuit
+
+--- END README ---
+===== END OF REPO =====
+
+===== REPO: ds_a1 =====
+Full Name: SaudDSxAI/ds_a1
+URL: https://github.com/SaudDSxAI/ds_a1
+
+--- README ---
+# data_science_A1
+--- END README ---
+===== END OF REPO =====
+
+===== REPO: data_structures_c =====
+Full Name: SaudDSxAI/data_structures_c
+URL: https://github.com/SaudDSxAI/data_structures_c
+
+(No README found)
+===== END OF REPO =====
+
+===== REPO: es304_project =====
+Full Name: SaudDSxAI/es304_project
+URL: https://github.com/SaudDSxAI/es304_project
+
+--- README ---
+# es304_project
+--- END README ---
+===== END OF REPO =====
+
+===== REPO: fyp =====
+Full Name: SaudDSxAI/fyp
+URL: https://github.com/SaudDSxAI/fyp
+
+--- README ---
+# FYP
+--- END README ---
+===== END OF REPO =====
+
+===== REPO: nlp-sem-project =====
+Full Name: SaudDSxAI/nlp-sem-project
+URL: https://github.com/SaudDSxAI/nlp-sem-project
+
+--- README ---
+# nlp_sem_project
+--- END README ---
+===== END OF REPO =====
+
+===== REPO: machine_learning =====
+Full Name: SaudDSxAI/machine_learning
+URL: https://github.com/SaudDSxAI/machine_learning
+
+--- README ---
+This is the start of my ML journey!
+--- END README ---
+===== END OF REPO =====
+
+===== REPO: html_p1 =====
+Full Name: SaudDSxAI/html_p1
+URL: https://github.com/SaudDSxAI/html_p1
+
+--- README ---
+## Welcome to GitHub Pages
+
+You can use the [editor on GitHub](https://github.com/Saud0346/CV/edit/main/README.md) to maintain and preview the content for your website in Markdown files.
+
+Whenever you commit to this repository, GitHub Pages will run [Jekyll](https://jekyllrb.com/) to rebuild the pages in your site, from the content in your Markdown files.
+
+### Markdown
+
+Markdown is a lightweight and easy-to-use syntax for styling your writing. It includes conventions for
+
+```markdown
+Syntax highlighted code block
+
+# Header 1
+## Header 2
+### Header 3
+
+- Bulleted
+- List
+
+1. Numbered
+2. List
+
+**Bold** and _Italic_ and `Code` text
+
+[Link](url) and ![Image](src)
+```
+
+For more details see [Basic writing and formatting syntax](https://docs.github.com/en/github/writing-on-github/getting-started-with-writing-and-formatting-on-github/basic-writing-and-formatting-syntax).
+
+### Jekyll Themes
+
+Your Pages site will use the layout and styles from the Jekyll theme you have selected in your [repository settings](https://github.com/Saud0346/CV/settings/pages). The name of this theme is saved in the Jekyll `_config.yml` configuration file.
+
+### Support or Contact
+
+Having trouble with Pages? Check out our [documentation](https://docs.github.com/categories/github-pages-basics/) or [contact support](https://support.github.com/contact) and we’ll help you sort it out.
+
+--- END README ---
+===== END OF REPO =====
+
+===== REPO: oop_c =====
+Full Name: SaudDSxAI/oop_c
+URL: https://github.com/SaudDSxAI/oop_c
+
+(No README found)
+===== END OF REPO =====
+
+===== REPO: openCv_basics =====
+Full Name: SaudDSxAI/openCv_basics
+URL: https://github.com/SaudDSxAI/openCv_basics
+
+--- README ---
+# OPEN_CV_BASICS
+--- END README ---
+===== END OF REPO =====
+
+===== REPO: openCv_p1 =====
+Full Name: SaudDSxAI/openCv_p1
+URL: https://github.com/SaudDSxAI/openCv_p1
+
+--- README ---
+# OPen_CV_Project1
+--- END README ---
+===== END OF REPO =====
+
+===== REPO: portfolio =====
+Full Name: SaudDSxAI/portfolio
+URL: https://github.com/SaudDSxAI/portfolio
+
+--- README ---
+# portfolio
+
+--- END README ---
+===== END OF REPO =====
+
+===== REPO: robotics001 =====
+Full Name: SaudDSxAI/robotics001
+URL: https://github.com/SaudDSxAI/robotics001
+
+--- README ---
+# Robotics001
+
+
+Line-following Robot:
+
+Code for building a line-following robot using Arduino and IR sensors.
+The robot can detect and follow a line on the ground, adjusting its direction to stay on course.
+The code is well-commented and includes detailed explanations of how the IR sensors detect the line and how the motor driver controls the robot's movement.
+Calibration instructions are provided to help you fine-tune the robot's performance based on your specific setup.
+
+
+
+Obstacle Avoiding Robot:
+
+Code for creating an obstacle-avoiding robot using ultrasonic sensors and Arduino.
+The robot can detect obstacles in its path and adjust its direction to avoid collisions.
+Detailed comments and explanations are included to help you understand how the ultrasonic sensors measure distances and how the robot's logic decides on movement actions.
+Tips for improving the robot's obstacle detection and avoidance capabilities.
+
+
+
+
+RC Robot Using PS3 Controller with ESP32:
+
+Code for controlling a robot using a PS3 controller connected to an ESP32.
+The ESP32 processes inputs from the PS3 controller to remotely control the robot's movements.
+Clear instructions on how to pair the PS3 controller with the ESP32 and configure the ESP32 to receive commands.
+Well-commented code to help you understand how the controller inputs are mapped to motor actions and how to modify the code for your specific needs.
+
+
+
+
+HC-05 Bluetooth Module Controlled Robot:
+
+Code for controlling a robot using an HC-05 Bluetooth module connected to an Arduino.
+The HC-05 module receives commands from a mobile app, allowing you to control the robot remotely.
+Detailed instructions on how to set up the HC-05 module, pair it with the mobile app, and configure the Arduino to interpret the received commands.
+Simplified and well-commented code to help you understand the communication between the mobile app and the Arduino, and how to map commands to motor actions.
+
+
+
+
+MPU-6050 Sensor Integration with Arduino:
+
+This repository includes a project that demonstrates how to interface an MPU-6050 sensor with an Arduino. The MPU-6050 is a 6-axis motion tracking device that combines a 3-axis gyroscope and a 3-axis accelerometer. This project shows how to read data from the sensor and map it to a usable format.
+
+--- END README ---
+===== END OF REPO =====
+
+===== REPO: sem_proj_cv_py =====
+Full Name: SaudDSxAI/sem_proj_cv_py
+URL: https://github.com/SaudDSxAI/sem_proj_cv_py
+
+--- README ---
+# access_vision
+The computer vision-based entry system for institutions efficiently manages entry and exit processes using ultrasonic sensors and cameras. It compares captured images to a database. Individual data is stored in a CSV file for easy retrieval and analysis. The system's visualization component provides valuable insights.
+
+--- END README ---
+===== END OF REPO =====
+
+===== REPO: python_stats =====
+Full Name: SaudDSxAI/python_stats
+URL: https://github.com/SaudDSxAI/python_stats
+
+(No README found)
+===== END OF REPO =====
+
+===== REPO: sem_proj_busReservation =====
+Full Name: SaudDSxAI/sem_proj_busReservation
+URL: https://github.com/SaudDSxAI/sem_proj_busReservation
+
+--- README ---
+# Bus_reservation_system
+Bus reservation system using c++
+
+--- END README ---
+===== END OF REPO =====
+
+===== REPO: sem_proj_bst =====
+Full Name: SaudDSxAI/sem_proj_bst
+URL: https://github.com/SaudDSxAI/sem_proj_bst
+
+--- README ---
+# BST
+Binary search tree using C++
+
+--- END README ---
+===== END OF REPO =====
+
+===== REPO: saud0346 =====
+Full Name: SaudDSxAI/saud0346
+URL: https://github.com/SaudDSxAI/saud0346
+
+--- README ---
+<h1 align="center">Greetings 👋! My name is Saud Ahmad</h1>
+<h3 align="center">I am a Seasoned Data Scientist</h3>
+<img align="right" alt="coding" width="950" src="https://i.pinimg.com/originals/81/17/8b/81178b47a8598f0c81c4799f2cdd4057.gif">
+
+<h3 align="center"></h3>
+<p align="left"> 
+    <img src="https://komarev.com/ghpvc/?username=saud0346&label=Profile%20views&color=0e75b6&style=flat" alt="saud0346" />
+</p>
+
+<h3 align="center"></h3>
+
+- 📫 How to reach me **saud.ahmad346@outlook.com**
+<h1 align="center"></h1>
+<h3 align="left">Connect with me:</h3>
+<h1 align="center"></h1>
+<p align="left">
+    <a href="https://www.linkedin.com/in/saud-ahmad-286000229/" target="blank">
+        <img align="center" src="https://raw.githubusercontent.com/rahuldkjain/github-profile-readme-generator/master/src/images/icons/Social/linked-in-alt.svg" alt="saud.ahmad346@outlook.com" height="30" width="40" />
+    </a>
+    <a href="https://www.youtube.com/channel/UCSBnun1ilmIbVvjKqeQiVBw" target="blank">
+        <img align="center" src="https://raw.githubusercontent.com/rahuldkjain/github-profile-readme-generator/master/src/images/icons/Social/youtube.svg" alt="@saud7122" height="30" width="40" />
+    </a>
+</p>
+
+<h3 align="center"></h3>
+
+<h3 align="left">Languages and Tools:</h3>
+<p align="left"> 
+    <!-- Icons for different tools and languages -->
+</p>
+
+<h3 align="center"></h3>
+
+<p><img align="left" src="https://github-readme-stats.vercel.app/api/top-langs?username=saud0346&show_icons=true&locale=en&layout=compact" alt="saud0346" /></p>
+
+<p>&nbsp;<img align="center" src="https://github-readme-stats.vercel.app/api?username=saud0346&show_icons=true&locale=en" alt="saud0346" /></p>
+
+<p><img align="center" src="https://github-readme-streak-stats.herokuapp.com/?user=saud0346&" alt="saud0346" /></p>
+
+--- END README ---
+===== END OF REPO =====
+
+===== REPO: pythonbasicsforDS =====
+Full Name: SaudDSxAI/pythonbasicsforDS
+URL: https://github.com/SaudDSxAI/pythonbasicsforDS
+
+--- README ---
+# pythonbasicsforDS
+Python Basics for DATA Science, AI and Development.
+
+--- END README ---
+===== END OF REPO =====
+
+===== REPO: sem_proj_tictactoe =====
+Full Name: SaudDSxAI/sem_proj_tictactoe
+URL: https://github.com/SaudDSxAI/sem_proj_tictactoe
+
+--- README ---
+
+
+--- END README ---
+===== END OF REPO =====
+
+===== REPO: tools-for-data-science-notebook-coursera =====
+Full Name: SaudDSxAI/tools-for-data-science-notebook-coursera
+URL: https://github.com/SaudDSxAI/tools-for-data-science-notebook-coursera
+
+(No README found)
+===== END OF REPO =====
+
+===== REPO: side_project_opencv =====
+Full Name: SaudDSxAI/side_project_opencv
+URL: https://github.com/SaudDSxAI/side_project_opencv
+
+(No README found)
+===== END OF REPO =====
+
+===== REPO: sql-with-llm =====
+Full Name: SaudDSxAI/sql-with-llm
+URL: https://github.com/SaudDSxAI/sql-with-llm
+
+(No README found)
+===== END OF REPO =====
+
+===== REPO: tools-for-data-science =====
+Full Name: SaudDSxAI/tools-for-data-science
+URL: https://github.com/SaudDSxAI/tools-for-data-science
+
+--- README ---
+# tools-for-data-science
+--- END README ---
+===== END OF REPO =====
+
+===== REPO: side_robot_project =====
+Full Name: SaudDSxAI/side_robot_project
+URL: https://github.com/SaudDSxAI/side_robot_project
+
+--- README ---
+# robo_code1
+--- END README ---
+===== END OF REPO =====
+
+===== REPO: tictactoe_p1 =====
+Full Name: SaudDSxAI/tictactoe_p1
+URL: https://github.com/SaudDSxAI/tictactoe_p1
+
+(No README found)
+===== END OF REPO =====
+

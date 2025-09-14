@@ -1,10 +1,16 @@
 import streamlit as st
 import re
 import json
-from main_assistant import answer  # backend function
+from main_assistant import answer, preload 
 
 # --- Page Setup ---
 st.set_page_config(page_title="Saud's Assistant", page_icon="🤖", layout="wide")
+
+# --- Preload summary on app startup ---
+if "preloaded" not in st.session_state:
+    with st.spinner("🔄 Loading Saud's data... Please wait."):
+        preload()  # warm up summary cache
+    st.session_state["preloaded"] = True
 
 # --- Sidebar Controls ---
 st.sidebar.title("⚙️ Controls")
@@ -67,7 +73,6 @@ st.markdown("Ask me anything about Saud's resume!")
 if "messages" not in st.session_state:
     st.session_state["messages"] = []
 
-
 # --- Helper: render assistant safely ---
 def render_assistant(content: str):
     code_block = re.search(r"```(\w+)?\n([\s\S]+?)```", content)
@@ -80,7 +85,6 @@ def render_assistant(content: str):
     else:
         st.markdown(content, unsafe_allow_html=False)
 
-
 # --- Chat History ---
 for role, content in st.session_state["messages"]:
     if role == "user":
@@ -89,7 +93,6 @@ for role, content in st.session_state["messages"]:
         render_assistant(content)
     else:
         st.markdown(f"<div class='system-msg'>{content}</div>", unsafe_allow_html=True)
-
 
 # --- Input Box ---
 if prompt := st.chat_input("Type your question here..."):

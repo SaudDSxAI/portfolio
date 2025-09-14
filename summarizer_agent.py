@@ -1,27 +1,34 @@
 import os
-from concurrent.futures import ThreadPoolExecutor, as_completed
+import asyncio
+from dotenv import load_dotenv
 from langchain_openai import ChatOpenAI
 from langchain_text_splitters import RecursiveCharacterTextSplitter
 from langchain.schema import Document
 
+# ================= CONFIG =================
+load_dotenv()
 OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
-SUMMARY_PATH = "mydata/summaries.txt"
+COMBINED_FILE = "mydata/combined.txt"
 
-def summarize_documents(docs, model="gpt-4o-mini", temperature=0.0, chunk_size=200, chunk_overlap=0):
+if not OPENAI_API_KEY:
+    raise ValueError("❌ OPENAI_API_KEY not found. Please add it to your .env file or environment.")
+
+
+# ================= SUMMARIZATION FUNCTION =================
+async def summarize_documents(
+    docs,
+    model="gpt-4o-mini",
+    temperature=0.0,
+    chunk_size=800,   # ✅ increased chunk size
+    chunk_overlap=0,
+    max_concurrency=8  # ✅ cap parallelism
+):
     """
     Two-pass summarization:
-    1. Extract structured notes from each chunk (lossless compression).
+    1. Extract structured notes from each chunk (async, parallel).
     2. Merge all notes into one unified summary.
-    Parallelizes the first stage across all chunks.
     """
 
-    if os.path.exists(SUMMARY_PATH):
-        print(f"📂 Loading existing summary from {SUMMARY_PATH}")
-        with open(SUMMARY_PATH, "r", encoding="utf-8") as f:
-            text = f.read().strip()
-        return [Document(page_content=text, metadata={"source": "summaries.txt"})]
-
-    # Final summarizer prompt
     summarizer_prompt = """
 You are a specialized summarization agent. 
 Your task is to create ONE unified summary of a person’s profile, skills, projects, repositories, and education.
@@ -36,44 +43,58 @@ Guidelines:
    - Repository Index
    - Education
    - Soft Skills
-...
-6. Keep the final output in clean Markdown format with headings and bullet points.
+4. Use clean Markdown format with headings and bullet points.
 """
 
-    llm = ChatOpenAI(openai_api_key=OPENAI_API_KEY, temperature=temperature, model=model)
+    llm = ChatOpenAI(api_key=OPENAI_API_KEY, temperature=temperature, model=model)
 
-    # 1️⃣ Split into chunks
+    # 1️⃣ Split into chunks (fewer, bigger chunks)
     splitter = RecursiveCharacterTextSplitter(chunk_size=chunk_size, chunk_overlap=chunk_overlap)
     chunked_docs = splitter.split_documents(docs)
 
-    # 2️⃣ Extract structured notes in parallel (one worker per chunk)
-    def extract_notes(doc):
-        response = llm.invoke([
-            {"role": "system", "content": "Extract ALL details in structured bullet-point notes. Do NOT summarize or drop information."},
-            {"role": "user", "content": doc.page_content}
-        ])
-        return response.content.strip()
+    # 2️⃣ Extract structured notes asynchronously
+    semaphore = asyncio.Semaphore(max_concurrency)
 
-    num_chunks = len(chunked_docs)
-    partial_notes = [None] * num_chunks
+    async def extract_notes(doc):
+        async with semaphore:  # ✅ cap concurrent requests
+            response = await llm.ainvoke([
+                {"role": "system", "content": "Extract ALL details in structured bullet-point notes. Do NOT summarize or drop information."},
+                {"role": "user", "content": doc.page_content}
+            ])
+            return response.content.strip()
 
-    with ThreadPoolExecutor(max_workers=num_chunks) as executor:
-        futures = {executor.submit(extract_notes, doc): i for i, doc in enumerate(chunked_docs)}
-        for future in as_completed(futures):
-            idx = futures[future]
-            partial_notes[idx] = future.result()
+    # Run all note extractions in parallel
+    partial_notes = await asyncio.gather(*(extract_notes(doc) for doc in chunked_docs))
 
     # 3️⃣ Merge notes into one unified summary
     merge_input = "\n\n".join(partial_notes)
-    final_response = llm.invoke([
+    final_response = await llm.ainvoke([
         {"role": "system", "content": summarizer_prompt},
         {"role": "user", "content": merge_input}
     ])
     final_summary = final_response.content.strip()
 
-    # 4️⃣ Save only the unified summary
-    with open(SUMMARY_PATH, "w", encoding="utf-8") as f:
-        f.write(final_summary)
+    print("✅ Final unified summary created (not saved to file).")
+    return final_summary, [Document(page_content=final_summary, metadata={"source": "in-memory"})]
 
-    print(f"✅ Final unified summary saved to {SUMMARY_PATH}")
-    return [Document(page_content=final_summary, metadata={"source": "summaries.txt"})]
+
+# ================= LOAD DATA & RUN =================
+def load_combined_file():
+    if not os.path.exists(COMBINED_FILE):
+        raise FileNotFoundError(f"❌ {COMBINED_FILE} not found. Run the data extraction script first.")
+    
+    with open(COMBINED_FILE, "r", encoding="utf-8") as f:
+        text = f.read().strip()
+    
+    return [Document(page_content=text, metadata={"source": COMBINED_FILE})]
+
+
+if __name__ == "__main__":
+    print("🔄 Loading combined data...")
+    docs = load_combined_file()
+
+    print("🔄 Summarizing...")
+    summary, summary_docs = asyncio.run(summarize_documents(docs))
+
+    print("\n===== FINAL SUMMARY =====\n")
+    print(summary)
