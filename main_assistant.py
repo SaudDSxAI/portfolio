@@ -5,7 +5,7 @@ from langchain_openai import ChatOpenAI
 from langchain.memory import ConversationBufferMemory
 from langchain.prompts import ChatPromptTemplate, SystemMessagePromptTemplate, HumanMessagePromptTemplate
 from langchain_community.document_loaders import TextLoader
-from load_embed import load_cv_documents   # reuse CV loader from first script
+from load_embed import load_cv_documents, fetch_repo_list   # reuse CV loader from first script
 
 # ================= CONFIG =================
 load_dotenv()
@@ -126,6 +126,16 @@ def get_chatbot():
 
 
 def answer(question: str) -> str:
+    # Always check for repo file and reload context before answering
+    global _context_data, _chatbot
+    from load_embed import fetch_repo_list
+    if not os.path.exists(REPO_TXT_PATH):
+        fetch_repo_list()  # fetch and save repo overview if missing
+        _context_data = load_context()  # reload context with new data
+        _chatbot = build_chatbot()      # rebuild chatbot with new context
+    elif _context_data is None:
+        _context_data = load_context()
+        _chatbot = build_chatbot()
     chatbot = get_chatbot()
     return chatbot(question)
 
