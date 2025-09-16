@@ -1,119 +1,74 @@
 import os
-import faiss
-import numpy as np
+import subprocess
 from pathlib import Path
 from dotenv import load_dotenv
-
-from sentence_transformers import SentenceTransformer
-from langchain.text_splitter import RecursiveCharacterTextSplitter
 from langchain_openai import ChatOpenAI
 
-
-# ---------------------------
-# 0. Load environment variables
-# ---------------------------
+# ================= CONFIG =================
 load_dotenv()
 OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
+
+SUMMARY_FILE = Path("mydata/summary.txt")
+
 if not OPENAI_API_KEY:
-    raise ValueError("❌ OPENAI_API_KEY not found in .env")
-print("✅ OpenAI API key loaded.")
+    raise ValueError("❌ OPENAI_API_KEY missing in .env")
 
 
-# ---------------------------
-# 1. Load your GitHub data
-# ---------------------------
-data_path = Path("mydata/combined.txt")
-index_file = Path("mydata/faiss.index")
-emb_file = Path("mydata/chunks.npy")
-
-with open(data_path, "r", encoding="utf-8") as f:
-    raw_text = f.read()
-
-print(f"✅ Loaded {len(raw_text.splitlines())} lines from {data_path}")
+# ================= AUTO-FALLBACK =================
+if not SUMMARY_FILE.exists():
+    print("⚠️ summary.txt not found, running loader_summarizer.py...")
+    subprocess.run(["python", "loader_summarizer.py"], check=True)
 
 
-# ---------------------------
-# 2. Chunk the text
-# ---------------------------
-splitter = RecursiveCharacterTextSplitter(
-    chunk_size=500,
-    chunk_overlap=50
-)
-chunks = splitter.split_text(raw_text)
-print(f"✅ Created {len(chunks)} chunks")
+# ================= LOAD SUMMARY =================
+with open(SUMMARY_FILE, "r", encoding="utf-8") as f:
+    summary_text = f.read()
+
+print(f"✅ Loaded summary ({len(summary_text.split())} words)")
 
 
-# ---------------------------
-# 3. Embed + FAISS (load or build)
-# ---------------------------
-model = SentenceTransformer("all-MiniLM-L6-v2")
-
-if index_file.exists() and emb_file.exists():
-    print("📂 Loading existing FAISS index...")
-    index = faiss.read_index(str(index_file))
-    chunks = np.load(emb_file, allow_pickle=True).tolist()
-else:
-    print("⚙️ Building FAISS index...")
-    embeddings = model.encode(chunks, convert_to_numpy=True)
-    index = faiss.IndexFlatL2(embeddings.shape[1])
-    index.add(embeddings)
-
-    # Save index + chunks
-    faiss.write_index(index, str(index_file))
-    np.save(emb_file, np.array(chunks, dtype=object))
-
-    print("💾 Saved FAISS index + chunks to disk.")
-
-print("✅ FAISS index ready.")
+# ================= LLM =================
+llm = ChatOpenAI(model="gpt-4o-mini", api_key=OPENAI_API_KEY)
 
 
-# ---------------------------
-# 4. Retrieval helper
-# ---------------------------
-def retrieve_chunks(query, k=3):
-    q_emb = model.encode([query])
-    D, I = index.search(np.array(q_emb), k)
-    return [chunks[i] for i in I[0]]
-
-
-# ---------------------------
-# 5. Initialize LLM (LangChain + OpenAI)
-# ---------------------------
-llm = ChatOpenAI(model="gpt-4o-mini")  # Uses key from env
-
-
-# ---------------------------
-# 6. RAG answering function
-# ---------------------------
-def answer_query(query):
-    context = retrieve_chunks(query)
-    context_str = "\n\n".join(context)
-
+# ================= FUNCTIONS =================
+def answer(query: str) -> str:
+    """Answer a query using the pre-summarized context"""
     prompt = f"""
-    You are an assistant answering questions based on GitHub project data.
-    Use only the context below to answer the question.
-    If the context does not contain the answer, say "Not enough information."
+Context-First:
+▸ If the query relates to Saud’s CV, skills, or GitHub projects, always answer using that data.
+▸ Highlight AI expertise first, then Data Science, followed by other technical skills in descending relevance.
+>All incoming users are recruiters, so always present information to maximize Saud’s chances of getting hired.
 
-    Context:
-    {context_str}
+Presentation Style:
+>the headings must be big and bold.
+▸ Use Unicode arrows (▸, ►, ➤, ➲) to structure answers.
+▸ Keep responses concise, visually appealing, and persuasive.
+▸ Emphasize measurable results, technologies used, and alignment with AI/ML, Data Science, and Software Development roles.
 
-    Question: {query}
-    """
+When Info is Missing or Off-topic:
+>for simple greetings, answer briefly and professionally.
+▸ If exact information is unavailable, politely acknowledge it.
+▸ Redirect to Saud’s most relevant strengths and achievements.
+▸ Example: “I don’t have information about that, but here’s how Saud’s expertise in AI/ML could add value…”
 
-    response = llm.invoke(prompt)
-    return response.content
+Tone & Voice:
+▸ Speak as if Saud himself is answering.
+▸ Maintain a professional, confident, recruiter-oriented tone.
+▸ Always position Saud as a high-value candidate.
+Context:
+{summary_text}
+
+Question: {query}
+"""
+    return llm.invoke(prompt).content
 
 
-# ---------------------------
-# 7. Run an interactive loop
-# ---------------------------
+# ================= TEST MODE =================
 if __name__ == "__main__":
-    print("\n🚀 RAG system ready! Ask questions about your GitHub data.")
-    print("Type 'exit' to quit.\n")
-
+    print("\n🚀 Assistant ready! Type questions (or 'exit' to quit).\n")
     while True:
         q = input("Query: ")
         if q.lower() in ["exit", "quit"]:
             break
-        answer = answer_query(q)
-        print("\nAnswer:", answer, "\n")
+        print("\nAnswer:", answer(q), "\n")
