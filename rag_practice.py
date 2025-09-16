@@ -4,9 +4,8 @@ import numpy as np
 from pathlib import Path
 from dotenv import load_dotenv
 
-from sentence_transformers import SentenceTransformer
-from langchain.text_splitter import RecursiveCharacterTextSplitter
-from langchain_openai import ChatOpenAI
+from langchain_openai import OpenAIEmbeddings, ChatOpenAI
+from langchain_text_splitters import RecursiveCharacterTextSplitter
 
 
 # ---------------------------
@@ -22,9 +21,9 @@ print("✅ OpenAI API key loaded.")
 # ---------------------------
 # 1. Load your GitHub data
 # ---------------------------
-data_path = Path("mydata/combined.txt")
-index_file = Path("mydata/faiss.index")
-emb_file = Path("mydata/chunks.npy")
+data_path   = Path("mydata/combined.txt")
+index_file  = Path("mydata/faiss.index")
+chunks_file = Path("mydata/chunks.npy")
 
 with open(data_path, "r", encoding="utf-8") as f:
     raw_text = f.read()
@@ -44,23 +43,25 @@ print(f"✅ Created {len(chunks)} chunks")
 
 
 # ---------------------------
-# 3. Embed + FAISS (load or build)
+# 3. Embeddings + FAISS (load or build)
 # ---------------------------
-model = SentenceTransformer("all-MiniLM-L6-v2")
+embeddings_model = OpenAIEmbeddings(model="text-embedding-3-small")
 
-if index_file.exists() and emb_file.exists():
+if index_file.exists() and chunks_file.exists():
     print("📂 Loading existing FAISS index...")
     index = faiss.read_index(str(index_file))
-    chunks = np.load(emb_file, allow_pickle=True).tolist()
+    chunks = np.load(chunks_file, allow_pickle=True).tolist()
 else:
-    print("⚙️ Building FAISS index...")
-    embeddings = model.encode(chunks, convert_to_numpy=True)
-    index = faiss.IndexFlatL2(embeddings.shape[1])
-    index.add(embeddings)
+    print("⚙️ Building FAISS index using OpenAI embeddings...")
+    vectors = embeddings_model.embed_documents(chunks)
+    vectors = np.array(vectors, dtype="float32")
+
+    index = faiss.IndexFlatL2(vectors.shape[1])
+    index.add(vectors)
 
     # Save index + chunks
     faiss.write_index(index, str(index_file))
-    np.save(emb_file, np.array(chunks, dtype=object))
+    np.save(chunks_file, np.array(chunks, dtype=object))
 
     print("💾 Saved FAISS index + chunks to disk.")
 
@@ -71,15 +72,15 @@ print("✅ FAISS index ready.")
 # 4. Retrieval helper
 # ---------------------------
 def retrieve_chunks(query, k=3):
-    q_emb = model.encode([query])
-    D, I = index.search(np.array(q_emb), k)
+    q_emb = embeddings_model.embed_query(query)
+    D, I = index.search(np.array([q_emb], dtype="float32"), k)
     return [chunks[i] for i in I[0]]
 
 
 # ---------------------------
-# 5. Initialize LLM (LangChain + OpenAI)
+# 5. Initialize Chat LLM
 # ---------------------------
-llm = ChatOpenAI(model="gpt-4o-mini")  # Uses key from env
+llm = ChatOpenAI(model="gpt-4o-mini")  # uses key from .env
 
 
 # ---------------------------
@@ -90,9 +91,12 @@ def answer_query(query):
     context_str = "\n\n".join(context)
 
     prompt = f"""
-    You are an assistant answering questions based on GitHub project data.
-    Use only the context below to answer the question.
-    If the context does not contain the answer, say "Not enough information."
+    You are an intelligent assistant trained on GitHub project data.
+
+    Use the context below to answer the question as helpfully as possible.
+    If the context is only partially relevant, try to infer a good answer 
+    by combining the context with your general knowledge.
+    If the context is totally unrelated, politely say you don’t have enough info.
 
     Context:
     {context_str}

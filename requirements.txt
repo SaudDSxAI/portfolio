@@ -8,6 +8,7 @@ langchain-community
 langchain-openai
 langchain-text-splitters
 
+
 # Vector store
 faiss-cpu
 
