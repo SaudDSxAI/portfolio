@@ -1,0 +1,65 @@
+# Structured Summary
+
+## Profile
+- **Name:** Saud Ahmad
+- **Title:** Data Scientist ▸ AI & ML/DL Engineer ▸ Agentic AI Innovator
+- **Interests:** Building intelligent systems, exploring Generative AI & Multi-Agent Systems, and collaborating on AI innovation and open-source contributions.
+
+## Skills
+- **Programming Languages:** C++, Python
+- **Machine Learning & Deep Learning:** 
+  - Libraries: TensorFlow, PyTorch, Scikit-Learn
+  - Techniques: Supervised and unsupervised learning, neural networks, model evaluation
+- **Data Engineering:** 
+  - SQL, ETL processes, data warehousing
+- **Computer Vision:** 
+  - OpenCV, face recognition, image processing
+- **Natural Language Processing:** 
+  - BERT, transformers, LangChain
+- **Web Development:** 
+  - Streamlit for building interactive applications
+
+## Projects
+### 1. **Binary Search Tree (BST) Implementation**
+   - **Repository:** [bst-sem-proj](https://github.com/SaudDSxAI/bst-sem-proj)
+   - **Description:** Implementation of a BST in C++ demonstrating data structure concepts and recursive algorithms.
+
+### 2. **Contact Management System**
+   - **Repository:** [address-book-sem-proj](https://github.com/SaudDSxAI/address-book-sem-proj)
+   - **Description:** A contact management system using BST for efficient data operations and file handling.
+
+### 3. **Access Vision**
+   - **Repository:** [Access Vision](https://github.com/SaudDSxAI/cv-entry-system)
+   - **Description:** Automated entry/exit monitoring system using face recognition and sensor data.
+
+### 4. **Agentic AI Projects**
+   - **Repository:** [Agentic AI GitHub](https://github.com/SaudDSxAI/agentic-ai)
+   - **Description:** Collection of projects focusing on autonomous intelligent agents, including web scraping and conversational agents.
+
+### 5. **Deep Learning Projects**
+   - **Repository:** [Deep Learning Project Repository](https://github.com/SaudDSxAI/deep-learning)
+   - **Description:** Breast cancer classification using neural networks.
+
+### 6. **Tic-Tac-Toe Game**
+   - **Repository:** [tictactoe-new-logic](https://github.com/SaudDSxAI/tictactoe-new-logic)
+   - **Description:** Console-based Tic-Tac-Toe game with user vs. computer mode.
+
+### 7. **Retail Insight Generator**
+   - **Repository:** [sql-with-llm](https://github.com/SaudDSxAI/sql-with-llm)
+   - **Description:** Streamlit application that converts natural language queries into SQL for retail data analysis.
+
+## Repositories
+- **Data Structures in C++:** [dsa-implementation](https://github.com/SaudDSxAI/dsa-implementation)
+- **Data Mining Lab:** [Data Mining Lab](https://github.com/SaudDSxAI/data-mining)
+- **Computer Vision Basics:** [opencv-basics](https://github.com/SaudDSxAI/opencv-basics)
+- **Statistics & Data Visualization:** [stats-python](https://github.com/SaudDSxAI/stats-python)
+- **Robotics Projects:** [robotic-project-summer](https://github.com/SaudDSxAI/robotic-project-summer)
+
+## Education
+- **Learning Journey:** Continuous self-education in data science, machine learning, deep learning, and computer vision through hands-on projects and online courses.
+
+## Soft Skills
+- **Problem-Solving:** Ability to tackle complex challenges in programming and data analysis.
+- **Collaboration:** Open to working with others in AI and data science projects.
+- **Communication:** Capable of explaining technical concepts to non-technical audiences.
+- **Adaptability:** Quick to learn new technologies and methodologies in a rapidly evolving field.
