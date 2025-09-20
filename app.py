@@ -26,21 +26,20 @@ if st.sidebar.button("💾 Export Chat"):
     else:
         st.sidebar.warning("No history!")
 
-# Render chat history
-for role, content in st.session_state["messages"]:
-    if role == "user":
-        st.markdown(f"** You:** {content}")
-    else:
-        st.markdown(f"** Assistant:** {content}")
-
 # Input box
 if prompt := st.chat_input("Type your question..."):
     st.session_state["messages"].append(("user", prompt))
-    with st.spinner(" Thinking..."):
+    with st.spinner("🤖 Thinking..."):
         try:
             result = qa_chain.invoke({"query": prompt})
             response = result["result"] if isinstance(result, dict) else result
         except Exception as e:
             response = f"⚠️ Error: {e}"
-    st.markdown(f"** Assistant:** {response}")
     st.session_state["messages"].append(("assistant", response))
+
+# Render chat history (AFTER new messages are added)
+for role, content in st.session_state["messages"]:
+    if role == "user":
+        st.markdown(f"**🧑 You:** {content}")
+    else:
+        st.markdown(f"**🤖 Assistant:** {content}")
