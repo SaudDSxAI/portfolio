@@ -29,16 +29,10 @@ os.makedirs(OUTPUT_DIR, exist_ok=True)
 
 # ================= STEP 0: Load Prompt =================
 def load_prompt(prompt_file=PROMPT_FILE):
-    """
-    Load recruiter-optimized prompt instructions from file.
-    Returns formatted system message.
-    """
     if not prompt_file.exists():
         raise FileNotFoundError(f"❌ Prompt file not found: {prompt_file}")
-
     with open(prompt_file, "r", encoding="utf-8") as f:
         prompt_text = f.read()
-
     system_message = SystemMessagePromptTemplate.from_template(
         f"You are Saud's AI Career Assistant.\nAlways follow these recruiter-oriented instructions:\n\n{prompt_text}"
     )
@@ -47,9 +41,6 @@ def load_prompt(prompt_file=PROMPT_FILE):
 
 # ================= STEP 1: Load CV/Documents =================
 def load_documents(data_folder="mydata"):
-    """
-    Load all documents (PDF, TXT, DOCX) from the given folder.
-    """
     documents = []
     for root, _, files in os.walk(data_folder):
         for file in files:
@@ -71,10 +62,6 @@ def load_documents(data_folder="mydata"):
 
 # ================= STEP 2: Fetch GitHub Repositories =================
 def fetch_repos():
-    """
-    Fetch repositories from GitHub (parallelized).
-    Returns repo metadata + README if available.
-    """
     g = Github(GITHUB_TOKEN)
     user = g.get_user()
     repo_results = []
@@ -107,9 +94,6 @@ def fetch_repos():
 
 # ================= STEP 3: Combine and Save =================
 def combine_and_save(cv_texts, repo_texts, output_file=COMBINED_FILE):
-    """
-    Combine CV data and GitHub repo data into one file.
-    """
     with open(output_file, "w", encoding="utf-8") as f:
         for cv in cv_texts:
             f.write(cv + "\n\n")
@@ -118,35 +102,22 @@ def combine_and_save(cv_texts, repo_texts, output_file=COMBINED_FILE):
     print(f"✅ Combined data saved → {output_file}")
 
 
-# ================= STEP 4: Build or Load FAISS =================
-def build_or_load_vectorstore(combined_file=COMBINED_FILE, faiss_path=FAISS_PATH):
-    """
-    Convert combined text into embeddings and store/load FAISS index.
-    """
+# ================= STEP 4: Always Rebuild FAISS =================
+def build_vectorstore(combined_file=COMBINED_FILE, faiss_path=FAISS_PATH):
     embeddings = OpenAIEmbeddings(openai_api_key=OPENAI_API_KEY, model="text-embedding-3-large")
-
-    if faiss_path.exists():
-        print("📂 Found existing FAISS index, loading it...")
-        vectorstore = FAISS.load_local(str(faiss_path), embeddings, allow_dangerous_deserialization=True)
-    else:
-        print("🆕 Creating FAISS index from combined data...")
-        with open(combined_file, "r", encoding="utf-8") as f:
-            text = f.read()
-        vectorstore = FAISS.from_texts([text], embeddings)
-        vectorstore.save_local(str(faiss_path))
-
+    print("🆕 Creating FAISS index from combined data...")
+    with open(combined_file, "r", encoding="utf-8") as f:
+        text = f.read()
+    vectorstore = FAISS.from_texts([text], embeddings)
+    vectorstore.save_local(str(faiss_path))  # optional local copy
     return vectorstore
 
 
 # ================= STEP 5: Build QA Chain =================
 def build_qa_chain(vectorstore, system_prompt):
-    """
-    Build RetrievalQA chain with recruiter-optimized system instructions.
-    """
     retriever = vectorstore.as_retriever(search_kwargs={"k": 33})
     llm = ChatOpenAI(model="gpt-4o-mini", temperature=0)
 
-    # Prompt must have both {context} and {question}
     human_message = HumanMessagePromptTemplate.from_template(
         "Here is the context:\n{context}\n\nNow answer the question:\n{question}"
     )
@@ -160,7 +131,6 @@ def build_qa_chain(vectorstore, system_prompt):
         return_source_documents=True
     )
     return qa_chain
-
 
 
 # ================= MAIN PIPELINE =================
@@ -177,24 +147,21 @@ def run_pipeline(init_only: bool = False):
     print("🔄 Saving combined data...")
     combine_and_save(cv_docs, repos)
 
-    print("🔄 Building/Loading vectorstore...")
-    vectorstore = build_or_load_vectorstore()
+    print("🔄 Building vectorstore...")
+    vectorstore = build_vectorstore()  # always rebuild
 
     print("🔄 Building QA chain...")
     qa_chain = build_qa_chain(vectorstore, system_prompt)
 
     if init_only:
-        # ✅ Used by app.py
         return qa_chain
 
-    # ✅ CLI loop for debugging
     print("\n🚀 CV Assistant Ready! Ask me questions (type 'exit' to quit)\n")
     while True:
         query = input("Query: ")
         if query.lower() in ["exit", "quit"]:
             print("👋 Exiting assistant. Goodbye!")
             break
-
         print("💭 Thinking...")
         try:
             result = qa_chain.invoke({"query": query})
@@ -204,8 +171,6 @@ def run_pipeline(init_only: bool = False):
                 print(" -", doc.metadata.get("source", "unknown"))
         except Exception as e:
             print(f"⚠️ Error: {e}")
-
-
 
 
 if __name__ == "__main__":
