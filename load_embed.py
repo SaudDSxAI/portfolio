@@ -11,6 +11,10 @@ from langchain_community.vectorstores import FAISS
 from langchain.chains import RetrievalQA
 from langchain.prompts import ChatPromptTemplate, SystemMessagePromptTemplate, HumanMessagePromptTemplate
 
+# FAISS imports for IVF
+import faiss
+from langchain.text_splitter import RecursiveCharacterTextSplitter
+
 # ================= CONFIG =================
 load_dotenv()
 OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
@@ -102,14 +106,39 @@ def combine_and_save(cv_texts, repo_texts, output_file=COMBINED_FILE):
     print(f"✅ Combined data saved → {output_file}")
 
 
-# ================= STEP 4: Always Rebuild FAISS =================
-def build_vectorstore(combined_file=COMBINED_FILE, faiss_path=FAISS_PATH):
+# ================= STEP 4: Build IVF FAISS Vectorstore =================
+def build_vectorstore_ivf(combined_file=COMBINED_FILE, faiss_path=FAISS_PATH):
     embeddings = OpenAIEmbeddings(openai_api_key=OPENAI_API_KEY, model="text-embedding-3-large")
-    print("🆕 Creating FAISS index from combined data...")
+    
+    print("🆕 Loading combined text...")
     with open(combined_file, "r", encoding="utf-8") as f:
         text = f.read()
-    vectorstore = FAISS.from_texts([text], embeddings)
-    vectorstore.save_local(str(faiss_path))  # optional local copy
+
+    # Chunk text for better retrieval
+    text_splitter = RecursiveCharacterTextSplitter(chunk_size=800, chunk_overlap=100)
+    chunks = text_splitter.split_text(text)
+    
+    # Create embeddings and basic FAISS index
+    vectorstore = FAISS.from_texts(chunks, embeddings)
+    
+    # ===== IVF Setup =====
+    d = vectorstore.index.d  # dimension of embeddings
+    nlist = 100  # number of clusters
+    quantizer = faiss.IndexFlatL2(d)
+    ivf_index = faiss.IndexIVFFlat(quantizer, d, nlist, faiss.METRIC_L2)
+    
+    # Train IVF index
+    print("🆕 Training IVF index...")
+    vectors = vectorstore.index.reconstruct_n(0, vectorstore.index.ntotal)
+    ivf_index.train(vectors)
+    
+    # Add embeddings
+    ivf_index.add(vectors)
+    
+    # Replace FAISS index with IVF
+    vectorstore.index = ivf_index
+    vectorstore.save_local(str(faiss_path))
+    print(f"✅ IVF FAISS index saved → {faiss_path}")
     return vectorstore
 
 
@@ -147,8 +176,8 @@ def run_pipeline(init_only: bool = False):
     print("🔄 Saving combined data...")
     combine_and_save(cv_docs, repos)
 
-    print("🔄 Building vectorstore...")
-    vectorstore = build_vectorstore()  # always rebuild
+    print("🔄 Building vectorstore (IVF FAISS)...")
+    vectorstore = build_vectorstore_ivf()  # IVF version
 
     print("🔄 Building QA chain...")
     qa_chain = build_qa_chain(vectorstore, system_prompt)
