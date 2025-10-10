@@ -1,26 +1,19 @@
 import streamlit as st
-import json
-from load_embed import run_pipeline
 from pathlib import Path
 import base64
+from load_embed import run_pipeline
 
 # --- Page setup ---
-st.set_page_config(page_title="Saud's Assistant", page_icon="🤖", layout="wide")
+st.set_page_config(page_title="Saud's Assistant", layout="wide")
 
-# --- Initialize assistant once ---
+# --- Initialize assistant ---
 if "qa_chain" not in st.session_state:
     st.session_state["qa_chain"] = run_pipeline(init_only=True)
     st.session_state["messages"] = []
 
 qa_chain = st.session_state["qa_chain"]
 
-# --- Convert old message format (tuple → dict) if needed ---
-for i, msg in enumerate(st.session_state.get("messages", [])):
-    if isinstance(msg, tuple):
-        role, content = msg
-        st.session_state["messages"][i] = {"role": role, "content": content}
-
-# --- Display image ---
+# --- Display profile image ---
 def image_to_base64(image_path):
     with open(image_path, "rb") as img:
         return base64.b64encode(img.read()).decode()
@@ -39,24 +32,24 @@ if image_path.exists():
     )
 
 # --- Titles ---
-st.markdown(
-    "<h3 style='text-align: center;'>Hello! I'm Saud's AI Assistant </h3>",
-    unsafe_allow_html=True
-)
-st.markdown(
-    "<h6 style='text-align: center;'>Ask me anything about Saud's resume and projects!</h6>",
-    unsafe_allow_html=True
-)
+st.markdown("<h2 style='text-align: center;'>Hello! I'm Saud's AI Assistant</h2>", unsafe_allow_html=True)
+st.markdown("<h5 style='text-align: center;'>Ask me anything about Saud's resume and projects!</h5>", unsafe_allow_html=True)
 
-# --- Render previous chat messages ---
-for message in st.session_state["messages"]:
-    with st.chat_message(message["role"]):
-        st.markdown(message["content"])
+# --- Chat container ---
+chat_container = st.container()
 
-# --- Chat input box ---
+# --- Render all messages ---
+with chat_container:
+    for message in st.session_state["messages"]:
+        with st.chat_message(message["role"]):
+            st.markdown(message["content"])
+
+# --- Chat input ---
 if prompt := st.chat_input("Type your question..."):
-    # Show user message instantly
+    # Append user message first
     st.session_state["messages"].append({"role": "user", "content": prompt})
+    
+    # Display user message instantly
     with st.chat_message("user"):
         st.markdown(prompt)
 
@@ -67,8 +60,8 @@ if prompt := st.chat_input("Type your question..."):
                 result = qa_chain.invoke({"query": prompt})
                 response = result["result"] if isinstance(result, dict) else result
             except Exception as e:
-                response = f"⚠️ Error: {e}"
+                response = f"Error: {e}"
             st.markdown(response)
 
-    # Store assistant reply
+    # Append assistant response
     st.session_state["messages"].append({"role": "assistant", "content": response})
