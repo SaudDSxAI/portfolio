@@ -1,114 +1,183 @@
-Saud Ahmad 
-Email | +92 3462936273 | GitHub | LinkedIn | Swat Pakistan 
-
-Profile:
-
-A dedicated Data Scientist and AI Engineer with a strong foundation in developing intelligent systems and a keen interest in generative AI and multi-agent systems. Proven track record of leveraging machine learning, deep learning, and data engineering techniques to drive impactful AI innovations. Strong collaborator and open-source contributor with a passion for solving complex problems through technology.
 
 
-Technical Skills
-Programming & Scripting: Python (pandas, NumPy, SciPy, scikit-learn, matplotlib, seaborn, TensorFlow, PyTorch), C++, C R, SQL, Bash/Shell;
-Machine Learning & AI: Supervised & Unsupervised Learning, Reinforcement Learning, Deep Learning (CNNs, RNNs, Transformers), NLP, Computer Vision, Model Evaluation & Hyperparameter Tuning;
-LLMs & Modern AI Systems: Large Language Models (GPT, LLaMA, Falcon), Prompt Engineering, Fine-Tuning(LoRA), Embeddings, RAG, Vector Databases (FAISS, Pinecone, Weaviate), Conversational AI, Agentic AI / Multi-Agent Systems;
-Data Manipulation & Analysis: Worked with tabular, textual, image/visual, and sensor/IoT data; Data Cleaning, Preprocessing, Feature Engineering, Exploratory Data Analysis (EDA), Time Series Analysis, Dimensionality Reduction.
-Data Visualization & Reporting: Matplotlib, Seaborn, Plotly, Tableau, Power BI, Dash, Streamlit;
-Big Data & Distributed Computing: Spark, Hadoop, Dask, Hive, Kafka, BigQuery;
-Databases & Storage: SQL, NoSQL (MongoDB, Cassandra), PostgreSQL, MySQL.
-Cloud & DevOps: AWS, GCP, Azure, Docker, Kubernetes, CI/CD, Model Deployment (Flask, FastAPI, Streamlit, MLflow, TensorFlow Serving);
-Version Control & Collaboration: Git, GitHub/GitLab.
-APIs & Web Scraping: REST/SOAP APIs, BeautifulSoup, Scrapy, Selenium;
-Workflow & Automation: Airflow, Prefect, Luigi, Cron Jobs;
-Mathematics & Statistics: Probability & Statistics, Linear Algebra, Calculus1,2, Optimization, Hypothesis Testing, Bayesian Statistics;
-
-Work Experience:
+ Saud Ahmad
+   Data Scientist & AI Engineer | Specializing in LLMs, RAG, 
+   And Agentic AI Systems
+ Email:         sauds6446@gmail.com
+ Links:          GitHub LinkedIn
+ Contact:    📞03462936273
+ Address:      Kabal, Swat, Pakistan
+AI Assistant: ask me about saud
 
 
 
 
-Projects
 
-Agentic AI Projects
-- Built autonomous agents for web scraping, resume parsing, and domain-specific assistants.
-- Used LangChain and LangGraph for multi-step reasoning, memory, and workflow automation.
-- Developed agents with contextual understanding and tool integration.[githublink]
+[ Profile ]
+Data Scientist and AI Engineer focused on building intelligent, retrieval-augmented, and autonomous AI systems. Skilled in LLM development, contextual retrieval, agentic reasoning, and scalable model deployment using LangChain, Hugging Face, and modern MLOps stacks. Passionate about creating adaptive AI ecosystems that merge data science, language understanding, and real-world automation.
 
-Personal Assistant
-- Built an AI assistant that reads CVs and answers recruiter queries using RAG (FAISS + GPT).
-- Uses FAISS vector store and a lightweight Knowledge Graph for fast, structured Q&A.
-- Auto-updates with new or changed files for real-time knowledge refresh.
-- Interactive terminal chatbot for seamless recruiter interaction.[githublink]
-
-Retail Insight Generator
-- Streamlit app that translates natural language queries into SQL for retail data analysis  
-- Provides instant insights on sales, revenue, and performance through interactive tables  
-- LLM-powered SQL generation with a simple, user-friendly interface for business users.[githublink]
-
- RAG AI Assistant
-- Reads CVs, documents, and GitHub repos to provide recruiter-ready answers  
-- Uses FAISS search, Knowledge Graph summaries, and async extraction for structured insights  
-- Interactive terminal chatbot for querying skills, projects, and experience.[githublink]
-
-Access Vision
-- Computer vision-based entry/exit management system using face recognition and sensors  
-- Real-time recognition, automated logging to CSV, and data visualization of access patterns  
-- Integrated hardware , GUI automation, and Python-based workflow for secure access control.[githublink]
-
-Duplicate Question Detection with BERT
-- Detects duplicate questions using a BERT-based deep learning model  
-- Includes data preprocessing, EDA, feature engineering, model training, evaluation, and inference  
-- Provides functions for predicting duplicates on new question pairs with saved model.[githublink]
-
-Machine Learning & Deep Learning Projects
-- ML & DL projects: Diabetes Prediction, Titanic Survival, Telco Churn  
-- Covers preprocessing, feature engineering, modeling, and visualization  
-- Experience with SVM, Random Forest, Gradient Boosting, and TensorFlow/Keras[githublink]
-
-Breast Cancer Classification(DL)
-- Neural network to classify tumors as malignant or benign using sklearn dataset  
-- Includes data preprocessing, model training, evaluation, and visualization  
-- Hands-on experience with TensorFlow/Keras for real-world medical data[githublink]
-
-Contact Management System using BST in C++
-- C++ program with Binary Search Tree to manage contacts efficiently with insertion, deletion, update, and search. 
-- Ensures file persistence for all operations with automatic read/write to database. 
-- Demonstrates recursive BST operations and efficient in-order traversal for sorted output.[githublink]
-
-Final Year Project(Autonomous Weed Removal Robot)
-- Autonomous agricultural robot with Arduino for weed removal and crop monitoring  
-- Bluetooth-controlled motor mobility with smooth directional and diagonal movements  
-- MPU6050 motion tracking and encoder-based odometry for precise position and navigation  
-- Ultrasonic sensors for obstacle detection and avoidance in fields  
-- Blynk IoT integration for real-time monitoring of temperature, humidity, soil moisture, and light.[githublink]
+[ Projects and Experience ]
+RAG AI Assistant – Built a retrieval-augmented generation assistant that reads and analyzes CVs          and GitHub repositories to deliver recruiter-ready summaries and responses using FAISS and GPT     models.(github_link)
+Retail Insight Generator – Built a Streamlit-based AI app that converts natural language queries into SQL for real-time retail analytics. Leveraged LLMs for natural language–to–SQL translation, enabling non-technical users to access data insights effortlessly. Tech: Streamlit, OpenAI GPT, SQL, Python.(github_link)
+Agentic AI Systems – Developed autonomous agents capable of executing real-world tasks such as web scraping, resume parsing, and conversational interaction, leveraging modern frameworks like LangChain and OpenAI APIs.(github_link)
+Duplicate Question Detection (BERT) – Implemented a BERT-based NLP model to detect semantically similar questions, including data preprocessing, model training, and evaluation.(github_link)
+Breast Cancer Classification – Designed a deep learning model to classify tumors as malignant or benign using the Scikit-learn breast cancer dataset.(github_link)
+Diabetes Prediction – Created a predictive model using SVM to identify potential diabetes cases based on meTitanic Survival Prediction – Applied feature engineering and classification algorithms to predict passenger survival outcomes.(github_link)
+Telco Customer Churn – Built and compared ML/DL models to predict customer churn using advanced feature selection and data analysis.(github_link)
+Traffic Accident Analysis (Pakistan) – Conducted exploratory analysis and data visualization to extract insights on accident frequency and fatalities.(github_link)
+Data Science & Analytics
+Data Warehousing Project – Designed a full ETL pipeline involving data extraction, cleaning, transformation, and loading into a MySQL data warehouse.(github_link)
+Data Mining – Documented hands-on experiments in data mining, analysis, and model evaluation across diverse datasets.(github_link)
+Access Vision – Created a face recognition-based entry and exit management system integrating camera input and sensor data for automated access control.(github_link)
+OpenCV Face Recognition – Developed real-time face recognition using OpenCV and the face_recognition library for identity verification.(github_link)
+OpenCV Basics Collection – Compiled foundational scripts demonstrating image reading, color manipulation, and contour detection.(github_link)
 
 
-Certifications
+[ Skills ]
+Core AI & Machine Learning
+Machine Learning: Supervised & Unsupervised Learning, Predictive Modeling, Feature Engineering
 
+
+Deep Learning: CNNs, RNNs, Transformer Architectures (BERT, GPT, LLaMA, Mistral)
+
+
+Natural Language Processing (NLP): Text Classification, NER, Summarization, Question Answering
+
+
+Large Language Models (LLMs): GPT-based Systems, Fine-tuning, Prompt Engineering
+
+
+Retrieval-Augmented Generation (RAG): Context Retrieval, Knowledge Integration, Hybrid Search
+
+
+Agentic AI / Autonomous Agents: Multi-agent Orchestration, Tool Use, Memory Management, Reasoning Loops
+
+
+Generative AI: Text, Code, and Multimodal Generation
+
+
+Model Optimization: Parameter-Efficient Tuning (LoRA, PEFT, QLoRA), Quantization
+
+
+Embeddings & Vector Databases: Text Embeddings, Semantic Search, Vector Indexing (FAISS, Chroma, Pinecone, Milvus)
+
+Frameworks & Libraries
+LLM & Agent Frameworks: LangChain, LangGraph, LlamaIndex, Semantic Kernel, CrewAI
+
+
+Modeling & NLP: Hugging Face Transformers, OpenAI APIs, Anthropic, Ollama
+
+
+Deep Learning: PyTorch, TensorFlow, Keras
+
+
+Data Science & Analytics: scikit-learn, spaCy, Pandas, NumPy, Matplotlib, Seaborn, Plotly
+
+MLOps, Deployment & Tools
+MLOps: Docker, Kubernetes, MLflow, Weights & Biases (W&B)
+
+
+Model Serving & APIs: FastAPI, Flask, Streamlit
+
+
+CI/CD & Monitoring: Automated Pipelines, Model Tracking, Evaluation Metrics
+
+
+Version Control & Environment Management: Git/GitHub, Linux, Poetry, venv, Conda
+
+Data Engineering & Analytics
+Data Pipelines: ETL, Data Cleaning, Transformation, and Integration
+
+
+Big Data & Workflow Tools: Apache Spark, Airflow, Kafka
+
+
+Databases: SQL, BigQuery, Snowflake
+
+
+Analytics: EDA, Visualization, Statistical Modeling
+
+Programming Languages
+Python (ML, AI, automation) 
+SQL (data querying) 
+JavaScript/TypeScript (app integration) 
+C++ (performance) 
+R (statistical analysis) 
+Bash (automation)
+
+
+
+Bus Reservation System (C++) – Implemented an object-oriented bus management console app with booking and record-tracking functionalities.(github_link)
+Data Structures in C++ – Implemented core and advanced data structures (stacks, queues, linked lists, rings) with focus on dynamic memory, pointers, and algorithmic logic. Tech: C++.(github_link)
+Binary Search Tree (C++) – Designed a complete BST data structure supporting insertion, deletion, and traversal operations.(github_link)
+Quiz Tic-Tac-Toe Game (C++) – Combined a quiz mechanism with classic tic-tac-toe to enhance interactivity and logic design.(github_link)
+Smart Robot Car (Arduino) – Built a multi-mode robot car integrating sensors and motor control, demonstrating embedded programming and automation.(github_link)
+
+[ Certifications ]
 IBM – What is Data Science?
-• Gained foundational understanding of data science, its impact, and career opportunities
-• Learned insights and advice from experienced data science professionals  
-• Developed skills in data analysis, machine learning, deep learning, big data, and cloud computing
-
+ Foundational understanding of data science concepts, tools, and workflows across ML, DL, big data, and cloud computing.
 IBM – Tools for Data Science
-• Gained hands-on experience with data science toolkits, including libraries, datasets, ML models, and big data tools  
-• Applied Python, R, and SQL for data manipulation and analysis, using Jupyter Notebooks and RStudio  
-• Learned version control with Git/GitHub and explored cloud-based and open-source technologies for data science 
+ Hands-on experience with Python, R, SQL, Jupyter, and RStudio; practiced Git/GitHub and cloud-based data science tools.
+IBM – Data Science Methodology
+ Applied the CRISP-DM framework for project structuring, model selection, data preparation, and storytelling.
+IBM – Python for Data Science, AI & Development
+ Built strong Python foundations with Pandas, NumPy, and Jupyter; applied to REST APIs, automation, and web scraping.
+IBM – Machine Learning with Python
+ Implemented supervised and unsupervised algorithms using scikit-learn; developed and evaluated ML models through projects.
+DeepLearning.AI – Generative AI for Everyone
+ Studied generative AI concepts, prompt engineering, and responsible AI practices for real-world applications.
 
-IBM – Data Science Methodology  
-• Learned the importance of structured methodologies in guiding data science projects  
-• Applied the CRISP-DM framework across six stages to analyze real-world case studies  
-• Gained expertise in model selection, data sourcing, data cleansing, and storytelling for decision-making  
 
-IBM – Python for Data Science, AI & Development  
-• Built strong foundations in Python programming, covering syntax, data types, OOP, and exception handling  
-• Gained hands-on experience with Pandas, NumPy, and Jupyter for data manipulation and analysis  
-• Applied Python for real-world tasks including REST API integration and web scraping with BeautifulSoup 
 
-IBM – Machine Learning with Python  
-• Gained understanding of supervised and unsupervised learning techniques and their applications  
-• Applied algorithms such as regression, classification, clustering, and dimensionality reduction using scikit-learn  
-• Built and evaluated end-to-end machine learning models with hands-on labs, projects, and real-world datasets 
 
-DeepLearning.AI – Generative AI for Everyone  
-• Gained foundational knowledge of generative AI, its workings, applications, and limitations  
-• Learned to design and evaluate generative AI projects, including effective prompt engineering  
-• Explored opportunities, risks, and responsible AI practices in business, automation, and society  
+
+
+Mathematics & Theoretical Foundations
+Calculus: Differential & Integral Calculus, Partial Derivatives, Optimization of Loss Functions, Backpropagation
+
+
+Linear Algebra: Vectors, Matrices, Eigenvalues/Eigenvectors, Singular Value Decomposition (SVD), Matrix Factorization for Embeddings
+
+
+Probability & Statistics: Descriptive and Inferential Statistics, Hypothesis Testing, Regression Analysis, ANOVA, Correlation, Sampling Methods, Probability Distributions, Bayesian Inference, Confidence Intervals, and Statistical Significance Testing
+
+
+Optimization Methods: Gradient Descent, Stochastic Optimization, Regularization Techniques, Convex Optimization
+
+
+Mathematical Modeling: Analytical reasoning for predictive models and probabilistic systems
+
+Business Intelligence (BI) & Visualization
+Power BI, Tableau, Looker, Google Data Studio
+
+
+Dashboard Design, Data Storytelling, KPI Tracking
+
+
+SQL-based Reporting, DAX, Power Query, Data Modeling
+
+
+Integration with AI Insights & Automated Reports
+
+[ Professional & Soft Skills ]
+Strong Communication & Presentation
+
+
+Team Collaboration & Leadership
+
+
+Analytical & Critical Thinking
+
+
+Time Management & Adaptability
+
+
+Continuous Learning & Research Mindset
+
+
+Problem Solving & Creativity
+
+[ Education ]
+ BSc in Data Science GIK 2025
+
+

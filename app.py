@@ -1,45 +1,74 @@
 import streamlit as st
 import json
 from load_embed import run_pipeline
+from pathlib import Path
+import base64
 
-# Initialize assistant once
+# --- Page setup ---
+st.set_page_config(page_title="Saud's Assistant", page_icon="🤖", layout="wide")
+
+# --- Initialize assistant once ---
 if "qa_chain" not in st.session_state:
-    st.session_state["qa_chain"] = run_pipeline(init_only=True)  # only build pipeline, no CLI loop
+    st.session_state["qa_chain"] = run_pipeline(init_only=True)
     st.session_state["messages"] = []
 
 qa_chain = st.session_state["qa_chain"]
 
-st.set_page_config(page_title="Saud's Assistant", page_icon="🤖", layout="wide")
+# --- Convert old message format (tuple → dict) if needed ---
+for i, msg in enumerate(st.session_state.get("messages", [])):
+    if isinstance(msg, tuple):
+        role, content = msg
+        st.session_state["messages"][i] = {"role": role, "content": content}
 
-st.title("Hello! I'm Saud's AI Assistant 🤖")
-st.markdown("Ask me anything about Saud's resume and projects!")
+# --- Display image ---
+def image_to_base64(image_path):
+    with open(image_path, "rb") as img:
+        return base64.b64encode(img.read()).decode()
 
-# Sidebar controls
-st.sidebar.title("⚙️ Controls")
-if st.sidebar.button("🗑️ Clear Chat"):
-    st.session_state["messages"] = []
-if st.sidebar.button("💾 Export Chat"):
-    if st.session_state["messages"]:
-        with open("chat_history.json", "w", encoding="utf-8") as f:
-            json.dump(st.session_state["messages"], f, indent=2, ensure_ascii=False)
-        st.sidebar.success("Exported → chat_history.json")
-    else:
-        st.sidebar.warning("No history!")
+image_path = Path(__file__).parent / "saud.jpeg"
+if image_path.exists():
+    img_base64 = image_to_base64(image_path)
+    st.markdown(
+        f"""
+        <div style="display: flex; justify-content: center; margin: 10px 0;">
+            <img src="data:image/jpeg;base64,{img_base64}" 
+                 style="width: 160px; height: 200px; border-radius: 50%; object-fit: cover; object-position: center 15%;">
+        </div>
+        """,
+        unsafe_allow_html=True,
+    )
 
-# Input box
+# --- Titles ---
+st.markdown(
+    "<h3 style='text-align: center;'>Hello! I'm Saud's AI Assistant </h3>",
+    unsafe_allow_html=True
+)
+st.markdown(
+    "<h6 style='text-align: center;'>Ask me anything about Saud's resume and projects!</h6>",
+    unsafe_allow_html=True
+)
+
+# --- Render previous chat messages ---
+for message in st.session_state["messages"]:
+    with st.chat_message(message["role"]):
+        st.markdown(message["content"])
+
+# --- Chat input box ---
 if prompt := st.chat_input("Type your question..."):
-    st.session_state["messages"].append(("user", prompt))
-    with st.spinner("🤖 Thinking..."):
-        try:
-            result = qa_chain.invoke({"query": prompt})
-            response = result["result"] if isinstance(result, dict) else result
-        except Exception as e:
-            response = f"⚠️ Error: {e}"
-    st.session_state["messages"].append(("assistant", response))
+    # Show user message instantly
+    st.session_state["messages"].append({"role": "user", "content": prompt})
+    with st.chat_message("user"):
+        st.markdown(prompt)
 
-# Render chat history (AFTER new messages are added)
-for role, content in st.session_state["messages"]:
-    if role == "user":
-        st.markdown(f"**🧑 You:** {content}")
-    else:
-        st.markdown(f"**🤖 Assistant:** {content}")
+    # Generate assistant response
+    with st.chat_message("assistant"):
+        with st.spinner("Thinking..."):
+            try:
+                result = qa_chain.invoke({"query": prompt})
+                response = result["result"] if isinstance(result, dict) else result
+            except Exception as e:
+                response = f"⚠️ Error: {e}"
+            st.markdown(response)
+
+    # Store assistant reply
+    st.session_state["messages"].append({"role": "assistant", "content": response})
