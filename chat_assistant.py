@@ -150,9 +150,9 @@ def generate_response(state: State) -> State:
     
     # Generate response
     response = openai_client.chat.completions.create(
-        model="gpt-4o-mini",
+        model="gpt-5-mini",
         messages=openai_messages,
-        temperature=0.7,
+        temperature=1,
         max_tokens=1000
     )
     
