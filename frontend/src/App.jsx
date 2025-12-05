@@ -5,11 +5,18 @@ const API_URL = 'https://asksaud.up.railway.app';
 // Message bubble component
 const MessageBubble = ({ message, isUser }) => (
   <div className={`flex ${isUser ? 'justify-end' : 'justify-start'} mb-4 animate-fadeIn`}>
+    {!isUser && (
+      <img 
+        src="/saud.jpeg" 
+        alt="Saud Ahmad"
+        className="w-8 h-8 rounded-full object-cover mr-3 mt-1 ring-2 ring-emerald-500/30"
+      />
+    )}
     <div
-      className={`max-w-[80%] px-5 py-3 rounded-2xl shadow-lg transition-all duration-300 hover:scale-[1.02] ${
+      className={`max-w-[75%] px-5 py-3 rounded-2xl shadow-lg transition-all duration-300 hover:scale-[1.01] ${
         isUser
           ? 'bg-gradient-to-br from-emerald-500 to-teal-600 text-white rounded-br-sm'
-          : 'bg-white/90 backdrop-blur-sm text-slate-800 rounded-bl-sm border border-slate-200/50'
+          : 'bg-white/95 backdrop-blur-sm text-slate-800 rounded-bl-sm border border-slate-200/50'
       }`}
     >
       <p className="text-[15px] leading-relaxed whitespace-pre-wrap">{message.content}</p>
@@ -17,13 +24,23 @@ const MessageBubble = ({ message, isUser }) => (
         {message.timestamp}
       </span>
     </div>
+    {isUser && (
+      <div className="w-8 h-8 rounded-full bg-gradient-to-br from-emerald-400 to-teal-500 flex items-center justify-center ml-3 mt-1 text-white text-xs font-bold">
+        You
+      </div>
+    )}
   </div>
 );
 
 // Typing indicator
 const TypingIndicator = () => (
-  <div className="flex justify-start mb-4">
-    <div className="bg-white/90 backdrop-blur-sm px-5 py-4 rounded-2xl rounded-bl-sm border border-slate-200/50 shadow-lg">
+  <div className="flex justify-start mb-4 animate-fadeIn">
+    <img 
+      src="/saud.jpeg" 
+      alt="Saud Ahmad"
+      className="w-8 h-8 rounded-full object-cover mr-3 mt-1 ring-2 ring-emerald-500/30"
+    />
+    <div className="bg-white/95 backdrop-blur-sm px-5 py-4 rounded-2xl rounded-bl-sm border border-slate-200/50 shadow-lg">
       <div className="flex gap-1.5">
         <span className="w-2 h-2 bg-emerald-500 rounded-full animate-bounce" style={{ animationDelay: '0ms' }}></span>
         <span className="w-2 h-2 bg-emerald-500 rounded-full animate-bounce" style={{ animationDelay: '150ms' }}></span>
@@ -33,6 +50,31 @@ const TypingIndicator = () => (
   </div>
 );
 
+// Suggested questions component
+const SuggestedQuestions = ({ onSelect, disabled }) => {
+  const suggestions = [
+    "What are Saud's main skills?",
+    "Tell me about his experience",
+    "What projects has he built?",
+    "What technologies does he use?"
+  ];
+
+  return (
+    <div className="flex flex-wrap gap-2 mb-4 animate-fadeIn">
+      {suggestions.map((question, index) => (
+        <button
+          key={index}
+          onClick={() => onSelect(question)}
+          disabled={disabled}
+          className="px-4 py-2 bg-white/10 hover:bg-white/20 text-white/80 hover:text-white text-sm rounded-xl border border-white/10 hover:border-emerald-500/30 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
+        >
+          {question}
+        </button>
+      ))}
+    </div>
+  );
+};
+
 // Main App Component
 export default function App() {
   const [messages, setMessages] = useState([]);
@@ -40,6 +82,7 @@ export default function App() {
   const [isLoading, setIsLoading] = useState(false);
   const [sessionId, setSessionId] = useState(null);
   const [isConnected, setIsConnected] = useState(false);
+  const [showSuggestions, setShowSuggestions] = useState(true);
   const messagesEndRef = useRef(null);
   const inputRef = useRef(null);
 
@@ -65,7 +108,7 @@ export default function App() {
         // Add welcome message
         setMessages([{
           id: 'welcome',
-          content: "Hi! I'm Saud's AI assistant. Ask me anything about his skills, experience, or GitHub projects!",
+          content: "Hey there! 👋 I'm Saud's AI assistant. I can tell you about his skills, experience, projects, and more. What would you like to know?",
           isUser: false,
           timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
         }]);
@@ -76,13 +119,15 @@ export default function App() {
     }
   };
 
-  const sendMessage = async (e) => {
-    e.preventDefault();
-    if (!input.trim() || isLoading) return;
+  const sendMessage = async (messageText) => {
+    const text = messageText || input.trim();
+    if (!text || isLoading) return;
+
+    setShowSuggestions(false);
 
     const userMessage = {
       id: Date.now(),
-      content: input.trim(),
+      content: text,
       isUser: true,
       timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
     };
@@ -96,7 +141,7 @@ export default function App() {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          message: userMessage.content,
+          message: text,
           session_id: sessionId
         })
       });
@@ -129,6 +174,11 @@ export default function App() {
     }
   };
 
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    sendMessage();
+  };
+
   const clearChat = async () => {
     if (sessionId) {
       try {
@@ -144,37 +194,45 @@ export default function App() {
       timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
     }]);
     setSessionId(null);
+    setShowSuggestions(true);
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-emerald-900 flex items-center justify-center p-4 font-sans">
-      {/* Background decorations */}
+    <div className="min-h-screen bg-gradient-to-br from-slate-950 via-slate-900 to-emerald-950 flex items-center justify-center p-4 font-sans">
+      {/* Animated background decorations */}
       <div className="fixed inset-0 overflow-hidden pointer-events-none">
-        <div className="absolute top-20 left-10 w-72 h-72 bg-emerald-500/10 rounded-full blur-3xl"></div>
-        <div className="absolute bottom-20 right-10 w-96 h-96 bg-teal-500/10 rounded-full blur-3xl"></div>
+        <div className="absolute top-20 left-10 w-72 h-72 bg-emerald-500/10 rounded-full blur-3xl animate-pulse"></div>
+        <div className="absolute bottom-20 right-10 w-96 h-96 bg-teal-500/10 rounded-full blur-3xl animate-pulse" style={{ animationDelay: '1s' }}></div>
         <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-emerald-600/5 rounded-full blur-3xl"></div>
+        {/* Grid pattern overlay */}
+        <div className="absolute inset-0 bg-[linear-gradient(rgba(255,255,255,0.02)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.02)_1px,transparent_1px)] bg-[size:50px_50px]"></div>
       </div>
 
       {/* Chat Container */}
-      <div className="relative w-full max-w-2xl h-[85vh] bg-white/5 backdrop-blur-xl rounded-3xl shadow-2xl border border-white/10 flex flex-col overflow-hidden">
+      <div className="relative w-full max-w-2xl h-[90vh] bg-slate-900/80 backdrop-blur-2xl rounded-3xl shadow-2xl shadow-black/50 border border-white/10 flex flex-col overflow-hidden">
         
         {/* Header */}
-        <div className="bg-gradient-to-r from-emerald-600 to-teal-600 px-6 py-5 flex items-center justify-between">
-          <div className="flex items-center gap-4">
-            <div className="relative">
-              <div className="w-12 h-12 bg-white/20 rounded-xl flex items-center justify-center text-2xl backdrop-blur-sm">
-                🤖
-              </div>
-              <span className={`absolute -bottom-0.5 -right-0.5 w-3.5 h-3.5 rounded-full border-2 border-emerald-600 ${isConnected ? 'bg-green-400' : 'bg-red-400'}`}></span>
+        <div className="bg-gradient-to-r from-emerald-600 via-emerald-500 to-teal-600 px-6 py-5 flex items-center justify-between relative overflow-hidden">
+          {/* Header shine effect */}
+          <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent -skew-x-12 animate-shimmer"></div>
+          
+          <div className="flex items-center gap-4 relative z-10">
+            <div className="relative group">
+              <img 
+                src="/saud.jpeg" 
+                alt="Saud Ahmad"
+                className="w-14 h-14 rounded-2xl object-cover ring-3 ring-white/30 group-hover:ring-white/50 transition-all duration-300 shadow-lg"
+              />
+              <span className={`absolute -bottom-0.5 -right-0.5 w-4 h-4 rounded-full border-2 border-emerald-600 ${isConnected ? 'bg-green-400 animate-pulse' : 'bg-red-400'}`}></span>
             </div>
             <div>
-              <h1 className="text-white font-bold text-xl tracking-tight">AskSaud</h1>
-              <p className="text-emerald-100/80 text-sm">AI Portfolio Assistant</p>
+              <h1 className="text-white font-bold text-xl tracking-tight drop-shadow-md">AskSaud</h1>
+              <p className="text-emerald-100/90 text-sm font-medium">AI Portfolio Assistant</p>
             </div>
           </div>
           <button
             onClick={clearChat}
-            className="px-4 py-2 bg-white/10 hover:bg-white/20 text-white text-sm font-medium rounded-xl transition-all duration-200 backdrop-blur-sm border border-white/10 hover:border-white/20"
+            className="relative z-10 px-4 py-2 bg-white/15 hover:bg-white/25 text-white text-sm font-medium rounded-xl transition-all duration-200 backdrop-blur-sm border border-white/20 hover:border-white/30 hover:shadow-lg"
           >
             Clear Chat
           </button>
@@ -184,14 +242,14 @@ export default function App() {
         <div className="flex-1 overflow-y-auto p-6 space-y-2 scrollbar-thin scrollbar-thumb-slate-600 scrollbar-track-transparent">
           {!isConnected ? (
             <div className="flex flex-col items-center justify-center h-full text-center">
-              <div className="w-16 h-16 bg-red-500/20 rounded-2xl flex items-center justify-center text-3xl mb-4">
+              <div className="w-20 h-20 bg-red-500/20 rounded-3xl flex items-center justify-center text-4xl mb-4 animate-pulse">
                 ⚠️
               </div>
-              <h3 className="text-white font-semibold text-lg mb-2">Connection Error</h3>
-              <p className="text-slate-400 text-sm mb-4">Unable to connect to the API server</p>
+              <h3 className="text-white font-semibold text-xl mb-2">Connection Error</h3>
+              <p className="text-slate-400 text-sm mb-6 max-w-xs">Unable to connect to the API server. Please check your connection and try again.</p>
               <button
                 onClick={checkHealth}
-                className="px-5 py-2.5 bg-emerald-500 hover:bg-emerald-600 text-white font-medium rounded-xl transition-all duration-200"
+                className="px-6 py-3 bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-600 hover:to-teal-700 text-white font-medium rounded-xl transition-all duration-200 shadow-lg shadow-emerald-500/25"
               >
                 Retry Connection
               </button>
@@ -201,6 +259,9 @@ export default function App() {
               {messages.map((message) => (
                 <MessageBubble key={message.id} message={message} isUser={message.isUser} />
               ))}
+              {showSuggestions && messages.length === 1 && (
+                <SuggestedQuestions onSelect={sendMessage} disabled={isLoading} />
+              )}
               {isLoading && <TypingIndicator />}
               <div ref={messagesEndRef} />
             </>
@@ -208,8 +269,8 @@ export default function App() {
         </div>
 
         {/* Input Area */}
-        <div className="p-4 bg-slate-900/50 border-t border-white/5">
-          <form onSubmit={sendMessage} className="flex gap-3">
+        <div className="p-4 bg-slate-950/50 border-t border-white/5">
+          <form onSubmit={handleSubmit} className="flex gap-3">
             <input
               ref={inputRef}
               type="text"
@@ -230,7 +291,7 @@ export default function App() {
             </button>
           </form>
           <p className="text-center text-slate-500 text-xs mt-3">
-            Powered by LangGraph & OpenAI • Built by Saud Ahmad
+            Powered by LangGraph & OpenAI • Built by <span className="text-emerald-400/80">Saud Ahmad</span>
           </p>
         </div>
       </div>
@@ -254,8 +315,21 @@ export default function App() {
           }
         }
         
+        @keyframes shimmer {
+          0% {
+            transform: translateX(-200%) skewX(-12deg);
+          }
+          100% {
+            transform: translateX(200%) skewX(-12deg);
+          }
+        }
+        
         .animate-fadeIn {
           animation: fadeIn 0.3s ease-out forwards;
+        }
+        
+        .animate-shimmer {
+          animation: shimmer 3s infinite;
         }
         
         /* Custom scrollbar */
