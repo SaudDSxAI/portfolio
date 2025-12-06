@@ -2,7 +2,7 @@ import { useState, useRef, useEffect, useCallback } from 'react';
 
 const API_URL = 'https://asksaud.up.railway.app';
 
-// Simple Markdown renderer component
+// Markdown renderer
 const MarkdownText = ({ content }) => {
   const renderMarkdown = (text) => {
     const lines = text.split('\n');
@@ -60,7 +60,7 @@ const MarkdownText = ({ content }) => {
         return;
       }
 
-      if (trimmedLine.startsWith('- ') || trimmedLine.startsWith('* ')) {
+      if (trimmedLine.startsWith('- ') || trimmedLine.startsWith('* ') || trimmedLine.startsWith('▸ ') || trimmedLine.startsWith('◈ ')) {
         const itemText = processInlineStyles(trimmedLine.slice(2));
         listItems.push(itemText);
         return;
@@ -84,13 +84,13 @@ const MarkdownText = ({ content }) => {
   return <div className="markdown-content">{renderMarkdown(content)}</div>;
 };
 
-// Message bubble component
+// Message bubble
 const MessageBubble = ({ message, isUser, isStreaming }) => (
   <div className={`flex ${isUser ? 'justify-end' : 'justify-start'} mb-3 animate-fadeIn px-2`}>
     {!isUser && (
       <img 
         src="/saud.jpeg" 
-        alt="Saud Ahmad"
+        alt="Saud"
         className="w-8 h-8 rounded-full object-cover object-top mr-2 mt-1 ring-2 ring-emerald-500/30 flex-shrink-0"
       />
     )}
@@ -106,9 +106,7 @@ const MessageBubble = ({ message, isUser, isStreaming }) => (
       ) : (
         <>
           <MarkdownText content={message.content} />
-          {isStreaming && (
-            <span className="inline-block w-2 h-4 bg-emerald-500 ml-1 animate-pulse rounded-sm"></span>
-          )}
+          {isStreaming && <span className="inline-block w-1.5 h-4 bg-emerald-500 ml-0.5 animate-pulse"></span>}
         </>
       )}
       <span className={`text-[10px] mt-1 block text-right ${isUser ? 'text-emerald-100' : 'text-slate-400'}`}>
@@ -118,12 +116,12 @@ const MessageBubble = ({ message, isUser, isStreaming }) => (
   </div>
 );
 
-// Typing indicator (shown before streaming starts)
+// Typing indicator
 const TypingIndicator = () => (
   <div className="flex justify-start mb-3 animate-fadeIn px-2">
     <img 
       src="/saud.jpeg" 
-      alt="Saud Ahmad"
+      alt="Saud"
       className="w-8 h-8 rounded-full object-cover object-top mr-2 mt-1 ring-2 ring-emerald-500/30 flex-shrink-0"
     />
     <div className="bg-white px-4 py-3 rounded-2xl rounded-bl-md border border-slate-100 shadow-sm">
@@ -136,7 +134,7 @@ const TypingIndicator = () => (
   </div>
 );
 
-// Suggested questions component
+// Suggested questions
 const SuggestedQuestions = ({ onSelect, disabled }) => {
   const suggestions = [
     "What are Saud's main skills?",
@@ -152,7 +150,7 @@ const SuggestedQuestions = ({ onSelect, disabled }) => {
           key={index}
           onClick={() => onSelect(question)}
           disabled={disabled}
-          className="px-3 py-2 bg-white/80 text-slate-700 text-sm rounded-xl border border-slate-200 active:bg-slate-100 transition-colors disabled:opacity-50 touch-manipulation"
+          className="px-3 py-2 bg-white/80 text-slate-700 text-sm rounded-xl border border-slate-200 hover:bg-slate-50 active:bg-slate-100 transition-colors disabled:opacity-50"
         >
           {question}
         </button>
@@ -161,7 +159,7 @@ const SuggestedQuestions = ({ onSelect, disabled }) => {
   );
 };
 
-// Main App Component
+// Main App
 export default function App() {
   const [messages, setMessages] = useState([]);
   const [input, setInput] = useState('');
@@ -174,62 +172,17 @@ export default function App() {
   const messagesEndRef = useRef(null);
   const inputRef = useRef(null);
   const chatContainerRef = useRef(null);
-  const abortControllerRef = useRef(null);
 
-  // Scroll to bottom
-  const scrollToBottom = useCallback((smooth = true) => {
-    if (messagesEndRef.current) {
-      messagesEndRef.current.scrollIntoView({ 
-        behavior: smooth ? 'smooth' : 'instant',
-        block: 'end'
-      });
-    }
+  const scrollToBottom = useCallback(() => {
+    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, []);
 
-  // Handle viewport resize (keyboard open/close)
-  useEffect(() => {
-    const handleResize = () => {
-      const viewportHeight = window.visualViewport?.height || window.innerHeight;
-      const windowHeight = window.innerHeight;
-      const keyboardOpen = windowHeight - viewportHeight > 150;
-      
-      if (keyboardOpen) {
-        setTimeout(() => scrollToBottom(false), 100);
-      }
-    };
-
-    if (window.visualViewport) {
-      window.visualViewport.addEventListener('resize', handleResize);
-      window.visualViewport.addEventListener('scroll', handleResize);
-    }
-    window.addEventListener('resize', handleResize);
-
-    return () => {
-      if (window.visualViewport) {
-        window.visualViewport.removeEventListener('resize', handleResize);
-        window.visualViewport.removeEventListener('scroll', handleResize);
-      }
-      window.removeEventListener('resize', handleResize);
-    };
-  }, [scrollToBottom]);
-
-  // Scroll on new messages or streaming updates
   useEffect(() => {
     scrollToBottom();
   }, [messages, scrollToBottom]);
 
-  // Check API health on mount
   useEffect(() => {
     checkHealth();
-    document.body.style.overscrollBehavior = 'none';
-    
-    return () => {
-      document.body.style.overscrollBehavior = 'auto';
-      // Cleanup any pending requests
-      if (abortControllerRef.current) {
-        abortControllerRef.current.abort();
-      }
-    };
   }, []);
 
   const checkHealth = async () => {
@@ -239,24 +192,22 @@ export default function App() {
         setIsConnected(true);
         setMessages([{
           id: 'welcome',
-          content: "Hey there! 👋 I'm Saud's AI assistant. I can tell you about his skills, experience, projects, and more. What would you like to know?",
+          content: "Hello! I'm Saud's AI assistant. I can tell you about his skills, experience, projects, and more. What would you like to know?",
           isUser: false,
           timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
         }]);
       }
     } catch (error) {
       setIsConnected(false);
-      console.error('API not reachable:', error);
     }
   };
 
   const sendMessage = async (messageText) => {
     const text = messageText || input.trim();
-    if (!text || isLoading) return;
+    if (!text || isLoading || isStreaming) return;
 
     setShowSuggestions(false);
 
-    // Add user message immediately (optimistic UI)
     const userMessage = {
       id: Date.now(),
       content: text,
@@ -268,45 +219,27 @@ export default function App() {
     setInput('');
     setIsLoading(true);
 
-    // Keep focus on input
-    setTimeout(() => {
-      if (inputRef.current) {
-        inputRef.current.focus();
-      }
-    }, 10);
-
     try {
-      // Create abort controller for this request
-      abortControllerRef.current = new AbortController();
-      
-      // Use streaming endpoint
+      // Try streaming first
       const res = await fetch(`${API_URL}/chat/stream`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          message: text,
-          session_id: sessionId
-        }),
-        signal: abortControllerRef.current.signal
+        body: JSON.stringify({ message: text, session_id: sessionId })
       });
 
-      if (!res.ok) {
-        throw new Error('Stream request failed');
-      }
+      if (!res.ok) throw new Error('Stream failed');
 
       const reader = res.body.getReader();
       const decoder = new TextDecoder();
       
-      // Create placeholder for AI message
       const aiMessageId = Date.now() + 1;
-      const aiMessage = {
+      setMessages(prev => [...prev, {
         id: aiMessageId,
         content: '',
         isUser: false,
         timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
-      };
+      }]);
       
-      setMessages(prev => [...prev, aiMessage]);
       setIsLoading(false);
       setIsStreaming(true);
 
@@ -324,20 +257,15 @@ export default function App() {
             try {
               const data = JSON.parse(line.slice(6));
               
-              if (data.type === 'session' && data.session_id) {
+              if (data.type === 'session') {
                 setSessionId(data.session_id);
-              } else if (data.type === 'content' && data.content) {
+              } else if (data.type === 'content') {
                 fullContent += data.content;
-                
-                // Update message content in real-time
                 setMessages(prev => {
                   const updated = [...prev];
-                  const lastIndex = updated.length - 1;
-                  if (lastIndex >= 0 && !updated[lastIndex].isUser) {
-                    updated[lastIndex] = {
-                      ...updated[lastIndex],
-                      content: fullContent
-                    };
+                  const lastIdx = updated.length - 1;
+                  if (lastIdx >= 0 && !updated[lastIdx].isUser) {
+                    updated[lastIdx] = { ...updated[lastIdx], content: fullContent };
                   }
                   return updated;
                 });
@@ -346,62 +274,57 @@ export default function App() {
               } else if (data.type === 'error') {
                 throw new Error(data.error);
               }
-            } catch (parseError) {
-              // Skip invalid JSON lines
-              console.warn('Failed to parse SSE data:', line);
+            } catch (e) {
+              // Skip invalid JSON
             }
           }
         }
       }
-
       setIsStreaming(false);
 
     } catch (error) {
-      if (error.name === 'AbortError') {
-        console.log('Request aborted');
-        return;
+      // Fallback to non-streaming
+      try {
+        const res = await fetch(`${API_URL}/chat`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ message: text, session_id: sessionId })
+        });
+        
+        const data = await res.json();
+        if (!sessionId) setSessionId(data.session_id);
+        
+        setMessages(prev => [...prev, {
+          id: Date.now() + 1,
+          content: data.response,
+          isUser: false,
+          timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+        }]);
+      } catch (fallbackError) {
+        setMessages(prev => [...prev, {
+          id: Date.now() + 1,
+          content: 'Sorry, something went wrong. Please try again.',
+          isUser: false,
+          timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+        }]);
       }
-      
-      console.error('Error:', error);
+    } finally {
       setIsLoading(false);
       setIsStreaming(false);
-      
-      setMessages(prev => [...prev, {
-        id: Date.now() + 1,
-        content: 'Sorry, something went wrong. Please try again.',
-        isUser: false,
-        timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
-      }]);
     }
   };
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    e.stopPropagation();
     sendMessage();
   };
 
-  const handleKeyDown = (e) => {
-    if (e.key === 'Enter' && !e.shiftKey) {
-      e.preventDefault();
-      sendMessage();
-    }
-  };
-
   const clearChat = async () => {
-    // Abort any pending requests
-    if (abortControllerRef.current) {
-      abortControllerRef.current.abort();
-    }
-    
     if (sessionId) {
       try {
         await fetch(`${API_URL}/session/${sessionId}`, { method: 'DELETE' });
-      } catch (error) {
-        console.error('Error clearing session:', error);
-      }
+      } catch (e) {}
     }
-    
     setMessages([{
       id: 'welcome',
       content: "Chat cleared! How can I help you?",
@@ -410,29 +333,23 @@ export default function App() {
     }]);
     setSessionId(null);
     setShowSuggestions(true);
-    setIsLoading(false);
-    setIsStreaming(false);
-  };
-
-  const handleInputFocus = () => {
-    setTimeout(() => scrollToBottom(false), 300);
   };
 
   return (
-    <div className="h-screen h-[100dvh] bg-gradient-to-br from-slate-950 via-slate-900 to-emerald-950 flex flex-col overflow-hidden font-sans">
-      {/* Fixed Header */}
-      <header className="flex-shrink-0 bg-gradient-to-r from-emerald-600 via-emerald-500 to-teal-600 px-3 py-3 flex items-center justify-between safe-area-top z-50">
+    <div className="h-screen flex flex-col bg-gradient-to-br from-slate-950 via-slate-900 to-emerald-950">
+      {/* Header */}
+      <header className="bg-gradient-to-r from-emerald-600 via-emerald-500 to-teal-600 px-4 py-3 flex items-center justify-between shadow-lg">
         <div className="flex items-center gap-3">
           <div className="relative">
             <img 
               src="/saud.jpeg" 
-              alt="Saud Ahmad"
+              alt="Saud"
               className="w-10 h-10 rounded-full object-cover object-top ring-2 ring-white/30"
             />
             <span className={`absolute bottom-0 right-0 w-3 h-3 rounded-full border-2 border-emerald-600 ${isConnected ? 'bg-green-400' : 'bg-red-400'}`}></span>
           </div>
           <div>
-            <h1 className="text-white font-semibold text-base leading-tight">AskSaud</h1>
+            <h1 className="text-white font-semibold text-base">AskSaud</h1>
             <p className="text-emerald-100/80 text-xs">
               {isStreaming ? 'Typing...' : isConnected ? 'Online' : 'Connecting...'}
             </p>
@@ -440,81 +357,58 @@ export default function App() {
         </div>
         <button
           onClick={clearChat}
-          className="px-3 py-1.5 bg-white/15 text-white text-xs font-medium rounded-lg active:bg-white/25 transition-colors touch-manipulation"
+          className="px-3 py-1.5 bg-white/15 hover:bg-white/25 text-white text-xs font-medium rounded-lg transition-colors"
         >
           Clear
         </button>
       </header>
 
-      {/* Chat Messages Area */}
-      <main 
-        ref={chatContainerRef}
-        className="flex-1 overflow-y-auto overscroll-none bg-slate-50/5"
-        style={{ WebkitOverflowScrolling: 'touch' }}
-      >
-        <div className="py-3 min-h-full flex flex-col justify-end">
-          {!isConnected ? (
-            <div className="flex flex-col items-center justify-center flex-1 text-center px-6">
-              <div className="w-16 h-16 bg-red-500/20 rounded-2xl flex items-center justify-center text-3xl mb-4">
-                ⚠️
-              </div>
-              <h3 className="text-white font-semibold text-lg mb-2">Connection Error</h3>
-              <p className="text-slate-400 text-sm mb-4">Unable to connect to the server</p>
-              <button
-                onClick={checkHealth}
-                className="px-5 py-2.5 bg-emerald-500 text-white font-medium rounded-xl active:bg-emerald-600 transition-colors touch-manipulation"
-              >
-                Retry
-              </button>
-            </div>
-          ) : (
-            <div className="flex flex-col">
-              {messages.map((message, index) => (
-                <MessageBubble 
-                  key={message.id} 
-                  message={message} 
-                  isUser={message.isUser}
-                  isStreaming={isStreaming && index === messages.length - 1 && !message.isUser}
-                />
-              ))}
-              {showSuggestions && messages.length === 1 && (
-                <SuggestedQuestions onSelect={sendMessage} disabled={isLoading || isStreaming} />
-              )}
-              {isLoading && !isStreaming && <TypingIndicator />}
-              <div ref={messagesEndRef} className="h-1" />
-            </div>
-          )}
-        </div>
+      {/* Chat Area */}
+      <main ref={chatContainerRef} className="flex-1 overflow-y-auto bg-slate-50/5 py-4">
+        {!isConnected ? (
+          <div className="flex flex-col items-center justify-center h-full text-center px-6">
+            <div className="w-16 h-16 bg-red-500/20 rounded-2xl flex items-center justify-center text-3xl mb-4">⚠️</div>
+            <h3 className="text-white font-semibold text-lg mb-2">Connection Error</h3>
+            <p className="text-slate-400 text-sm mb-4">Unable to connect to the server</p>
+            <button onClick={checkHealth} className="px-5 py-2.5 bg-emerald-500 hover:bg-emerald-600 text-white font-medium rounded-xl transition-colors">
+              Retry
+            </button>
+          </div>
+        ) : (
+          <>
+            {messages.map((message, index) => (
+              <MessageBubble 
+                key={message.id} 
+                message={message} 
+                isUser={message.isUser}
+                isStreaming={isStreaming && index === messages.length - 1 && !message.isUser}
+              />
+            ))}
+            {showSuggestions && messages.length === 1 && (
+              <SuggestedQuestions onSelect={sendMessage} disabled={isLoading || isStreaming} />
+            )}
+            {isLoading && <TypingIndicator />}
+            <div ref={messagesEndRef} />
+          </>
+        )}
       </main>
 
-      {/* Fixed Input Area */}
-      <footer className="flex-shrink-0 bg-slate-900/95 backdrop-blur-sm border-t border-white/5 safe-area-bottom z-50">
-        <form 
-          onSubmit={handleSubmit} 
-          className="flex items-end gap-2 p-2"
-        >
-          <div className="flex-1 relative">
-            <input
-              ref={inputRef}
-              type="text"
-              value={input}
-              onChange={(e) => setInput(e.target.value)}
-              onKeyDown={handleKeyDown}
-              onFocus={handleInputFocus}
-              placeholder="Type a message..."
-              disabled={!isConnected || isLoading || isStreaming}
-              autoComplete="off"
-              autoCorrect="on"
-              autoCapitalize="sentences"
-              enterKeyHint="send"
-              className="w-full bg-white/10 text-white placeholder-slate-400 px-4 py-3 rounded-full border border-white/10 focus:border-emerald-500/50 focus:outline-none transition-colors disabled:opacity-50 text-[16px]"
-              style={{ fontSize: '16px' }}
-            />
-          </div>
+      {/* Input Area */}
+      <footer className="bg-slate-900/95 backdrop-blur-sm border-t border-white/5 p-3">
+        <form onSubmit={handleSubmit} className="flex items-center gap-2">
+          <input
+            ref={inputRef}
+            type="text"
+            value={input}
+            onChange={(e) => setInput(e.target.value)}
+            placeholder="Type a message..."
+            disabled={!isConnected || isLoading || isStreaming}
+            className="flex-1 bg-white/10 text-white placeholder-slate-400 px-4 py-3 rounded-full border border-white/10 focus:border-emerald-500/50 focus:outline-none disabled:opacity-50 text-base"
+          />
           <button
             type="submit"
             disabled={!isConnected || isLoading || isStreaming || !input.trim()}
-            className="flex-shrink-0 w-11 h-11 bg-emerald-500 text-white rounded-full flex items-center justify-center active:bg-emerald-600 transition-colors disabled:opacity-50 disabled:bg-slate-600 touch-manipulation"
+            className="w-11 h-11 bg-emerald-500 hover:bg-emerald-600 disabled:bg-slate-600 text-white rounded-full flex items-center justify-center transition-colors disabled:opacity-50"
           >
             {isLoading ? (
               <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
@@ -525,72 +419,15 @@ export default function App() {
             )}
           </button>
         </form>
-        <p className="text-center text-slate-500 text-[10px] pb-2">
-          Powered by LangGraph & OpenAI
-        </p>
+        <p className="text-center text-slate-500 text-[10px] mt-2">Powered by LangGraph & OpenAI</p>
       </footer>
 
-      {/* Global Styles */}
       <style>{`
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
-        
-        * {
-          font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-          -webkit-tap-highlight-color: transparent;
-          -webkit-touch-callout: none;
-        }
-        
-        html, body, #root {
-          height: 100%;
-          height: 100dvh;
-          overflow: hidden;
-          overscroll-behavior: none;
-          position: fixed;
-          width: 100%;
-        }
-        
-        input, textarea, select {
-          font-size: 16px !important;
-        }
-        
-        .safe-area-top {
-          padding-top: env(safe-area-inset-top, 0);
-        }
-        
-        .safe-area-bottom {
-          padding-bottom: env(safe-area-inset-bottom, 0);
-        }
-        
-        .touch-manipulation {
-          touch-action: manipulation;
-        }
-        
         @keyframes fadeIn {
           from { opacity: 0; transform: translateY(8px); }
           to { opacity: 1; transform: translateY(0); }
         }
-        
-        .animate-fadeIn {
-          animation: fadeIn 0.2s ease-out forwards;
-        }
-        
-        @media (max-width: 768px) {
-          ::-webkit-scrollbar {
-            display: none;
-          }
-          * {
-            scrollbar-width: none;
-          }
-        }
-        
-        button, header, footer {
-          user-select: none;
-          -webkit-user-select: none;
-        }
-        
-        main {
-          overscroll-behavior: contain;
-        }
+        .animate-fadeIn { animation: fadeIn 0.2s ease-out forwards; }
       `}</style>
     </div>
   );
