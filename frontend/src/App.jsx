@@ -219,8 +219,12 @@ export default function App() {
     setInput('');
     setIsLoading(true);
 
+    // Keep keyboard open - refocus input immediately
+    setTimeout(() => {
+      inputRef.current?.focus();
+    }, 0);
+
     try {
-      // Try streaming first
       const res = await fetch(`${API_URL}/chat/stream`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -282,6 +286,11 @@ export default function App() {
       }
       setIsStreaming(false);
 
+      // Keep keyboard open after response
+      setTimeout(() => {
+        inputRef.current?.focus();
+      }, 0);
+
     } catch (error) {
       // Fallback to non-streaming
       try {
@@ -300,6 +309,12 @@ export default function App() {
           isUser: false,
           timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
         }]);
+
+        // Keep keyboard open
+        setTimeout(() => {
+          inputRef.current?.focus();
+        }, 0);
+
       } catch (fallbackError) {
         setMessages(prev => [...prev, {
           id: Date.now() + 1,
@@ -336,9 +351,9 @@ export default function App() {
   };
 
   return (
-    <div className="h-screen flex flex-col bg-gradient-to-br from-slate-950 via-slate-900 to-emerald-950">
-      {/* Header */}
-      <header className="bg-gradient-to-r from-emerald-600 via-emerald-500 to-teal-600 px-4 py-3 flex items-center justify-between shadow-lg">
+    <div className="fixed inset-0 flex flex-col bg-gradient-to-br from-slate-950 via-slate-900 to-emerald-950">
+      {/* Fixed Header - always on top */}
+      <header className="fixed top-0 left-0 right-0 z-50 bg-gradient-to-r from-emerald-600 via-emerald-500 to-teal-600 px-4 py-3 flex items-center justify-between shadow-lg">
         <div className="flex items-center gap-3">
           <div className="relative">
             <img 
@@ -363,8 +378,11 @@ export default function App() {
         </button>
       </header>
 
-      {/* Chat Area */}
-      <main ref={chatContainerRef} className="flex-1 overflow-y-auto bg-slate-50/5 py-4">
+      {/* Chat Area - scrollable, with padding for fixed header and footer */}
+      <main 
+        ref={chatContainerRef} 
+        className="flex-1 overflow-y-auto bg-slate-50/5 pt-20 pb-24"
+      >
         {!isConnected ? (
           <div className="flex flex-col items-center justify-center h-full text-center px-6">
             <div className="w-16 h-16 bg-red-500/20 rounded-2xl flex items-center justify-center text-3xl mb-4">⚠️</div>
@@ -375,7 +393,7 @@ export default function App() {
             </button>
           </div>
         ) : (
-          <>
+          <div className="py-4">
             {messages.map((message, index) => (
               <MessageBubble 
                 key={message.id} 
@@ -389,12 +407,12 @@ export default function App() {
             )}
             {isLoading && <TypingIndicator />}
             <div ref={messagesEndRef} />
-          </>
+          </div>
         )}
       </main>
 
-      {/* Input Area */}
-      <footer className="bg-slate-900/95 backdrop-blur-sm border-t border-white/5 p-3">
+      {/* Fixed Input Area - always at bottom */}
+      <footer className="fixed bottom-0 left-0 right-0 z-50 bg-slate-900/95 backdrop-blur-sm border-t border-white/5 p-3">
         <form onSubmit={handleSubmit} className="flex items-center gap-2">
           <input
             ref={inputRef}
@@ -403,7 +421,9 @@ export default function App() {
             onChange={(e) => setInput(e.target.value)}
             placeholder="Type a message..."
             disabled={!isConnected || isLoading || isStreaming}
-            className="flex-1 bg-white/10 text-white placeholder-slate-400 px-4 py-3 rounded-full border border-white/10 focus:border-emerald-500/50 focus:outline-none disabled:opacity-50 text-base"
+            autoComplete="off"
+            enterKeyHint="send"
+            className="flex-1 bg-white/10 text-white placeholder-slate-400 px-4 py-3 rounded-full border border-white/10 focus:border-emerald-500/50 focus:outline-none disabled:opacity-50 text-[16px]"
           />
           <button
             type="submit"
@@ -428,6 +448,13 @@ export default function App() {
           to { opacity: 1; transform: translateY(0); }
         }
         .animate-fadeIn { animation: fadeIn 0.2s ease-out forwards; }
+        
+        /* Prevent iOS zoom on input focus */
+        input { font-size: 16px !important; }
+        
+        /* Hide scrollbar but keep functionality */
+        main::-webkit-scrollbar { display: none; }
+        main { -ms-overflow-style: none; scrollbar-width: none; }
       `}</style>
     </div>
   );
