@@ -168,69 +168,65 @@ export default function App() {
   const [sessionId, setSessionId] = useState(null);
   const [isConnected, setIsConnected] = useState(false);
   const [showSuggestions, setShowSuggestions] = useState(true);
-  const [keyboardHeight, setKeyboardHeight] = useState(0);
   
   const messagesEndRef = useRef(null);
   const inputRef = useRef(null);
   const chatContainerRef = useRef(null);
-  const formRef = useRef(null);
+  const inputContainerRef = useRef(null);
 
   const scrollToBottom = useCallback(() => {
-    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+    if (chatContainerRef.current) {
+      chatContainerRef.current.scrollTop = chatContainerRef.current.scrollHeight;
+    }
   }, []);
 
   useEffect(() => {
     scrollToBottom();
   }, [messages, scrollToBottom]);
 
+  // CRITICAL: Mobile keyboard handling using visualViewport (from working CV Evaluator)
   useEffect(() => {
-    checkHealth();
-    
-    // Mobile keyboard detection and handling
-    const handleResize = () => {
-      // Detect if keyboard is open on mobile
-      const viewportHeight = window.visualViewport?.height || window.innerHeight;
-      const windowHeight = window.innerHeight;
-      
-      // If viewport is smaller than window, keyboard is likely open
-      const keyboardOpen = windowHeight - viewportHeight > 100;
-      
-      if (keyboardOpen) {
-        setKeyboardHeight(windowHeight - viewportHeight);
-      } else {
-        setKeyboardHeight(0);
+    const updateLayout = () => {
+      if (window.visualViewport && inputContainerRef.current && chatContainerRef.current) {
+        const viewport = window.visualViewport;
+        const layoutViewport = document.documentElement.clientHeight;
+        const offsetY = layoutViewport - viewport.height - viewport.offsetTop;
+        
+        // Move input container with keyboard
+        inputContainerRef.current.style.transform = `translateY(-${offsetY}px)`;
+        
+        // Adjust chat container height
+        const inputRect = inputContainerRef.current.getBoundingClientRect();
+        const headerHeight = 60;
+        chatContainerRef.current.style.bottom = `${window.innerHeight - inputRect.top}px`;
+        chatContainerRef.current.style.top = `${headerHeight}px`;
+        
+        // Scroll to bottom when keyboard state changes
+        setTimeout(() => {
+          scrollToBottom();
+        }, 100);
       }
-      
-      // Scroll to bottom when keyboard state changes
-      setTimeout(() => scrollToBottom(), 100);
     };
-
-    // Visual Viewport API for better keyboard detection (iOS Safari)
+    
     if (window.visualViewport) {
-      window.visualViewport.addEventListener('resize', handleResize);
-      window.visualViewport.addEventListener('scroll', handleResize);
+      window.visualViewport.addEventListener('resize', updateLayout);
+      window.visualViewport.addEventListener('scroll', updateLayout);
     }
     
-    // Fallback for Android
-    window.addEventListener('resize', handleResize);
+    window.addEventListener('load', updateLayout);
+    setTimeout(updateLayout, 100);
     
-    // Prevent body scroll on mobile
-    document.body.style.overflow = 'hidden';
-    document.body.style.position = 'fixed';
-    document.body.style.width = '100%';
-    document.body.style.height = '100%';
-
     return () => {
       if (window.visualViewport) {
-        window.visualViewport.removeEventListener('resize', handleResize);
-        window.visualViewport.removeEventListener('scroll', handleResize);
+        window.visualViewport.removeEventListener('resize', updateLayout);
+        window.visualViewport.removeEventListener('scroll', updateLayout);
       }
-      window.removeEventListener('resize', handleResize);
-      document.body.style.overflow = '';
-      document.body.style.position = '';
-      document.body.style.width = '';
-      document.body.style.height = '';
+      window.removeEventListener('load', updateLayout);
     };
+  }, [scrollToBottom]);
+
+  useEffect(() => {
+    checkHealth();
   }, []);
 
   const checkHealth = async () => {
@@ -265,19 +261,14 @@ export default function App() {
 
     setMessages(prev => [...prev, userMessage]);
     setInput('');
-    
-    // CRITICAL FOR MOBILE: Keep input focused to maintain keyboard
-    // Prevent the default form behavior that would blur the input
-    if (inputRef.current) {
-      inputRef.current.focus();
-      // For iOS: prevent blur by keeping focus
-      setTimeout(() => {
-        if (inputRef.current) {
-          inputRef.current.focus();
-        }
-      }, 10);
-    }
-    
+
+    // CRITICAL: Keep keyboard open on mobile (pattern from CV Evaluator)
+    setTimeout(() => {
+      if (inputRef.current) {
+        inputRef.current.focus();
+      }
+    }, 10);
+
     setIsLoading(true);
 
     try {
@@ -342,12 +333,12 @@ export default function App() {
       }
       setIsStreaming(false);
 
-      // CRITICAL FOR MOBILE: Re-focus to keep keyboard open after response
+      // CRITICAL: Keep keyboard open after response (pattern from CV Evaluator)
       setTimeout(() => {
         if (inputRef.current) {
           inputRef.current.focus();
         }
-      }, 50);
+      }, 10);
 
     } catch (error) {
       // Fallback to non-streaming
@@ -368,12 +359,12 @@ export default function App() {
           timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
         }]);
 
-        // CRITICAL FOR MOBILE: Keep keyboard open
+        // CRITICAL: Keep keyboard open
         setTimeout(() => {
           if (inputRef.current) {
             inputRef.current.focus();
           }
-        }, 50);
+        }, 10);
 
       } catch (fallbackError) {
         setMessages(prev => [...prev, {
@@ -391,22 +382,7 @@ export default function App() {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    e.stopPropagation(); // Prevent event bubbling
-    
-    // Keep focus on input (critical for mobile keyboard)
-    const currentInput = input;
-    
-    // Send message but don't let the form submission blur the input
-    if (currentInput.trim()) {
-      sendMessage(currentInput);
-    }
-    
-    // Ensure input stays focused
-    if (inputRef.current) {
-      inputRef.current.focus();
-    }
-    
-    return false;
+    sendMessage();
   };
 
   const clearChat = async () => {
@@ -426,195 +402,176 @@ export default function App() {
   };
 
   return (
-    <div 
-      className="flex flex-col bg-gradient-to-br from-slate-950 via-slate-900 to-emerald-950"
-      style={{ 
-        height: '100vh',
-        height: '100dvh', // Dynamic viewport height for mobile
-        overflow: 'hidden',
-        position: 'fixed',
-        top: 0,
-        left: 0,
-        right: 0,
-        bottom: 0,
-        touchAction: 'none' // Prevent pull-to-refresh on mobile
-      }}
-    >
-      {/* Sticky Header - ALWAYS visible at top */}
-      <header className="flex-shrink-0 bg-gradient-to-r from-emerald-600 via-emerald-500 to-teal-600 px-4 py-3 flex items-center justify-between shadow-lg z-50">
-        <div className="flex items-center gap-3">
-          <div className="relative">
-            <img 
-              src="/saud.jpeg" 
-              alt="Saud"
-              className="w-10 h-10 rounded-full object-cover object-top ring-2 ring-white/30"
-            />
-            <span className={`absolute bottom-0 right-0 w-3 h-3 rounded-full border-2 border-emerald-600 ${isConnected ? 'bg-green-400' : 'bg-red-400'}`}></span>
-          </div>
-          <div>
-            <h1 className="text-white font-semibold text-base">AskSaud</h1>
-            <p className="text-emerald-100/80 text-xs">
-              {isStreaming ? 'Typing...' : isConnected ? 'Online' : 'Connecting...'}
-            </p>
-          </div>
-        </div>
-        <button
-          onClick={clearChat}
-          className="px-3 py-1.5 bg-white/15 hover:bg-white/25 text-white text-xs font-medium rounded-lg transition-colors"
-        >
-          Clear
-        </button>
-      </header>
-
-      {/* Chat Area - adjusts height when keyboard opens on mobile */}
-      <main 
-        ref={chatContainerRef} 
-        className="flex-1 overflow-y-auto bg-slate-50/5 py-4"
-        style={{
-          WebkitOverflowScrolling: 'touch', // Smooth scrolling on iOS
-          overscrollBehavior: 'contain', // Prevent overscroll
-          paddingBottom: keyboardHeight > 0 ? '20px' : '0px' // Extra padding when keyboard is open
-        }}
-      >
-        {!isConnected ? (
-          <div className="flex flex-col items-center justify-center h-full text-center px-6">
-            <div className="w-16 h-16 bg-red-500/20 rounded-2xl flex items-center justify-center text-3xl mb-4">⚠️</div>
-            <h3 className="text-white font-semibold text-lg mb-2">Connection Error</h3>
-            <p className="text-slate-400 text-sm mb-4">Unable to connect to the server</p>
-            <button onClick={checkHealth} className="px-5 py-2.5 bg-emerald-500 hover:bg-emerald-600 text-white font-medium rounded-xl transition-colors">
-              Retry
-            </button>
-          </div>
-        ) : (
-          <div>
-            {messages.map((message, index) => (
-              <MessageBubble 
-                key={message.id} 
-                message={message} 
-                isUser={message.isUser}
-                isStreaming={isStreaming && index === messages.length - 1 && !message.isUser}
-              />
-            ))}
-            {showSuggestions && messages.length === 1 && (
-              <SuggestedQuestions onSelect={sendMessage} disabled={isLoading || isStreaming} />
-            )}
-            {isLoading && <TypingIndicator />}
-            <div ref={messagesEndRef} />
-          </div>
-        )}
-      </main>
-
-      {/* Input Area - stays at bottom, moves with keyboard on mobile */}
-      <footer 
-        className="flex-shrink-0 bg-slate-900/95 backdrop-blur-sm border-t border-white/5 p-3"
-        style={{
-          paddingBottom: `max(12px, env(safe-area-inset-bottom))`,
-          position: 'relative',
-          zIndex: 100
-        }}
-      >
-        <form 
-          ref={formRef}
-          onSubmit={handleSubmit} 
-          className="flex items-center gap-2"
-        >
-          <input
-            ref={inputRef}
-            type="text"
-            value={input}
-            onChange={(e) => setInput(e.target.value)}
-            placeholder="Type a message..."
-            disabled={!isConnected || isLoading || isStreaming}
-            autoComplete="off"
-            autoCorrect="off"
-            autoCapitalize="sentences"
-            spellCheck="true"
-            enterKeyHint="send"
-            inputMode="text"
-            onFocus={() => {
-              // Scroll to bottom when input is focused
-              setTimeout(() => scrollToBottom(), 300);
-            }}
-            className="flex-1 bg-white/10 text-white placeholder-slate-400 px-4 py-3 rounded-full border border-white/10 focus:border-emerald-500/50 focus:outline-none disabled:opacity-50 text-[16px]"
-            style={{ fontSize: '16px' }} // Prevent zoom on iOS
-          />
-          <button
-            type="submit"
-            disabled={!isConnected || isLoading || isStreaming || !input.trim()}
-            className="w-11 h-11 bg-emerald-500 hover:bg-emerald-600 disabled:bg-slate-600 text-white rounded-full flex items-center justify-center transition-colors disabled:opacity-50"
-          >
-            {isLoading ? (
-              <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
-            ) : (
-              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-5 h-5">
-                <path strokeLinecap="round" strokeLinejoin="round" d="M6 12L3.269 3.126A59.768 59.768 0 0121.485 12 59.77 59.77 0 013.27 20.876L5.999 12zm0 0h7.5" />
-              </svg>
-            )}
-          </button>
-        </form>
-        <p className="text-center text-slate-500 text-[10px] mt-2">Powered by LangGraph & OpenAI</p>
-      </footer>
-
+    <>
+      {/* CRITICAL: Body styles for mobile (from CV Evaluator pattern) */}
       <style>{`
+        * {
+          margin: 0;
+          padding: 0;
+          box-sizing: border-box;
+          -webkit-tap-highlight-color: transparent;
+        }
+        
+        body {
+          height: 100vh;
+          height: 100dvh;
+          display: flex;
+          flex-direction: column;
+          overflow: hidden;
+          position: fixed;
+          width: 100%;
+          top: 0;
+          left: 0;
+        }
+        
         @keyframes fadeIn {
           from { opacity: 0; transform: translateY(8px); }
           to { opacity: 1; transform: translateY(0); }
         }
         .animate-fadeIn { animation: fadeIn 0.2s ease-out forwards; }
         
-        /* Critical: Prevent iOS zoom on input focus */
-        input, textarea, select {
+        /* Prevent iOS zoom on input focus */
+        input, textarea {
           font-size: 16px !important;
         }
         
         /* Hide scrollbar but keep functionality */
-        main::-webkit-scrollbar { display: none; }
-        main { 
+        .chat-container::-webkit-scrollbar { display: none; }
+        .chat-container { 
           -ms-overflow-style: none; 
           scrollbar-width: none;
-        }
-        
-        /* Mobile-specific fixes */
-        * {
-          -webkit-tap-highlight-color: transparent;
-        }
-        
-        /* Prevent double-tap zoom */
-        button, a {
-          touch-action: manipulation;
-        }
-        
-        /* Fixed body to prevent scroll issues on mobile */
-        html {
-          position: fixed;
-          overflow: hidden;
-          width: 100%;
-          height: 100%;
-        }
-        
-        body {
-          position: fixed;
-          overflow: hidden;
-          width: 100%;
-          height: 100%;
-          overscroll-behavior: none;
-        }
-        
-        /* iOS Safari address bar handling */
-        @supports (-webkit-touch-callout: none) {
-          .h-screen {
-            height: -webkit-fill-available;
-          }
-        }
-        
-        /* Prevent text selection on UI elements */
-        .no-select {
-          -webkit-user-select: none;
-          -moz-user-select: none;
-          -ms-user-select: none;
-          user-select: none;
+          -webkit-overflow-scrolling: touch;
         }
       `}</style>
-    </div>
+
+      <div className="bg-gradient-to-br from-slate-950 via-slate-900 to-emerald-950" style={{
+        height: '100vh',
+        height: '100dvh',
+        display: 'flex',
+        flexDirection: 'column',
+        overflow: 'hidden'
+      }}>
+        {/* FIXED HEADER - Always visible (from CV Evaluator pattern) */}
+        <header 
+          className="bg-gradient-to-r from-emerald-600 via-emerald-500 to-teal-600 px-4 py-3 flex items-center justify-between shadow-lg"
+          style={{
+            position: 'fixed',
+            top: 0,
+            left: 0,
+            right: 0,
+            zIndex: 1000,
+            height: '60px'
+          }}
+        >
+          <div className="flex items-center gap-3">
+            <div className="relative">
+              <img 
+                src="/saud.jpeg" 
+                alt="Saud"
+                className="w-10 h-10 rounded-full object-cover object-top ring-2 ring-white/30"
+              />
+              <span className={`absolute bottom-0 right-0 w-3 h-3 rounded-full border-2 border-emerald-600 ${isConnected ? 'bg-green-400' : 'bg-red-400'}`}></span>
+            </div>
+            <div>
+              <h1 className="text-white font-semibold text-base">AskSaud</h1>
+              <p className="text-emerald-100/80 text-xs">
+                {isStreaming ? 'Typing...' : isConnected ? 'Online' : 'Connecting...'}
+              </p>
+            </div>
+          </div>
+          <button
+            onClick={clearChat}
+            className="px-3 py-1.5 bg-white/15 hover:bg-white/25 text-white text-xs font-medium rounded-lg transition-colors"
+          >
+            Clear
+          </button>
+        </header>
+
+        {/* CHAT CONTAINER - Adjusts with keyboard (from CV Evaluator pattern) */}
+        <div 
+          ref={chatContainerRef}
+          className="chat-container bg-slate-50/5 py-4 overflow-y-auto"
+          style={{
+            position: 'fixed',
+            top: '60px',
+            bottom: '66px',
+            left: 0,
+            right: 0,
+            overflowY: 'auto'
+          }}
+        >
+          {!isConnected ? (
+            <div className="flex flex-col items-center justify-center h-full text-center px-6">
+              <div className="w-16 h-16 bg-red-500/20 rounded-2xl flex items-center justify-center text-3xl mb-4">⚠️</div>
+              <h3 className="text-white font-semibold text-lg mb-2">Connection Error</h3>
+              <p className="text-slate-400 text-sm mb-4">Unable to connect to the server</p>
+              <button onClick={checkHealth} className="px-5 py-2.5 bg-emerald-500 hover:bg-emerald-600 text-white font-medium rounded-xl transition-colors">
+                Retry
+              </button>
+            </div>
+          ) : (
+            <div>
+              {messages.map((message, index) => (
+                <MessageBubble 
+                  key={message.id} 
+                  message={message} 
+                  isUser={message.isUser}
+                  isStreaming={isStreaming && index === messages.length - 1 && !message.isUser}
+                />
+              ))}
+              {showSuggestions && messages.length === 1 && (
+                <SuggestedQuestions onSelect={sendMessage} disabled={isLoading || isStreaming} />
+              )}
+              {isLoading && <TypingIndicator />}
+              <div ref={messagesEndRef} />
+            </div>
+          )}
+        </div>
+
+        {/* INPUT CONTAINER - Fixed at bottom, moves with keyboard (from CV Evaluator pattern) */}
+        <div 
+          ref={inputContainerRef}
+          className="bg-slate-900/95 backdrop-blur-sm border-t border-white/5 p-3"
+          style={{
+            position: 'fixed',
+            bottom: 0,
+            left: 0,
+            right: 0,
+            zIndex: 1000,
+            height: '66px'
+          }}
+        >
+          <form onSubmit={handleSubmit} className="flex items-center gap-2">
+            <div className="flex-1 bg-white/10 rounded-full flex items-center px-4 py-3 border border-white/10">
+              <input
+                ref={inputRef}
+                type="text"
+                value={input}
+                onChange={(e) => setInput(e.target.value)}
+                placeholder="Type a message..."
+                disabled={!isConnected || isLoading || isStreaming}
+                autoComplete="off"
+                className="flex-1 bg-transparent text-white placeholder-slate-400 outline-none text-[16px] border-0"
+                style={{ fontSize: '16px' }}
+              />
+            </div>
+            <button
+              type="submit"
+              disabled={!isConnected || isLoading || isStreaming || !input.trim()}
+              className="w-11 h-11 bg-emerald-500 hover:bg-emerald-600 disabled:bg-slate-600 text-white rounded-full flex items-center justify-center transition-colors disabled:opacity-50"
+            >
+              {isLoading ? (
+                <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
+              ) : (
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-5 h-5">
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M6 12L3.269 3.126A59.768 59.768 0 0121.485 12 59.77 59.77 0 013.27 20.876L5.999 12zm0 0h7.5" />
+                </svg>
+              )}
+            </button>
+          </form>
+          <p className="text-center text-slate-500 text-[10px] mt-2">Powered by LangGraph & OpenAI</p>
+        </div>
+      </div>
+    </>
   );
 }
