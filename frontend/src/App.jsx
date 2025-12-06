@@ -262,14 +262,19 @@ export default function App() {
     setMessages(prev => [...prev, userMessage]);
     setInput('');
 
-    // CRITICAL: Keep keyboard open on mobile (pattern from CV Evaluator)
-    setTimeout(() => {
+    // CRITICAL FIX #1: Keep keyboard open IMMEDIATELY before any state changes
+    if (inputRef.current) {
+      inputRef.current.focus();
+    }
+
+    setIsLoading(true);
+    
+    // CRITICAL FIX #2: Re-focus after state change to prevent keyboard close
+    requestAnimationFrame(() => {
       if (inputRef.current) {
         inputRef.current.focus();
       }
-    }, 10);
-
-    setIsLoading(true);
+    });
 
     try {
       const res = await fetch(`${API_URL}/chat/stream`, {
@@ -294,7 +299,16 @@ export default function App() {
       setIsLoading(false);
       setIsStreaming(true);
 
+      // CRITICAL FIX #3: Keep keyboard open when streaming starts
+      requestAnimationFrame(() => {
+        if (inputRef.current) {
+          inputRef.current.focus();
+        }
+      });
+
       let fullContent = '';
+      let lastUpdateTime = Date.now();
+      const STREAM_THROTTLE_MS = 50; // Smooth streaming: update every 50ms
 
       while (true) {
         const { done, value } = await reader.read();
@@ -312,6 +326,22 @@ export default function App() {
                 setSessionId(data.session_id);
               } else if (data.type === 'content') {
                 fullContent += data.content;
+                
+                // SMOOTH STREAMING: Throttle updates for smoother visual effect
+                const now = Date.now();
+                if (now - lastUpdateTime >= STREAM_THROTTLE_MS || data.content.includes('\n')) {
+                  lastUpdateTime = now;
+                  setMessages(prev => {
+                    const updated = [...prev];
+                    const lastIdx = updated.length - 1;
+                    if (lastIdx >= 0 && !updated[lastIdx].isUser) {
+                      updated[lastIdx] = { ...updated[lastIdx], content: fullContent };
+                    }
+                    return updated;
+                  });
+                }
+              } else if (data.type === 'done') {
+                // Final update with complete content
                 setMessages(prev => {
                   const updated = [...prev];
                   const lastIdx = updated.length - 1;
@@ -320,7 +350,6 @@ export default function App() {
                   }
                   return updated;
                 });
-              } else if (data.type === 'done') {
                 setIsStreaming(false);
               } else if (data.type === 'error') {
                 throw new Error(data.error);
@@ -330,15 +359,20 @@ export default function App() {
             }
           }
         }
+        
+        // CRITICAL FIX #4: Maintain keyboard focus during streaming
+        if (inputRef.current && document.activeElement !== inputRef.current) {
+          inputRef.current.focus();
+        }
       }
       setIsStreaming(false);
 
-      // CRITICAL: Keep keyboard open after response (pattern from CV Evaluator)
-      setTimeout(() => {
+      // CRITICAL FIX #5: Re-focus after streaming completes
+      requestAnimationFrame(() => {
         if (inputRef.current) {
           inputRef.current.focus();
         }
-      }, 10);
+      });
 
     } catch (error) {
       // Fallback to non-streaming
@@ -359,12 +393,12 @@ export default function App() {
           timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
         }]);
 
-        // CRITICAL: Keep keyboard open
-        setTimeout(() => {
+        // CRITICAL FIX #6: Keep keyboard open in fallback mode
+        requestAnimationFrame(() => {
           if (inputRef.current) {
             inputRef.current.focus();
           }
-        }, 10);
+        });
 
       } catch (fallbackError) {
         setMessages(prev => [...prev, {
@@ -542,12 +576,21 @@ export default function App() {
           }}
         >
           <form onSubmit={handleSubmit} className="flex items-center gap-2">
-            <div className="flex-1 bg-white/10 rounded-full flex items-center px-4 py-3 border border-white/10">
+            <div className={`flex-1 bg-white/10 rounded-full flex items-center px-4 py-3 border transition-colors ${
+              isLoading || isStreaming ? 'border-emerald-500/50' : 'border-white/10'
+            }`}>
               <input
                 ref={inputRef}
                 type="text"
                 value={input}
                 onChange={(e) => setInput(e.target.value)}
+                onBlur={(e) => {
+                  // CRITICAL FIX #7: Prevent keyboard from closing during loading/streaming
+                  if (isLoading || isStreaming) {
+                    e.preventDefault();
+                    e.target.focus();
+                  }
+                }}
                 placeholder="Type a message..."
                 disabled={!isConnected || isLoading || isStreaming}
                 autoComplete="off"
