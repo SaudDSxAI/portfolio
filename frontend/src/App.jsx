@@ -248,7 +248,9 @@ export default function App() {
 
   const sendMessage = async (messageText) => {
     const text = messageText || input.trim();
-    if (!text || isLoading || isStreaming) return;
+    
+    // Prevent multiple sends while processing
+    if (!text || isLoading || isStreaming || !isConnected) return;
 
     setShowSuggestions(false);
 
@@ -261,20 +263,7 @@ export default function App() {
 
     setMessages(prev => [...prev, userMessage]);
     setInput('');
-
-    // CRITICAL FIX #1: Keep keyboard open IMMEDIATELY before any state changes
-    if (inputRef.current) {
-      inputRef.current.focus();
-    }
-
     setIsLoading(true);
-    
-    // CRITICAL FIX #2: Re-focus after state change to prevent keyboard close
-    requestAnimationFrame(() => {
-      if (inputRef.current) {
-        inputRef.current.focus();
-      }
-    });
 
     try {
       const res = await fetch(`${API_URL}/chat/stream`, {
@@ -298,13 +287,6 @@ export default function App() {
       
       setIsLoading(false);
       setIsStreaming(true);
-
-      // CRITICAL FIX #3: Keep keyboard open when streaming starts
-      requestAnimationFrame(() => {
-        if (inputRef.current) {
-          inputRef.current.focus();
-        }
-      });
 
       let fullContent = '';
       let lastUpdateTime = Date.now();
@@ -359,20 +341,8 @@ export default function App() {
             }
           }
         }
-        
-        // CRITICAL FIX #4: Maintain keyboard focus during streaming
-        if (inputRef.current && document.activeElement !== inputRef.current) {
-          inputRef.current.focus();
-        }
       }
       setIsStreaming(false);
-
-      // CRITICAL FIX #5: Re-focus after streaming completes
-      requestAnimationFrame(() => {
-        if (inputRef.current) {
-          inputRef.current.focus();
-        }
-      });
 
     } catch (error) {
       // Fallback to non-streaming
@@ -393,13 +363,6 @@ export default function App() {
           timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
         }]);
 
-        // CRITICAL FIX #6: Keep keyboard open in fallback mode
-        requestAnimationFrame(() => {
-          if (inputRef.current) {
-            inputRef.current.focus();
-          }
-        });
-
       } catch (fallbackError) {
         setMessages(prev => [...prev, {
           id: Date.now() + 1,
@@ -416,7 +379,16 @@ export default function App() {
 
   const handleSubmit = (e) => {
     e.preventDefault();
+    e.stopPropagation();
+    
+    // Don't let form submission blur the input
+    if (inputRef.current) {
+      inputRef.current.focus();
+    }
+    
     sendMessage();
+    
+    return false;
   };
 
   const clearChat = async () => {
@@ -576,23 +548,28 @@ export default function App() {
           }}
         >
           <form onSubmit={handleSubmit} className="flex items-center gap-2">
-            <div className={`flex-1 bg-white/10 rounded-full flex items-center px-4 py-3 border transition-colors ${
-              isLoading || isStreaming ? 'border-emerald-500/50' : 'border-white/10'
+            <div className={`flex-1 bg-white/10 rounded-full flex items-center px-4 py-3 border transition-all ${
+              isLoading || isStreaming ? 'border-emerald-500/50 opacity-75' : 'border-white/10 opacity-100'
             }`}>
               <input
                 ref={inputRef}
                 type="text"
                 value={input}
                 onChange={(e) => setInput(e.target.value)}
-                onBlur={(e) => {
-                  // CRITICAL FIX #7: Prevent keyboard from closing during loading/streaming
-                  if (isLoading || isStreaming) {
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter' && !e.shiftKey) {
                     e.preventDefault();
+                    e.stopPropagation();
+                    sendMessage();
+                    // Keep focus on input
                     e.target.focus();
                   }
                 }}
+                onFocus={() => {
+                  // Always scroll to bottom when focused
+                  setTimeout(() => scrollToBottom(), 100);
+                }}
                 placeholder="Type a message..."
-                disabled={!isConnected || isLoading || isStreaming}
                 autoComplete="off"
                 className="flex-1 bg-transparent text-white placeholder-slate-400 outline-none text-[16px] border-0"
                 style={{ fontSize: '16px' }}
@@ -600,8 +577,18 @@ export default function App() {
             </div>
             <button
               type="submit"
-              disabled={!isConnected || isLoading || isStreaming || !input.trim()}
-              className="w-11 h-11 bg-emerald-500 hover:bg-emerald-600 disabled:bg-slate-600 text-white rounded-full flex items-center justify-center transition-colors disabled:opacity-50"
+              onClick={(e) => {
+                // Prevent send if already processing
+                if (!isConnected || isLoading || isStreaming || !input.trim()) {
+                  e.preventDefault();
+                  return;
+                }
+              }}
+              className={`w-11 h-11 rounded-full flex items-center justify-center transition-colors ${
+                !isConnected || isLoading || isStreaming || !input.trim()
+                  ? 'bg-slate-600 opacity-50 cursor-not-allowed'
+                  : 'bg-emerald-500 hover:bg-emerald-600'
+              } text-white`}
             >
               {isLoading ? (
                 <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>

@@ -16,13 +16,14 @@ Skill Priority: AI/ML → Data Science → Backend → Full-Stack → Others
 ---
 
 FORMATTING (USE UNICODE IN EVERY RESPONSE)
-
+- All the text should be stylish unicode not simple text
 ▸ Headers: 𝗕𝗼𝗹𝗱 𝘂𝗻𝗶𝗰𝗼𝗱𝗲 (𝗦𝗸𝗶𝗹𝗹𝘀, 𝗣𝗿𝗼𝗷𝗲𝗰𝘁𝘀, 𝗘𝘅𝗽𝗲𝗿𝗶𝗲𝗻𝗰𝗲)
 ▸ Key terms: 𝗟𝗮𝗻𝗴𝗖𝗵𝗮𝗶𝗻, 𝗙𝗮𝘀𝘁𝗔𝗣𝗜, 𝗚𝗣𝗧-𝟰
 ▸ Metrics: 𝟯,𝟱𝟬𝟬+ 𝗖𝗩𝘀, 𝟴𝟬% 𝗿𝗲𝗱𝘂𝗰𝘁𝗶𝗼𝗻
 ▸ Bullets: ▸ for points, ◈ for sub-points, → for results
 ▸ Dividers: ━━━━━━━━━━
 ▸ Links: Always include GitHub links for projects
+
 
 Structure: Bullet points over paragraphs. One idea per line. Mobile-friendly.
 
