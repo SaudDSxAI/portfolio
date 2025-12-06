@@ -219,10 +219,10 @@ export default function App() {
     setInput('');
     setIsLoading(true);
 
-    // Keep keyboard open - refocus input immediately
-    setTimeout(() => {
+    // CRITICAL: Keep keyboard open - refocus input immediately and prevent blur
+    requestAnimationFrame(() => {
       inputRef.current?.focus();
-    }, 0);
+    });
 
     try {
       const res = await fetch(`${API_URL}/chat/stream`, {
@@ -286,10 +286,10 @@ export default function App() {
       }
       setIsStreaming(false);
 
-      // Keep keyboard open after response
-      setTimeout(() => {
+      // CRITICAL: Keep keyboard open after response completes
+      requestAnimationFrame(() => {
         inputRef.current?.focus();
-      }, 0);
+      });
 
     } catch (error) {
       // Fallback to non-streaming
@@ -310,10 +310,10 @@ export default function App() {
           timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
         }]);
 
-        // Keep keyboard open
-        setTimeout(() => {
+        // CRITICAL: Keep keyboard open
+        requestAnimationFrame(() => {
           inputRef.current?.focus();
-        }, 0);
+        });
 
       } catch (fallbackError) {
         setMessages(prev => [...prev, {
@@ -351,9 +351,9 @@ export default function App() {
   };
 
   return (
-    <div className="fixed inset-0 flex flex-col bg-gradient-to-br from-slate-950 via-slate-900 to-emerald-950">
-      {/* Fixed Header - always on top */}
-      <header className="fixed top-0 left-0 right-0 z-50 bg-gradient-to-r from-emerald-600 via-emerald-500 to-teal-600 px-4 py-3 flex items-center justify-between shadow-lg">
+    <div className="flex flex-col h-screen bg-gradient-to-br from-slate-950 via-slate-900 to-emerald-950 overflow-hidden">
+      {/* Sticky Header - ALWAYS visible at top */}
+      <header className="flex-shrink-0 bg-gradient-to-r from-emerald-600 via-emerald-500 to-teal-600 px-4 py-3 flex items-center justify-between shadow-lg z-50">
         <div className="flex items-center gap-3">
           <div className="relative">
             <img 
@@ -378,10 +378,10 @@ export default function App() {
         </button>
       </header>
 
-      {/* Chat Area - scrollable, with padding for fixed header and footer */}
+      {/* Chat Area - flex-1 makes it fill available space, moves up when keyboard opens */}
       <main 
         ref={chatContainerRef} 
-        className="flex-1 overflow-y-auto bg-slate-50/5 pt-20 pb-24"
+        className="flex-1 overflow-y-auto bg-slate-50/5 py-4"
       >
         {!isConnected ? (
           <div className="flex flex-col items-center justify-center h-full text-center px-6">
@@ -393,7 +393,7 @@ export default function App() {
             </button>
           </div>
         ) : (
-          <div className="py-4">
+          <div>
             {messages.map((message, index) => (
               <MessageBubble 
                 key={message.id} 
@@ -411,8 +411,8 @@ export default function App() {
         )}
       </main>
 
-      {/* Fixed Input Area - always at bottom */}
-      <footer className="fixed bottom-0 left-0 right-0 z-50 bg-slate-900/95 backdrop-blur-sm border-t border-white/5 p-3">
+      {/* Input Area - flex-shrink-0 keeps it at bottom, adjusts with keyboard */}
+      <footer className="flex-shrink-0 bg-slate-900/95 backdrop-blur-sm border-t border-white/5 p-3 safe-area-bottom">
         <form onSubmit={handleSubmit} className="flex items-center gap-2">
           <input
             ref={inputRef}
@@ -455,6 +455,19 @@ export default function App() {
         /* Hide scrollbar but keep functionality */
         main::-webkit-scrollbar { display: none; }
         main { -ms-overflow-style: none; scrollbar-width: none; }
+        
+        /* Safe area for notch devices */
+        .safe-area-bottom {
+          padding-bottom: max(12px, env(safe-area-inset-bottom));
+        }
+        
+        /* Ensure body doesn't scroll when keyboard opens */
+        html, body {
+          position: fixed;
+          overflow: hidden;
+          width: 100%;
+          height: 100%;
+        }
       `}</style>
     </div>
   );
