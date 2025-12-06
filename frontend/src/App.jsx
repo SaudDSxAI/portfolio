@@ -168,10 +168,12 @@ export default function App() {
   const [sessionId, setSessionId] = useState(null);
   const [isConnected, setIsConnected] = useState(false);
   const [showSuggestions, setShowSuggestions] = useState(true);
+  const [keyboardHeight, setKeyboardHeight] = useState(0);
   
   const messagesEndRef = useRef(null);
   const inputRef = useRef(null);
   const chatContainerRef = useRef(null);
+  const formRef = useRef(null);
 
   const scrollToBottom = useCallback(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
@@ -183,6 +185,52 @@ export default function App() {
 
   useEffect(() => {
     checkHealth();
+    
+    // Mobile keyboard detection and handling
+    const handleResize = () => {
+      // Detect if keyboard is open on mobile
+      const viewportHeight = window.visualViewport?.height || window.innerHeight;
+      const windowHeight = window.innerHeight;
+      
+      // If viewport is smaller than window, keyboard is likely open
+      const keyboardOpen = windowHeight - viewportHeight > 100;
+      
+      if (keyboardOpen) {
+        setKeyboardHeight(windowHeight - viewportHeight);
+      } else {
+        setKeyboardHeight(0);
+      }
+      
+      // Scroll to bottom when keyboard state changes
+      setTimeout(() => scrollToBottom(), 100);
+    };
+
+    // Visual Viewport API for better keyboard detection (iOS Safari)
+    if (window.visualViewport) {
+      window.visualViewport.addEventListener('resize', handleResize);
+      window.visualViewport.addEventListener('scroll', handleResize);
+    }
+    
+    // Fallback for Android
+    window.addEventListener('resize', handleResize);
+    
+    // Prevent body scroll on mobile
+    document.body.style.overflow = 'hidden';
+    document.body.style.position = 'fixed';
+    document.body.style.width = '100%';
+    document.body.style.height = '100%';
+
+    return () => {
+      if (window.visualViewport) {
+        window.visualViewport.removeEventListener('resize', handleResize);
+        window.visualViewport.removeEventListener('scroll', handleResize);
+      }
+      window.removeEventListener('resize', handleResize);
+      document.body.style.overflow = '';
+      document.body.style.position = '';
+      document.body.style.width = '';
+      document.body.style.height = '';
+    };
   }, []);
 
   const checkHealth = async () => {
@@ -217,12 +265,20 @@ export default function App() {
 
     setMessages(prev => [...prev, userMessage]);
     setInput('');
+    
+    // CRITICAL FOR MOBILE: Keep input focused to maintain keyboard
+    // Prevent the default form behavior that would blur the input
+    if (inputRef.current) {
+      inputRef.current.focus();
+      // For iOS: prevent blur by keeping focus
+      setTimeout(() => {
+        if (inputRef.current) {
+          inputRef.current.focus();
+        }
+      }, 10);
+    }
+    
     setIsLoading(true);
-
-    // CRITICAL: Keep keyboard open - refocus input immediately and prevent blur
-    requestAnimationFrame(() => {
-      inputRef.current?.focus();
-    });
 
     try {
       const res = await fetch(`${API_URL}/chat/stream`, {
@@ -286,10 +342,12 @@ export default function App() {
       }
       setIsStreaming(false);
 
-      // CRITICAL: Keep keyboard open after response completes
-      requestAnimationFrame(() => {
-        inputRef.current?.focus();
-      });
+      // CRITICAL FOR MOBILE: Re-focus to keep keyboard open after response
+      setTimeout(() => {
+        if (inputRef.current) {
+          inputRef.current.focus();
+        }
+      }, 50);
 
     } catch (error) {
       // Fallback to non-streaming
@@ -310,10 +368,12 @@ export default function App() {
           timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
         }]);
 
-        // CRITICAL: Keep keyboard open
-        requestAnimationFrame(() => {
-          inputRef.current?.focus();
-        });
+        // CRITICAL FOR MOBILE: Keep keyboard open
+        setTimeout(() => {
+          if (inputRef.current) {
+            inputRef.current.focus();
+          }
+        }, 50);
 
       } catch (fallbackError) {
         setMessages(prev => [...prev, {
@@ -331,7 +391,22 @@ export default function App() {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    sendMessage();
+    e.stopPropagation(); // Prevent event bubbling
+    
+    // Keep focus on input (critical for mobile keyboard)
+    const currentInput = input;
+    
+    // Send message but don't let the form submission blur the input
+    if (currentInput.trim()) {
+      sendMessage(currentInput);
+    }
+    
+    // Ensure input stays focused
+    if (inputRef.current) {
+      inputRef.current.focus();
+    }
+    
+    return false;
   };
 
   const clearChat = async () => {
@@ -351,7 +426,20 @@ export default function App() {
   };
 
   return (
-    <div className="flex flex-col h-screen bg-gradient-to-br from-slate-950 via-slate-900 to-emerald-950 overflow-hidden">
+    <div 
+      className="flex flex-col bg-gradient-to-br from-slate-950 via-slate-900 to-emerald-950"
+      style={{ 
+        height: '100vh',
+        height: '100dvh', // Dynamic viewport height for mobile
+        overflow: 'hidden',
+        position: 'fixed',
+        top: 0,
+        left: 0,
+        right: 0,
+        bottom: 0,
+        touchAction: 'none' // Prevent pull-to-refresh on mobile
+      }}
+    >
       {/* Sticky Header - ALWAYS visible at top */}
       <header className="flex-shrink-0 bg-gradient-to-r from-emerald-600 via-emerald-500 to-teal-600 px-4 py-3 flex items-center justify-between shadow-lg z-50">
         <div className="flex items-center gap-3">
@@ -378,10 +466,15 @@ export default function App() {
         </button>
       </header>
 
-      {/* Chat Area - flex-1 makes it fill available space, moves up when keyboard opens */}
+      {/* Chat Area - adjusts height when keyboard opens on mobile */}
       <main 
         ref={chatContainerRef} 
         className="flex-1 overflow-y-auto bg-slate-50/5 py-4"
+        style={{
+          WebkitOverflowScrolling: 'touch', // Smooth scrolling on iOS
+          overscrollBehavior: 'contain', // Prevent overscroll
+          paddingBottom: keyboardHeight > 0 ? '20px' : '0px' // Extra padding when keyboard is open
+        }}
       >
         {!isConnected ? (
           <div className="flex flex-col items-center justify-center h-full text-center px-6">
@@ -411,9 +504,20 @@ export default function App() {
         )}
       </main>
 
-      {/* Input Area - flex-shrink-0 keeps it at bottom, adjusts with keyboard */}
-      <footer className="flex-shrink-0 bg-slate-900/95 backdrop-blur-sm border-t border-white/5 p-3 safe-area-bottom">
-        <form onSubmit={handleSubmit} className="flex items-center gap-2">
+      {/* Input Area - stays at bottom, moves with keyboard on mobile */}
+      <footer 
+        className="flex-shrink-0 bg-slate-900/95 backdrop-blur-sm border-t border-white/5 p-3"
+        style={{
+          paddingBottom: `max(12px, env(safe-area-inset-bottom))`,
+          position: 'relative',
+          zIndex: 100
+        }}
+      >
+        <form 
+          ref={formRef}
+          onSubmit={handleSubmit} 
+          className="flex items-center gap-2"
+        >
           <input
             ref={inputRef}
             type="text"
@@ -422,8 +526,17 @@ export default function App() {
             placeholder="Type a message..."
             disabled={!isConnected || isLoading || isStreaming}
             autoComplete="off"
+            autoCorrect="off"
+            autoCapitalize="sentences"
+            spellCheck="true"
             enterKeyHint="send"
+            inputMode="text"
+            onFocus={() => {
+              // Scroll to bottom when input is focused
+              setTimeout(() => scrollToBottom(), 300);
+            }}
             className="flex-1 bg-white/10 text-white placeholder-slate-400 px-4 py-3 rounded-full border border-white/10 focus:border-emerald-500/50 focus:outline-none disabled:opacity-50 text-[16px]"
+            style={{ fontSize: '16px' }} // Prevent zoom on iOS
           />
           <button
             type="submit"
@@ -449,24 +562,57 @@ export default function App() {
         }
         .animate-fadeIn { animation: fadeIn 0.2s ease-out forwards; }
         
-        /* Prevent iOS zoom on input focus */
-        input { font-size: 16px !important; }
+        /* Critical: Prevent iOS zoom on input focus */
+        input, textarea, select {
+          font-size: 16px !important;
+        }
         
         /* Hide scrollbar but keep functionality */
         main::-webkit-scrollbar { display: none; }
-        main { -ms-overflow-style: none; scrollbar-width: none; }
-        
-        /* Safe area for notch devices */
-        .safe-area-bottom {
-          padding-bottom: max(12px, env(safe-area-inset-bottom));
+        main { 
+          -ms-overflow-style: none; 
+          scrollbar-width: none;
         }
         
-        /* Ensure body doesn't scroll when keyboard opens */
-        html, body {
+        /* Mobile-specific fixes */
+        * {
+          -webkit-tap-highlight-color: transparent;
+        }
+        
+        /* Prevent double-tap zoom */
+        button, a {
+          touch-action: manipulation;
+        }
+        
+        /* Fixed body to prevent scroll issues on mobile */
+        html {
           position: fixed;
           overflow: hidden;
           width: 100%;
           height: 100%;
+        }
+        
+        body {
+          position: fixed;
+          overflow: hidden;
+          width: 100%;
+          height: 100%;
+          overscroll-behavior: none;
+        }
+        
+        /* iOS Safari address bar handling */
+        @supports (-webkit-touch-callout: none) {
+          .h-screen {
+            height: -webkit-fill-available;
+          }
+        }
+        
+        /* Prevent text selection on UI elements */
+        .no-select {
+          -webkit-user-select: none;
+          -moz-user-select: none;
+          -ms-user-select: none;
+          user-select: none;
         }
       `}</style>
     </div>
