@@ -3,6 +3,7 @@ os.environ["ANONYMIZED_TELEMETRY"] = "False"  # Must be set before importing chr
 
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import StreamingResponse
 from pydantic import BaseModel
 from typing import List, Optional, Dict
 from dotenv import load_dotenv
@@ -14,7 +15,8 @@ from langgraph.graph.message import add_messages
 from typing import Annotated, TypedDict
 from langchain_core.messages import HumanMessage, AIMessage
 import uuid
-from datetime import datetime
+import json
+import asyncio
 
 # ================= CONFIG =================
 load_dotenv()
@@ -112,95 +114,7 @@ def search_collections(query: str, n_results: int = 5) -> str:
     return "\n\n".join(context_parts) if context_parts else "No relevant context found."
 
 
-# ================= LANGGRAPH STATE =================
-class State(TypedDict):
-    messages: Annotated[list, add_messages]
-    context: str
-
-
-# ================= LANGGRAPH NODES =================
-def retrieve_context(state: State) -> State:
-    """Retrieve relevant context from embeddings based on user query"""
-    messages = state["messages"]
-    
-    # Get the last user message
-    last_message = None
-    for msg in reversed(messages):
-        if isinstance(msg, HumanMessage):
-            last_message = msg.content
-            break
-        elif hasattr(msg, 'type') and msg.type == "human":
-            last_message = msg.content
-            break
-    
-    if last_message:
-        context = search_collections(last_message)
-    else:
-        context = ""
-    
-    return {"context": context}
-
-
-def generate_response(state: State) -> State:
-    """Generate response using OpenAI with retrieved context"""
-    messages = state["messages"]
-    context = state.get("context", "")
-    
-    # Build messages for OpenAI
-    openai_messages = [
-        {"role": "system", "content": f"{SYSTEM_PROMPT}\n\n--- CONTEXT ---\n{context}\n--- END CONTEXT ---"}
-    ]
-    
-    # Add conversation history
-    for msg in messages:
-        if isinstance(msg, HumanMessage):
-            openai_messages.append({"role": "user", "content": msg.content})
-        elif isinstance(msg, AIMessage):
-            openai_messages.append({"role": "assistant", "content": msg.content})
-        elif hasattr(msg, 'type'):
-            if msg.type == "human":
-                openai_messages.append({"role": "user", "content": msg.content})
-            elif msg.type == "ai":
-                openai_messages.append({"role": "assistant", "content": msg.content})
-    
-    # Generate response
-    response = openai_client.chat.completions.create(
-        model="gpt-4o-mini",
-        messages=openai_messages,
-        temperature=0.7,
-        max_tokens=1000
-    )
-    
-    ai_response = response.choices[0].message.content
-    
-    return {"messages": [AIMessage(content=ai_response)]}
-
-
-# ================= BUILD LANGGRAPH =================
-def build_graph():
-    """Build the LangGraph workflow"""
-    graph = StateGraph(State)
-    
-    # Add nodes
-    graph.add_node("retrieve", retrieve_context)
-    graph.add_node("generate", generate_response)
-    
-    # Set entry point
-    graph.set_entry_point("retrieve")
-    
-    # Add edges
-    graph.add_edge("retrieve", "generate")
-    graph.add_edge("generate", END)
-    
-    return graph.compile()
-
-
-# Build the graph once at startup
-chat_graph = build_graph()
-
-
 # ================= SESSION MANAGEMENT (In-Memory) =================
-# Store conversation histories by session_id
 sessions: Dict[str, List] = {}
 
 
@@ -243,17 +157,38 @@ class HealthResponse(BaseModel):
 app = FastAPI(
     title="Portfolio Chat API",
     description="AI-powered chat assistant for Saud Ahmad's portfolio",
-    version="1.0.0"
+    version="2.0.0"
 )
 
 # CORS middleware - allow frontend to connect
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],  # Update this with your frontend URL in production
+    allow_origins=["*"],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+
+# ================= HELPER FUNCTIONS =================
+def build_openai_messages(conversation_history: List, context: str) -> List[dict]:
+    """Build OpenAI messages from conversation history"""
+    openai_messages = [
+        {"role": "system", "content": f"{SYSTEM_PROMPT}\n\n--- CONTEXT ---\n{context}\n--- END CONTEXT ---"}
+    ]
+    
+    for msg in conversation_history:
+        if isinstance(msg, HumanMessage):
+            openai_messages.append({"role": "user", "content": msg.content})
+        elif isinstance(msg, AIMessage):
+            openai_messages.append({"role": "assistant", "content": msg.content})
+        elif hasattr(msg, 'type'):
+            if msg.type == "human":
+                openai_messages.append({"role": "user", "content": msg.content})
+            elif msg.type == "ai":
+                openai_messages.append({"role": "assistant", "content": msg.content})
+    
+    return openai_messages
 
 
 # ================= API ENDPOINTS =================
@@ -281,7 +216,7 @@ async def health_check():
 
 @app.post("/chat", response_model=ChatResponse, tags=["Chat"])
 async def chat(request: ChatRequest):
-    """Send a message and get AI response"""
+    """Send a message and get AI response (non-streaming)"""
     try:
         # Get or create session
         session_id = get_or_create_session(request.session_id)
@@ -292,14 +227,21 @@ async def chat(request: ChatRequest):
         # Add user message to history
         conversation_history.append(HumanMessage(content=request.message))
         
-        # Run the graph
-        result = chat_graph.invoke({
-            "messages": conversation_history,
-            "context": ""
-        })
+        # Get context from RAG
+        context = search_collections(request.message)
         
-        # Get AI response
-        ai_response = result["messages"][-1].content
+        # Build OpenAI messages
+        openai_messages = build_openai_messages(conversation_history, context)
+        
+        # Generate response
+        response = openai_client.chat.completions.create(
+            model="gpt-4o-mini",
+            messages=openai_messages,
+            temperature=0.7,
+            max_tokens=1000
+        )
+        
+        ai_response = response.choices[0].message.content
         
         # Add AI response to history
         conversation_history.append(AIMessage(content=ai_response))
@@ -314,6 +256,68 @@ async def chat(request: ChatRequest):
         
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
+
+
+@app.post("/chat/stream", tags=["Chat"])
+async def chat_stream(request: ChatRequest):
+    """Send a message and get AI response with streaming (GPT-like typewriter effect)"""
+    
+    # Get or create session
+    session_id = get_or_create_session(request.session_id)
+    
+    # Get conversation history
+    conversation_history = sessions[session_id]
+    
+    # Add user message to history
+    conversation_history.append(HumanMessage(content=request.message))
+    
+    # Get context from RAG
+    context = search_collections(request.message)
+    
+    # Build OpenAI messages
+    openai_messages = build_openai_messages(conversation_history, context)
+    
+    async def generate():
+        full_response = ""
+        
+        try:
+            # Send session_id first
+            yield f"data: {json.dumps({'type': 'session', 'session_id': session_id})}\n\n"
+            
+            # Create streaming response
+            stream = openai_client.chat.completions.create(
+                model="gpt-4o-mini",
+                messages=openai_messages,
+                temperature=0.7,
+                max_tokens=1000,
+                stream=True
+            )
+            
+            for chunk in stream:
+                if chunk.choices[0].delta.content:
+                    content = chunk.choices[0].delta.content
+                    full_response += content
+                    yield f"data: {json.dumps({'type': 'content', 'content': content})}\n\n"
+            
+            # Add complete response to history
+            conversation_history.append(AIMessage(content=full_response))
+            sessions[session_id] = conversation_history
+            
+            # Send done signal
+            yield f"data: {json.dumps({'type': 'done'})}\n\n"
+            
+        except Exception as e:
+            yield f"data: {json.dumps({'type': 'error', 'error': str(e)})}\n\n"
+    
+    return StreamingResponse(
+        generate(),
+        media_type="text/event-stream",
+        headers={
+            "Cache-Control": "no-cache",
+            "Connection": "keep-alive",
+            "X-Accel-Buffering": "no"
+        }
+    )
 
 
 @app.post("/session/new", response_model=SessionResponse, tags=["Session"])
