@@ -39,7 +39,7 @@ An AI-powered chatbot that answers questions about my skills, projects, and expe
 
 **Solution:** AskSaud is a conversational AI assistant that:
 - Retrieves relevant context from my CV and 34 GitHub repositories
-- Generates accurate, recruiter-ready responses using GPT-4o-mini
+- Generates accurate, recruiter-ready responses using GPT-5-mini
 - Streams responses in real-time (GPT-like typewriter effect)
 - Provides a mobile-first, WhatsApp-like chat experience
 
