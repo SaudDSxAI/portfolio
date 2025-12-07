@@ -455,11 +455,6 @@ Data Scientist & AI Engineer
 - **GitHub:** [github.com/SaudDSxAI](https://github.com/SaudDSxAI)
 - **Portfolio:** [saudassist.up.railway.app](https://saudassist.up.railway.app/)
 
----
-
-## License
-
-This project is open source and available under the [MIT License](LICENSE).
 
 ---
 
