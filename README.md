@@ -1,185 +1,468 @@
-<h1 align="center">AskSaud — AI Portfolio Assistant</h1>
+# AskSaud — AI Portfolio Assistant
 
-<p align="center">
-  <img src="https://readme-typing-svg.herokuapp.com?font=Inter&weight=600&size=20&pause=1000&color=10B981&center=true&vCenter=true&width=500&lines=Chat+with+my+AI+assistant;Ask+about+my+skills+and+projects;Powered+by+LangGraph+%26+RAG" alt="Typing SVG" />
-</p>
+An AI-powered chatbot that answers questions about my skills, projects, and experience in real-time using RAG (Retrieval-Augmented Generation) and streaming responses.
 
 <p align="center">
   <a href="https://saudassist.up.railway.app/">
-    <img src="https://img.shields.io/badge/Try_Live_Demo-10B981?style=for-the-badge&logo=openai&logoColor=white" alt="Live Demo"/>
+    <img src="https://img.shields.io/badge/Live_Demo-10B981?style=for-the-badge&logo=openai&logoColor=white" alt="Live Demo"/>
   </a>
   <a href="https://github.com/SaudDSxAI">
-    <img src="https://img.shields.io/badge/View_Code-181717?style=for-the-badge&logo=github&logoColor=white" alt="GitHub"/>
+    <img src="https://img.shields.io/badge/GitHub-181717?style=for-the-badge&logo=github&logoColor=white" alt="GitHub"/>
+  </a>
+  <a href="https://www.linkedin.com/in/saud-ahmad-286000229/">
+    <img src="https://img.shields.io/badge/LinkedIn-0A66C2?style=for-the-badge&logo=linkedin&logoColor=white" alt="LinkedIn"/>
   </a>
 </p>
 
 ---
 
-## The Problem
+## Table of Contents
 
-Resumes are static. Recruiters skim. Context gets lost.
-
-## The Solution
-
-A conversational AI that retrieves relevant context from my CV and **34 GitHub repositories** — then generates accurate, recruiter-ready responses with **GPT-like streaming**.
-
----
-
-## How It Works
-
-```
-┌─────────────────────────────────────────────────────────────┐
-│                        USER QUERY                           │
-└─────────────────────────────────────────────────────────────┘
-                              │
-                              ▼
-┌─────────────────────────────────────────────────────────────┐
-│                    LANGGRAPH PIPELINE                       │
-│  ┌─────────────────┐         ┌─────────────────────────┐   │
-│  │  Retrieve Node  │ ──────► │  Generate Node          │   │
-│  │  (ChromaDB)     │         │  (OpenAI GPT-4o-mini)   │   │
-│  └─────────────────┘         └─────────────────────────┘   │
-└─────────────────────────────────────────────────────────────┘
-                              │
-                              ▼
-┌─────────────────────────────────────────────────────────────┐
-│               STREAMING RESPONSE (SSE)                      │
-└─────────────────────────────────────────────────────────────┘
-```
+- [Overview](#overview)
+- [Features](#features)
+- [Architecture](#architecture)
+- [Tech Stack](#tech-stack)
+- [How It Works](#how-it-works)
+- [Project Structure](#project-structure)
+- [API Endpoints](#api-endpoints)
+- [Setup & Installation](#setup--installation)
+- [Deployment](#deployment)
+- [Screenshots](#screenshots)
+- [Future Improvements](#future-improvements)
+- [Contact](#contact)
 
 ---
 
-## Tech Stack
+## Overview
 
-<table>
-<tr>
-<td align="center" width="50%">
+**Problem:** Traditional resumes are static, limited, and don't allow recruiters to explore specific areas of interest.
 
-### Backend
-
-![FastAPI](https://img.shields.io/badge/FastAPI-009688?style=for-the-badge&logo=fastapi&logoColor=white)
-![Python](https://img.shields.io/badge/Python-3776AB?style=for-the-badge&logo=python&logoColor=white)
-![OpenAI](https://img.shields.io/badge/OpenAI-412991?style=for-the-badge&logo=openai&logoColor=white)
-
-- FastAPI with async streaming
-- Server-Sent Events (SSE)
-- Session management
-
-</td>
-<td align="center" width="50%">
-
-### AI / RAG
-
-![LangGraph](https://img.shields.io/badge/LangGraph-4B0082?style=for-the-badge)
-![ChromaDB](https://img.shields.io/badge/ChromaDB-FF4500?style=for-the-badge)
-
-- LangGraph orchestration
-- ChromaDB vector store
-- OpenAI embeddings
-- GPT-4o-mini generation
-
-</td>
-</tr>
-<tr>
-<td align="center" width="50%">
-
-### Frontend
-
-![React](https://img.shields.io/badge/React-61DAFB?style=for-the-badge&logo=react&logoColor=black)
-![Tailwind](https://img.shields.io/badge/Tailwind-38B2AC?style=for-the-badge&logo=tailwind-css&logoColor=white)
-![Vite](https://img.shields.io/badge/Vite-646CFF?style=for-the-badge&logo=vite&logoColor=white)
-
-- Mobile-first design
-- Real-time streaming UI
-- Markdown rendering
-
-</td>
-<td align="center" width="50%">
-
-### Deployment
-
-![Railway](https://img.shields.io/badge/Railway-0B0D0E?style=for-the-badge&logo=railway&logoColor=white)
-
-- Backend + Frontend on Railway
-- Auto-deploy from GitHub
-- Environment variables
-
-</td>
-</tr>
-</table>
+**Solution:** AskSaud is a conversational AI assistant that:
+- Retrieves relevant context from my CV and 34 GitHub repositories
+- Generates accurate, recruiter-ready responses using GPT-4o-mini
+- Streams responses in real-time (GPT-like typewriter effect)
+- Provides a mobile-first, WhatsApp-like chat experience
 
 ---
 
-## Key Features
+## Features
 
 | Feature | Description |
 |---------|-------------|
-| **Streaming Responses** | GPT-like typewriter effect with SSE |
-| **RAG Pipeline** | Retrieves context from CV + 34 GitHub repos |
-| **LangGraph** | Two-node workflow: Retrieve → Generate |
-| **Session Memory** | Multi-turn conversation support |
-| **Mobile UX** | Keyboard handling, viewport fixes, smooth scroll |
-| **Unicode Formatting** | Professional, structured responses |
+| **RAG Pipeline** | Retrieves context from CV and GitHub repos using vector embeddings |
+| **Streaming Responses** | Real-time typewriter effect using Server-Sent Events (SSE) |
+| **Session Memory** | Multi-turn conversation support with session management |
+| **Mobile-First UI** | WhatsApp-like interface with fixed header/footer |
+| **Markdown Rendering** | Supports bold, italic, lists, code blocks, and links |
+| **Unicode Formatting** | Professional responses with structured formatting |
+| **Fallback Support** | Falls back to non-streaming if SSE fails |
 
 ---
 
 ## Architecture
 
 ```
-portfolio/
-├── main.py                 # FastAPI backend + streaming
-├── create_embeddings.py    # CV & GitHub embedding pipeline
-├── chroma_db/              # Vector database
-├── prompt/
-│   └── prompt.txt          # System prompt
-└── frontend/
-    ├── src/
-    │   └── App.jsx         # React chat interface
-    └── package.json
+┌─────────────────────────────────────────────────────────────────────┐
+│                           USER (Browser)                            │
+└─────────────────────────────────────────────────────────────────────┘
+                                    │
+                                    ▼
+┌─────────────────────────────────────────────────────────────────────┐
+│                        FRONTEND (React + Vite)                      │
+│  ┌─────────────┐  ┌─────────────┐  ┌─────────────┐                 │
+│  │  Chat UI    │  │  Streaming  │  │  Markdown   │                 │
+│  │  Components │  │  Handler    │  │  Renderer   │                 │
+│  └─────────────┘  └─────────────┘  └─────────────┘                 │
+└─────────────────────────────────────────────────────────────────────┘
+                                    │
+                                    ▼ HTTP / SSE
+┌─────────────────────────────────────────────────────────────────────┐
+│                        BACKEND (FastAPI)                            │
+│  ┌─────────────┐  ┌─────────────┐  ┌─────────────┐                 │
+│  │  /chat      │  │  /chat/     │  │  /health    │                 │
+│  │  (REST)     │  │  stream     │  │  (Status)   │                 │
+│  └─────────────┘  └─────────────┘  └─────────────┘                 │
+└─────────────────────────────────────────────────────────────────────┘
+                                    │
+                    ┌───────────────┴───────────────┐
+                    ▼                               ▼
+┌───────────────────────────┐       ┌───────────────────────────────┐
+│      RETRIEVAL (RAG)      │       │      GENERATION (LLM)         │
+│  ┌─────────────────────┐  │       │  ┌─────────────────────────┐  │
+│  │  ChromaDB           │  │       │  │  OpenAI GPT-4o-mini     │  │
+│  │  - CV Collection    │  │       │  │  - Streaming enabled    │  │
+│  │  - GitHub Collection│  │       │  │  - Context injection    │  │
+│  └─────────────────────┘  │       │  └─────────────────────────┘  │
+│  ┌─────────────────────┐  │       └───────────────────────────────┘
+│  │  OpenAI Embeddings  │  │
+│  │  text-embedding-3-  │  │
+│  │  small              │  │
+│  └─────────────────────┘  │
+└───────────────────────────┘
 ```
 
 ---
 
-## Results
+## Tech Stack
 
-- **Real-time** streaming responses
-- **Context-aware** answers from personal data
-- **Production-ready** deployment
-- **Mobile-optimized** experience
+### Backend
+
+| Technology | Purpose |
+|------------|---------|
+| **FastAPI** | Async REST API framework |
+| **Python 3.11+** | Backend language |
+| **OpenAI API** | GPT-4o-mini for generation, text-embedding-3-small for embeddings |
+| **ChromaDB** | Vector database for storing embeddings |
+| **Uvicorn** | ASGI server |
+| **SSE (Server-Sent Events)** | Real-time streaming responses |
+
+### Frontend
+
+| Technology | Purpose |
+|------------|---------|
+| **React 18** | UI framework |
+| **Vite** | Build tool and dev server |
+| **Tailwind CSS** | Utility-first styling |
+| **JavaScript (ES6+)** | Frontend language |
+
+### Deployment
+
+| Service | Purpose |
+|---------|---------|
+| **Railway** | Hosting for both backend and frontend |
+| **GitHub** | Version control and CI/CD trigger |
+
+### Data Sources
+
+| Source | Content |
+|--------|---------|
+| **CV (PDF)** | Skills, experience, education, certifications |
+| **GitHub Repos (34)** | Project descriptions, README files, code context |
 
 ---
 
-## Try It
+## How It Works
 
-<p align="center">
-  <a href="https://saudassist.up.railway.app/">
-    <img src="https://img.shields.io/badge/>>>_Chat_with_AskSaud_<<<-10B981?style=for-the-badge&logo=openai&logoColor=white" alt="Try Demo"/>
-  </a>
-</p>
+### 1. Embedding Pipeline (`create_embeddings.py`)
 
-<p align="center">
-  Ask about my <b>skills</b> | <b>projects</b> | <b>experience</b>
-</p>
+```python
+# Loads CV and GitHub data
+# Chunks text using RecursiveCharacterTextSplitter
+# Generates embeddings using OpenAI text-embedding-3-small
+# Stores in ChromaDB collections
+```
+
+**Process:**
+1. Parse CV (PDF) using pdfplumber
+2. Fetch GitHub repos via PyGithub API
+3. Chunk documents (1000 chars, 200 overlap)
+4. Generate embeddings for each chunk
+5. Store in ChromaDB (cv_collection, github_collection)
+
+### 2. RAG Retrieval
+
+```python
+# User query → Embedding → Vector search → Top 5 results
+context = search_collections(user_query, n_results=5)
+```
+
+**Process:**
+1. Convert user query to embedding
+2. Search both collections (CV + GitHub)
+3. Return top 5 most relevant chunks
+4. Inject context into system prompt
+
+### 3. Streaming Generation
+
+```python
+# OpenAI streaming with SSE
+stream = openai_client.chat.completions.create(
+    model="gpt-4o-mini",
+    messages=messages,
+    stream=True
+)
+
+for chunk in stream:
+    yield f"data: {json.dumps({'type': 'content', 'content': chunk})}\n\n"
+```
+
+**Process:**
+1. Build messages with system prompt + context + history
+2. Call OpenAI with `stream=True`
+3. Yield chunks via Server-Sent Events
+4. Frontend updates UI in real-time
+
+### 4. Frontend Streaming Handler
+
+```javascript
+const reader = res.body.getReader();
+const decoder = new TextDecoder();
+
+while (true) {
+  const { done, value } = await reader.read();
+  if (done) break;
+  
+  // Parse SSE data and update message content
+  const data = JSON.parse(line.slice(6));
+  if (data.type === 'content') {
+    fullContent += data.content;
+    setMessages(prev => /* update last message */);
+  }
+}
+```
 
 ---
 
-## Connect
+## Project Structure
 
-<p align="center">
-  <a href="https://www.linkedin.com/in/saud-ahmad-286000229/">
-    <img src="https://img.shields.io/badge/LinkedIn-0A66C2?style=for-the-badge&logo=linkedin&logoColor=white"/>
-  </a>
-  <a href="https://github.com/SaudDSxAI">
-    <img src="https://img.shields.io/badge/GitHub-181717?style=for-the-badge&logo=github&logoColor=white"/>
-  </a>
-  <a href="mailto:sauds6446@gmail.com">
-    <img src="https://img.shields.io/badge/Email-EA4335?style=for-the-badge&logo=gmail&logoColor=white"/>
-  </a>
-</p>
+```
+portfolio/
+├── main.py                    # FastAPI backend with streaming
+├── create_embeddings.py       # Embedding generation pipeline
+├── requirements.txt           # Python dependencies
+├── .env                       # Environment variables (not in repo)
+├── .gitignore
+│
+├── chroma_db/                 # Vector database (persisted)
+│   ├── cv_collection/
+│   └── github_collection/
+│
+├── prompt/
+│   └── prompt.txt             # System prompt for AI assistant
+│
+├── data/
+│   └── Saud_Ahmad_CV.pdf      # Source CV document
+│
+└── frontend/
+    ├── src/
+    │   ├── App.jsx            # Main React component
+    │   ├── main.jsx           # React entry point
+    │   └── index.css          # Global styles
+    ├── public/
+    │   ├── saud.jpeg          # Profile photo
+    │   └── favicon.svg
+    ├── package.json
+    ├── vite.config.js
+    ├── tailwind.config.js
+    └── index.html
+```
+
+---
+
+## API Endpoints
+
+### Health Check
+
+```
+GET /health
+```
+
+**Response:**
+```json
+{
+  "status": "healthy",
+  "cv_collection": true,
+  "github_collection": true,
+  "system_prompt_loaded": true,
+  "active_sessions": 5
+}
+```
+
+### Chat (Non-Streaming)
+
+```
+POST /chat
+Content-Type: application/json
+
+{
+  "message": "What are Saud's skills?",
+  "session_id": "optional-uuid"
+}
+```
+
+**Response:**
+```json
+{
+  "response": "Saud's core skills include...",
+  "session_id": "uuid"
+}
+```
+
+### Chat (Streaming)
+
+```
+POST /chat/stream
+Content-Type: application/json
+
+{
+  "message": "Tell me about his projects",
+  "session_id": "optional-uuid"
+}
+```
+
+**Response (SSE):**
+```
+data: {"type": "session", "session_id": "uuid"}
+data: {"type": "content", "content": "Saud"}
+data: {"type": "content", "content": " has"}
+data: {"type": "content", "content": " built"}
+...
+data: {"type": "done"}
+```
+
+### Session Management
+
+```
+DELETE /session/{session_id}   # Clear session history
+```
+
+---
+
+## Setup & Installation
+
+### Prerequisites
+
+- Python 3.11+
+- Node.js 18+
+- OpenAI API key
+- GitHub token (for fetching repos)
+
+### Backend Setup
+
+```bash
+# Clone repository
+git clone https://github.com/SaudDSxAI/portfolio.git
+cd portfolio
+
+# Create virtual environment
+python -m venv venv
+source venv/bin/activate  # Linux/Mac
+venv\Scripts\activate     # Windows
+
+# Install dependencies
+pip install -r requirements.txt
+
+# Create .env file
+echo "OPENAI_API_KEY=your_key_here" > .env
+echo "GITHUB_TOKEN=your_token_here" >> .env
+echo "GITHUB_USERNAME=SaudDSxAI" >> .env
+
+# Generate embeddings (first time only)
+python create_embeddings.py
+
+# Run backend
+python main.py
+```
+
+### Frontend Setup
+
+```bash
+cd frontend
+
+# Install dependencies
+npm install
+
+# Create .env file (for development)
+echo "VITE_API_URL=http://localhost:8000" > .env
+
+# Run development server
+npm run dev
+```
+
+### Environment Variables
+
+**Backend (.env):**
+```
+OPENAI_API_KEY=sk-...
+GITHUB_TOKEN=ghp_...
+GITHUB_USERNAME=SaudDSxAI
+```
+
+**Frontend (.env):**
+```
+VITE_API_URL=https://asksaud.up.railway.app
+```
+
+---
+
+## Deployment
+
+### Railway Deployment
+
+**Backend Service:**
+1. Connect GitHub repo to Railway
+2. Set root directory: `/`
+3. Set build command: `pip install -r requirements.txt`
+4. Set start command: `uvicorn main:app --host 0.0.0.0 --port $PORT`
+5. Add environment variables (OPENAI_API_KEY, GITHUB_TOKEN, GITHUB_USERNAME)
+
+**Frontend Service:**
+1. Create new service in same project
+2. Set root directory: `/frontend`
+3. Set build command: `npm install && npm run build`
+4. Set start command: `npx serve dist -l $PORT`
+5. Add environment variable: `VITE_API_URL=https://your-backend.up.railway.app`
+
+### Manual Deployment
+
+```bash
+# Build frontend
+cd frontend
+npm run build
+
+# The dist/ folder contains static files
+# Deploy to any static hosting (Netlify, Vercel, etc.)
+```
+
+---
+
+## Screenshots
+
+### Desktop View
+- Clean chat interface with gradient background
+- Fixed header with profile photo and status
+- Streaming responses with typing indicator
+- Markdown-formatted AI responses
+
+### Mobile View
+- WhatsApp-like responsive design
+- Fixed header and input area
+- Smooth scrolling chat area
+- Touch-optimized buttons
+
+---
+
+## Future Improvements
+
+- [ ] Voice input/output support
+- [ ] Multi-language support
+- [ ] PostgreSQL for persistent chat history
+- [ ] Analytics dashboard
+- [ ] Custom domain (chat.saudahmad.com)
+- [ ] Rate limiting
+- [ ] User authentication
+- [ ] Export chat as PDF
+
+---
+
+## Contact
+
+**Saud Ahmad**  
+Data Scientist & AI Engineer
+
+- **Email:** sauds6446@gmail.com
+- **LinkedIn:** [linkedin.com/in/saud-ahmad-286000229](https://www.linkedin.com/in/saud-ahmad-286000229/)
+- **GitHub:** [github.com/SaudDSxAI](https://github.com/SaudDSxAI)
+- **Portfolio:** [saudassist.up.railway.app](https://saudassist.up.railway.app/)
+
+---
+
+## License
+
+This project is open source and available under the [MIT License](LICENSE).
 
 ---
 
 <p align="center">
-  <b>Built by Saud Ahmad</b><br/>
-  AI/ML Engineer | LLM Developer | RAG Architect
+  <b>Built with LangGraph, FastAPI, React, and OpenAI</b>
 </p>
