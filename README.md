@@ -89,7 +89,7 @@ An AI-powered chatbot that answers questions about my skills, projects, and expe
 ┌───────────────────────────┐       ┌───────────────────────────────┐
 │      RETRIEVAL (RAG)      │       │      GENERATION (LLM)         │
 │  ┌─────────────────────┐  │       │  ┌─────────────────────────┐  │
-│  │  ChromaDB           │  │       │  │  OpenAI GPT-4o-mini     │  │
+│  │  ChromaDB           │  │       │  │  OpenAI GPT-5-mini     │  │
 │  │  - CV Collection    │  │       │  │  - Streaming enabled    │  │
 │  │  - GitHub Collection│  │       │  │  - Context injection    │  │
 │  └─────────────────────┘  │       │  └─────────────────────────┘  │
@@ -177,7 +177,7 @@ context = search_collections(user_query, n_results=5)
 ```python
 # OpenAI streaming with SSE
 stream = openai_client.chat.completions.create(
-    model="gpt-4o-mini",
+    model="gpt-5-mini",
     messages=messages,
     stream=True
 )
