@@ -111,7 +111,7 @@ An AI-powered chatbot that answers questions about my skills, projects, and expe
 |------------|---------|
 | **FastAPI** | Async REST API framework |
 | **Python 3.11+** | Backend language |
-| **OpenAI API** | GPT-4o-mini for generation, text-embedding-3-small for embeddings |
+| **OpenAI API** | GPT-5-mini for generation, text-embedding-3-small for embeddings |
 | **ChromaDB** | Vector database for storing embeddings |
 | **Uvicorn** | ASGI server |
 | **SSE (Server-Sent Events)** | Real-time streaming responses |
