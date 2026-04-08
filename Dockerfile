@@ -30,5 +30,5 @@ ENV PYTHONUNBUFFERED=1
 # Expose the API port
 EXPOSE 8000
 
-# Start Uvicorn
-CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8000"]
+# Start Uvicorn with dynamic port
+CMD uvicorn main:app --host 0.0.0.0 --port ${PORT:-8000}
