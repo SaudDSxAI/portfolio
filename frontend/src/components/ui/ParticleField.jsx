@@ -11,7 +11,8 @@ export default function ParticleField() {
     let mouse = { x: null, y: null };
 
     // Neural Network Configuration
-    const layerConfig = [4, 6, 8, 10, 8, 6, 3];
+    let layerConfig = [4, 6, 8, 10, 8, 6, 3];
+    if (window.innerWidth < 768) layerConfig = [3, 4, 5, 4, 3]; // Simpler network on mobile
     let neurons = [];
     let connections = [];
     let signals = [];
@@ -179,7 +180,7 @@ export default function ParticleField() {
       constructor(connection, inheritedEnergy = 0) {
         this.connection = connection;
         this.progress = 0;
-        this.speed = 0.015 + Math.random() * 0.018;
+        this.speed = (window.innerWidth < 768) ? 0.012 : 0.015 + Math.random() * 0.018; // Slower/more stable on mobile
         this.alive = true;
         this.radius = 2.2 + Math.random() * 1.3;
         this.trailLength = 7;
@@ -565,8 +566,9 @@ export default function ParticleField() {
           // Wait until ALL input signals have reached the output layer
           const hasActiveSignals = signals.length > 0;
           const allReached = inputSignalCount > 0 && signalsReachedOutput >= inputSignalCount;
+          const timeout = isVertical ? 350 : 180; // Much longer timeout on mobile
 
-          if ((allReached && !hasActiveSignals) || qaTimer > 180) {
+          if ((allReached && !hasActiveSignals) || qaTimer > timeout) {
             // All input signals arrived at output → ready
             const outputNeurons = neurons.filter((n) => n.layerIndex === layerConfig.length - 1);
             outputNeurons.forEach((n) => { n.activate(1); n.energy = 1; });
@@ -823,10 +825,19 @@ export default function ParticleField() {
         ).forEach((c) => signals.push(new Signal(c, 0.7)));
       }
     };
+    let lastWidth = window.innerWidth;
     const handleResize = () => {
-      resize(); initNetwork();
-      qaPhase = 'idle'; qaTimer = 0; currentQA = null;
-      questionText = ''; feedTokens = []; outputTokens = [];
+      const newWidth = window.innerWidth;
+      // ONLY re-init if width changed (ignore height changes from mobile keyboard)
+      if (Math.abs(newWidth - lastWidth) > 5) {
+        lastWidth = newWidth;
+        resize(); initNetwork();
+        qaPhase = 'idle'; qaTimer = 0; currentQA = null;
+        questionText = ''; feedTokens = []; outputTokens = [];
+      } else {
+        // Just sync canvas dimensions without resetting state
+        resize();
+      }
     };
 
     window.addEventListener('resize', handleResize);

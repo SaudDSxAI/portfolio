@@ -60,7 +60,7 @@ const MessageBubble = ({ message, isUser, isStreaming }) => (
         <img src="/saud.jpeg" alt="Saud" className="w-7 h-7 rounded-full object-cover object-top ring-1 ring-primary-500/30 shadow-md" />
       </div>
     )}
-    <div className={`max-w-[85%] px-4 py-3 shadow-sm ${isUser
+    <div className={`max-w-[85%] px-4 py-3 shadow-sm mb-4 ${isUser
       ? 'bg-gradient-to-br from-primary-600 to-primary-700 text-white rounded-2xl rounded-tr-sm border border-primary-500/20'
       : 'bg-dark-800/90 text-slate-200 rounded-2xl rounded-tl-sm border border-slate-700/50'
     }`}>
@@ -152,8 +152,18 @@ export default function ChatWidget() {
       setHasNewMessage(false);
       checkHealth();
       setTimeout(() => inputRef.current?.focus(), 300);
+      scrollToBottom();
     }
-  }, [isOpen]);
+
+    // WhatsApp-style Keyboard adjustment
+    if (window.visualViewport) {
+      const handleResize = () => {
+        if (isOpen) scrollToBottom();
+      };
+      window.visualViewport.addEventListener('resize', handleResize);
+      return () => window.visualViewport.removeEventListener('resize', handleResize);
+    }
+  }, [isOpen, scrollToBottom]);
 
   const checkHealth = async () => {
     try {
@@ -312,6 +322,10 @@ export default function ChatWidget() {
   const handleSubmit = (e) => {
     e.preventDefault();
     sendMessage();
+    // Keep focus on mobile
+    if (inputRef.current) {
+      setTimeout(() => inputRef.current.focus(), 10);
+    }
   };
 
   const clearChat = async () => {
@@ -365,9 +379,9 @@ export default function ChatWidget() {
           isOpen
             ? 'opacity-100 scale-100 pointer-events-auto'
             : 'opacity-0 scale-95 pointer-events-none'
-        } bottom-24 right-6 w-[380px] h-[560px] max-sm:inset-x-4 max-sm:top-20 max-sm:bottom-[100px] max-sm:w-auto max-sm:h-auto`}
+        } bottom-24 right-6 w-[380px] h-[560px] max-sm:inset-0 max-sm:w-full max-sm:h-full max-sm:rounded-none`}
       >
-        <div className="w-full h-full bg-dark-900/95 backdrop-blur-xl border border-white/10 rounded-2xl shadow-2xl shadow-black/40 flex flex-col overflow-hidden">
+        <div className="w-full h-full bg-dark-900/95 backdrop-blur-xl border border-white/10 rounded-2xl max-sm:rounded-none shadow-2xl shadow-black/40 flex flex-col overflow-hidden">
           {/* Header */}
           <div className="flex items-center justify-between px-4 py-3 bg-dark-800/80 border-b border-white/5">
             <div className="flex bg-dark-900 rounded-lg p-1 border border-white/5">
