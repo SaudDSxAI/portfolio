@@ -9,9 +9,17 @@ from contextlib import asynccontextmanager
 from dotenv import load_dotenv
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi.responses import StreamingResponse
+from fastapi.responses import StreamingResponse, FileResponse
+from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel
 from openai import OpenAI
+import io
+
+try:
+    from jinja2 import Environment, FileSystemLoader
+    import weasyprint
+except ImportError:
+    pass
 import chromadb
 from langchain_core.messages import HumanMessage, AIMessage
 
@@ -186,6 +194,9 @@ class ChatRequest(BaseModel):
     message: str
     session_id: Optional[str] = None
 
+class GenerateCVRequest(BaseModel):
+    job_description: str
+
 class ChatResponse(BaseModel):
     response: str
     session_id: str
@@ -298,6 +309,85 @@ async def clear_session(session_id: str):
     if session_id in sessions:
         sessions[session_id] = []
     return {"message": "Session cleared"}
+
+
+@app.post("/generate-cv")
+async def generate_cv(request: GenerateCVRequest):
+    if not request.job_description or len(request.job_description) < 10:
+        raise HTTPException(status_code=400, detail="Job description too short")
+
+    try:
+        # Retrieve context based on JD
+        context = search_collections(request.job_description, n_results=10)
+        
+        # Ask LLM to generate the CV JSON
+        sys_prompt = (
+            "You are a professional CV writer. Given Saud Ahmad's context and a Job Description, "
+            "generate a tailored CV JSON matching the Jinja template format. Output ONLY valid JSON containing: "
+            "name, email, phone, location, linkedin, github, summary, "
+            "experience (list of {title, company, date, bullets}), "
+            "projects (list of {title, tech_stack, bullets}), "
+            "skills (list of {category, items}), "
+            "education (list of {degree, institution, date}). DO NOT wrap in markdown blocks, output raw JSON."
+        )
+        user_prompt = f"Job Description:\n{request.job_description}\n\nSaud's Context:\n{context}"
+        
+        response = openai_client.chat.completions.create(
+            model="gpt-4o-mini",
+            response_format={ "type": "json_object" },
+            messages=[
+                {"role": "system", "content": sys_prompt},
+                {"role": "user", "content": user_prompt}
+            ],
+            temperature=0.4,
+            max_tokens=2500
+        )
+        
+        cv_data_str = response.choices[0].message.content
+        cv_data = json.loads(cv_data_str)
+        
+        # Ensure weasyprint and jinja2 are available
+        try:
+            import weasyprint
+            from jinja2 import Environment, FileSystemLoader
+        except ImportError:
+            raise HTTPException(status_code=500, detail="PDF generation dependencies not installed. Please try again.")
+
+        # Render HTML
+        env = Environment(loader=FileSystemLoader("cv_templates"))
+        template = env.get_template("cv_template.html")
+        html_out = template.render(data=cv_data)
+        
+        # Generate PDF
+        pdf_bytes = weasyprint.HTML(string=html_out).write_pdf()
+        
+        # Return PDF
+        return StreamingResponse(
+            io.BytesIO(pdf_bytes), 
+            media_type="application/pdf", 
+            headers={"Content-Disposition": "attachment; filename=Saud_Ahmad_CV.pdf"}
+        )
+        
+    except Exception as e:
+        import traceback
+        traceback.print_exc()
+        raise HTTPException(status_code=500, detail=f"Error generating CV: {e}")
+
+# Serve React frontend static files
+frontend_dist = Path("frontend/dist")
+if frontend_dist.exists():
+    app.mount("/assets", StaticFiles(directory=frontend_dist / "assets"), name="assets")
+    
+    @app.get("/{full_path:path}")
+    async def serve_frontend(full_path: str):
+        # Serve index.html for all unknown routes (SPA fallback)
+        # Check if the requested file exists in dist
+        path = frontend_dist / full_path
+        if path.is_file():
+            return FileResponse(path)
+        return FileResponse(frontend_dist / "index.html")
+else:
+    print("⚠️ Frontend dist directory not found. Please run 'npm run build' in the frontend folder.")
 
 
 if __name__ == "__main__":

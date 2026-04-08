@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>{{ data.name }} - CV</title>
+    <style>
+        @page {
+            size: A4;
+            margin: 2cm;
+            @bottom-right {
+                content: "Page " counter(page) " of " counter(pages);
+                font-family: 'Helvetica', sans-serif;
+                font-size: 9pt;
+                color: #666;
+            }
+        }
+        body {
+            font-family: 'Helvetica', 'Arial', sans-serif;
+            color: #333;
+            line-height: 1.5;
+            margin: 0;
+            padding: 0;
+        }
+        h1 {
+            color: #2563eb; /* Blue-600 */
+            margin: 0 0 5px 0;
+            font-size: 24pt;
+        }
+        h2 {
+            color: #2563eb;
+            font-size: 14pt;
+            border-bottom: 1px solid #ddd;
+            padding-bottom: 3px;
+            margin-top: 20px;
+            margin-bottom: 10px;
+        }
+        h3 {
+            font-size: 12pt;
+            margin: 0;
+            color: #222;
+        }
+        .header {
+            text-align: center;
+            margin-bottom: 25px;
+        }
+        .contact-info {
+            font-size: 10pt;
+            color: #555;
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+        }
+        .contact-info span {
+            margin: 0 8px;
+        }
+        p {
+            margin: 5px 0;
+            font-size: 10pt;
+        }
+        ul {
+            margin: 8px 0;
+            padding-left: 20px;
+        }
+        li {
+            font-size: 10pt;
+            margin-bottom: 4px;
+        }
+        .section-item {
+            margin-bottom: 15px;
+        }
+        .item-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: baseline;
+        }
+        .item-title {
+            font-weight: bold;
+        }
+        .item-date {
+            font-size: 10pt;
+            color: #666;
+            float: right;
+        }
+        .item-subtitle {
+            font-style: italic;
+            font-size: 10pt;
+            color: #444;
+        }
+        .skills-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            font-size: 10pt;
+        }
+        .skill-category {
+            font-weight: bold;
+        }
+        .clear {
+            clear: both;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="header">
+        <h1>{{ data.name }}</h1>
+        <div class="contact-info">
+            <span>{{ data.email }}</span> | 
+            <span>{{ data.phone }}</span> | 
+            <span>{{ data.location }}</span>
+        </div>
+        <div class="contact-info">
+            <span>{{ data.linkedin }}</span> | 
+            <span>{{ data.github }}</span>
+        </div>
+    </div>
+
+    <div class="section">
+        <h2>Professional Summary</h2>
+        <p>{{ data.summary }}</p>
+    </div>
+
+    {% if data.experience %}
+    <div class="section">
+        <h2>Experience</h2>
+        {% for exp in data.experience %}
+        <div class="section-item">
+            <div class="item-header">
+                <div>
+                    <span class="item-title">{{ exp.title }}</span> at 
+                    <span class="item-subtitle">{{ exp.company }}</span>
+                </div>
+                <span class="item-date">{{ exp.date }}</span>
+            </div>
+            <ul>
+                {% for bullet in exp.bullets %}
+                <li>{{ bullet }}</li>
+                {% endfor %}
+            </ul>
+        </div>
+        {% endfor %}
+    </div>
+    {% endif %}
+
+    {% if data.projects %}
+    <div class="section">
+        <h2>Key Projects</h2>
+        {% for proj in data.projects %}
+        <div class="section-item">
+            <div class="item-header">
+                <span class="item-title">{{ proj.title }}</span>
+                <span class="item-date">{{ proj.tech_stack }}</span>
+            </div>
+            <ul>
+                {% for bullet in proj.bullets %}
+                <li>{{ bullet }}</li>
+                {% endfor %}
+            </ul>
+        </div>
+        {% endfor %}
+    </div>
+    {% endif %}
+
+    {% if data.skills %}
+    <div class="section">
+        <h2>Skills</h2>
+        <table style="width: 100%; border-collapse: collapse; font-size: 10pt;">
+            {% for skill in data.skills %}
+            <tr>
+                <td style="width: 25%; font-weight: bold; padding: 3px 0; vertical-align: top;">{{ skill.category }}:</td>
+                <td style="padding: 3px 0;">{{ skill['items'] | join(', ') }}</td>
+            </tr>
+            {% endfor %}
+        </table>
+    </div>
+    {% endif %}
+
+    {% if data.education %}
+    <div class="section">
+        <h2>Education</h2>
+        {% for edu in data.education %}
+        <div class="section-item">
+            <div class="item-header">
+                <span class="item-title">{{ edu.degree }}</span>
+                <span class="item-date">{{ edu.date }}</span>
+            </div>
+            <div class="item-subtitle">{{ edu.institution }}</div>
+        </div>
+        {% endfor %}
+    </div>
+    {% endif %}
+
+</body>
+</html>
