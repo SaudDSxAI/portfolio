@@ -14,14 +14,6 @@ from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel
 from openai import OpenAI
 import io
-
-app = FastAPI(title="AskSaud API", version="2.1.0", lifespan=lifespan)
-
-# Add health check for Railway
-@app.get("/health")
-async def health():
-    return {"status": "healthy"}
-
 try:
     from jinja2 import Environment, FileSystemLoader
     import weasyprint
@@ -129,6 +121,13 @@ async def lifespan(app: FastAPI):
     print("🛑 Background services stopped")
 
 # ================= APP =================
+
+app = FastAPI(title="AskSaud API", version="2.1.0", lifespan=lifespan)
+
+# Add health check for Railway
+@app.get("/health")
+async def health():
+    return {"status": "healthy"}
 
 app.add_middleware(
     CORSMiddleware,
