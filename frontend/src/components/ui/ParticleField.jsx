@@ -24,16 +24,16 @@ export default function ParticleField() {
     const qaPool = [
       { q: "Who is Saud Ahmad?", a: "AI Engineer & Data Scientist" },
       { q: "What does Saud specialize in?", a: "LLMs, RAG & Agentic AI" },
-      { q: "What tech stack does he use?", a: "Python, FastAPI, React" },
-      { q: "How many CVs has he processed?", a: "3,500+ CVs for UAE firm" },
-      { q: "What is AskSaud?", a: "AI Portfolio Assistant" },
-      { q: "Where does Saud study?", a: "Data Science @ GIK Institute" },
-      { q: "What databases does he use?", a: "ChromaDB, FAISS, Pinecone" },
-      { q: "What frameworks does he use?", a: "LangGraph, LlamaIndex, PyTorch" },
-      { q: "What has Saud deployed?", a: "4+ Production AI Systems" },
-      { q: "How many projects built?", a: "15+ Projects and counting" },
-      { q: "Favorite ML tools?", a: "Hugging Face, scikit-learn" },
-      { q: "Does he do full-stack?", a: "React + FastAPI + Docker" },
+      { q: "What tech stack does Saud use?", a: "Python, FastAPI, React" },
+      { q: "How many CVs has Saud processed?", a: "3,500+ CVs with AI" },
+      { q: "What is AskSaud built by Saud?", a: "Agentic Portfolio Assistant" },
+      { q: "Where did Saud study Data Science?", a: "GIK Institute of Technology" },
+      { q: "What vector databases does Saud use?", a: "ChromaDB, FAISS, Pinecone" },
+      { q: "What AI frameworks does Saud prefer?", a: "LangGraph, LlamaIndex, PyTorch" },
+      { q: "How many AI systems has Saud deployed?", a: "4+ Production Systems" },
+      { q: "How many major projects has Saud shipped?", a: "15+ Projects and counting" },
+      { q: "What are Saud's favorite ML tools?", a: "Hugging Face, Scikit-Learn" },
+      { q: "Can Saud build full-stack web apps?", a: "React + FastAPI + Docker" },
     ];
 
     // Q&A State
@@ -180,7 +180,7 @@ export default function ParticleField() {
       constructor(connection, inheritedEnergy = 0) {
         this.connection = connection;
         this.progress = 0;
-        this.speed = (window.innerWidth < 768) ? 0.012 : 0.015 + Math.random() * 0.018; // Slower/more stable on mobile
+        this.speed = (window.innerWidth < 768) ? 0.025 : 0.035 + Math.random() * 0.025; // Much faster propagation
         this.alive = true;
         this.radius = 2.2 + Math.random() * 1.3;
         this.trailLength = 7;
@@ -251,7 +251,7 @@ export default function ParticleField() {
         this.targetNeuron = targetNeuron;
         this.delay = delay;
         this.progress = 0;
-        this.speed = 0.018;
+        this.speed = 0.045; // Fast input component flow
         this.alive = true;
         this.arrived = false;
         this.opacity = 1;
@@ -320,7 +320,7 @@ export default function ParticleField() {
         this.targetX = targetX; this.targetY = targetY;
         this.delay = delay;
         this.progress = 0;
-        this.speed = 0.016;
+        this.speed = 0.04; // Fast output assembly
         this.alive = true;
         this.arrived = false;
         this.opacity = 0;
@@ -540,7 +540,7 @@ export default function ParticleField() {
             for (let i = 0; i < words.length; i++) {
               const neuron = inputNeurons[i % inputNeurons.length];
               const wp = wordPositions[i] || qPos;
-              feedTokens.push(new FeedToken(words[i], wp.x, wp.y, neuron, i * 18));
+              feedTokens.push(new FeedToken(words[i], wp.x, wp.y, neuron, i * 7));
             }
 
             questionText = ''; // Clear static text, words are now animated
@@ -623,7 +623,7 @@ export default function ParticleField() {
             for (let i = 0; i < words.length; i++) {
               const neuron = outputNeurons[i % outputNeurons.length];
               const target = wordTargets[i];
-              outputTokens.push(new OutputToken(words[i], neuron, target.x, target.y, i * 15));
+              outputTokens.push(new OutputToken(words[i], neuron, target.x, target.y, i * 6));
             }
           }
 
