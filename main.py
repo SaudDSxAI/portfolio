@@ -39,7 +39,7 @@ CHROMA_DIR = Path("chroma_db")
 PROMPT_FILE = Path("prompt/prompt.txt")
 
 if not OPENAI_API_KEY:
-    raise ValueError("Missing OPENAI_API_KEY")
+    print("⚠️ Missing OPENAI_API_KEY - AI chat features will be limited")
 
 openai_client = OpenAI(api_key=OPENAI_API_KEY)
 chroma_client = chromadb.PersistentClient(path=str(CHROMA_DIR))

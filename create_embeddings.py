@@ -22,8 +22,10 @@ DATA_DIR = Path("data")
 CHROMA_DIR = Path("chroma_db")
 TEMP_DIR = Path("temp_github")
 
-if not OPENAI_API_KEY or not GITHUB_TOKEN:
-    raise ValueError("❌ Missing OPENAI_API_KEY or GITHUB_TOKEN in .env")
+if not OPENAI_API_KEY:
+    print("⚠️ Missing OPENAI_API_KEY - embedding features will be disabled")
+if not GITHUB_TOKEN:
+    print("⚠️ Missing GITHUB_TOKEN - GitHub sync will be disabled")
 
 os.makedirs(DATA_DIR, exist_ok=True)
 os.makedirs(CHROMA_DIR, exist_ok=True)
