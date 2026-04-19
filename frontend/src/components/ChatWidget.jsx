@@ -375,7 +375,7 @@ export default function ChatWidget() {
 
       {/* ===== Chat Panel ===== */}
       <div
-        className={`fixed z-40 transition-all duration-300 ease-out ${
+        className={`fixed z-[60] transition-all duration-300 ease-out ${
           isOpen
             ? 'opacity-100 scale-100 pointer-events-auto'
             : 'opacity-0 scale-95 pointer-events-none'
@@ -413,13 +413,13 @@ export default function ChatWidget() {
                   <path strokeLinecap="round" strokeLinejoin="round" d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0l3.181 3.183a8.25 8.25 0 0013.803-3.7M4.031 9.865a8.25 8.25 0 0113.803-3.7l3.181 3.182m0-4.991v4.99" />
                 </svg>
               </button>
-              {/* Mobile Close Button */}
+              {/* Mobile Close Button — large and prominent */}
               <button
                 onClick={() => setIsOpen(false)}
-                className="sm:hidden p-1.5 rounded-lg bg-red-400/10 hover:bg-red-400/20 text-red-400 hover:text-red-300 transition-all border border-red-500/20"
+                className="sm:hidden p-2 rounded-xl bg-red-500/15 hover:bg-red-500/25 text-red-400 hover:text-red-300 transition-all border border-red-500/30 active:scale-90"
                 title="Close Chat"
               >
-                <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor">
+                <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" strokeWidth={2.5} stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
                 </svg>
               </button>

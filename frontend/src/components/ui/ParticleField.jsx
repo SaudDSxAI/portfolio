@@ -9,31 +9,38 @@ export default function ParticleField() {
     const ctx = canvas.getContext('2d');
     let animationId;
     let mouse = { x: null, y: null };
+    let cw = window.innerWidth;
+    let ch = window.innerHeight;
 
     // Neural Network Configuration
     let layerConfig = [4, 6, 8, 10, 8, 6, 3];
-    if (window.innerWidth < 768) layerConfig = [3, 4, 5, 4, 3]; // Simpler network on mobile
+    if (window.innerWidth < 768) layerConfig = [3, 4, 5, 4, 3];
+    const numLayers = layerConfig.length;
     let neurons = [];
     let connections = [];
     let signals = [];
     let floatingParticles = [];
-    let feedTokens = [];    // words flying into input neurons
-    let outputTokens = [];  // words emerging from output neurons
+    let feedTokens = [];
+    let outputTokens = [];
+    let ripples = [];
+
+    // Per-layer glow: each layer tracks its own brightness independently
+    let layerGlow = new Float32Array(numLayers); // 0..1
 
     // =================== Q&A DATA ===================
     const qaPool = [
-      { q: "Who is Saud Ahmad?", a: "AI Engineer & Data Scientist" },
-      { q: "What does Saud specialize in?", a: "LLMs, RAG & Agentic AI" },
-      { q: "What tech stack does Saud use?", a: "Python, FastAPI, React" },
-      { q: "How many CVs has Saud processed?", a: "3,500+ CVs with AI" },
-      { q: "What is AskSaud built by Saud?", a: "Agentic Portfolio Assistant" },
-      { q: "Where did Saud study Data Science?", a: "GIK Institute of Technology" },
-      { q: "What vector databases does Saud use?", a: "ChromaDB, FAISS, Pinecone" },
-      { q: "What AI frameworks does Saud prefer?", a: "LangGraph, LlamaIndex, PyTorch" },
-      { q: "How many AI systems has Saud deployed?", a: "4+ Production Systems" },
-      { q: "How many major projects has Saud shipped?", a: "15+ Projects and counting" },
-      { q: "What are Saud's favorite ML tools?", a: "Hugging Face, Scikit-Learn" },
-      { q: "Can Saud build full-stack web apps?", a: "React + FastAPI + Docker" },
+      { q: "How does Saud architect autonomous AI agents?", a: "By leveraging LangGraph state machines and rigorous LLM pipelines." },
+      { q: "What impact did Saud's AI recruitment engine deliver?", a: "Automated the semantic evaluation of 3,500+ complex CVs." },
+      { q: "Which vector infrastructures does Saud specialize in?", a: "Production-grade ChromaDB, FAISS, and advanced semantic RAG systems." },
+      { q: "How does Saud optimize real-time LLM performance?", a: "Asynchronous streaming architectures and Server-Sent Events via FastAPI." },
+      { q: "What defines Saud's full-stack AI development capability?", a: "Seamlessly bridging dynamic React frontends with robust Python backends." },
+      { q: "Where did Saud forge his foundational data science expertise?", a: "Through intensive academic training at GIK Institute of Technology." },
+      { q: "What core frameworks power Saud's generative AI solutions?", a: "LlamaIndex, OpenAI, LangChain, and advanced PyTorch primitives." },
+      { q: "How many enterprise AI systems has Saud successfully deployed?", a: "Multiple production systems transforming complex business workflows." },
+      { q: "How does Saud ensure enterprise-grade AI processing?", a: "Implementing strict data pipelines, anonymization, and async queues." },
+      { q: "What makes Saud's AskSaud portfolio assistant unique?", a: "It provides dynamic, intelligent answers using real-time RAG inference." },
+      { q: "How does Saud handle sophisticated unstructured data parsing?", a: "Extracting structured schemas using NLP, OCR, and recursive chunking." },
+      { q: "What is Saud's engineering philosophy for machine learning?", a: "Massive scalability, fault-tolerance, and exceptional user experiences." }
     ];
 
     // Q&A State
@@ -41,50 +48,102 @@ export default function ParticleField() {
     let qaPhase = 'idle';
     let qaTimer = 0;
     let questionText = '';
-    let answerText = '';
     let qCharIndex = 0;
     let textOpacity = 1;
     let qaIndex = 0;
     let outputGlow = 0;
     let signalsReachedOutput = 0;
-    let inputSignalCount = 0; // exact number of signals fired from input
-    let answerTokensReady = false;
-    let answerAssembled = '';
-    let answerTokenIndex = 0;
+    let inputSignalCount = 0;
+    let networkActivity = 0;
 
     const shuffledQA = [...qaPool].sort(() => Math.random() - 0.5);
 
-    // =================== ENERGY COLOR ===================
-    const energyColor = (energy, alpha = 1) => {
-      const e = Math.min(1, Math.max(0, energy));
+    // =================== DEPTH-BASED COLOR (CACHED) ===================
+    const _computeLayerRGB = (layerIndex) => {
+      const t = numLayers > 1 ? Math.min(1, Math.max(0, layerIndex)) / (numLayers - 1) : 0;
       let r, g, b;
-      if (e < 0.3) {
-        const t = e / 0.3;
-        r = Math.round(59 + t * (0 - 59));
-        g = Math.round(130 + t * (210 - 130));
-        b = Math.round(246 + t * (255 - 246));
-      } else if (e < 0.6) {
-        const t = (e - 0.3) / 0.3;
-        r = Math.round(0 + t * 220);
-        g = Math.round(210 + t * (255 - 210));
-        b = Math.round(255);
+      if (t < 0.5) {
+        const s = t / 0.5;
+        r = Math.round(59 + s * (34 - 59));
+        g = Math.round(130 + s * (211 - 130));
+        b = Math.round(246 + s * (238 - 246));
       } else {
-        const t = (e - 0.6) / 0.4;
-        r = Math.round(220 + t * (255 - 220));
-        g = Math.round(255 - t * (255 - 200));
-        b = Math.round(255 - t * (255 - 60));
+        const s = (t - 0.5) / 0.5;
+        r = Math.round(34 + s * (52 - 34));
+        g = Math.round(211 + s * (255 - 211));
+        b = Math.round(238 + s * (180 - 238));
       }
-      return `rgba(${r}, ${g}, ${b}, ${alpha})`;
+      return { r, g, b };
+    };
+    // Pre-compute colors for each layer index
+    const _layerColorCache = [];
+    for (let i = 0; i < numLayers; i++) _layerColorCache[i] = _computeLayerRGB(i);
+
+    const layerColorRGB = (layerIndex) => {
+      const idx = Math.round(Math.min(numLayers - 1, Math.max(0, layerIndex)));
+      return _layerColorCache[idx];
+    };
+
+    const layerColor = (layerIndex, alpha = 1) => {
+      const c = layerColorRGB(layerIndex);
+      return `rgba(${c.r}, ${c.g}, ${c.b}, ${alpha})`;
     };
 
     const resize = () => {
-      canvas.width = window.innerWidth;
-      canvas.height = window.innerHeight;
+      cw = window.innerWidth;
+      ch = window.innerHeight;
+      canvas.width = cw;
+      canvas.height = ch;
     };
 
-    // Helper: easing
     const easeInOutCubic = (t) => t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2;
     const easeOutQuad = (t) => 1 - (1 - t) * (1 - t);
+
+    // =================== RIPPLE ===================
+    const MAX_RIPPLES = 20;
+    class Ripple {
+      constructor(x, y, layerIndex) {
+        this.x = x; this.y = y;
+        this.layerIndex = layerIndex;
+        this.radius = 0;
+        this.maxRadius = 40;
+        this.speed = 2;
+        this.alive = true;
+      }
+      update() {
+        this.radius += this.speed;
+        if (this.radius > this.maxRadius) this.alive = false;
+      }
+      draw() {
+        const p = this.radius / this.maxRadius;
+        const alpha = 0.25 * (1 - p) * (1 - p);
+        if (alpha < 0.005) return;
+        ctx.beginPath();
+        ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
+        ctx.strokeStyle = layerColor(this.layerIndex, alpha);
+        ctx.lineWidth = 1.5 * (1 - p);
+        ctx.stroke();
+      }
+    }
+
+    // =================== LAYER AURA (lightweight) ===================
+    let isVertical = false;
+    const drawLayerAura = () => {
+      const ls = isVertical ? ch / (numLayers + 1) : cw / (numLayers + 1);
+      for (let l = 0; l < numLayers; l++) {
+        const glow = layerGlow[l];
+        if (glow < 0.02) continue;
+        const coord = ls * (l + 1);
+        const col = layerColorRGB(l);
+        const alpha = 0.035 * glow;
+        ctx.fillStyle = `rgba(${col.r}, ${col.g}, ${col.b}, ${alpha})`;
+        if (isVertical) {
+          ctx.fillRect(0, coord - ls * 0.4, cw, ls * 0.8);
+        } else {
+          ctx.fillRect(coord - ls * 0.4, 0, ls * 0.8, ch);
+        }
+      }
+    };
 
     // =================== NEURON ===================
     class Neuron {
@@ -93,62 +152,94 @@ export default function ParticleField() {
         this.baseX = x; this.baseY = y;
         this.layerIndex = layerIndex;
         this.neuronIndex = neuronIndex;
-        this.radius = 3.5;
-        this.baseOpacity = 0.2;
-        this.opacity = this.baseOpacity;
+        this.isOutput = layerIndex === numLayers - 1;
+        this.radius = this.isOutput ? 6.5 : 4;
         this.activation = 0;
-        this.energy = 0;
+        this.charge = 0;
         this.pulsePhase = Math.random() * Math.PI * 2;
-        this.breathSpeed = 0.012 + Math.random() * 0.008;
+        this.breathSpeed = this.isOutput ? 0.018 : 0.008 + Math.random() * 0.006;
         this.driftX = 0; this.driftY = 0;
-        this.driftSpeedX = (Math.random() - 0.5) * 0.004;
-        this.driftSpeedY = (Math.random() - 0.5) * 0.004;
-        this.driftRange = 6 + Math.random() * 5;
+        this.driftSpeedX = (Math.random() - 0.5) * 0.002;
+        this.driftSpeedY = (Math.random() - 0.5) * 0.002;
+        this.driftRange = 5 + Math.random() * 4;
       }
 
       activate(strength = 1) {
         this.activation = Math.min(1, this.activation + strength);
-        this.energy = Math.min(1, this.energy + strength * 0.8);
+        this.charge = Math.min(1, this.charge + strength * 0.7);
+        // Boost the layer glow more aggressively so all layers light up visibly
+        layerGlow[this.layerIndex] = Math.min(1, layerGlow[this.layerIndex] + strength * 0.5);
       }
 
       update() {
         this.pulsePhase += this.breathSpeed;
-        const breathe = Math.sin(this.pulsePhase) * 0.06;
         this.driftX += this.driftSpeedX;
         this.driftY += this.driftSpeedY;
         this.x = this.baseX + Math.sin(this.driftX) * this.driftRange;
         this.y = this.baseY + Math.cos(this.driftY) * this.driftRange;
-        this.activation *= 0.94;
-        this.energy *= 0.97;
-        this.opacity = this.baseOpacity + breathe + this.activation * 0.6;
+        this.activation *= 0.91;
+        this.charge *= 0.95;
+      }
 
+      draw() {
+        const pulse = Math.sin(this.pulsePhase);
+        const lg = layerGlow[this.layerIndex]; // how bright is this entire layer right now
+        const col = layerColorRGB(this.layerIndex);
+
+        // Idle opacity — higher base so middle layers are always somewhat visible
+        const idleBase = this.isOutput ? 0.2 + pulse * 0.06 : 0.08 + pulse * 0.02;
+        const layerBoost = lg * 0.4;
+        const activationBoost = this.activation * 0.55;
+        const opacity = Math.min(1, idleBase + layerBoost + activationBoost);
+
+        // Charge glow — simple expanded circle, no gradient
+        if (this.charge > 0.06) {
+          const glowR = this.radius + 18 * this.charge;
+          ctx.beginPath();
+          ctx.arc(this.x, this.y, glowR, 0, Math.PI * 2);
+          ctx.fillStyle = `rgba(${col.r}, ${col.g}, ${col.b}, ${0.12 * this.charge})`;
+          ctx.fill();
+        }
+
+        // Outer ring
+        ctx.beginPath();
+        ctx.arc(this.x, this.y, this.radius + 1.2, 0, Math.PI * 2);
+        ctx.strokeStyle = `rgba(${col.r}, ${col.g}, ${col.b}, ${opacity * 0.3})`;
+        ctx.lineWidth = this.isOutput ? 1.4 : 0.7;
+        ctx.stroke();
+
+        // Core fill
+        ctx.beginPath();
+        ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
+        ctx.fillStyle = `rgba(${col.r}, ${col.g}, ${col.b}, ${opacity})`;
+        ctx.fill();
+
+        // Hot white center
+        const centerAlpha = Math.min(1, 0.2 + this.activation * 0.5 + lg * 0.2) * 0.6;
+        ctx.beginPath();
+        ctx.arc(this.x, this.y, this.radius * 0.35, 0, Math.PI * 2);
+        ctx.fillStyle = `rgba(255, 255, 255, ${centerAlpha})`;
+        ctx.fill();
+
+        // Output neuron breathing — simple circle, no gradient
+        if (this.isOutput) {
+          const breathAlpha = 0.04 + pulse * 0.03 + lg * 0.06;
+          ctx.beginPath();
+          ctx.arc(this.x, this.y, this.radius + 10, 0, Math.PI * 2);
+          ctx.fillStyle = `rgba(${col.r}, ${col.g}, ${col.b}, ${breathAlpha})`;
+          ctx.fill();
+        }
+
+        // Mouse hover charge
         if (mouse.x !== null) {
           const dx = this.x - mouse.x;
           const dy = this.y - mouse.y;
           const dist = Math.sqrt(dx * dx + dy * dy);
-          if (dist < 150) {
-            this.opacity += (1 - dist / 150) * 0.25;
-            this.energy = Math.min(1, this.energy + (1 - dist / 150) * 0.015);
+          if (dist < 120) {
+            this.charge = Math.min(1, this.charge + (1 - dist / 120) * 0.025);
+            layerGlow[this.layerIndex] = Math.min(1, layerGlow[this.layerIndex] + (1 - dist / 120) * 0.008);
           }
         }
-      }
-
-      draw() {
-        const e = this.energy;
-        if (this.activation > 0.05) {
-          const gr = this.radius + 18 * this.activation;
-          const gradient = ctx.createRadialGradient(this.x, this.y, this.radius, this.x, this.y, gr);
-          gradient.addColorStop(0, energyColor(e, 0.4 * this.activation));
-          gradient.addColorStop(1, energyColor(e, 0));
-          ctx.beginPath(); ctx.arc(this.x, this.y, gr, 0, Math.PI * 2); ctx.fillStyle = gradient; ctx.fill();
-        }
-        ctx.beginPath(); ctx.arc(this.x, this.y, this.radius + 1.5, 0, Math.PI * 2);
-        ctx.strokeStyle = energyColor(e * 0.7, this.opacity * 0.3);
-        ctx.lineWidth = 0.8; ctx.stroke();
-        ctx.beginPath(); ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
-        ctx.fillStyle = energyColor(e, this.opacity); ctx.fill();
-        ctx.beginPath(); ctx.arc(this.x, this.y, this.radius * 0.4, 0, Math.PI * 2);
-        ctx.fillStyle = energyColor(Math.min(1, e + 0.3), this.opacity * 0.9); ctx.fill();
       }
     }
 
@@ -157,93 +248,145 @@ export default function ParticleField() {
       constructor(from, to) {
         this.from = from; this.to = to;
         this.weight = 0.3 + Math.random() * 0.7;
-        this.baseOpacity = 0.025 + this.weight * 0.025;
-        this.activity = 0; this.energy = 0;
+        this.activity = 0;
       }
-      update() { this.activity *= 0.92; this.energy *= 0.95; }
+
+      update() {
+        this.activity *= 0.86;
+      }
+
       draw() {
-        const opacity = this.baseOpacity + this.activity * 0.18;
+        const fromLG = layerGlow[this.from.layerIndex];
+        const toLG = layerGlow[this.to.layerIndex];
+        const avgLayerGlow = (fromLG + toLG) / 2;
+
+        // Hairline at rest, very dim. Brighter when layer glows or when active signal.
+        const baseAlpha = 0.012 + this.weight * 0.008;
+        const glowAlpha = avgLayerGlow * 0.08;
+        const actAlpha = this.activity * 0.4;
+        const alpha = Math.min(0.8, baseAlpha + glowAlpha + actAlpha);
+
+        // Mouse proximity
         let mb = 0;
         if (mouse.x !== null) {
-          const mx = (this.from.x + this.to.x) / 2, my = (this.from.y + this.to.y) / 2;
+          const mx = (this.from.x + this.to.x) / 2;
+          const my = (this.from.y + this.to.y) / 2;
           const d = Math.sqrt((mx - mouse.x) ** 2 + (my - mouse.y) ** 2);
-          if (d < 150) mb = (1 - d / 150) * 0.06;
+          if (d < 120) mb = (1 - d / 120) * 0.04;
         }
-        ctx.beginPath(); ctx.moveTo(this.from.x, this.from.y); ctx.lineTo(this.to.x, this.to.y);
-        ctx.strokeStyle = energyColor(this.energy, opacity + mb);
-        ctx.lineWidth = 0.4 + this.weight * 0.3 + this.activity * 2; ctx.stroke();
+
+        const fromCol = layerColorRGB(this.from.layerIndex);
+        const toCol = layerColorRGB(this.to.layerIndex);
+
+        if (this.activity > 0.08) {
+          // Active: bright gradient, thickness reflects weight & signal
+          const grad = ctx.createLinearGradient(this.from.x, this.from.y, this.to.x, this.to.y);
+          grad.addColorStop(0, `rgba(${fromCol.r}, ${fromCol.g}, ${fromCol.b}, ${alpha + mb})`);
+          grad.addColorStop(1, `rgba(${toCol.r}, ${toCol.g}, ${toCol.b}, ${alpha + mb})`);
+          ctx.beginPath();
+          ctx.moveTo(this.from.x, this.from.y);
+          ctx.lineTo(this.to.x, this.to.y);
+          ctx.strokeStyle = grad;
+          ctx.lineWidth = 0.4 + this.weight * 0.6 + this.activity * 2.5;
+          ctx.stroke();
+        } else {
+          // Hairline at rest
+          const midCol = {
+            r: Math.round((fromCol.r + toCol.r) / 2),
+            g: Math.round((fromCol.g + toCol.g) / 2),
+            b: Math.round((fromCol.b + toCol.b) / 2)
+          };
+          ctx.beginPath();
+          ctx.moveTo(this.from.x, this.from.y);
+          ctx.lineTo(this.to.x, this.to.y);
+          ctx.strokeStyle = `rgba(${midCol.r}, ${midCol.g}, ${midCol.b}, ${alpha + mb})`;
+          ctx.lineWidth = 0.25 + this.weight * 0.12;
+          ctx.stroke();
+        }
       }
     }
 
-    // =================== SIGNAL ===================
+    // =================== SIGNAL PARTICLE (optimized) ===================
+    const MAX_SIGNALS = 60;
     class Signal {
       constructor(connection, inheritedEnergy = 0) {
         this.connection = connection;
         this.progress = 0;
-        this.speed = (window.innerWidth < 768) ? 0.025 : 0.035 + Math.random() * 0.025; // Much faster propagation
+        this.speed = (window.innerWidth < 768) ? 0.06 : 0.07 + Math.random() * 0.03;
         this.alive = true;
-        this.radius = 2.2 + Math.random() * 1.3;
-        this.trailLength = 7;
+        this.energy = 0.3 + inheritedEnergy * 0.5;
+        this.radius = 1.5 + this.energy * 2;
+        this.trailLength = 4;
         this.trail = [];
-        this.energy = 0.15 + inheritedEnergy * 0.5;
-        this.maxEnergy = 0.3 + Math.random() * 0.7;
       }
 
       update() {
         this.progress += this.speed;
-        this.energy = Math.min(this.maxEnergy, this.energy + this.speed * 0.35);
         const x = this.connection.from.x + (this.connection.to.x - this.connection.from.x) * this.progress;
         const y = this.connection.from.y + (this.connection.to.y - this.connection.from.y) * this.progress;
-        this.trail.unshift({ x, y, energy: this.energy });
+        this.trail.unshift({ x, y });
         if (this.trail.length > this.trailLength) this.trail.pop();
-        this.connection.activity = Math.max(this.connection.activity, 0.5);
-        this.connection.energy = Math.max(this.connection.energy, this.energy);
+
+        this.connection.activity = Math.max(this.connection.activity, 0.5 + this.energy * 0.5);
 
         if (this.progress >= 1) {
           this.alive = false;
-          this.connection.to.activate(0.6 + this.energy * 0.3);
+          const target = this.connection.to;
+          target.activate(0.7 + this.energy * 0.3);
 
-          // Track output arrivals
-          if (this.connection.to.layerIndex === layerConfig.length - 1) {
-            signalsReachedOutput++;
-            outputGlow = Math.min(1, outputGlow + 0.15);
+          // Ripple only on input and output layers (performance)
+          const arrivalLayer = target.layerIndex;
+          if (arrivalLayer === 0 || arrivalLayer === numLayers - 1) {
+            if (ripples.length < MAX_RIPPLES) ripples.push(new Ripple(target.x, target.y, arrivalLayer));
           }
 
-          // Always forward exactly 1 signal to the next layer (pure input-driven flow)
-          if (this.connection.to.layerIndex < layerConfig.length - 1) {
-            const tl = this.connection.to.layerIndex;
-            const ni = this.connection.to.neuronIndex;
-            const nextConns = connections.filter((c) => c.from.layerIndex === tl && c.from.neuronIndex === ni);
+          if (arrivalLayer === numLayers - 1) {
+            signalsReachedOutput++;
+            outputGlow = Math.min(1, outputGlow + 0.2);
+          }
+
+          // Forward — single signal only, cap total
+          if (arrivalLayer < numLayers - 1 && signals.length < MAX_SIGNALS) {
+            const tl = target.layerIndex;
+            const ni = target.neuronIndex;
+            const nextConns = connections.filter(c => c.from.layerIndex === tl && c.from.neuronIndex === ni);
             if (nextConns.length > 0) {
               const pick = nextConns[Math.floor(Math.random() * nextConns.length)];
-              signals.push(new Signal(pick, this.energy));
+              signals.push(new Signal(pick, this.energy * 0.75));
             }
           }
         }
       }
 
       draw() {
-        for (let i = 0; i < this.trail.length; i++) {
+        if (this.trail.length === 0) return;
+        const col = layerColorRGB(this.connection.to.layerIndex);
+
+        // Short fading trail — simple circles, no gradients
+        for (let i = 1; i < this.trail.length; i++) {
           const t = this.trail[i];
           const fade = 1 - i / this.trail.length;
-          ctx.beginPath(); ctx.arc(t.x, t.y, this.radius * (1 - i / this.trail.length * 0.5), 0, Math.PI * 2);
-          ctx.fillStyle = energyColor(t.energy || this.energy, fade * 0.55); ctx.fill();
+          ctx.beginPath();
+          ctx.arc(t.x, t.y, this.radius * (1 - i * 0.18), 0, Math.PI * 2);
+          ctx.fillStyle = `rgba(${col.r}, ${col.g}, ${col.b}, ${fade * 0.3})`;
+          ctx.fill();
         }
-        if (this.trail.length > 0) {
-          const h = this.trail[0];
-          const gs = this.radius * (4 + this.energy * 3);
-          const g = ctx.createRadialGradient(h.x, h.y, 0, h.x, h.y, gs);
-          g.addColorStop(0, energyColor(this.energy, 0.5));
-          g.addColorStop(0.5, energyColor(this.energy * 0.7, 0.15));
-          g.addColorStop(1, energyColor(this.energy, 0));
-          ctx.beginPath(); ctx.arc(h.x, h.y, gs, 0, Math.PI * 2); ctx.fillStyle = g; ctx.fill();
-          ctx.beginPath(); ctx.arc(h.x, h.y, this.radius, 0, Math.PI * 2);
-          ctx.fillStyle = energyColor(Math.min(1, this.energy + 0.3), 1); ctx.fill();
-        }
+
+        // Head — glow ring + white core (no radial gradient)
+        const h = this.trail[0];
+        ctx.beginPath();
+        ctx.arc(h.x, h.y, this.radius + 3, 0, Math.PI * 2);
+        ctx.fillStyle = `rgba(${col.r}, ${col.g}, ${col.b}, 0.15)`;
+        ctx.fill();
+
+        ctx.beginPath();
+        ctx.arc(h.x, h.y, this.radius, 0, Math.PI * 2);
+        ctx.fillStyle = `rgba(255, 255, 255, 0.9)`;
+        ctx.fill();
       }
     }
 
-    // =================== FEED TOKEN (word → input neuron) ===================
+    // =================== FEED TOKEN ===================
     class FeedToken {
       constructor(text, startX, startY, targetNeuron, delay) {
         this.text = text;
@@ -251,7 +394,7 @@ export default function ParticleField() {
         this.targetNeuron = targetNeuron;
         this.delay = delay;
         this.progress = 0;
-        this.speed = 0.045; // Fast input component flow
+        this.speed = 0.06;
         this.alive = true;
         this.arrived = false;
         this.opacity = 1;
@@ -260,33 +403,34 @@ export default function ParticleField() {
 
       update() {
         this.timer++;
-        if (this.timer < this.delay) return; // wait for stagger
-
+        if (this.timer < this.delay) return;
         this.progress += this.speed;
         const t = easeInOutCubic(Math.min(1, this.progress));
         this.x = this.startX + (this.targetNeuron.x - this.startX) * t;
         this.y = this.startY + (this.targetNeuron.y - this.startY) * t;
 
-        // Shrink opacity & scale as it approaches the neuron
         if (this.progress > 0.7) {
           this.opacity = Math.max(0, 1 - (this.progress - 0.7) / 0.3);
         }
 
         if (this.progress >= 1 && !this.arrived) {
           this.arrived = true;
-          // Activate the input neuron
           this.targetNeuron.activate(1);
-          this.targetNeuron.energy = 0.8;
+          this.targetNeuron.charge = 1;
 
-          // Fire exactly 1 signal from this input neuron
+          // Fire all outgoing connections from this input neuron for a burst effect
           const outConns = connections.filter(
-            (c) => c.from.layerIndex === 0 && c.from.neuronIndex === this.targetNeuron.neuronIndex
+            c => c.from.layerIndex === 0 && c.from.neuronIndex === this.targetNeuron.neuronIndex
           );
           if (outConns.length > 0) {
+            // Primary signal
             const pick = outConns[Math.floor(Math.random() * outConns.length)];
-            signals.push(new Signal(pick, 0.3));
+            signals.push(new Signal(pick, 0.6));
             inputSignalCount++;
           }
+
+          // Ripple burst on input
+          ripples.push(new Ripple(this.targetNeuron.x, this.targetNeuron.y, 0));
         }
 
         if (this.progress > 1.1) this.alive = false;
@@ -297,21 +441,14 @@ export default function ParticleField() {
         const scale = this.progress < 0.2 ? easeOutQuad(this.progress / 0.2) : 1;
         const fontSize = Math.round(11 * scale);
         if (fontSize < 3) return;
-
-        ctx.save();
-        ctx.font = `600 ${fontSize}px "Inter", sans-serif`;
+        ctx.font = `700 ${fontSize}px "Inter", sans-serif`;
         ctx.textAlign = 'center';
-
-        // Glow
-        ctx.shadowColor = 'rgba(59, 130, 246, 0.7)';
-        ctx.shadowBlur = 8 * this.opacity;
-        ctx.fillStyle = `rgba(191, 219, 254, ${this.opacity * 0.95})`;
+        ctx.fillStyle = `rgba(220, 235, 255, ${this.opacity})`;
         ctx.fillText(this.text, this.x, this.y);
-        ctx.restore();
       }
     }
 
-    // =================== OUTPUT TOKEN (output neuron → answer text) ===================
+    // =================== OUTPUT TOKEN ===================
     class OutputToken {
       constructor(text, neuron, targetX, targetY, delay) {
         this.text = text;
@@ -320,7 +457,7 @@ export default function ParticleField() {
         this.targetX = targetX; this.targetY = targetY;
         this.delay = delay;
         this.progress = 0;
-        this.speed = 0.04; // Fast output assembly
+        this.speed = 0.15;
         this.alive = true;
         this.arrived = false;
         this.opacity = 0;
@@ -331,39 +468,24 @@ export default function ParticleField() {
       update() {
         this.timer++;
         if (this.timer < this.delay) return;
-
         this.progress += this.speed;
         const t = easeInOutCubic(Math.min(1, this.progress));
         this.x = this.startX + (this.targetX - this.startX) * t;
         this.y = this.startY + (this.targetY - this.startY) * t;
-
-        // Fade in as it moves
         this.opacity = Math.min(1, this.progress * 2);
-
         if (this.progress >= 1 && !this.arrived) {
           this.arrived = true;
           this.finalOpacity = 1;
         }
-
-        if (this.arrived) {
-          this.opacity = this.finalOpacity;
-        }
+        if (this.arrived) this.opacity = this.finalOpacity;
       }
 
       draw() {
         if (this.timer < this.delay || !this.x) return;
-
-        ctx.save();
-        ctx.font = '700 13px "Inter", sans-serif';
-        ctx.textAlign = 'center';
-        ctx.shadowColor = 'rgba(34, 211, 238, 0.6)';
-        ctx.shadowBlur = 10 * this.opacity;
-        ctx.fillStyle = `rgba(207, 250, 254, ${this.opacity * 0.95})`;
+        ctx.fillStyle = `rgba(220, 255, 240, ${this.opacity})`;
         ctx.fillText(this.text, this.x, this.y);
-        ctx.restore();
       }
 
-      // Fade out method
       fadeOut(rate) {
         this.finalOpacity = Math.max(0, this.finalOpacity - rate);
         this.opacity = this.finalOpacity;
@@ -375,40 +497,39 @@ export default function ParticleField() {
     class FloatingParticle {
       constructor() { this.reset(); }
       reset() {
-        this.x = Math.random() * canvas.width;
-        this.y = Math.random() * canvas.height;
-        this.vx = (Math.random() - 0.5) * 0.25;
-        this.vy = (Math.random() - 0.5) * 0.25;
-        this.radius = Math.random() * 1.2 + 0.3;
-        this.opacity = Math.random() * 0.08 + 0.02;
-        this.pulseSpeed = Math.random() * 0.02 + 0.005;
+        this.x = Math.random() * cw;
+        this.y = Math.random() * ch;
+        this.vx = (Math.random() - 0.5) * 0.15;
+        this.vy = (Math.random() - 0.5) * 0.15;
+        this.radius = Math.random() * 1 + 0.3;
+        this.opacity = Math.random() * 0.04 + 0.01;
+        this.pulseSpeed = Math.random() * 0.015 + 0.003;
         this.phase = Math.random() * Math.PI * 2;
       }
       update() {
         this.x += this.vx; this.y += this.vy;
         this.phase += this.pulseSpeed;
-        if (this.x < -20) this.x = canvas.width + 20;
-        if (this.x > canvas.width + 20) this.x = -20;
-        if (this.y < -20) this.y = canvas.height + 20;
-        if (this.y > canvas.height + 20) this.y = -20;
+        if (this.x < -20) this.x = cw + 20;
+        if (this.x > cw + 20) this.x = -20;
+        if (this.y < -20) this.y = ch + 20;
+        if (this.y > ch + 20) this.y = -20;
       }
       draw() {
-        ctx.beginPath(); ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
-        ctx.fillStyle = `rgba(59, 130, 246, ${this.opacity + Math.sin(this.phase) * 0.02})`;
+        ctx.beginPath();
+        ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
+        ctx.fillStyle = `rgba(59, 130, 246, ${this.opacity + Math.sin(this.phase) * 0.01})`;
         ctx.fill();
       }
     }
 
     // =================== INITIALIZATION ===================
-    let isVertical = false;
-
     const initNetwork = () => {
       neurons = []; connections = []; signals = [];
-      floatingParticles = []; feedTokens = []; outputTokens = [];
+      floatingParticles = []; feedTokens = []; outputTokens = []; ripples = [];
+      layerGlow = new Float32Array(numLayers);
 
-      const w = canvas.width, h = canvas.height;
-      isVertical = w < 768; // switch to vertical on mobile
-      const numLayers = layerConfig.length;
+      const w = cw, h = ch;
+      isVertical = w < 768;
       const layerSpacing = isVertical ? h / (numLayers + 1) : w / (numLayers + 1);
 
       for (let l = 0; l < numLayers; l++) {
@@ -424,34 +545,32 @@ export default function ParticleField() {
       }
 
       for (let l = 0; l < numLayers - 1; l++) {
-        const curr = neurons.filter((n) => n.layerIndex === l);
-        const next = neurons.filter((n) => n.layerIndex === l + 1);
+        const curr = neurons.filter(n => n.layerIndex === l);
+        const next = neurons.filter(n => n.layerIndex === l + 1);
         for (const from of curr) {
           for (const to of next) {
-            if (Math.random() < 0.55) connections.push(new Connection(from, to));
+            if (Math.random() < 0.35) connections.push(new Connection(from, to));
           }
         }
       }
 
-      const pc = Math.min(35, Math.floor((w * h) / 35000));
+      const pc = Math.min(15, Math.floor((w * h) / 60000));
       for (let i = 0; i < pc; i++) floatingParticles.push(new FloatingParticle());
     };
 
     // =================== Q&A ENGINE ===================
     const getQTextPosition = () => {
-      const numLayers = layerConfig.length;
-      const ls = isVertical ? canvas.height / (numLayers + 1) : canvas.width / (numLayers + 1);
+      const ls = isVertical ? ch / (numLayers + 1) : cw / (numLayers + 1);
       return isVertical
-        ? { x: canvas.width / 2, y: Math.max(35, ls - 45) }
-        : { x: Math.max(35, ls - 40), y: canvas.height * 0.13 };
+        ? { x: cw / 2, y: Math.max(28, ls * 0.35) }
+        : { x: Math.max(35, ls - 40), y: ch * 0.13 };
     };
 
     const getATextPosition = () => {
-      const numLayers = layerConfig.length;
-      const ls = isVertical ? canvas.height / (numLayers + 1) : canvas.width / (numLayers + 1);
+      const ls = isVertical ? ch / (numLayers + 1) : cw / (numLayers + 1);
       return isVertical
-        ? { x: canvas.width / 2, y: Math.min(canvas.height - 35, ls * numLayers + 45) }
-        : { x: Math.min(canvas.width - 35, ls * numLayers + 40), y: canvas.height * 0.13 };
+        ? { x: cw / 2, y: Math.min(ch - 160, ls * numLayers + ls * 0.4) }
+        : { x: Math.min(cw - 35, ls * numLayers + 40), y: ch * 0.13 };
     };
 
     const startNextQuestion = () => {
@@ -465,28 +584,30 @@ export default function ParticleField() {
       outputGlow = 0;
       signalsReachedOutput = 0;
       inputSignalCount = 0;
-      answerTokensReady = false;
-      answerAssembled = '';
-      answerTokenIndex = 0;
       feedTokens = [];
       outputTokens = [];
     };
 
     const updateQA = () => {
-      if (!currentQA) {
-        qaTimer++;
-        if (qaTimer > 80) startNextQuestion();
-        return;
+      // Decay all layer glows every frame — slower decay so layers stay lit longer
+      for (let i = 0; i < numLayers; i++) {
+        layerGlow[i] *= 0.985;
       }
 
+      if (!currentQA) {
+        qaTimer++;
+        networkActivity = Math.max(0, networkActivity - 0.008);
+        if (qaTimer > 30) startNextQuestion();
+        return;
+      }
       qaTimer++;
 
       switch (qaPhase) {
         case 'typing_q': {
-          // Type out the question
-          if (qaTimer % 2 === 0 && qCharIndex < currentQA.q.length) {
-            questionText = currentQA.q.slice(0, qCharIndex + 1);
-            qCharIndex++;
+          networkActivity = Math.min(0.15, networkActivity + 0.003);
+          if (qCharIndex < currentQA.q.length) {
+            questionText = currentQA.q.slice(0, qCharIndex + 2);
+            qCharIndex += 2;
           }
           if (qCharIndex >= currentQA.q.length) {
             qaPhase = 'splitting';
@@ -496,15 +617,15 @@ export default function ParticleField() {
         }
 
         case 'splitting': {
-          // Brief pause, then split into tokens and create FeedTokens
-          if (qaTimer > 30) {
+          networkActivity = Math.min(0.3, networkActivity + 0.008);
+          // Wait 90 frames (~1.5s) so users can read the full question
+          if (qaTimer > 90) {
             const words = currentQA.q.replace(/\?/g, '').split(' ').filter(w => w.length > 0);
-            const inputNeurons = neurons.filter((n) => n.layerIndex === 0);
+            const inputNeurons = neurons.filter(n => n.layerIndex === 0);
             const qPos = getQTextPosition();
 
-            // Calculate word positions mimicking the text wrap
-            ctx.font = '600 13px "Inter", sans-serif';
-            const maxW = isVertical ? canvas.width - 40 : Math.max(140, Math.min(200, qPos.x * 1.5));
+            ctx.font = isVertical ? '600 11px "Inter", sans-serif' : '600 13px "Inter", sans-serif';
+            const maxW = isVertical ? cw - 30 : Math.max(140, Math.min(200, qPos.x * 1.5));
             const wordPositions = [];
             let line = '', y = qPos.y;
             let lineWords = [];
@@ -512,7 +633,6 @@ export default function ParticleField() {
             for (const word of words) {
               const test = line + (line ? ' ' : '') + word;
               if (ctx.measureText(test).width > maxW && line) {
-                // process previous line
                 let cumX = qPos.x - ctx.measureText(line).width / 2;
                 lineWords.forEach(lw => {
                   const ww = ctx.measureText(lw + ' ').width;
@@ -536,14 +656,13 @@ export default function ParticleField() {
               });
             }
 
-            // Assign each word to an input neuron (round-robin)
             for (let i = 0; i < words.length; i++) {
               const neuron = inputNeurons[i % inputNeurons.length];
               const wp = wordPositions[i] || qPos;
-              feedTokens.push(new FeedToken(words[i], wp.x, wp.y, neuron, i * 7));
+              feedTokens.push(new FeedToken(words[i], wp.x, wp.y, neuron, i * 3));
             }
 
-            questionText = ''; // Clear static text, words are now animated
+            questionText = '';
             qaPhase = 'feeding_tokens';
             qaTimer = 0;
           }
@@ -551,9 +670,9 @@ export default function ParticleField() {
         }
 
         case 'feeding_tokens': {
-          // Wait for all feed tokens to arrive — no extra signals, purely input-driven
-          const allArrived = feedTokens.length > 0 && feedTokens.every((t) => t.arrived || !t.alive);
-          if (allArrived && qaTimer > 20) {
+          networkActivity = Math.min(0.6, networkActivity + 0.012);
+          const allArrived = feedTokens.length > 0 && feedTokens.every(t => t.arrived || !t.alive);
+          if (allArrived && qaTimer > 10) {
             qaPhase = 'propagating';
             qaTimer = 0;
           }
@@ -561,17 +680,21 @@ export default function ParticleField() {
         }
 
         case 'propagating': {
-          // No random mid-layer firing — only input-originated signals propagate
+          networkActivity = Math.min(1, networkActivity + 0.015);
 
-          // Wait until ALL input signals have reached the output layer
           const hasActiveSignals = signals.length > 0;
-          const allReached = inputSignalCount > 0 && signalsReachedOutput >= inputSignalCount;
-          const timeout = isVertical ? 350 : 180; // Much longer timeout on mobile
+          const timeout = isVertical ? 250 : 150;
 
-          if ((allReached && !hasActiveSignals) || qaTimer > timeout) {
-            // All input signals arrived at output → ready
-            const outputNeurons = neurons.filter((n) => n.layerIndex === layerConfig.length - 1);
-            outputNeurons.forEach((n) => { n.activate(1); n.energy = 1; });
+          // Answer immediately when wavefront hits output layer
+          if ((signalsReachedOutput > 0 && signalsReachedOutput >= inputSignalCount * 0.3) || qaTimer > timeout || (inputSignalCount > 0 && signalsReachedOutput >= inputSignalCount)) {
+            const outputNeurons = neurons.filter(n => n.layerIndex === numLayers - 1);
+            outputNeurons.forEach(n => {
+              n.activate(1);
+              n.charge = 1;
+              ripples.push(new Ripple(n.x, n.y, n.layerIndex));
+            });
+            // Full output layer glow
+            layerGlow[numLayers - 1] = 1;
             outputGlow = 1;
             qaPhase = 'assembling_answer';
             qaTimer = 0;
@@ -580,15 +703,14 @@ export default function ParticleField() {
         }
 
         case 'assembling_answer': {
-          // Split answer into words and have them emerge from output neurons
+          networkActivity = Math.max(0.5, networkActivity - 0.003);
           if (qaTimer === 1) {
             const words = currentQA.a.split(' ').filter(w => w.length > 0);
-            const outputNeurons = neurons.filter((n) => n.layerIndex === layerConfig.length - 1);
+            const outputNeurons = neurons.filter(n => n.layerIndex === numLayers - 1);
             const aPos = getATextPosition();
 
-            // Calculate target positions mimicking proper center-aligned word wrap
             ctx.font = '700 13px "Inter", sans-serif';
-            const maxWidth = isVertical ? canvas.width - 40 : Math.max(140, Math.min(200, canvas.width - aPos.x + 60));
+            const maxWidth = isVertical ? cw - 40 : Math.max(140, Math.min(200, cw - aPos.x + 60));
 
             const wordTargets = [];
             let line = '', y = aPos.y;
@@ -604,7 +726,7 @@ export default function ParticleField() {
                   cumX += ww;
                 });
                 line = word;
-                y += 20; // Move down naturally
+                y += 20;
                 lineWords = [word];
               } else {
                 line = test;
@@ -623,18 +745,16 @@ export default function ParticleField() {
             for (let i = 0; i < words.length; i++) {
               const neuron = outputNeurons[i % outputNeurons.length];
               const target = wordTargets[i];
-              outputTokens.push(new OutputToken(words[i], neuron, target.x, target.y, i * 6));
+              outputTokens.push(new OutputToken(words[i], neuron, target.x, target.y, 0));
             }
           }
 
-          // Check if all output tokens arrived
-          const allTokensArrived = outputTokens.length > 0 && outputTokens.every((t) => t.arrived);
+          const allTokensArrived = outputTokens.length > 0 && outputTokens.every(t => t.arrived);
           if (allTokensArrived) {
             qaPhase = 'displaying';
             qaTimer = 0;
           }
-          // Safety timeout
-          if (qaTimer > 200) {
+          if (qaTimer > 150) {
             qaPhase = 'displaying';
             qaTimer = 0;
           }
@@ -642,8 +762,8 @@ export default function ParticleField() {
         }
 
         case 'displaying': {
-          // Show full answer for a moment
-          if (qaTimer > 150) {
+          networkActivity = Math.max(0.2, networkActivity - 0.005);
+          if (qaTimer > 120) {
             qaPhase = 'fading';
             qaTimer = 0;
           }
@@ -651,13 +771,13 @@ export default function ParticleField() {
         }
 
         case 'fading': {
-          textOpacity = Math.max(0, 1 - qaTimer / 45);
-          outputGlow = Math.max(0, outputGlow - 0.025);
+          textOpacity = Math.max(0, 1 - qaTimer / 25);
+          outputGlow = Math.max(0, outputGlow - 0.04);
+          networkActivity = Math.max(0, networkActivity - 0.012);
 
-          // Fade output tokens
-          outputTokens.forEach((t) => t.fadeOut(0.025));
+          outputTokens.forEach(t => t.fadeOut(0.05));
 
-          if (qaTimer > 55) {
+          if (qaTimer > 30) {
             qaPhase = 'idle';
             qaTimer = 0;
             currentQA = null;
@@ -669,111 +789,106 @@ export default function ParticleField() {
         }
 
         case 'idle': {
-          if (qaTimer > 50) startNextQuestion();
+          networkActivity = Math.max(0, networkActivity - 0.008);
+          if (qaTimer > 20) startNextQuestion();
           break;
         }
       }
     };
 
-    // =================== DRAW STATIC Q&A TEXT ===================
+    // =================== DRAW Q&A TEXT ===================
     const drawQAText = () => {
-      // Question text (only during typing_q and splitting)
+      const qFontSize = isVertical ? 13 : 15;
+      const aFontSize = isVertical ? 13 : 15;
+      const labelSize = isVertical ? 9 : 10;
+      const lineH = isVertical ? 17 : 20;
+
       if (questionText && (qaPhase === 'typing_q' || qaPhase === 'splitting')) {
         const qPos = getQTextPosition();
         ctx.save();
         ctx.textAlign = 'center';
 
-        // Label
-        ctx.font = '600 9px "Inter", sans-serif';
-        ctx.fillStyle = `rgba(96, 165, 250, ${0.45 * textOpacity})`;
-        ctx.fillText('INPUT QUERY', qPos.x, qPos.y - 22);
+        ctx.font = `700 ${labelSize}px "Inter", sans-serif`;
+        ctx.fillStyle = `rgba(120, 180, 255, ${0.6 * textOpacity})`;
+        ctx.fillText('INPUT QUERY', qPos.x, qPos.y - 18);
 
-        // Question
-        ctx.font = '600 13px "Inter", sans-serif';
-        ctx.shadowColor = 'rgba(59, 130, 246, 0.5)';
-        ctx.shadowBlur = 10;
-        ctx.fillStyle = `rgba(219, 234, 254, ${0.9 * textOpacity})`;
+        ctx.font = `700 ${qFontSize}px "Inter", sans-serif`;
+        ctx.fillStyle = `rgba(235, 245, 255, ${textOpacity})`;
 
-        // Word wrap with mobile minimum width
-        const maxW = isVertical ? canvas.width - 40 : Math.max(140, Math.min(200, qPos.x * 1.5));
+        const maxW = isVertical ? cw - 24 : Math.max(140, Math.min(200, qPos.x * 1.5));
         const words = questionText.split(' ');
         let line = '', y = qPos.y;
         for (const word of words) {
           const test = line + (line ? ' ' : '') + word;
           if (ctx.measureText(test).width > maxW && line) {
             ctx.fillText(line, qPos.x, y);
-            line = word; y += 18;
+            line = word; y += lineH;
           } else {
             line = test;
           }
         }
         ctx.fillText(line, qPos.x, y);
 
-        // Cursor blink
         if (qaPhase === 'typing_q') {
           ctx.fillStyle = `rgba(96, 165, 250, ${Math.sin(qaTimer * 0.15) > 0 ? 0.8 : 0})`;
           const cw = ctx.measureText(line).width;
-          ctx.fillRect(qPos.x + cw / 2 + 3, y - 11, 1.5, 14);
+          ctx.fillRect(qPos.x + cw / 2 + 3, y - 10, 1.5, 13);
         }
         ctx.restore();
       }
 
-      // Answer label (during assembling/displaying)
       if (qaPhase === 'assembling_answer' || qaPhase === 'displaying' || qaPhase === 'fading') {
         const aPos = getATextPosition();
         ctx.save();
         ctx.textAlign = 'center';
-        ctx.font = '600 9px "Inter", sans-serif';
-        ctx.fillStyle = `rgba(34, 211, 238, ${0.45 * textOpacity})`;
-        ctx.fillText('OUTPUT', aPos.x, aPos.y - 22);
+        ctx.font = `700 ${labelSize}px "Inter", sans-serif`;
+        ctx.fillStyle = `rgba(80, 255, 200, ${0.6 * textOpacity})`;
+        ctx.fillText('OUTPUT', aPos.x, aPos.y - 18);
         ctx.restore();
       }
 
-      // Input label during feeding
       if (qaPhase === 'feeding_tokens' || qaPhase === 'propagating') {
         const qPos = getQTextPosition();
         ctx.save();
         ctx.textAlign = 'center';
-        ctx.font = '600 9px "Inter", sans-serif';
-        ctx.fillStyle = `rgba(96, 165, 250, ${0.35})`;
-        ctx.fillText('PROCESSING...', qPos.x, isVertical ? qPos.y + 40 : qPos.y - 22);
+        ctx.font = `700 ${labelSize}px "Inter", sans-serif`;
+        ctx.fillStyle = `rgba(120, 180, 255, ${0.5})`;
+        ctx.fillText('PROCESSING...', qPos.x, isVertical ? qPos.y + 30 : qPos.y - 18);
         ctx.restore();
       }
     };
 
     // =================== LAYER LABELS ===================
     const drawLayerLabels = () => {
-      if (isVertical) return; // Hide layer labels on mobile to save space
+      if (isVertical) return;
 
-      const numLayers = layerConfig.length;
-      const ls = canvas.width / (numLayers + 1);
+      const ls = cw / (numLayers + 1);
       const labels = ['Input', 'Hidden', 'Hidden', 'Deep', 'Hidden', 'Hidden', 'Output'];
 
       ctx.font = '10px "Inter", "Helvetica", sans-serif';
       ctx.textAlign = 'center';
 
       for (let l = 0; l < numLayers; l++) {
-        let alpha = 0.08;
-        if (qaPhase === 'feeding_tokens' && l === 0) alpha = 0.3;
-        if (qaPhase === 'propagating' && l > 0 && l < numLayers - 1) alpha = 0.18;
-        if ((qaPhase === 'assembling_answer' || qaPhase === 'displaying') && l === numLayers - 1) alpha = 0.35;
-        ctx.fillStyle = `rgba(59, 130, 246, ${alpha})`;
-        ctx.fillText(labels[l] || `L${l}`, ls * (l + 1), canvas.height - 20);
+        const alpha = 0.04 + layerGlow[l] * 0.3 + networkActivity * 0.04;
+        ctx.fillStyle = layerColor(l, Math.min(0.5, alpha));
+        ctx.fillText(labels[l] || `L${l}`, ls * (l + 1), ch - 20);
       }
     };
 
     // =================== OUTPUT GLOW ===================
     const drawOutputGlow = () => {
       if (outputGlow <= 0) return;
-      const numLayers = layerConfig.length;
-      const ls = isVertical ? canvas.height / (numLayers + 1) : canvas.width / (numLayers + 1);
-      const ox = isVertical ? canvas.width / 2 : ls * numLayers;
-      const oy = isVertical ? ls * numLayers : canvas.height / 2;
-      const g = ctx.createRadialGradient(ox, oy, 10, ox, oy, 130);
-      g.addColorStop(0, `rgba(34, 211, 238, ${0.07 * outputGlow})`);
-      g.addColorStop(1, 'rgba(34, 211, 238, 0)');
-      ctx.beginPath(); ctx.arc(ox, oy, 130, 0, Math.PI * 2);
-      ctx.fillStyle = g; ctx.fill();
+      const ls = isVertical ? ch / (numLayers + 1) : cw / (numLayers + 1);
+      const ox = isVertical ? cw / 2 : ls * numLayers;
+      const oy = isVertical ? ls * numLayers : ch / 2;
+      const outCol = layerColorRGB(numLayers - 1);
+      const g = ctx.createRadialGradient(ox, oy, 10, ox, oy, 160);
+      g.addColorStop(0, `rgba(${outCol.r}, ${outCol.g}, ${outCol.b}, ${0.1 * outputGlow})`);
+      g.addColorStop(1, `rgba(${outCol.r}, ${outCol.g}, ${outCol.b}, 0)`);
+      ctx.beginPath();
+      ctx.arc(ox, oy, 160, 0, Math.PI * 2);
+      ctx.fillStyle = g;
+      ctx.fill();
     };
 
     // =================== ANIMATION LOOP ===================
@@ -783,24 +898,36 @@ export default function ParticleField() {
     const animate = () => {
       if (!isVisible) return;
       time++;
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      ctx.clearRect(0, 0, cw, ch);
 
-      floatingParticles.forEach((p) => { p.update(); p.draw(); });
-      connections.forEach((c) => { c.update(); c.draw(); });
+      floatingParticles.forEach(p => { p.update(); p.draw(); });
+
+      // Layer auras — background glow per layer
+      drawLayerAura();
+
+      connections.forEach(c => { c.update(); c.draw(); });
       drawOutputGlow();
-      neurons.forEach((n) => { n.update(); n.draw(); });
+      neurons.forEach(n => { n.update(); n.draw(); });
+
+      // Ripples
+      ripples.forEach(r => { r.update(); r.draw(); });
+      ripples = ripples.filter(r => r.alive);
 
       // Signals
-      signals.forEach((s) => { s.update(); s.draw(); });
-      signals = signals.filter((s) => s.alive);
+      signals.forEach(s => { s.update(); s.draw(); });
+      signals = signals.filter(s => s.alive);
 
-      // Feed tokens (words flying to input neurons)
-      feedTokens.forEach((t) => { t.update(); t.draw(); });
-      feedTokens = feedTokens.filter((t) => t.alive);
+      // Feed tokens
+      feedTokens.forEach(t => { t.update(); t.draw(); });
+      feedTokens = feedTokens.filter(t => t.alive);
 
-      // Output tokens (words emerging from output neurons)
-      outputTokens.forEach((t) => { t.update(); t.draw(); });
-      outputTokens = outputTokens.filter((t) => t.alive);
+      // Output tokens - set font once for all
+      if (outputTokens.length > 0) {
+        ctx.font = '700 14px "Inter", sans-serif';
+        ctx.textAlign = 'center';
+        outputTokens.forEach(t => { t.update(); t.draw(); });
+        outputTokens = outputTokens.filter(t => t.alive);
+      }
 
       drawLayerLabels();
       updateQA();
@@ -814,28 +941,28 @@ export default function ParticleField() {
     const handleMouseLeave = () => { mouse.x = null; mouse.y = null; };
     const handleClick = (e) => {
       let closest = null, closestDist = Infinity;
-      neurons.forEach((n) => {
+      neurons.forEach(n => {
         const d = Math.sqrt((n.x - e.clientX) ** 2 + (n.y - e.clientY) ** 2);
         if (d < closestDist) { closestDist = d; closest = n; }
       });
       if (closest && closestDist < 100) {
-        closest.activate(1); closest.energy = 0.9;
+        closest.activate(1);
+        closest.charge = 1;
+        ripples.push(new Ripple(closest.x, closest.y, closest.layerIndex));
         connections.filter(
-          (c) => c.from.layerIndex === closest.layerIndex && c.from.neuronIndex === closest.neuronIndex
-        ).forEach((c) => signals.push(new Signal(c, 0.7)));
+          c => c.from.layerIndex === closest.layerIndex && c.from.neuronIndex === closest.neuronIndex
+        ).forEach(c => signals.push(new Signal(c, 0.7)));
       }
     };
     let lastWidth = window.innerWidth;
     const handleResize = () => {
       const newWidth = window.innerWidth;
-      // ONLY re-init if width changed (ignore height changes from mobile keyboard)
       if (Math.abs(newWidth - lastWidth) > 5) {
         lastWidth = newWidth;
         resize(); initNetwork();
         qaPhase = 'idle'; qaTimer = 0; currentQA = null;
         questionText = ''; feedTokens = []; outputTokens = [];
       } else {
-        // Just sync canvas dimensions without resetting state
         resize();
       }
     };
@@ -849,9 +976,7 @@ export default function ParticleField() {
       entries.forEach(entry => {
         const wasVisible = isVisible;
         isVisible = entry.isIntersecting;
-        if (isVisible && !wasVisible) {
-          animate();
-        }
+        if (isVisible && !wasVisible) animate();
       });
     }, { threshold: 0.05 });
     observer.observe(canvas);

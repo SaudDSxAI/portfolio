@@ -11,7 +11,7 @@ export default function About() {
       <div className="relative max-w-6xl mx-auto">
         <SectionHeading
           title="About Me"
-          subtitle="Data Scientist & AI Engineer building intelligent systems that bridge the gap between research and production"
+          subtitle="AI Engineer & Co-Founder at Oval Labs building production-grade LLM applications and agentic systems."
         />
 
         <div className="grid md:grid-cols-5 gap-12 items-center mb-16">
@@ -35,21 +35,19 @@ export default function About() {
           {/* Bio */}
           <ScrollReveal delay={200} className="md:col-span-3 space-y-5">
             <p className="text-lg text-slate-300 leading-relaxed">
-              I'm <span className="text-white font-semibold">Saud Ahmad</span>, a Data Scientist and AI Engineer
+              I'm <span className="text-white font-semibold">Saud Ahmad</span>, an AI Engineer and Co-Founder of Oval Labs
               specializing in <span className="text-primary-400 font-medium">Large Language Models</span>,{' '}
               <span className="text-primary-400 font-medium">Retrieval-Augmented Generation</span>, and{' '}
               <span className="text-primary-400 font-medium">Agentic AI Systems</span>.
             </p>
             <p className="text-slate-400 leading-relaxed">
-              I build intelligent, production-ready AI solutions that solve real-world problems.
-              From a full-stack recruitment platform processing thousands of CVs for a UAE firm,
-              to industrial safety SaaS applications — I own projects end-to-end, from architecture
-              to deployment.
+              I have commercial experience shipping production-grade AI systems. I built Nebula — a 
+              live multi-tenant SaaS recruitment platform — from scratch, featuring a 3-LLM CV 
+              evaluation pipeline and RAG-powered assistants deployed for real clients in the UAE.
             </p>
             <p className="text-slate-400 leading-relaxed">
-              Currently completing my BSc in Data Science at GIK Institute, I combine strong
-              mathematical foundations with hands-on engineering to deliver AI systems that
-              actually work in production.
+              With a hands-on background across the full AI stack using Python, TypeScript, and FastAPI, 
+              I am looking to bring this same build-and-ship mentality to client-facing AI engineering at <span className="text-white font-medium">Netguru</span>.
             </p>
 
             {/* Quick Info */}
