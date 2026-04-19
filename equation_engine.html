@@ -1,0 +1,372 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        body { margin: 0; padding: 0; background-color: transparent; overflow-x: hidden; }
+        #canvas-bg { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; z-index: 0; pointer-events: none; }
+        .content { position: relative; z-index: 1; padding: 50px; color: #fff; font-family: sans-serif; font-size: 24px; text-shadow: 0 2px 4px rgba(0,0,0,0.5); }
+    </style>
+</head>
+<body>
+    <canvas id="canvas-bg"></canvas>
+    
+    <script>
+        const canvas = document.getElementById('canvas-bg');
+        const ctx = canvas.getContext('2d', { alpha: true });
+        
+        let cw = window.innerWidth;
+        let ch = window.innerHeight;
+        let dpr = window.devicePixelRatio || 1;
+        
+        let mouseX = cw / 2;
+        let mouseY = ch / 2;
+        
+        window.addEventListener('mousemove', e => {
+            mouseX = e.clientX;
+            mouseY = e.clientY;
+        });
+        
+        const symbols = ['α', 'β', 'θ', 'λ', 'σ', '∂', '∑', '∫', '∆', '∇', '∏', 'µ', 'φ', 'ω', '∞', 'ℝ', 'τ', 'γ'];
+        const actFuncs = ['ReLU', 'σ', 'tanh'];
+        
+        const numLayers = 5; 
+        const layerSizes = [4, 6, 8, 6, 3];
+        
+        let neurons = [];
+        let connections = [];
+        let activeSignals = [];
+        let objectPool = [];
+        let bgSymbols = [];
+        
+        let cycleTimer = 0;
+        let cyclePhase = 'idle';
+        let isVertical = cw < 768;
+        let isPaused = false;
+        
+        document.addEventListener('visibilitychange', () => {
+            isPaused = document.hidden;
+        });
+
+        function resize() {
+            cw = window.innerWidth;
+            ch = window.innerHeight;
+            isVertical = cw < 768;
+            canvas.width = cw * dpr;
+            canvas.height = ch * dpr;
+            ctx.scale(dpr, dpr);
+            initNetwork();
+        }
+        
+        window.addEventListener('resize', resize);
+        
+        class BgSymbol {
+            constructor() {
+                this.x = Math.random() * cw;
+                this.y = Math.random() * ch;
+                this.sym = symbols[Math.floor(Math.random() * symbols.length)];
+                this.depth = Math.floor(Math.random() * 3) + 1;
+                this.speedMultiplier = this.depth === 1 ? 1 : this.depth === 2 ? 0.6 : 0.3;
+                this.vx = (Math.random() - 0.5) * 0.2 * this.speedMultiplier;
+                this.vy = (Math.random() - 0.5) * 0.2 * this.speedMultiplier;
+                this.phase = Math.random() * Math.PI * 2;
+            }
+            update() {
+                this.x += this.vx;
+                this.y += this.vy;
+                this.phase += 0.01;
+                
+                let dx = (mouseX - cw/2) * 0.02 * this.speedMultiplier;
+                let dy = (mouseY - ch/2) * 0.02 * this.speedMultiplier;
+                
+                if (this.x + dx < -50) this.x = cw + 50;
+                if (this.x + dx > cw + 50) this.x = -50;
+                if (this.y + dy < -50) this.y = ch + 50;
+                if (this.y + dy > ch + 50) this.y = -50;
+            }
+            draw() {
+                let dx = (mouseX - cw/2) * -0.05 * this.speedMultiplier;
+                let dy = (mouseY - ch/2) * -0.05 * this.speedMultiplier;
+                let op = 0.05 + Math.sin(this.phase) * 0.03;
+                ctx.fillStyle = `rgba(13, 31, 60, ${op})`;
+                ctx.font = `${14 * this.speedMultiplier + 10}px sans-serif`;
+                ctx.textAlign = 'center';
+                ctx.textBaseline = 'middle';
+                ctx.fillText(this.sym, this.x + dx, this.y + dy);
+            }
+        }
+        
+        class Neuron {
+            constructor(l, i, totalL, count) {
+                this.l = l;
+                this.layerIndex = l;
+                
+                let spacingX = cw / (numLayers + 1);
+                let spacingY = ch / (count + 1);
+                
+                if (isVertical) {
+                    spacingY = ch / (numLayers + 1);
+                    spacingX = cw / (count + 1);
+                    this.x = spacingX * (i + 1);
+                    this.y = spacingY * (l + 1);
+                } else {
+                    this.x = spacingX * (l + 1);
+                    this.y = spacingY * (i + 1);
+                }
+                
+                this.sym = l > 0 && l < numLayers - 1 
+                           ? actFuncs[Math.floor(Math.random() * actFuncs.length)] 
+                           : symbols[Math.floor(Math.random() * symbols.length)];
+                
+                this.phase = Math.random() * Math.PI * 2;
+                this.activation = 0;
+                this.ripple = 0;
+                this.rippleActive = false;
+            }
+            update() {
+                this.phase += 0.02;
+                if (this.activation > 0) {
+                    this.activation -= 0.02;
+                    if(this.activation < 0) this.activation = 0;
+                }
+                if (this.rippleActive) {
+                    this.ripple += 0.05;
+                    if (this.ripple > 1) {
+                        this.ripple = 0;
+                        this.rippleActive = false;
+                    }
+                }
+            }
+            draw() {
+                let dx = this.x - mouseX;
+                let dy = this.y - mouseY;
+                let dist = Math.sqrt(dx*dx + dy*dy);
+                let hoverOp = dist < 120 ? (1 - dist/120) * 0.1 : 0;
+                
+                let baseOp = 0.25;
+                let opBoost = this.activation * 0.05; 
+                let totalOp = Math.min(0.30, baseOp + hoverOp + opBoost + Math.sin(this.phase)*0.02);
+                
+                ctx.fillStyle = this.activation > 0.6 ? `rgba(160, 196, 232, ${totalOp})` : 
+                                this.activation > 0.1 ? `rgba(26, 74, 122, ${totalOp})` : 
+                                `rgba(13, 31, 60, ${totalOp})`;
+                
+                let w = 40, h = 24;
+                ctx.beginPath();
+                ctx.roundRect(this.x - w/2, this.y - h/2, w, h, 6);
+                ctx.fill();
+                
+                ctx.fillStyle = `rgba(13, 31, 60, ${totalOp * 0.6})`;
+                ctx.font = '12px sans-serif';
+                ctx.textAlign = 'center';
+                ctx.textBaseline = 'middle';
+                ctx.fillText(this.sym, this.x, this.y);
+                
+                if (this.rippleActive) {
+                    let rOp = (1 - this.ripple) * 0.15;
+                    ctx.strokeStyle = `rgba(26, 74, 122, ${rOp})`;
+                    ctx.lineWidth = 1;
+                    ctx.beginPath();
+                    ctx.arc(this.x, this.y, 20 + this.ripple * 25, 0, Math.PI*2);
+                    ctx.stroke();
+                }
+            }
+        }
+
+        class Connection {
+            constructor(n1, n2) {
+                this.n1 = n1;
+                this.n2 = n2;
+                this.active = 0;
+                this.funcSketch = 0;
+            }
+            draw() {
+                ctx.strokeStyle = `rgba(13, 42, 78, 0.15)`;
+                ctx.lineWidth = 1;
+                ctx.beginPath();
+                ctx.moveTo(this.n1.x, this.n1.y);
+                ctx.lineTo(this.n2.x, this.n2.y);
+                ctx.stroke();
+                
+                if (this.funcSketch > 0) {
+                    let mx = (this.n1.x + this.n2.x)/2;
+                    let my = (this.n1.y + this.n2.y)/2 - 10;
+                    ctx.strokeStyle = `rgba(160, 196, 232, ${this.funcSketch * 0.2})`;
+                    ctx.beginPath();
+                    ctx.moveTo(mx-8, my+4);
+                    ctx.lineTo(mx, my+4);
+                    ctx.lineTo(mx+8, my-4);
+                    ctx.stroke();
+                    this.funcSketch -= 0.05;
+                }
+            }
+        }
+        
+        class Signal {
+            constructor() { this.active = false; }
+            init(conn) {
+                this.conn = conn;
+                this.progress = 0;
+                this.active = true;
+                this.speed = 0.01 + Math.random()*0.01;
+            }
+            update() {
+                this.progress += this.speed;
+                if (this.progress >= 1) {
+                    this.active = false;
+                    this.conn.n2.activation = 1;
+                    if(Math.random() < 0.2) this.conn.funcSketch = 1;
+                    if(this.conn.n2.layerIndex < numLayers - 1) {
+                        spawnSignalsFrom(this.conn.n2);
+                    } else {
+                        if (cyclePhase === 'prog') {
+                            cycleTimer = 0;
+                            cyclePhase = 'out';
+                        }
+                    }
+                }
+            }
+            draw() {
+                let x = this.conn.n1.x + (this.conn.n2.x - this.conn.n1.x) * this.progress;
+                let y = this.conn.n1.y + (this.conn.n2.y - this.conn.n1.y) * this.progress;
+                
+                ctx.fillStyle = `rgba(255, 255, 255, 0.15)`;
+                ctx.beginPath();
+                ctx.arc(x, y, 2, 0, Math.PI*2);
+                ctx.fill();
+            }
+        }
+        
+        function getSignal() {
+            let activeCount = objectPool.filter(s => s.active).length;
+            if (activeCount >= 40) return null;
+            let sig = objectPool.find(s => !s.active);
+            if (!sig) {
+                if (objectPool.length < 40) {
+                    sig = new Signal();
+                    objectPool.push(sig);
+                }
+            }
+            return sig;
+        }
+
+        function spawnSignalsFrom(neuron) {
+            let outgoing = connections.filter(c => c.n1 === neuron);
+            for (let c of outgoing) {
+                if (Math.random() < 0.4) {
+                    let sig = getSignal();
+                    if (sig) sig.init(c);
+                }
+            }
+        }
+
+        function initNetwork() {
+            neurons = [];
+            connections = [];
+            bgSymbols = [];
+            
+            for (let i = 0; i < 40; i++) bgSymbols.push(new BgSymbol());
+            
+            for (let l = 0; l < numLayers; l++) {
+                for (let i = 0; i < layerSizes[l]; i++) {
+                    neurons.push(new Neuron(l, i, numLayers, layerSizes[l]));
+                }
+            }
+            
+            for (let l = 0; l < numLayers - 1; l++) {
+                let curr = neurons.filter(n => n.layerIndex === l);
+                let next = neurons.filter(n => n.layerIndex === l + 1);
+                for (let n1 of curr) {
+                    for (let n2 of next) {
+                        if (Math.random() < 0.4) {
+                            connections.push(new Connection(n1, n2));
+                        }
+                    }
+                }
+            }
+        }
+
+        function drawFakeGlow(x, y, r, rMax, rgbStr, opacity) {
+            let steps = 3;
+            for(let i=0; i<steps; i++) {
+                let currentR = r + (rMax - r) * (i/steps);
+                let currentOp = opacity * (1 - i/steps);
+                ctx.fillStyle = `rgba(${rgbStr}, ${currentOp})`;
+                ctx.beginPath();
+                ctx.arc(x, y, currentR, 0, Math.PI*2);
+                ctx.fill();
+            }
+        }
+
+        function loop() {
+            requestAnimationFrame(loop);
+            
+            if (isPaused) return;
+            if (isVertical && performance.now() % 33 < 16) return;
+
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            
+            bgSymbols.forEach(b => { b.update(); b.draw(); });
+            connections.forEach(c => c.draw());
+            
+            neurons.forEach(n => {
+                n.update();
+                n.draw();
+            });
+            
+            objectPool.filter(s => s.active).forEach(s => {
+                s.update();
+                s.draw();
+            });
+            
+            if (Math.random() < 0.02 && cyclePhase === 'idle') {
+                let n1 = neurons[Math.floor(Math.random()*neurons.length)];
+                let nearby = neurons.filter(n => n !== n1 && Math.abs(n.x - n1.x) < 150 && Math.abs(n.y - n1.y) < 150);
+                if(nearby.length > 0) {
+                    let n2 = nearby[Math.floor(Math.random()*nearby.length)];
+                    ctx.strokeStyle = `rgba(160, 196, 232, 0.05)`;
+                    ctx.lineWidth = 1;
+                    ctx.beginPath();
+                    ctx.moveTo(n1.x, n1.y);
+                    ctx.lineTo(n2.x, n2.y);
+                    ctx.stroke();
+                }
+            }
+            
+            cycleTimer++;
+            
+            if (cyclePhase === 'idle' && cycleTimer > 600) {
+                cyclePhase = 'in';
+                cycleTimer = 0;
+            } else if (cyclePhase === 'in') {
+                if (cycleTimer % 15 === 0) {
+                    let inputs = neurons.filter(n => n.layerIndex === 0);
+                    let idx = Math.floor(cycleTimer/15);
+                    if (idx < inputs.length) {
+                        inputs[idx].activation = 1;
+                        inputs[idx].rippleActive = true;
+                        spawnSignalsFrom(inputs[idx]);
+                    } else {
+                        cyclePhase = 'prog';
+                    }
+                }
+            } else if (cyclePhase === 'out') {
+                if (cycleTimer % 20 === 0) {
+                    let outputs = neurons.filter(n => n.layerIndex === numLayers - 1);
+                    let idx = Math.floor(cycleTimer/20);
+                    if (idx < outputs.length) {
+                        outputs[idx].activation = 1;
+                    } else {
+                        cyclePhase = 'idle';
+                        cycleTimer = 0;
+                    }
+                }
+            }
+        }
+
+        resize();
+        loop();
+    </script>
+</body>
+</html>
