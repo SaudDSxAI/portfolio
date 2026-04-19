@@ -185,7 +185,8 @@ def get_or_create_session(session_id: Optional[str] = None) -> str:
 
 
 def build_messages(history: List, context: str) -> List[dict]:
-    messages = [{"role": "system", "content": f"{SYSTEM_PROMPT}\n\n--- CONTEXT FROM EMBEDDINGS ---\n{context}\n--- END CONTEXT ---"}]
+    current_system_prompt = load_system_prompt()
+    messages = [{"role": "system", "content": f"{current_system_prompt}\n\n--- CONTEXT FROM EMBEDDINGS ---\n{context}\n--- END CONTEXT ---"}]
     for msg in history:
         if isinstance(msg, HumanMessage):
             messages.append({"role": "user", "content": msg.content})

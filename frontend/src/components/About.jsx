@@ -47,7 +47,7 @@ export default function About() {
             </p>
             <p className="text-slate-400 leading-relaxed">
               With a hands-on background across the full AI stack using Python, TypeScript, and FastAPI, 
-              I am looking to bring this same build-and-ship mentality to client-facing AI engineering at <span className="text-white font-medium">Netguru</span>.
+              I am looking to bring this same build-and-ship mentality to client-facing AI engineering.
             </p>
 
             {/* Quick Info */}
