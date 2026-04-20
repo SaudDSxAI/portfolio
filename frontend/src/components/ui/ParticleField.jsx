@@ -19,7 +19,6 @@ export default function ParticleField() {
     let neurons = [];
     let connections = [];
     let signals = [];
-    let floatingParticles = [];
     let feedTokens = [];
     let outputTokens = [];
     let ripples = [];
@@ -307,7 +306,7 @@ export default function ParticleField() {
     }
 
     // =================== SIGNAL PARTICLE (optimized) ===================
-    const MAX_SIGNALS = 60;
+    const MAX_SIGNALS = 35;
     class Signal {
       constructor(connection, inheritedEnergy = 0) {
         this.connection = connection;
@@ -493,39 +492,12 @@ export default function ParticleField() {
       }
     }
 
-    // =================== FLOATING PARTICLES ===================
-    class FloatingParticle {
-      constructor() { this.reset(); }
-      reset() {
-        this.x = Math.random() * cw;
-        this.y = Math.random() * ch;
-        this.vx = (Math.random() - 0.5) * 0.15;
-        this.vy = (Math.random() - 0.5) * 0.15;
-        this.radius = Math.random() * 1 + 0.3;
-        this.opacity = Math.random() * 0.04 + 0.01;
-        this.pulseSpeed = Math.random() * 0.015 + 0.003;
-        this.phase = Math.random() * Math.PI * 2;
-      }
-      update() {
-        this.x += this.vx; this.y += this.vy;
-        this.phase += this.pulseSpeed;
-        if (this.x < -20) this.x = cw + 20;
-        if (this.x > cw + 20) this.x = -20;
-        if (this.y < -20) this.y = ch + 20;
-        if (this.y > ch + 20) this.y = -20;
-      }
-      draw() {
-        ctx.beginPath();
-        ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
-        ctx.fillStyle = `rgba(59, 130, 246, ${this.opacity + Math.sin(this.phase) * 0.01})`;
-        ctx.fill();
-      }
-    }
+    // =================== FLOATING PARTICLES (Removed for perf) ===================
 
     // =================== INITIALIZATION ===================
     const initNetwork = () => {
       neurons = []; connections = []; signals = [];
-      floatingParticles = []; feedTokens = []; outputTokens = []; ripples = [];
+      feedTokens = []; outputTokens = []; ripples = [];
       layerGlow = new Float32Array(numLayers);
 
       const w = cw, h = ch;
@@ -549,13 +521,10 @@ export default function ParticleField() {
         const next = neurons.filter(n => n.layerIndex === l + 1);
         for (const from of curr) {
           for (const to of next) {
-            if (Math.random() < 0.35) connections.push(new Connection(from, to));
+            if (Math.random() < 0.25) connections.push(new Connection(from, to));
           }
         }
       }
-
-      const pc = Math.min(15, Math.floor((w * h) / 60000));
-      for (let i = 0; i < pc; i++) floatingParticles.push(new FloatingParticle());
     };
 
     // =================== Q&A ENGINE ===================
@@ -897,10 +866,13 @@ export default function ParticleField() {
 
     const animate = () => {
       if (!isVisible) return;
+      if (cw < 768 && time % 2 !== 0) {
+          time++;
+          animationId = requestAnimationFrame(animate);
+          return;
+      }
       time++;
       ctx.clearRect(0, 0, cw, ch);
-
-      floatingParticles.forEach(p => { p.update(); p.draw(); });
 
       // Layer auras — background glow per layer
       drawLayerAura();
