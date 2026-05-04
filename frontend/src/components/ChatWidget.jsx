@@ -1,8 +1,6 @@
 import { useState, useRef, useEffect, useCallback } from 'react';
 
-const API_URL = import.meta.env.PROD
-  ? 'https://asksaud.up.railway.app'
-  : 'http://localhost:8000';
+const API_URL = import.meta.env.VITE_API_URL || '';
 
 // ===== Markdown Renderer =====
 const MarkdownText = ({ content }) => {
@@ -57,7 +55,15 @@ const MessageBubble = ({ message, isUser, isStreaming }) => (
   <div className={`flex ${isUser ? 'justify-end' : 'justify-start'} mb-8 animate-slide-up px-1`}>
     {!isUser && (
       <div className="relative mr-2 mt-1 flex-shrink-0">
-        <img src="/saud.jpeg" alt="Saud" className="w-7 h-7 rounded-full object-cover object-top ring-1 ring-black/30 shadow-md" />
+        <img
+          src="/saud.jpeg"
+          alt="Saud"
+          width="28"
+          height="28"
+          loading="lazy"
+          decoding="async"
+          className="w-7 h-7 rounded-full object-cover object-top ring-1 ring-black/30 shadow-md"
+        />
       </div>
     )}
     <div className={`max-w-[85%] px-4 py-3 shadow-sm mb-4 ${isUser
@@ -110,8 +116,8 @@ const SuggestedQuestions = ({ onSelect, disabled }) => {
 };
 
 // ===== Main Chat Widget =====
-export default function ChatWidget() {
-  const [isOpen, setIsOpen] = useState(false);
+export default function ChatWidget({ initialOpen = false } = {}) {
+  const [isOpen, setIsOpen] = useState(initialOpen);
   const [messages, setMessages] = useState([]);
   const [input, setInput] = useState('');
   const [isLoading, setIsLoading] = useState(false);

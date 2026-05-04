@@ -407,6 +407,16 @@ app.add_middleware(
 )
 
 
+class CachedStaticFiles(StaticFiles):
+    async def get_response(self, path: str, scope):
+        response = await super().get_response(path, scope)
+        response.headers.setdefault(
+            "Cache-Control",
+            "public, max-age=31536000, immutable",
+        )
+        return response
+
+
 # ================= HELPERS =================
 def get_embedding(text: str) -> List[float]:
     response = openai_client.embeddings.create(
@@ -487,6 +497,12 @@ class HealthResponse(BaseModel):
 # ================= ENDPOINTS =================
 @app.get("/")
 async def root():
+    dist_index = Path("frontend/dist/index.html")
+    if dist_index.exists():
+        return FileResponse(
+            dist_index,
+            headers={"Cache-Control": "no-cache"},
+        )
     return {"message": "AskSaud API", "health": "/health"}
 
 
@@ -706,7 +722,7 @@ async def generate_cv(request: GenerateCVRequest):
 # Serve React frontend static files
 frontend_dist = Path("frontend/dist")
 if frontend_dist.exists():
-    app.mount("/assets", StaticFiles(directory=frontend_dist / "assets"), name="assets")
+    app.mount("/assets", CachedStaticFiles(directory=frontend_dist / "assets"), name="assets")
     
     @app.get("/{full_path:path}")
     async def serve_frontend(full_path: str):
@@ -714,8 +730,14 @@ if frontend_dist.exists():
         # Check if the requested file exists in dist
         path = frontend_dist / full_path
         if path.is_file():
-            return FileResponse(path)
-        return FileResponse(frontend_dist / "index.html")
+            return FileResponse(
+                path,
+                headers={"Cache-Control": "public, max-age=86400"},
+            )
+        return FileResponse(
+            frontend_dist / "index.html",
+            headers={"Cache-Control": "no-cache"},
+        )
 else:
     print("⚠️ Frontend dist directory not found. Please run 'npm run build' in the frontend folder.")
 

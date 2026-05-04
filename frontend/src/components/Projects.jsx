@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback, useMemo } from 'react';
+import { useState, useEffect, useCallback, useMemo, useRef } from 'react';
 import SectionHeading from './SectionHeading';
 import ProjectCard from './ProjectCard';
 import ScrollReveal from './ui/ScrollReveal';
@@ -158,9 +158,11 @@ function SyncButton({ onClick, busy }) {
 
 // ── Main component ───────────────────────────────────────────────────────────
 export default function Projects() {
+  const sectionRef = useRef(null);
   const [projects, setProjects] = useState([]);
   const [meta, setMeta] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [shouldLoad, setShouldLoad] = useState(false);
   const [refreshing, setRefreshing] = useState(false);
   const [error, setError] = useState(null);
   const [activeCategory, setActiveCategory] = useState(ALL_CATEGORY);
@@ -243,12 +245,30 @@ export default function Projects() {
   }, []);
 
   useEffect(() => {
-    load();
-  }, [load]);
+    const el = sectionRef.current;
+    if (!el) return;
+
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          setShouldLoad(true);
+          observer.disconnect();
+        }
+      },
+      { rootMargin: '700px 0px', threshold: 0.01 }
+    );
+
+    observer.observe(el);
+    return () => observer.disconnect();
+  }, []);
+
+  useEffect(() => {
+    if (shouldLoad) load();
+  }, [shouldLoad, load]);
 
   // ── render ────────────────────────────────────────────────────────────────
   return (
-    <section id="projects" className="relative py-24 px-6">
+    <section ref={sectionRef} id="projects" className="relative py-24 px-6">
       <div className="relative max-w-6xl mx-auto">
         {/* Header row */}
         <div className="flex items-start justify-between flex-wrap gap-4 mb-2">

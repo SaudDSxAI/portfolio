@@ -23,6 +23,10 @@ export default function About() {
                 <img
                   src="/saud.jpeg"
                   alt="Saud Ahmad"
+                  width="288"
+                  height="320"
+                  loading="lazy"
+                  decoding="async"
                   className="w-64 h-72 md:w-72 md:h-80 object-cover object-top rounded-2xl ring-2 ring-black shadow-2xl"
                 />
                 {/* Overlay gradient */}
