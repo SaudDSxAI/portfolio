@@ -32,7 +32,7 @@ os.makedirs(CHROMA_DIR, exist_ok=True)
 os.makedirs(TEMP_DIR, exist_ok=True)
 
 # Initialize OpenAI client 
-openai_client = OpenAI(api_key=OPENAI_API_KEY)
+openai_client = OpenAI(api_key=OPENAI_API_KEY or "missing_key")
 
 # Initialize ChromaDB client
 chroma_client = chromadb.PersistentClient(path=str(CHROMA_DIR))
