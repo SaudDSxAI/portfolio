@@ -60,14 +60,14 @@ export default function Contact() {
             <ScrollReveal key={item.label} delay={index * 100}>
               <a
                 href={item.href}
-                className="group flex items-center gap-4 p-5 bg-dark-800/50 backdrop-blur-sm border border-white/5 rounded-2xl hover:border-primary-500/20 hover:bg-dark-800/80 transition-all duration-300"
+                className="group flex items-center gap-4 p-5 bg-warm-100/85 backdrop-blur-sm border border-black/10 rounded-2xl hover:border-black/20 hover:bg-warm-100 transition-all duration-300"
               >
-                <div className="w-12 h-12 bg-primary-500/10 border border-primary-500/20 rounded-xl flex items-center justify-center text-primary-400 group-hover:scale-110 transition-transform duration-300">
+                <div className="w-12 h-12 bg-black/10 border border-black/20 rounded-xl flex items-center justify-center text-black group-hover:scale-110 transition-transform duration-300">
                   {item.icon}
                 </div>
                 <div className="text-left">
-                  <div className="text-xs text-slate-500 uppercase tracking-wider font-medium">{item.label}</div>
-                  <div className="text-white font-medium">{item.value}</div>
+                  <div className="text-xs text-zinc-500 uppercase tracking-wider font-medium">{item.label}</div>
+                  <div className="text-black font-medium">{item.value}</div>
                 </div>
               </a>
             </ScrollReveal>
@@ -83,7 +83,7 @@ export default function Contact() {
                 href={link.href}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="group w-12 h-12 bg-white/5 border border-white/10 rounded-xl flex items-center justify-center text-slate-400 hover:text-white hover:bg-primary-500/10 hover:border-primary-500/20 transition-all duration-300 hover:scale-110"
+                className="group w-12 h-12 bg-warm-100 border border-black/10 rounded-xl flex items-center justify-center text-zinc-700 hover:text-black hover:bg-black/10 hover:border-black/20 transition-all duration-300 hover:scale-110"
                 title={link.label}
               >
                 {link.icon}
@@ -94,13 +94,13 @@ export default function Contact() {
 
         {/* CTA */}
         <ScrollReveal delay={300}>
-          <div className="mt-12 p-8 bg-gradient-to-r from-primary-600/10 to-cyan-600/10 border border-primary-500/10 rounded-2xl">
-            <p className="text-slate-300 mb-4">
+          <div className="mt-12 p-8 bg-black border border-black rounded-2xl">
+            <p className="text-zinc-200 mb-4">
               Or just ask my AI assistant — it knows everything about my work!
             </p>
             <button
               onClick={() => window.dispatchEvent(new Event('openChat'))}
-              className="px-6 py-3 bg-primary-600 hover:bg-primary-500 text-white font-semibold rounded-xl transition-all duration-200 shadow-lg shadow-primary-900/30 active:scale-95"
+              className="px-6 py-3 bg-black hover:bg-zinc-800 text-white font-semibold rounded-xl transition-all duration-200 shadow-lg shadow-primary-900/30 active:scale-95"
             >
               Ask AI About Me
             </button>

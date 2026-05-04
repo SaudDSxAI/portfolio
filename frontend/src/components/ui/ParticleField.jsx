@@ -63,14 +63,14 @@ export default function ParticleField() {
       let r, g, b;
       if (t < 0.5) {
         const s = t / 0.5;
-        r = Math.round(59 + s * (34 - 59));
-        g = Math.round(130 + s * (211 - 130));
-        b = Math.round(246 + s * (238 - 246));
+        r = Math.round(82 + s * (180 - 82));
+        g = Math.round(82 + s * (154 - 82));
+        b = Math.round(91 + s * (34 - 91));
       } else {
         const s = (t - 0.5) / 0.5;
-        r = Math.round(34 + s * (52 - 34));
-        g = Math.round(211 + s * (255 - 211));
-        b = Math.round(238 + s * (180 - 238));
+        r = Math.round(180 + s * (245 - 180));
+        g = Math.round(154 + s * (245 - 154));
+        b = Math.round(34 + s * (245 - 34));
       }
       return { r, g, b };
     };
@@ -442,7 +442,7 @@ export default function ParticleField() {
         if (fontSize < 3) return;
         ctx.font = `700 ${fontSize}px "Inter", sans-serif`;
         ctx.textAlign = 'center';
-        ctx.fillStyle = `rgba(220, 235, 255, ${this.opacity})`;
+        ctx.fillStyle = `rgba(180, 154, 34, ${this.opacity})`;
         ctx.fillText(this.text, this.x, this.y);
       }
     }
@@ -481,7 +481,7 @@ export default function ParticleField() {
 
       draw() {
         if (this.timer < this.delay || !this.x) return;
-        ctx.fillStyle = `rgba(220, 255, 240, ${this.opacity})`;
+        ctx.fillStyle = `rgba(180, 154, 34, ${this.opacity})`;
         ctx.fillText(this.text, this.x, this.y);
       }
 
@@ -778,11 +778,11 @@ export default function ParticleField() {
         ctx.textAlign = 'center';
 
         ctx.font = `700 ${labelSize}px "Inter", sans-serif`;
-        ctx.fillStyle = `rgba(120, 180, 255, ${0.6 * textOpacity})`;
+        ctx.fillStyle = `rgba(180, 154, 34, ${0.6 * textOpacity})`;
         ctx.fillText('INPUT QUERY', qPos.x, qPos.y - 18);
 
         ctx.font = `700 ${qFontSize}px "Inter", sans-serif`;
-        ctx.fillStyle = `rgba(235, 245, 255, ${textOpacity})`;
+        ctx.fillStyle = `rgba(254, 243, 199, ${textOpacity})`;
 
         const maxW = isVertical ? cw - 24 : Math.max(140, Math.min(200, qPos.x * 1.5));
         const words = questionText.split(' ');
@@ -799,7 +799,7 @@ export default function ParticleField() {
         ctx.fillText(line, qPos.x, y);
 
         if (qaPhase === 'typing_q') {
-          ctx.fillStyle = `rgba(96, 165, 250, ${Math.sin(qaTimer * 0.15) > 0 ? 0.8 : 0})`;
+          ctx.fillStyle = `rgba(180, 154, 34, ${Math.sin(qaTimer * 0.15) > 0 ? 0.8 : 0})`;
           const cw = ctx.measureText(line).width;
           ctx.fillRect(qPos.x + cw / 2 + 3, y - 10, 1.5, 13);
         }
@@ -811,7 +811,7 @@ export default function ParticleField() {
         ctx.save();
         ctx.textAlign = 'center';
         ctx.font = `700 ${labelSize}px "Inter", sans-serif`;
-        ctx.fillStyle = `rgba(80, 255, 200, ${0.6 * textOpacity})`;
+        ctx.fillStyle = `rgba(180, 154, 34, ${0.6 * textOpacity})`;
         ctx.fillText('OUTPUT', aPos.x, aPos.y - 18);
         ctx.restore();
       }
@@ -821,7 +821,7 @@ export default function ParticleField() {
         ctx.save();
         ctx.textAlign = 'center';
         ctx.font = `700 ${labelSize}px "Inter", sans-serif`;
-        ctx.fillStyle = `rgba(120, 180, 255, ${0.5})`;
+        ctx.fillStyle = `rgba(180, 154, 34, ${0.5})`;
         ctx.fillText('PROCESSING...', qPos.x, isVertical ? qPos.y + 30 : qPos.y - 18);
         ctx.restore();
       }

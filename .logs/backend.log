@@ -1,0 +1,19 @@
+INFO:     Will watch for changes in these directories: ['/Users/saudahmad/Desktop/portfolio/portfolio']
+INFO:     Uvicorn running on http://0.0.0.0:8000 (Press CTRL+C to quit)
+INFO:     Started reloader process [24951] using WatchFiles
+Failed to send telemetry event ClientStartEvent: capture() takes 1 positional argument but 3 were given
+Failed to send telemetry event ClientStartEvent: capture() takes 1 positional argument but 3 were given
+INFO:     Started server process [24961]
+INFO:     Waiting for application startup.
+INFO:     Application startup complete.
+✅ Loaded cv_collection
+✅ Loaded github_collection
+👀 Watching data for changes...
+💾 Loaded 35 projects from disk
+⏰ GitHub poller started (60 min interval)
+INFO:     127.0.0.1:55016 - "GET /api/projects HTTP/1.1" 200 OK
+INFO:     127.0.0.1:55021 - "GET /api/projects HTTP/1.1" 200 OK
+INFO:     127.0.0.1:55024 - "GET /api/projects HTTP/1.1" 200 OK
+INFO:     127.0.0.1:55027 - "GET /api/projects HTTP/1.1" 200 OK
+INFO:     127.0.0.1:55035 - "GET /api/projects HTTP/1.1" 200 OK
+INFO:     127.0.0.1:55013 - "GET /api/projects HTTP/1.1" 200 OK

@@ -2,8 +2,9 @@ import os
 import json
 import uuid
 import asyncio
+import time
 from pathlib import Path
-from typing import List, Optional, Dict
+from typing import List, Optional, Dict, Any
 from contextlib import asynccontextmanager
 
 from dotenv import load_dotenv
@@ -69,8 +70,266 @@ class DataHandler(FileSystemEventHandler):
             print(f"👀 File created: {event.src_path}")
             process_single_file(Path(event.src_path))
 
+# ================= PROJECTS CACHE =================
+# { "data": [...], "fetched_at": float }
+_projects_cache: Dict[str, Any] = {}
+PROJECTS_CACHE_TTL = 3600  # 1 hour
+
+# Disk persistence: survives restarts. Manual sync writes here.
+PROJECTS_FILE = Path("data") / "projects_cache.json"
+
+
+def _bust_projects_cache():
+    """Clear the in-memory projects cache so next request re-fetches from GitHub"""
+    global _projects_cache
+    _projects_cache = {}
+    print("🗑️  Projects cache cleared (in-memory)")
+
+
+def _load_projects_from_disk() -> Dict[str, Any]:
+    """Load the persisted project cache from disk, if present."""
+    if not PROJECTS_FILE.exists():
+        return {}
+    try:
+        with open(PROJECTS_FILE, "r", encoding="utf-8") as f:
+            data = json.load(f)
+        if isinstance(data, dict) and "data" in data:
+            print(f"💾 Loaded {len(data['data'])} projects from disk")
+            return data
+    except Exception as e:
+        print(f"⚠️ Failed to load projects from disk: {e}")
+    return {}
+
+
+def _save_projects_to_disk(payload: Dict[str, Any]) -> None:
+    """Persist the project cache to disk so it survives restarts."""
+    try:
+        PROJECTS_FILE.parent.mkdir(parents=True, exist_ok=True)
+        with open(PROJECTS_FILE, "w", encoding="utf-8") as f:
+            json.dump(payload, f, indent=2, ensure_ascii=False)
+        print(f"💾 Saved {len(payload.get('data', []))} projects to {PROJECTS_FILE}")
+    except Exception as e:
+        print(f"⚠️ Failed to save projects to disk: {e}")
+
+
+CATEGORY_PROMPT = """
+You are a senior portfolio curator for an AI engineer. Given a GitHub repo's
+metadata, write a polished project card. Be precise. Be specific. No fluff.
+
+Return ONLY a valid JSON object with these exact keys:
+
+- "title": 2–5 words, Title Case, *describes the actual product*. NO generic
+  words like "AI Project", "Cool App", "Awesome Tool", "ML Demo". Use a real
+  product-style name. Examples: "Resume Screener Bot", "PDF Q&A Agent",
+  "Crypto Sentiment Tracker", "GPT-4 Code Reviewer". If the repo already has
+  a clear product name, keep it.
+
+- "description": 1–2 sentences, max 200 chars. State *what it does* and *for
+  whom*, not how it was built. Skip "this project", "this repo", "leverages",
+  "utilizes". Start with a verb when possible. Example:
+  "Screens resumes against a job description and ranks candidates by fit,
+  with explainable scoring."
+
+- "impact": one short line (≤80 chars) about the value. Real metrics if the
+  README has them ("3,500+ CVs processed · 80% faster screening"). Otherwise
+  state the concrete user-facing benefit ("Cuts manual review time").
+
+- "tech": array of 3–6 specific technologies actually used (e.g. "FastAPI",
+  "OpenAI", "ChromaDB", "React", "PyTorch"). Skip generic words like "AI",
+  "Machine Learning", "Backend".
+
+- "category": EXACTLY ONE of the following. Read the definitions and pick
+  the single best match. Default to "Experiments" only if nothing else fits.
+
+    * "Agentic AI" — autonomous agents, multi-step task execution, tool use,
+      LangGraph/CrewAI/AutoGPT-style flows, planning + acting loops.
+    * "LLM Apps & RAG" — chatbots, document Q&A, retrieval-augmented
+      generation, semantic search, prompt-engineered LLM features. Not
+      autonomous agents.
+    * "Machine Learning" — classical ML, deep learning, computer vision,
+      NLP modeling, training pipelines, predictive models. Not LLM wrappers.
+    * "Data Engineering" — ETL, scrapers, data pipelines, embeddings
+      generation, feature stores, dataset builders, batch jobs.
+    * "Developer Tools" — CLI tools, libraries, SDKs, dev utilities,
+      automation scripts intended for other engineers.
+    * "Web Apps" — full-stack web applications, SaaS products, dashboards,
+      portfolios, marketing sites. Not pure backends.
+    * "Experiments" — learning exercises, demos, half-finished prototypes,
+      tutorial follow-alongs, single-purpose scripts, rough notebooks.
+
+- "icon": a single relevant emoji (kept for legacy data; the UI no longer
+  renders it but include one anyway).
+
+- "featured": true ONLY if the repo looks substantial — has a real README,
+  meaningful description, multiple commits, and represents production-style
+  work. False for experiments, tutorials, and one-off scripts.
+
+Do NOT wrap in markdown. Output raw JSON only.
+"""
+
+# Bumped whenever the prompt or category list changes — forces re-enrichment
+# of any cards saved under an older schema on next sync.
+PROMPT_SCHEMA_VERSION = 2
+
+# Allowed categories (matches the prompt). Used to validate LLM output.
+ALLOWED_CATEGORIES = {
+    "Agentic AI",
+    "LLM Apps & RAG",
+    "Machine Learning",
+    "Data Engineering",
+    "Developer Tools",
+    "Web Apps",
+    "Experiments",
+}
+
+
+def _enrich_repo_with_llm(repo) -> Optional[Dict]:
+    """Call GPT-4o-mini to turn raw GitHub repo data into a polished project card."""
+    if not OPENAI_API_KEY:
+        return None
+    try:
+        # Build a compact context for the LLM
+        readme_snippet = ""
+        try:
+            raw = repo.get_readme().decoded_content.decode("utf-8")
+            readme_snippet = raw[:800]  # first 800 chars
+        except:
+            pass
+
+        topics = ", ".join(repo.get_topics()) if repo.get_topics() else "none"
+        user_prompt = (
+            f"Repo name: {repo.name}\n"
+            f"GitHub description: {repo.description or 'none'}\n"
+            f"Primary language: {repo.language or 'unknown'}\n"
+            f"Stars: {repo.stargazers_count}\n"
+            f"Topics: {topics}\n"
+            f"README snippet:\n{readme_snippet}"
+        )
+
+        resp = openai_client.chat.completions.create(
+            model="gpt-4o-mini",
+            response_format={"type": "json_object"},
+            messages=[
+                {"role": "system", "content": CATEGORY_PROMPT},
+                {"role": "user", "content": user_prompt},
+            ],
+            temperature=0.3,
+            max_tokens=400,
+        )
+        enriched = json.loads(resp.choices[0].message.content)
+        return enriched
+    except Exception as e:
+        print(f"  ⚠️ LLM enrichment failed for {repo.name}: {e}")
+        return None
+
+
+# Legacy gradient/border keys kept for payload shape compatibility.
+# The frontend now uses GenerativeArt seeded by repoName instead.
+_GRADIENTS = {cat: ("border-primary-600", "bg-primary-800 text-white") for cat in ALLOWED_CATEGORIES}
+
+
+def _project_from_enriched(enriched: Dict, repo, idx: int) -> Dict:
+    """Combine an LLM-enriched dict with raw repo metadata into a card payload."""
+    cat = enriched.get("category", "Experiments")
+    if cat not in ALLOWED_CATEGORIES:
+        cat = "Experiments"
+    gradient, border = _GRADIENTS.get(cat, ("border-primary-600", "bg-primary-800 text-white"))
+    return {
+        "id": idx + 1,
+        "title": enriched.get("title", repo.name),
+        "description": enriched.get("description", ""),
+        "impact": enriched.get("impact", ""),
+        "tech": enriched.get("tech", []),
+        "category": cat,
+        "github": repo.html_url,
+        "featured": enriched.get("featured", False),
+        "gradient": gradient,
+        "borderGradient": border,
+        "icon": enriched.get("icon", "💻"),
+        "stars": repo.stargazers_count,
+        "updatedAt": repo.pushed_at.isoformat() if repo.pushed_at else None,
+        "repoName": repo.name,
+        "schemaVersion": PROMPT_SCHEMA_VERSION,
+    }
+
+
+def _build_projects_list(existing: Optional[List[Dict]] = None) -> List[Dict]:
+    """
+    Fetch all GitHub repos and enrich each one via LLM.
+
+    If `existing` is provided, repos that haven't changed since last enrichment
+    (matched by repoName + updatedAt) are reused as-is — only new or modified
+    repos are passed to the LLM. This keeps OpenAI cost / latency near zero
+    for routine syncs.
+    """
+    if not GITHUB_TOKEN:
+        print("⚠️ No GITHUB_TOKEN — cannot build projects list")
+        return existing or []
+
+    g = Github(GITHUB_TOKEN)
+    try:
+        user = g.get_user(GITHUB_USERNAME) if GITHUB_USERNAME else g.get_user()
+        repos = list(user.get_repos(type="owner", sort="updated"))
+    except Exception as e:
+        print(f"❌ Error fetching repos: {e}")
+        return existing or []
+
+    # Index existing enriched cards by repoName for O(1) lookup
+    existing_by_name: Dict[str, Dict] = {}
+    if existing:
+        for p in existing:
+            if p.get("repoName"):
+                existing_by_name[p["repoName"]] = p
+
+    projects: List[Dict] = []
+    reused = 0
+    enriched_new = 0
+    for idx, repo in enumerate(repos):
+        if repo.fork:
+            continue
+
+        pushed_at_iso = repo.pushed_at.isoformat() if repo.pushed_at else None
+        prev = existing_by_name.get(repo.name)
+
+        # Reuse only if (a) repo unchanged since last enrichment AND
+        # (b) we enriched it under the current prompt schema.
+        prev_schema = prev.get("schemaVersion") if prev else None
+        if (
+            prev
+            and prev.get("updatedAt") == pushed_at_iso
+            and prev_schema == PROMPT_SCHEMA_VERSION
+        ):
+            updated = dict(prev)
+            updated["id"] = idx + 1
+            updated["stars"] = repo.stargazers_count
+            updated["github"] = repo.html_url
+            projects.append(updated)
+            reused += 1
+            continue
+
+        enriched = _enrich_repo_with_llm(repo)
+        if not enriched:
+            enriched = {
+                "title": repo.name.replace("-", " ").replace("_", " ").title(),
+                "description": repo.description or "No description available.",
+                "impact": f"{repo.stargazers_count} ⭐ · {repo.language or 'Code'}",
+                "tech": [repo.language] if repo.language else [],
+                "category": "Experiments",
+                "icon": "💻",
+                "featured": repo.stargazers_count > 2,
+            }
+        projects.append(_project_from_enriched(enriched, repo, idx))
+        enriched_new += 1
+
+    print(f"🔄 Built projects: {reused} reused, {enriched_new} newly enriched")
+
+    # Sort: featured first, then by stars desc
+    projects.sort(key=lambda p: (not p["featured"], -p["stars"]))
+    return projects
+
+
 def poll_github():
-    """Poll GitHub for new commits"""
+    """Hourly job: refresh embeddings and incrementally rebuild projects list."""
     print("⏰ Polling GitHub for updates...")
     if not GITHUB_TOKEN:
         return
@@ -79,6 +338,12 @@ def poll_github():
         user = g.get_user(GITHUB_USERNAME) if GITHUB_USERNAME else g.get_user()
         for repo in user.get_repos():
             process_single_repo(repo.name)
+        # Incrementally update projects (no LLM call unless something changed)
+        global _projects_cache
+        existing = _projects_cache.get("data") if isinstance(_projects_cache, dict) else None
+        projects = _build_projects_list(existing)
+        _projects_cache = {"data": projects, "fetched_at": time.time()}
+        _save_projects_to_disk(_projects_cache)
     except Exception as e:
         print(f"❌ Error polling GitHub: {e}")
 
@@ -106,7 +371,11 @@ async def lifespan(app: FastAPI):
         observer.start()
         print(f"👀 Watching {DATA_DIR} for changes...")
     
-    # 3. Start GitHub Poller (every hour)
+    # 2.5 Load persisted projects cache from disk (survives restarts)
+    global _projects_cache
+    _projects_cache = _load_projects_from_disk()
+
+    # 3. Start GitHub Poller (every hour, incremental)
     scheduler = BackgroundScheduler()
     scheduler.add_job(poll_github, 'interval', minutes=60)
     scheduler.start()
@@ -315,6 +584,61 @@ async def clear_session(session_id: str):
     if session_id in sessions:
         sessions[session_id] = []
     return {"message": "Session cleared"}
+
+
+# ================= PROJECTS ENDPOINT =================
+@app.get("/api/projects")
+async def get_projects(refresh: bool = False):
+    """
+    Returns all GitHub projects enriched by LLM.
+    Results are cached for 1 hour. Pass ?refresh=true to force a rebuild.
+    """
+    global _projects_cache
+    now = time.time()
+
+    # Always serve from cache when available (in-memory or disk-loaded).
+    # Refresh is now an explicit user action via /api/projects/refresh.
+    if not refresh and _projects_cache.get("data"):
+        return {
+            "projects": _projects_cache["data"],
+            "cached": True,
+            "fetched_at": _projects_cache.get("fetched_at", now),
+            "total": len(_projects_cache["data"]),
+        }
+
+    # Build fresh (incremental — only LLM-enrich new/changed repos)
+    loop = asyncio.get_event_loop()
+    existing = _projects_cache.get("data") if isinstance(_projects_cache, dict) else None
+    projects = await loop.run_in_executor(None, _build_projects_list, existing)
+
+    _projects_cache = {"data": projects, "fetched_at": now}
+    _save_projects_to_disk(_projects_cache)
+    return {
+        "projects": projects,
+        "cached": False,
+        "fetched_at": now,
+        "total": len(projects),
+    }
+
+
+@app.post("/api/projects/refresh")
+async def refresh_projects():
+    """
+    Manual sync. Pulls the latest repo list from GitHub and incrementally
+    enriches only new/changed repos with the LLM. Persists result to disk.
+    Existing repos that haven't changed are reused (no LLM call).
+    """
+    global _projects_cache
+    loop = asyncio.get_event_loop()
+    existing = _projects_cache.get("data") if isinstance(_projects_cache, dict) else None
+    projects = await loop.run_in_executor(None, _build_projects_list, existing)
+    _projects_cache = {"data": projects, "fetched_at": time.time()}
+    _save_projects_to_disk(_projects_cache)
+    return {
+        "message": "Projects synced",
+        "total": len(projects),
+        "fetched_at": _projects_cache["fetched_at"],
+    }
 
 
 @app.post("/generate-cv")

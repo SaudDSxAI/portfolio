@@ -18,7 +18,7 @@ export default function EquationEngine() {
 
     // Pausing flags
     let paused = document.hidden;
-    let obscured = window.scrollY < window.innerHeight * 0.8;
+    let obscured = false;
 
     // Pre-cached geometry
     let nodes = [];       // { x, y, phase, sym, active, decay }
@@ -43,7 +43,7 @@ export default function EquationEngine() {
       oc.width = dotSpacing;
       oc.height = dotSpacing;
       const oc2 = oc.getContext('2d');
-      oc2.fillStyle = 'rgba(74,144,217,0.09)';
+      oc2.fillStyle = 'rgba(0,0,0,0.08)';
       oc2.fillRect(0, 0, 1, 1);
       dotImg = oc;
     };
@@ -191,7 +191,7 @@ export default function EquationEngine() {
       rimAngle += 0.003;
       ctx.beginPath();
       ctx.arc(cx, cy, R, 0, Math.PI * 2);
-      ctx.strokeStyle = `rgba(26,110,181,0.25)`;
+      ctx.strokeStyle = `rgba(163,163,163,0.25)`;
       ctx.setLineDash([3, 10]);
       ctx.lineDashOffset = -(rimAngle * 200);
       ctx.lineWidth = 1;
@@ -210,8 +210,8 @@ export default function EquationEngine() {
         ctx.moveTo(a.ax, a.ay);
         ctx.quadraticCurveTo(a.cpx, a.cpy, a.bx, a.by);
         ctx.strokeStyle = a.isSig
-          ? `rgba(79,195,247,${alpha})`
-          : `rgba(26,58,110,${alpha})`;
+          ? `rgba(0,0,0,${alpha})`
+          : `rgba(82,82,91,${alpha})`;
         ctx.lineWidth = a.isSig ? 1.2 : 0.8;
         ctx.stroke();
         if (a.life <= 0) ghostArcs.splice(i, 1);
@@ -229,14 +229,14 @@ export default function EquationEngine() {
 
         hexPath(n.x, n.y, NODE_R);
         ctx.fillStyle = n.active > 0.4
-          ? `rgba(160,196,232,${alpha})`
-          : `rgba(13,31,60,${alpha + 0.05})`;
+          ? `rgba(0,0,0,${alpha})`
+          : `rgba(39,39,42,${alpha + 0.05})`;
         ctx.fill();
-        ctx.strokeStyle = `rgba(26,74,122,${0.35 + n.active * 0.5})`;
+        ctx.strokeStyle = `rgba(113,113,122,${0.35 + n.active * 0.5})`;
         ctx.lineWidth = 0.8;
         ctx.stroke();
 
-        ctx.fillStyle = `rgba(74,144,217,${0.15 + n.active * 0.6})`;
+        ctx.fillStyle = `rgba(0,0,0,${0.15 + n.active * 0.6})`;
         ctx.fillText(n.sym, n.x, n.y);
       });
 
@@ -251,15 +251,15 @@ export default function EquationEngine() {
       // soft glow rings
       for (let i = 3; i > 0; i--) {
         octPath(cx, cy, coreR * breathing + i * 5, coreRot);
-        ctx.fillStyle = `rgba(26,26,78,${0.04 / i})`;
+        ctx.fillStyle = `rgba(24,24,27,${0.04 / i})`;
         ctx.fill();
       }
       octPath(cx, cy, coreR * breathing, coreRot);
       ctx.fillStyle = coreActive
-        ? `rgba(192,216,240,0.3)`
-        : `rgba(26,26,78,0.38)`;
+        ? `rgba(0,0,0,0.3)`
+        : `rgba(39,39,42,0.38)`;
       ctx.fill();
-      ctx.strokeStyle = `rgba(160,196,232,0.55)`;
+      ctx.strokeStyle = `rgba(0,0,0,0.55)`;
       ctx.lineWidth = 1;
       ctx.stroke();
 
@@ -273,7 +273,7 @@ export default function EquationEngine() {
 
     // Event handlers
     const onVisChange = () => { paused = document.hidden; };
-    const onScroll = () => { obscured = window.scrollY < window.innerHeight * 0.8; };
+    const onScroll = () => { obscured = false; };
     const onMouseMove = (e) => { /* future parallax hook */ };
 
     let resizeTimer;
