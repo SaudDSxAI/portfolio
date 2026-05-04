@@ -389,19 +389,17 @@ VITE_API_URL=https://asksaud.up.railway.app
 
 ### Railway Deployment
 
-**Backend Service:**
+**Single Service (recommended):**
 1. Connect GitHub repo to Railway
-2. Set root directory: `/`
-3. Set build command: `pip install -r requirements.txt`
-4. Set start command: `uvicorn main:app --host 0.0.0.0 --port $PORT`
-5. Add environment variables (OPENAI_API_KEY, GITHUB_TOKEN, GITHUB_USERNAME)
+2. Set root directory to the repo root: `/`
+3. Use the included Dockerfile
+4. Start command: `uvicorn main:app --host 0.0.0.0 --port $PORT`
+5. Healthcheck path: `/health`
+6. Add environment variables: `OPENAI_API_KEY`, `GITHUB_TOKEN`, `GITHUB_USERNAME`
 
-**Frontend Service:**
-1. Create new service in same project
-2. Set root directory: `/frontend`
-3. Set build command: `npm install && npm run build`
-4. Set start command: `npx serve dist -l $PORT`
-5. Add environment variable: `VITE_API_URL=https://your-backend.up.railway.app`
+Do not set the Railway root directory to `/frontend` for this combined app.
+FastAPI serves the built React app from `frontend/dist` and also provides the
+AI endpoints used by the assistant.
 
 ### Manual Deployment
 

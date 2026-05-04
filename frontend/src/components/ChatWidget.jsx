@@ -129,17 +129,25 @@ export default function ChatWidget() {
   const inputRef = useRef(null);
   const chatContainerRef = useRef(null);
 
-  // Track the *visual* viewport so the mobile chat panel shrinks when the
-  // soft keyboard opens (WhatsApp-style). Falls back to innerHeight on
-  // browsers without visualViewport.
-  const [viewportHeight, setViewportHeight] = useState(
-    typeof window !== 'undefined' ? window.innerHeight : 0
-  );
+  // Track the visual viewport so the mobile chat follows the part of the
+  // screen that remains visible above the soft keyboard.
+  const [viewport, setViewport] = useState(() => ({
+    height: typeof window !== 'undefined' ? window.innerHeight : 0,
+    offsetTop: 0,
+    width: typeof window !== 'undefined' ? window.innerWidth : 0,
+  }));
+
+  const isMobileChat = viewport.width <= 640;
+
   useEffect(() => {
     if (typeof window === 'undefined') return;
     const vv = window.visualViewport;
     const update = () => {
-      setViewportHeight(vv ? vv.height : window.innerHeight);
+      setViewport({
+        height: vv ? vv.height : window.innerHeight,
+        offsetTop: vv ? vv.offsetTop : 0,
+        width: vv ? vv.width : window.innerWidth,
+      });
     };
     update();
     if (vv) {
@@ -158,18 +166,33 @@ export default function ChatWidget() {
     };
   }, []);
 
-  // Lock background scroll while chat is open on mobile so the panel
-  // never gets pushed around by the page beneath it.
+  // Lock background scroll while chat is open on mobile so only the message
+  // list scrolls, not the page behind the assistant.
   useEffect(() => {
     if (typeof document === 'undefined') return;
-    if (isOpen && window.matchMedia('(max-width: 640px)').matches) {
-      const prev = document.body.style.overflow;
+    if (isOpen && isMobileChat) {
+      const scrollY = window.scrollY;
+      const previous = {
+        overflow: document.body.style.overflow,
+        position: document.body.style.position,
+        top: document.body.style.top,
+        width: document.body.style.width,
+      };
+
       document.body.style.overflow = 'hidden';
+      document.body.style.position = 'fixed';
+      document.body.style.top = `-${scrollY}px`;
+      document.body.style.width = '100%';
+
       return () => {
-        document.body.style.overflow = prev;
+        document.body.style.overflow = previous.overflow;
+        document.body.style.position = previous.position;
+        document.body.style.top = previous.top;
+        document.body.style.width = previous.width;
+        window.scrollTo(0, scrollY);
       };
     }
-  }, [isOpen]);
+  }, [isOpen, isMobileChat]);
 
   // Listen for external open event (from Navbar / Hero / Contact)
   useEffect(() => {
@@ -192,18 +215,31 @@ export default function ChatWidget() {
   // When the visual viewport changes (keyboard open/close), pin the latest
   // message to the bottom so the user always sees what they're typing about.
   useEffect(() => {
-    if (!isOpen) return;
+    if (!isOpen || !isMobileChat) return;
     scrollToBottom('auto');
-  }, [viewportHeight, isOpen, scrollToBottom]);
+  }, [viewport.height, viewport.offsetTop, isOpen, isMobileChat, scrollToBottom]);
 
   useEffect(() => {
     if (isOpen) {
       setHasNewMessage(false);
       checkHealth();
-      setTimeout(() => inputRef.current?.focus(), 300);
-      scrollToBottom();
+      requestAnimationFrame(() => {
+        inputRef.current?.focus({ preventScroll: true });
+        scrollToBottom('auto');
+      });
     }
   }, [isOpen, scrollToBottom]);
+
+  useEffect(() => {
+    if (!isOpen || activeTab !== 'chat' || !isMobileChat) return;
+    const refocus = () => {
+      if (document.activeElement !== inputRef.current) {
+        inputRef.current?.focus({ preventScroll: true });
+      }
+    };
+    window.addEventListener('orientationchange', refocus);
+    return () => window.removeEventListener('orientationchange', refocus);
+  }, [isOpen, activeTab, isMobileChat]);
 
   const checkHealth = async () => {
     try {
@@ -246,6 +282,10 @@ export default function ChatWidget() {
     ]);
     setInput('');
     setIsLoading(true);
+    requestAnimationFrame(() => {
+      inputRef.current?.focus({ preventScroll: true });
+      scrollToBottom('auto');
+    });
 
     try {
       const res = await fetch(`${API_URL}/chat/stream`, {
@@ -320,6 +360,7 @@ export default function ChatWidget() {
     } finally {
       setIsLoading(false);
       setIsStreaming(false);
+      requestAnimationFrame(() => inputRef.current?.focus({ preventScroll: true }));
     }
   };
 
@@ -364,7 +405,7 @@ export default function ChatWidget() {
   // before any state updates can cause a re-render that yanks focus.
   const handleSubmit = (e) => {
     if (e && e.preventDefault) e.preventDefault();
-    inputRef.current?.focus();
+    inputRef.current?.focus({ preventScroll: true });
     sendMessage();
   };
 
@@ -419,20 +460,20 @@ export default function ChatWidget() {
           isOpen
             ? 'opacity-100 scale-100 pointer-events-auto'
             : 'opacity-0 scale-95 pointer-events-none'
-        } bottom-24 right-6 w-[380px] h-[560px] max-sm:inset-x-0 max-sm:top-0 max-sm:w-full max-sm:rounded-none max-sm:bottom-auto`}
+        } bottom-24 right-6 w-[380px] h-[560px] max-sm:left-0 max-sm:right-0 max-sm:top-0 max-sm:bottom-auto max-sm:w-full max-sm:rounded-none max-sm:origin-bottom`}
         style={
-          // On mobile, lock height to the *visual* viewport so the keyboard
-          // doesn't hide messages. WhatsApp-style: panel shrinks, last
-          // message stays glued to just above the keyboard.
-          isOpen && typeof window !== 'undefined' && window.innerWidth <= 640
-            ? { height: `${viewportHeight}px` }
+          isOpen && isMobileChat
+            ? {
+                height: `${viewport.height}px`,
+                transform: `translateY(${viewport.offsetTop}px)`,
+              }
             : undefined
         }
       >
-        <div className="w-full h-full bg-dark-900/95 backdrop-blur-xl border border-white/10 rounded-2xl max-sm:rounded-none shadow-2xl shadow-black/40 flex flex-col overflow-hidden">
+        <div className="w-full h-full bg-dark-900/95 backdrop-blur-xl border border-white/10 rounded-2xl max-sm:rounded-none shadow-2xl shadow-black/40 flex flex-col overflow-hidden max-sm:border-0">
           {/* Header */}
-          <div className="flex items-center justify-between px-4 py-3 bg-dark-800/80 border-b border-white/5">
-            <div className="flex bg-dark-900 rounded-lg p-1 border border-white/5">
+          <div className="flex items-center justify-between gap-3 px-4 py-3 bg-dark-800/90 border-b border-white/5 shrink-0 max-sm:pt-[calc(env(safe-area-inset-top)+0.75rem)]">
+            <div className="flex bg-dark-900 rounded-lg p-1 border border-white/5 min-w-0">
               <button
                 onClick={() => setActiveTab('chat')}
                 className={`px-3 py-1 rounded-md text-xs font-semibold transition-all ${
@@ -454,6 +495,7 @@ export default function ChatWidget() {
             <div className="flex items-center gap-2">
               <button
                 onClick={clearChat}
+                onMouseDown={(e) => e.preventDefault()}
                 className="p-1.5 rounded-lg bg-white/5 hover:bg-white/10 text-zinc-400 hover:text-white transition-all"
                 title="Clear Chat"
               >
@@ -475,12 +517,16 @@ export default function ChatWidget() {
           </div>
 
           {activeTab === 'chat' && (
-            <>
+            <div className="flex-1 min-h-0 flex flex-col">
               {/* Messages */}
               <div
                 ref={chatContainerRef}
-                className="flex-1 overflow-y-auto px-3 py-4 space-y-0"
-                style={{ scrollbarWidth: 'none' }}
+                className="flex-1 min-h-0 overflow-y-auto overscroll-contain px-3 py-4 space-y-0"
+                style={{
+                  scrollbarWidth: 'none',
+                  WebkitOverflowScrolling: 'touch',
+                  touchAction: 'pan-y',
+                }}
               >
                 {!isConnected ? (
                   <div className="flex flex-col items-center justify-center h-full text-center px-4">
@@ -510,9 +556,9 @@ export default function ChatWidget() {
               </div>
 
               {/* Input */}
-              <div className="px-3 py-3 bg-dark-800/50 border-t border-white/5">
+              <div className="shrink-0 px-3 pt-3 pb-[calc(env(safe-area-inset-bottom)+0.75rem)] bg-dark-800/80 border-t border-white/5">
                 <form onSubmit={handleSubmit} className="flex items-center gap-2">
-                  <div className="flex-1 bg-dark-800 rounded-xl px-3 py-2.5 border border-white/5 focus-within:border-black/30 transition-colors">
+                  <div className="flex-1 bg-dark-800 rounded-2xl px-3 py-2.5 border border-white/5 focus-within:border-primary-500/50 transition-colors shadow-inner shadow-black/20">
                     <input
                       ref={inputRef}
                       type="text"
@@ -520,17 +566,21 @@ export default function ChatWidget() {
                       onChange={(e) => setInput(e.target.value)}
                       placeholder="Ask about Saud..."
                       autoComplete="off"
-                      className="w-full bg-transparent text-white placeholder-zinc-500 outline-none text-sm"
+                      enterKeyHint="send"
+                      inputMode="text"
+                      className="w-full bg-transparent text-white placeholder-zinc-500 outline-none text-[16px] sm:text-sm"
                     />
                   </div>
                   <button
                     type="submit"
+                    onMouseDown={(e) => e.preventDefault()}
                     disabled={!isConnected || isLoading || isStreaming || !input.trim()}
-                    className={`w-10 h-10 rounded-xl flex items-center justify-center transition-all ${
+                    className={`w-11 h-11 shrink-0 rounded-2xl flex items-center justify-center transition-all ${
                       !isConnected || isLoading || isStreaming || !input.trim()
                         ? 'bg-dark-800 text-zinc-600 cursor-not-allowed'
-                        : 'bg-black hover:bg-zinc-800 text-white active:scale-95'
+                        : 'bg-primary-600 hover:bg-primary-700 text-white active:scale-95 shadow-lg shadow-primary-900/30'
                     }`}
+                    aria-label="Send message"
                   >
                     {isLoading ? (
                       <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
@@ -542,11 +592,14 @@ export default function ChatWidget() {
                   </button>
                 </form>
               </div>
-            </>
+            </div>
           )}
 
           {activeTab === 'cv' && (
-            <div className="flex-1 flex flex-col p-4 overflow-y-auto">
+            <div
+              className="flex-1 min-h-0 flex flex-col p-4 overflow-y-auto overscroll-contain"
+              style={{ WebkitOverflowScrolling: 'touch', touchAction: 'pan-y' }}
+            >
               <h3 className="text-white font-heading font-bold text-lg mb-2">Tailor My CV</h3>
               <p className="text-zinc-400 text-xs mb-4">Paste a Job Description. I will use AI and my embedded experiences/projects to generate a tailored ATS-friendly PDF CV matching the role requirements.</p>
 
@@ -554,7 +607,7 @@ export default function ChatWidget() {
                 value={jdText}
                 onChange={(e) => setJdText(e.target.value)}
                 placeholder="Paste Job Description here..."
-                className="flex-1 w-full bg-dark-800/80 border border-white/5 rounded-xl p-3 text-sm text-white placeholder-zinc-500 outline-none focus:border-black/50 transition-colors resize-none mb-4"
+                className="flex-1 min-h-48 w-full bg-dark-800/80 border border-white/5 rounded-xl p-3 text-[16px] sm:text-sm text-white placeholder-zinc-500 outline-none focus:border-primary-500/50 transition-colors resize-none mb-4"
               />
 
               {cvError && <p className="text-black text-xs mb-2">{cvError}</p>}
@@ -578,7 +631,7 @@ export default function ChatWidget() {
                     <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor">
                       <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25m.75 12l3 3m0 0l3-3m-3 3v-6m-1.5-9H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 00-9-9z" />
                     </svg>
-                    Generate Tailoblack CV PDF
+                    Generate Tailored CV PDF
                   </>
                 )}
               </button>
