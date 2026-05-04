@@ -19,11 +19,23 @@ export default function SiteBackground() {
       {/* 1. Cream base */}
       <div className="absolute inset-0 bg-warm-50" />
 
-      {/* 2. Aurora blobs (olive family — primary-200/300/400) */}
-      <div className="absolute -top-32 -left-32 w-[40rem] h-[40rem] rounded-full bg-primary-300/40 blur-[120px] animate-blob" />
-      <div className="absolute top-[18%] -right-40 w-[44rem] h-[44rem] rounded-full bg-primary-400/25 blur-[120px] animate-blob animation-delay-2000" />
-      <div className="absolute top-[55%] left-[8%] w-[38rem] h-[38rem] rounded-full bg-primary-200/45 blur-[120px] animate-blob animation-delay-4000" />
-      <div className="absolute -bottom-32 right-[12%] w-[36rem] h-[36rem] rounded-full bg-primary-300/30 blur-[120px] animate-blob" />
+      {/* 2. Aurora blobs (optimized with radial gradients instead of heavy CSS blur) */}
+      <div 
+        className="absolute -top-32 -left-32 w-[50rem] h-[50rem] animate-blob" 
+        style={{ background: 'radial-gradient(circle at center, rgba(201, 203, 164, 0.35) 0%, transparent 60%)', willChange: 'transform' }} 
+      />
+      <div 
+        className="absolute top-[18%] -right-40 w-[55rem] h-[55rem] animate-blob animation-delay-2000" 
+        style={{ background: 'radial-gradient(circle at center, rgba(175, 178, 132, 0.25) 0%, transparent 60%)', willChange: 'transform' }} 
+      />
+      <div 
+        className="absolute top-[55%] left-[8%] w-[45rem] h-[45rem] animate-blob animation-delay-4000" 
+        style={{ background: 'radial-gradient(circle at center, rgba(223, 226, 187, 0.45) 0%, transparent 60%)', willChange: 'transform' }} 
+      />
+      <div 
+        className="absolute -bottom-32 right-[12%] w-[45rem] h-[45rem] animate-blob" 
+        style={{ background: 'radial-gradient(circle at center, rgba(201, 203, 164, 0.25) 0%, transparent 60%)', willChange: 'transform' }} 
+      />
 
       {/* 3. Dot-grid texture */}
       <div
