@@ -7,3 +7,7 @@
 
   ➜  Local:   http://localhost:3000/
   ➜  Network: use --host to expose
+7:44:19 PM [vite] hmr update /src/components/ChatWidget.jsx, /src/index.css
+7:44:27 PM [vite] hmr update /src/components/ChatWidget.jsx, /src/index.css
+7:44:35 PM [vite] hmr update /src/components/ChatWidget.jsx, /src/index.css
+7:44:44 PM [vite] hmr update /src/components/ChatWidget.jsx, /src/index.css

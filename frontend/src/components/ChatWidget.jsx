@@ -236,7 +236,11 @@ export default function ChatWidget({ initialOpen = false } = {}) {
  const checkHealth = async () => {
  try {
  const res = await fetch(`${API_URL}/health`);
- if (res.ok) {
+ if (!res.ok) {
+ console.error(`[chat] /health returned HTTP ${res.status}`);
+ setIsConnected(false);
+ return;
+ }
  setIsConnected(true);
  setMessages((prev) =>
  prev.length === 0
@@ -248,15 +252,33 @@ export default function ChatWidget({ initialOpen = false } = {}) {
  }]
  : prev
  );
- }
- } catch {
+ } catch (err) {
+ console.error('[chat] /health unreachable:', err);
  setIsConnected(false);
  }
  };
 
  const sendMessage = async (messageText) => {
  const text = messageText || input.trim();
- if (!text || isLoading || isStreaming || !isConnected) return;
+ if (!text || isLoading || isStreaming) return;
+ if (!isConnected) {
+ // Try one more health check before giving up
+ console.warn('[chat] not connected — re-checking /health…');
+ await checkHealth();
+ if (!isConnected) {
+ setMessages((prev) => [
+ ...prev,
+ {
+ id: Date.now(),
+ content:
+ '⚠ Cannot reach the AI server. Open DevTools → Console for the exact error, then check that the backend is running on :8000.',
+ isUser: false,
+ timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+ },
+ ]);
+ return;
+ }
+ }
 
  setShowSuggestions(false);
  const userMessage = {
@@ -286,7 +308,11 @@ export default function ChatWidget({ initialOpen = false } = {}) {
  body: JSON.stringify({ message: text, session_id: sessionId }),
  });
 
- if (!res.ok) throw new Error('Stream failed');
+ if (!res.ok) {
+ const body = await res.text().catch(() => '');
+ console.error(`[chat] /chat/stream returned HTTP ${res.status}`, body);
+ throw new Error(`Backend returned HTTP ${res.status}${body ? ` — ${body.slice(0, 200)}` : ''}`);
+ }
  const reader = res.body.getReader();
  const decoder = new TextDecoder();
 
@@ -335,17 +361,28 @@ export default function ChatWidget({ initialOpen = false } = {}) {
  } else if (data.type === 'error') {
  throw new Error(data.error);
  }
- } catch {}
+ } catch (parseErr) {
+ // Only swallow JSON parse errors; rethrow real backend errors.
+ if (parseErr && parseErr.message && !parseErr.message.startsWith('Unexpected')) {
+ console.error('[chat] stream error event:', parseErr);
+ throw parseErr;
+ }
+ }
  }
  }
  }
  setIsStreaming(false);
- } catch {
+ } catch (err) {
+ console.error('[chat] sendMessage failed:', err);
+ const errorMsg = err?.message || String(err) || 'Unknown error';
  setMessages((prev) => {
  const updated = [...prev];
  const lastIdx = updated.length - 1;
- if (lastIdx >= 0 && !updated[lastIdx].isUser && !updated[lastIdx].content) {
- updated[lastIdx] = { ...updated[lastIdx], content: 'Sorry, I encountered an error. Please try again.' };
+ if (lastIdx >= 0 && !updated[lastIdx].isUser) {
+ updated[lastIdx] = {
+ ...updated[lastIdx],
+ content: `⚠ ${errorMsg}\n\n_Check DevTools → Console for full details._`,
+ };
  }
  return updated;
  });
