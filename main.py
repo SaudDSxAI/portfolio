@@ -427,9 +427,17 @@ def get_embedding(text: str) -> List[float]:
 
 
 def search_collections(query: str, n_results: int = 5) -> str:
-    query_embedding = get_embedding(query)
+    # Embedding the query can fail (missing OPENAI_API_KEY on the deploy host,
+    # rate limit, network blip). Don't let that crash the chat — degrade
+    # gracefully to "no context" so the LLM can still reply generically.
+    try:
+        query_embedding = get_embedding(query)
+    except Exception as e:
+        print(f"⚠️ get_embedding failed: {type(e).__name__}: {e}")
+        return "No context found."
+
     context_parts = []
-    
+
     # Reload collections if needed (in case they were recreated by bg process)
     try:
         current_cv = chroma_client.get_collection("cv_collection")
@@ -438,8 +446,8 @@ def search_collections(query: str, n_results: int = 5) -> str:
             context_parts.append("=== CV & EXPERIENCE ===")
             context_parts.extend(results['documents'][0])
     except Exception as e:
-        pass
-    
+        print(f"⚠️ cv_collection query failed: {type(e).__name__}: {e}")
+
     try:
         current_gh = chroma_client.get_collection("github_collection")
         results = current_gh.query(query_embeddings=[query_embedding], n_results=n_results)
@@ -447,8 +455,8 @@ def search_collections(query: str, n_results: int = 5) -> str:
             context_parts.append("\n=== GITHUB PROJECTS ===")
             context_parts.extend(results['documents'][0])
     except Exception as e:
-        pass
-    
+        print(f"⚠️ github_collection query failed: {type(e).__name__}: {e}")
+
     return "\n\n".join(context_parts) if context_parts else "No context found."
 
 
@@ -555,18 +563,38 @@ async def chat(request: ChatRequest):
 
 @app.post("/chat/stream")
 async def chat_stream(request: ChatRequest):
-    session_id = get_or_create_session(request.session_id)
-    history = sessions[session_id]
-    history.append(HumanMessage(content=request.message))
-    
-    context = search_collections(request.message)
-    messages = build_messages(history, context)
-    
+    # Build everything we can BEFORE returning the StreamingResponse, but
+    # never raise — any failure here is sent as an SSE 'error' event so the
+    # frontend can surface it instead of getting an opaque HTTP 500.
+    setup_error = None
+    session_id = None
+    messages = None
+    history = None
+    try:
+        session_id = get_or_create_session(request.session_id)
+        history = sessions[session_id]
+        history.append(HumanMessage(content=request.message))
+        context = search_collections(request.message)
+        messages = build_messages(history, context)
+    except Exception as e:
+        import traceback
+        traceback.print_exc()
+        setup_error = f"{type(e).__name__}: {e}"
+        print(f"❌ chat_stream setup failed: {setup_error}")
+
     def generate():
+        if setup_error:
+            yield f"data: {json.dumps({'type': 'error', 'error': setup_error})}\n\n"
+            return
+
         full_response = ""
         try:
             yield f"data: {json.dumps({'type': 'session', 'session_id': session_id})}\n\n"
-            
+
+            if not OPENAI_API_KEY:
+                yield f"data: {json.dumps({'type': 'error', 'error': 'OPENAI_API_KEY is not set on the server'})}\n\n"
+                return
+
             stream = openai_client.chat.completions.create(
                 model="gpt-4o-mini",
                 messages=messages,
@@ -574,20 +602,24 @@ async def chat_stream(request: ChatRequest):
                 max_tokens=1000,
                 stream=True
             )
-            
+
             for chunk in stream:
                 if chunk.choices[0].delta.content:
                     content = chunk.choices[0].delta.content
                     full_response += content
                     yield f"data: {json.dumps({'type': 'content', 'content': content})}\n\n"
-            
+
             history.append(AIMessage(content=full_response))
             sessions[session_id] = history
             yield f"data: {json.dumps({'type': 'done'})}\n\n"
-            
+
         except Exception as e:
-            yield f"data: {json.dumps({'type': 'error', 'error': str(e)})}\n\n"
-    
+            import traceback
+            traceback.print_exc()
+            err = f"{type(e).__name__}: {e}"
+            print(f"❌ chat_stream generation failed: {err}")
+            yield f"data: {json.dumps({'type': 'error', 'error': err})}\n\n"
+
     return StreamingResponse(
         generate(),
         media_type="text/event-stream",

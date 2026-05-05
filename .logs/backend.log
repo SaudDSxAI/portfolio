@@ -124,3 +124,23 @@ Add of existing embedding ID: portfolio_0
 Add of existing embedding ID: portfolio_1
 Failed to send telemetry event CollectionQueryEvent: capture() takes 1 positional argument but 3 were given
 INFO:     127.0.0.1:59753 - "POST /chat/stream HTTP/1.1" 200 OK
+WARNING:  WatchFiles detected changes in 'main.py'. Reloading...
+INFO:     Shutting down
+INFO:     Waiting for application shutdown.
+INFO:     Application shutdown complete.
+INFO:     Finished server process [24163]
+Failed to send telemetry event ClientStartEvent: capture() takes 1 positional argument but 3 were given
+Failed to send telemetry event ClientStartEvent: capture() takes 1 positional argument but 3 were given
+INFO:     Started server process [25418]
+INFO:     Waiting for application startup.
+INFO:     Application startup complete.
+WARNING:  WatchFiles detected changes in 'main.py'. Reloading...
+INFO:     Shutting down
+INFO:     Waiting for application shutdown.
+INFO:     Application shutdown complete.
+INFO:     Finished server process [25418]
+Failed to send telemetry event ClientStartEvent: capture() takes 1 positional argument but 3 were given
+Failed to send telemetry event ClientStartEvent: capture() takes 1 positional argument but 3 were given
+INFO:     Started server process [25426]
+INFO:     Waiting for application startup.
+INFO:     Application startup complete.
