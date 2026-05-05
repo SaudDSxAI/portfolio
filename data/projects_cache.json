@@ -1,6 +1,28 @@
 {
   "data": [
     {
+      "id": 1,
+      "title": "AskSaud AI Portfolio Assistant",
+      "description": "Answers questions about skills, projects, and experience in real-time using retrieval-augmented generation and streaming responses.",
+      "impact": "Enhances user engagement with instant, relevant information.",
+      "tech": [
+        "JavaScript",
+        "LangChain",
+        "Streamlit",
+        "RAG"
+      ],
+      "category": "LLM Apps & RAG",
+      "github": "https://github.com/SaudDSxAI/portfolio",
+      "featured": true,
+      "gradient": "border-primary-600",
+      "borderGradient": "bg-primary-800 text-white",
+      "icon": "🤖",
+      "stars": 0,
+      "updatedAt": "2026-05-04T21:35:41+00:00",
+      "repoName": "portfolio",
+      "schemaVersion": 2
+    },
+    {
       "id": 23,
       "title": "Quiz Tic-Tac-Toe",
       "description": "Engages players in a classic tic-tac-toe game where each move requires answering quiz questions, enhancing both fun and knowledge.",
@@ -78,28 +100,6 @@
       "stars": 1,
       "updatedAt": "2025-09-15T05:39:07+00:00",
       "repoName": "first-html",
-      "schemaVersion": 2
-    },
-    {
-      "id": 1,
-      "title": "AskSaud AI Portfolio Assistant",
-      "description": "Answers questions about skills, projects, and experience in real-time using RAG and streaming responses for dynamic interaction.",
-      "impact": "Enhances user engagement with instant, relevant information.",
-      "tech": [
-        "JavaScript",
-        "LangChain",
-        "Streamlit",
-        "RAG"
-      ],
-      "category": "LLM Apps & RAG",
-      "github": "https://github.com/SaudDSxAI/portfolio",
-      "featured": false,
-      "gradient": "border-primary-600",
-      "borderGradient": "bg-primary-800 text-white",
-      "icon": "🤖",
-      "stars": 0,
-      "updatedAt": "2026-04-20T07:48:13+00:00",
-      "repoName": "portfolio",
       "schemaVersion": 2
     },
     {
@@ -731,5 +731,5 @@
       "schemaVersion": 2
     }
   ],
-  "fetched_at": 1777926343.112536
+  "fetched_at": 1777990741.9018261
 }

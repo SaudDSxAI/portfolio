@@ -15,7 +15,7 @@ SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 cd "$SCRIPT_DIR"
 
 BACKEND_PORT=8000
-FRONTEND_PORT=5173
+FRONTEND_PORT=3000
 LOG_DIR="$SCRIPT_DIR/.logs"
 BACKEND_LOG="$LOG_DIR/backend.log"
 FRONTEND_LOG="$LOG_DIR/frontend.log"

@@ -49,3 +49,22 @@
 section {
   scroll-margin-top: 4rem;
 }
+
+/* Performance: skip rendering off-screen sections until they enter the
+   viewport. `contain-intrinsic-size` reserves the right amount of layout
+   space so the scrollbar doesn't jump. No visual change. */
+#about,
+#projects,
+#skills,
+#contact {
+  content-visibility: auto;
+  contain-intrinsic-size: 1px 800px;
+}
+
+/* Hint the browser these big animated layers are GPU-composited so they
+   don't trigger expensive repaints during scroll. No visual change. */
+.animate-blob {
+  will-change: transform;
+  transform: translateZ(0);
+  backface-visibility: hidden;
+}
