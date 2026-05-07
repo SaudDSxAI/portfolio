@@ -514,6 +514,34 @@ async def root():
     return {"message": "AskSaud API", "health": "/health"}
 
 
+@app.get("/api/diag")
+async def diagnostic():
+    """
+    Returns what the *running container* sees for critical env vars.
+    Never returns the actual key — just length and first/last 4 chars so you
+    can confirm the value matches what's in your Railway dashboard.
+    """
+    def fingerprint(key_name: str):
+        v = os.getenv(key_name)
+        if v is None:
+            return {"present": False, "length": 0, "preview": None}
+        v = v.strip()
+        if not v:
+            return {"present": False, "length": 0, "preview": "(empty string)"}
+        preview = v[:4] + "..." + v[-4:] if len(v) >= 8 else "(too short)"
+        return {"present": True, "length": len(v), "preview": preview}
+
+    return {
+        "OPENAI_API_KEY": fingerprint("OPENAI_API_KEY"),
+        "GITHUB_TOKEN": fingerprint("GITHUB_TOKEN"),
+        "GITHUB_USERNAME": {
+            "present": bool(os.getenv("GITHUB_USERNAME")),
+            "value": os.getenv("GITHUB_USERNAME"),
+        },
+        "module_OPENAI_API_KEY_loaded": bool(OPENAI_API_KEY),
+    }
+
+
 @app.get("/health", response_model=HealthResponse)
 async def health():
     cv_ok = False

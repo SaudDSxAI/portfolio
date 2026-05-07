@@ -144,3 +144,19 @@ Failed to send telemetry event ClientStartEvent: capture() takes 1 positional ar
 INFO:     Started server process [25426]
 INFO:     Waiting for application startup.
 INFO:     Application startup complete.
+Run time of job "poll_github (trigger: interval[1:00:00], next run at: 2026-05-06 10:51:17 PKT)" was missed by 0:33:29.206236
+Run time of job "poll_github (trigger: interval[1:00:00], next run at: 2026-05-06 14:51:17 PKT)" was missed by 0:09:22.910736
+Run time of job "poll_github (trigger: interval[1:00:00], next run at: 2026-05-06 17:51:17 PKT)" was missed by 0:16:31.848288
+Run time of job "poll_github (trigger: interval[1:00:00], next run at: 2026-05-06 21:51:17 PKT)" was missed by 0:09:21.582060
+Run time of job "poll_github (trigger: interval[1:00:00], next run at: 2026-05-07 02:51:17 PKT)" was missed by 0:57:40.953485
+Run time of job "poll_github (trigger: interval[1:00:00], next run at: 2026-05-07 06:51:17 PKT)" was missed by 0:01:28.299040
+WARNING:  WatchFiles detected changes in 'main.py'. Reloading...
+INFO:     Shutting down
+INFO:     Waiting for application shutdown.
+INFO:     Application shutdown complete.
+INFO:     Finished server process [25426]
+Failed to send telemetry event ClientStartEvent: capture() takes 1 positional argument but 3 were given
+Failed to send telemetry event ClientStartEvent: capture() takes 1 positional argument but 3 were given
+INFO:     Started server process [29855]
+INFO:     Waiting for application startup.
+INFO:     Application startup complete.
