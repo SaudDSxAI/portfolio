@@ -222,6 +222,77 @@ export const caseStudies = {
         'Building an honest live demo that includes real model failures (a missed fraud, a false alarm), not just cherry-picked correct predictions',
       ],
     },
+    {
+      slug: 'house-price-prediction',
+      title: 'House Price Prediction',
+      tagline:
+        'The first regression project in this series — 216 features, meaningful-not-missing data, and a one-hot encoding artifact caught by checking value_counts before trusting a coefficient.',
+      categoryKey: 'ml',
+      summary:
+        'Predicting real Ames, Iowa home sale prices from 79 raw features — the first project here where the target is a continuous number, not a category, which changes the metrics, the encoding strategy, and even how "missing data" gets interpreted.',
+      github: 'https://github.com/SaudDSxAI/house-price-prediction',
+      live: '',
+      tech: ['Python', 'scikit-learn', 'XGBoost', 'pandas', 'FastAPI', 'React', 'Recharts'],
+      hasLiveDemo: true,
+      demoKey: 'house',
+      comparisonMetricKey: 'r2',
+      comparisonMetricLabel: 'R²',
+      heroMetrics: [
+        { label: 'R² (test set)', value: '0.924' },
+        { label: 'Typical error', value: '±$15,000' },
+        { label: 'Houses analyzed', value: '2,930' },
+        { label: 'Features engineered', value: '216' },
+      ],
+      modelComparison: [
+        { name: 'Linear Regression', r2: 81.8, chosen: false },
+        { name: 'Ridge', r2: 84.6, chosen: false },
+        { name: 'Lasso', r2: 85.6, chosen: true },
+        { name: 'Random Forest', r2: 87.1, chosen: false },
+        { name: 'XGBoost', r2: 87.4, chosen: false },
+      ],
+      finalMetrics: { precision: null, recall: null, f1: null, rocAuc: 0.924, threshold: null },
+      featureImportance: [
+        { feature: 'Roof Matl: CompShg', coefficient: 0.147 },
+        { feature: 'Gr Liv Area (living space)', coefficient: 0.118 },
+        { feature: 'Roof Matl: Tar & Gravel', coefficient: 0.104 },
+        { feature: 'Overall Quality', coefficient: 0.082 },
+        { feature: 'Roof Matl: Wood Shake', coefficient: 0.067 },
+        { feature: 'Roof Matl: Wood Shingle', coefficient: 0.066 },
+        { feature: 'Year Built', coefficient: 0.047 },
+        { feature: 'Overall Condition', coefficient: 0.040 },
+      ],
+      narrative: [
+        {
+          heading: 'The problem — and the first regression project here',
+          body: 'Predict real home sale prices in Ames, Iowa (2,930 houses, 79 raw features) from the classic Kaggle "House Prices" dataset. Every prior project here was classification — predicting a category. This is the first with a continuous target, which changes the toolkit: no precision/recall/F1, no ROC curve; instead RMSE, R², and MAE, and a completely different set of models (Linear/Ridge/Lasso instead of Logistic Regression — using Logistic Regression here would have been a real conceptual error, not just an unoriginal choice, since it is built for categories, not continuous numbers).',
+        },
+        {
+          heading: 'Missing data that isn\'t actually missing',
+          body: 'Roughly 20 columns had substantial "missing" values — but nearly all of it was meaningful, not an error. Pool QC is empty for 2,917 of 2,930 houses simply because almost no house has a pool; Bsmt Qual, Garage Type, and Fireplace Qu show the same pattern, confirmed by cross-checking that the corresponding square-footage columns were genuinely 0 for those same rows, not separately missing. Filling these with "None" (categorical) or 0 (numeric) rather than dropping rows or imputing a guess preserved real signal instead of discarding it. Only one column, Lot Frontage, was genuinely missing data, imputed using the neighborhood median rather than a single global value, since frontage varies systematically by area.',
+        },
+        {
+          heading: 'Ordinal vs. nominal — a new encoding decision',
+          body: 'About half the categorical columns are ordinal quality scales (Po < Fa < TA < Gd < Ex) rather than true unordered categories. One-hot encoding those would discard real ranking information for no benefit, so they were mapped to ordered integers instead; the remaining ~25 genuinely nominal columns (Neighborhood, Foundation, Sale Type) were one-hot encoded as usual, producing 216 total features from the original 79.',
+        },
+        {
+          heading: 'Fixing the target\'s skew before modeling',
+          body: 'SalePrice is right-skewed (skewness 1.74) — a small number of very expensive homes stretch the distribution, since price has a hard floor at zero but no ceiling. Modeling log(SalePrice) instead of raw price (standard practice for this exact competition) made the target far more symmetric and meant prediction errors become roughly proportional to price rather than a fixed dollar amount — a 10% miss means the same thing whether the house is worth $100K or $700K, which a raw-dollar model wouldn\'t reflect.',
+        },
+        {
+          heading: 'Another statistical tie — and a coefficient that didn\'t survive scrutiny',
+          body: 'XGBoost scored highest numerically (R² 0.874 vs. Lasso\'s 0.856), but a paired t-test across cross-validation folds came back p = 0.215 — not statistically significant, the same conclusion as the heart disease project. Lasso was chosen for the tie, plus a concrete practical bonus: it automatically zeroed out 68 of 216 coefficients, in effect doing feature selection on its own. One coefficient needed a second look before trusting it: Roof Matl (composite shingle) came out as the single strongest predictor, which made no sense on its face — checking value_counts showed composite shingle roofing on 2,887 of 2,930 houses, with the one-hot reference category dropped during encoding being a roof material used by exactly one house. That coefficient is really measuring "everyone" against a single outlier house, not a genuine roofing effect — a real artifact of one-hot encoding a near-constant column with an ultra-rare reference category, caught by checking the underlying category counts rather than taking the coefficient ranking at face value.',
+        },
+      ],
+      skillsDemonstrated: [
+        'Correctly distinguishing regression from classification at the model-selection level, not just swapping datasets',
+        'Recognizing meaningful missingness (NA = "doesn\'t have this feature") vs. genuine missing data, and treating them differently',
+        'Neighborhood-conditional imputation instead of a single global fill value',
+        'Ordinal vs. nominal categorical encoding — preserving rank information instead of discarding it via blanket one-hot encoding',
+        'Log-transforming a skewed regression target and explaining the practical reason (proportional vs. absolute error)',
+        'Diagnosing a one-hot encoding artifact from an implausible coefficient by checking raw category counts, not trusting the ranking blindly',
+        'Paired statistical testing to avoid overtrusting a small numeric gap between models — second time in this series, reinforcing it as a habit, not a one-off',
+      ],
+    },
   ],
   dl: [],
 };

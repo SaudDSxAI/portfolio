@@ -1,0 +1,96 @@
+{
+  "chosen_model": "Lasso Regression",
+  "chosen_reason": "Statistically tied with XGBoost (paired t-test on R2 across folds: p=0.2152) -- chosen for interpretability and automatic feature selection (zeroed out uninformative one-hot columns) when performance is equivalent.",
+  "final_metrics": {
+    "rmse_log": 0.11879950294675558,
+    "r2": 0.9237238465449686,
+    "mae_log": 0.07803609156321528,
+    "mae_dollars": 14998.438582707187,
+    "mape_pct": 8.085758682893495
+  },
+  "nonzero_features": 148,
+  "total_features": 216,
+  "top_features": [
+    {
+      "feature": "Roof Matl_CompShg",
+      "coefficient": 0.14662319893384207
+    },
+    {
+      "feature": "Gr Liv Area",
+      "coefficient": 0.11766076864074
+    },
+    {
+      "feature": "Roof Matl_Tar&Grv",
+      "coefficient": 0.10407975048581772
+    },
+    {
+      "feature": "Overall Qual",
+      "coefficient": 0.08157741506685649
+    },
+    {
+      "feature": "Roof Matl_WdShake",
+      "coefficient": 0.06697702138512511
+    },
+    {
+      "feature": "Roof Matl_WdShngl",
+      "coefficient": 0.06627650619099636
+    },
+    {
+      "feature": "Year Built",
+      "coefficient": 0.046950045301029454
+    },
+    {
+      "feature": "Overall Cond",
+      "coefficient": 0.04028082012386365
+    },
+    {
+      "feature": "Misc Val",
+      "coefficient": -0.039771148693561104
+    },
+    {
+      "feature": "Sale Condition_Normal",
+      "coefficient": 0.03184072754403559
+    },
+    {
+      "feature": "Garage Cars",
+      "coefficient": 0.028547938480590406
+    },
+    {
+      "feature": "Misc Feature_Gar2",
+      "coefficient": 0.026561082233819956
+    }
+  ],
+  "dataset_size": 2930,
+  "comparison": {
+    "linear_regression": {
+      "rmse": 0.1667,
+      "r2": 0.8183,
+      "mae": 0.0886
+    },
+    "ridge": {
+      "rmse": 0.1553,
+      "r2": 0.8458,
+      "mae": 0.0885
+    },
+    "lasso": {
+      "rmse": 0.1497,
+      "r2": 0.8563,
+      "mae": 0.0858
+    },
+    "random_forest": {
+      "rmse": 0.1431,
+      "r2": 0.8709,
+      "mae": 0.0931
+    },
+    "xgboost": {
+      "rmse": 0.1413,
+      "r2": 0.8735,
+      "mae": 0.0929
+    }
+  },
+  "significance_test": {
+    "t_statistic": 1.471,
+    "p_value": 0.2152,
+    "conclusion": "No statistically significant difference between XGBoost and Lasso (p > 0.05)"
+  }
+}

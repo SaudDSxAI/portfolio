@@ -7,6 +7,7 @@ import TechBadge from '../components/ui/TechBadge';
 import ChurnLiveDemo from '../components/demos/ChurnLiveDemo';
 import HeartLiveDemo from '../components/demos/HeartLiveDemo';
 import FraudLiveDemo from '../components/demos/FraudLiveDemo';
+import HouseLiveDemo from '../components/demos/HouseLiveDemo';
 import ScrollReveal from '../components/ui/ScrollReveal';
 import { getCaseStudy, categories } from '../data/caseStudies';
 
@@ -17,6 +18,7 @@ const DEMO_COMPONENTS = {
   churn: ChurnLiveDemo,
   heart: HeartLiveDemo,
   fraud: FraudLiveDemo,
+  house: HouseLiveDemo,
 };
 
 function MetricCard({ label, value }) {

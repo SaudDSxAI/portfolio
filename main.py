@@ -411,6 +411,10 @@ app.include_router(heart_router)
 from fraud_model import router as fraud_router
 app.include_router(fraud_router)
 
+# House price prediction demo — same pattern.
+from house_model import router as house_router
+app.include_router(house_router)
+
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
