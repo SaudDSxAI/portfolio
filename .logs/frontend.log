@@ -3,11 +3,11 @@
 > vite
 
 
-  VITE v5.4.21  ready in 361 ms
+  VITE v5.4.21  ready in 413 ms
 
   ➜  Local:   http://localhost:3000/
   ➜  Network: use --host to expose
-7:44:19 PM [vite] hmr update /src/components/ChatWidget.jsx, /src/index.css
-7:44:27 PM [vite] hmr update /src/components/ChatWidget.jsx, /src/index.css
-7:44:35 PM [vite] hmr update /src/components/ChatWidget.jsx, /src/index.css
-7:44:44 PM [vite] hmr update /src/components/ChatWidget.jsx, /src/index.css
+Browserslist: browsers data (caniuse-lite) is 7 months old. Please run:
+  npx update-browserslist-db@latest
+  Why you should do it regularly: https://github.com/browserslist/update-db#readme
+11:46:06 PM [vite] hmr update /src/index.css, /src/components/Projects.jsx, /src/components/Skills.jsx, /src/components/About.jsx

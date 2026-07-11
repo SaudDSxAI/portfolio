@@ -1,29 +1,7 @@
 {
   "data": [
     {
-      "id": 1,
-      "title": "AskSaud AI Portfolio Assistant",
-      "description": "Answers questions about skills, projects, and experience in real-time using retrieval-augmented generation and streaming responses.",
-      "impact": "Enhances user engagement with instant, relevant information.",
-      "tech": [
-        "JavaScript",
-        "LangChain",
-        "Streamlit",
-        "RAG"
-      ],
-      "category": "LLM Apps & RAG",
-      "github": "https://github.com/SaudDSxAI/portfolio",
-      "featured": true,
-      "gradient": "border-primary-600",
-      "borderGradient": "bg-primary-800 text-white",
-      "icon": "🤖",
-      "stars": 0,
-      "updatedAt": "2026-05-04T21:35:41+00:00",
-      "repoName": "portfolio",
-      "schemaVersion": 2
-    },
-    {
-      "id": 23,
+      "id": 24,
       "title": "Quiz Tic-Tac-Toe",
       "description": "Engages players in a classic tic-tac-toe game where each move requires answering quiz questions, enhancing both fun and knowledge.",
       "impact": "Combines entertainment with learning through 29 unique questions.",
@@ -42,7 +20,7 @@
       "schemaVersion": 2
     },
     {
-      "id": 15,
+      "id": 16,
       "title": "C++ Tic-Tac-Toe Game",
       "description": "Engages users in a console-based Tic-Tac-Toe game against a simple AI, featuring win/lose/draw detection and a visually formatted grid.",
       "impact": "Enhances programming skills through interactive game development.",
@@ -61,7 +39,7 @@
       "schemaVersion": 2
     },
     {
-      "id": 22,
+      "id": 23,
       "title": "Smart Robot Car",
       "description": "Operates in multiple modes including Bluetooth control, self-driving, and line following for hands-on robotics enthusiasts.",
       "impact": "Enhances understanding of robotics and automation.",
@@ -84,7 +62,7 @@
       "schemaVersion": 2
     },
     {
-      "id": 24,
+      "id": 25,
       "title": "Personal Profile Page",
       "description": "Showcases a personal profile and contact form, designed for individuals learning web development basics.",
       "impact": "Facilitates learning HTML through practical application.",
@@ -103,7 +81,50 @@
       "schemaVersion": 2
     },
     {
+      "id": 1,
+      "title": "Coter Global Media Links",
+      "description": "Creates a visually appealing single-page application for sharing links, designed specifically for COTER Global.",
+      "impact": "Enhances link sharing with a premium aesthetic.",
+      "tech": [
+        "HTML",
+        "CSS",
+        "JavaScript"
+      ],
+      "category": "Web Apps",
+      "github": "https://github.com/SaudDSxAI/coter-global-media-links",
+      "featured": false,
+      "gradient": "border-primary-600",
+      "borderGradient": "bg-primary-800 text-white",
+      "icon": "🌐",
+      "stars": 0,
+      "updatedAt": "2026-05-11T13:03:39+00:00",
+      "repoName": "coter-global-media-links",
+      "schemaVersion": 2
+    },
+    {
       "id": 2,
+      "title": "AskSaud AI Portfolio Assistant",
+      "description": "Answers questions about skills, projects, and experience in real-time using RAG, enhancing user interaction with dynamic responses.",
+      "impact": "Improves engagement with instant, relevant information.",
+      "tech": [
+        "JavaScript",
+        "LangChain",
+        "Streamlit",
+        "RAG"
+      ],
+      "category": "LLM Apps & RAG",
+      "github": "https://github.com/SaudDSxAI/portfolio",
+      "featured": false,
+      "gradient": "border-primary-600",
+      "borderGradient": "bg-primary-800 text-white",
+      "icon": "🤖",
+      "stars": 0,
+      "updatedAt": "2026-05-07T05:51:32+00:00",
+      "repoName": "portfolio",
+      "schemaVersion": 2
+    },
+    {
+      "id": 3,
       "title": "Data Organizer",
       "description": "Organizes and categorizes datasets for easy access and management, targeting data analysts and researchers.",
       "impact": "Streamlines data management processes.",
@@ -120,7 +141,7 @@
       "schemaVersion": 2
     },
     {
-      "id": 3,
+      "id": 4,
       "title": "AI Attendance Management System",
       "description": "Automates attendance tracking in institutes using real-time face recognition, ensuring accurate and efficient monitoring of staff and students.",
       "impact": "Eliminates manual attendance processes, saving time and reducing errors.",
@@ -142,7 +163,7 @@
       "schemaVersion": 2
     },
     {
-      "id": 4,
+      "id": 5,
       "title": "HSE Performance Tracker",
       "description": "Monitors and analyzes health, safety, and environmental performance metrics for organizations, enhancing compliance and safety standards.",
       "impact": "Improves safety compliance and reduces incidents.",
@@ -164,7 +185,7 @@
       "schemaVersion": 2
     },
     {
-      "id": 5,
+      "id": 6,
       "title": "Saud Ahmad Portfolio",
       "description": "Showcases projects and expertise in LLM development, RAG architecture, and agentic AI solutions for potential clients and collaborators.",
       "impact": "Highlights diverse AI skills and projects.",
@@ -181,7 +202,7 @@
       "schemaVersion": 2
     },
     {
-      "id": 6,
+      "id": 7,
       "title": "LLM Assistant Comparison",
       "description": "Compares various LLM techniques for building a professional assistant that can respond on your behalf.",
       "impact": "Identifies the most effective LLM approach for user needs.",
@@ -203,7 +224,7 @@
       "schemaVersion": 2
     },
     {
-      "id": 7,
+      "id": 8,
       "title": "RAG AI",
       "description": "Generates responses using retrieval-augmented generation techniques for enhanced conversational AI applications.",
       "impact": "Improves response relevance and accuracy.",
@@ -222,7 +243,7 @@
       "schemaVersion": 2
     },
     {
-      "id": 8,
+      "id": 9,
       "title": "Agentic AI Projects",
       "description": "Develops autonomous AI agents for tasks like web scraping and resume parsing, enabling automation and efficiency for various applications.",
       "impact": "Facilitates real-world automation and task execution.",
@@ -243,7 +264,7 @@
       "schemaVersion": 2
     },
     {
-      "id": 9,
+      "id": 10,
       "title": "Face Recognition Attendance System",
       "description": "Automates attendance tracking using real-time face recognition for educational institutions and organizations.",
       "impact": "Eliminates manual attendance processes.",
@@ -265,7 +286,7 @@
       "schemaVersion": 2
     },
     {
-      "id": 10,
+      "id": 11,
       "title": "Breast Cancer Classifier",
       "description": "Classifies tumors as malignant or benign using deep learning techniques for medical data analysis.",
       "impact": "Improves diagnostic accuracy for breast cancer detection.",
@@ -288,7 +309,7 @@
       "schemaVersion": 2
     },
     {
-      "id": 11,
+      "id": 12,
       "title": "Predictive Modeling Projects",
       "description": "Explores real-world datasets to build predictive models for diabetes, Titanic survival, and customer churn using ML and DL techniques.",
       "impact": "Enhances understanding of predictive analytics through hands-on projects.",
@@ -311,7 +332,7 @@
       "schemaVersion": 2
     },
     {
-      "id": 12,
+      "id": 13,
       "title": "Contact Management System",
       "description": "Manages contact information using a Binary Search Tree for efficient data operations, ideal for users needing organized contact storage.",
       "impact": "Ensures efficient data handling and persistence.",
@@ -330,7 +351,7 @@
       "schemaVersion": 2
     },
     {
-      "id": 13,
+      "id": 14,
       "title": "C++ OOP Practice Collection",
       "description": "Showcases a variety of C++ programs focusing on Object-Oriented Programming concepts for learners and developers to enhance their skills.",
       "impact": "Facilitates hands-on learning of core and advanced OOP principles.",
@@ -353,7 +374,7 @@
       "schemaVersion": 2
     },
     {
-      "id": 14,
+      "id": 15,
       "title": "Python Statistics Visualizer",
       "description": "Demonstrates fundamental statistics and data visualization concepts using Python scripts for learners and practitioners.",
       "impact": "Enhances understanding of statistics through hands-on coding.",
@@ -376,7 +397,7 @@
       "schemaVersion": 2
     },
     {
-      "id": 16,
+      "id": 17,
       "title": "C++ Binary Search Tree",
       "description": "Implements a Binary Search Tree in C++ with features for insertion, deletion, and various tree traversals, aiding in understanding data structures.",
       "impact": "Enhances understanding of data structures and algorithms.",
@@ -395,7 +416,7 @@
       "schemaVersion": 2
     },
     {
-      "id": 17,
+      "id": 18,
       "title": "Bus Reservation System",
       "description": "Facilitates bus management by allowing users to add buses, reserve seats, and view bus details through a console interface.",
       "impact": "Streamlines bus reservation processes for users.",
@@ -414,7 +435,7 @@
       "schemaVersion": 2
     },
     {
-      "id": 18,
+      "id": 19,
       "title": "OpenCV Basics Toolkit",
       "description": "Demonstrates fundamental computer vision concepts using Python scripts for learners and enthusiasts.",
       "impact": "Builds a strong foundation for advanced computer vision applications.",
@@ -434,7 +455,7 @@
       "schemaVersion": 2
     },
     {
-      "id": 19,
+      "id": 20,
       "title": "Real-Time Face Recognition",
       "description": "Detects and recognizes faces in real-time using webcam input, enabling image comparison for facial similarity.",
       "impact": "Enhances security and personalization in applications.",
@@ -455,7 +476,7 @@
       "schemaVersion": 2
     },
     {
-      "id": 20,
+      "id": 21,
       "title": "ALU and Multiplier Circuit",
       "description": "Implements an Arithmetic and Logic Unit with an integrated multiplier circuit, designed for educational purposes in digital logic design.",
       "impact": "Facilitates hands-on learning in digital systems design.",
@@ -476,7 +497,7 @@
       "schemaVersion": 2
     },
     {
-      "id": 21,
+      "id": 22,
       "title": "Traffic Accident Insights",
       "description": "Analyzes traffic accident data from Pakistan to extract insights on accident frequency, injuries, and fatalities across regions and years.",
       "impact": "Enhances understanding of traffic safety trends.",
@@ -496,7 +517,7 @@
       "schemaVersion": 2
     },
     {
-      "id": 25,
+      "id": 26,
       "title": "C++ Data Structures Collection",
       "description": "Demonstrates fundamental and advanced data structures in C++ for learners and developers, featuring detailed implementations and comments.",
       "impact": "Enhances understanding of data structures through practical examples.",
@@ -515,7 +536,7 @@
       "schemaVersion": 2
     },
     {
-      "id": 26,
+      "id": 27,
       "title": "Energy Consumption Insights",
       "description": "Analyzes energy consumption data to extract insights for households, applying advanced data preprocessing and visualization techniques.",
       "impact": "Enhances understanding of energy usage patterns.",
@@ -537,7 +558,7 @@
       "schemaVersion": 2
     },
     {
-      "id": 27,
+      "id": 28,
       "title": "Access Vision Entry System",
       "description": "Automates and monitors entry and exit processes using face recognition and ultrasonic sensors for institutions, enhancing security and efficiency.",
       "impact": "Streamlines access control and data management.",
@@ -561,7 +582,7 @@
       "schemaVersion": 2
     },
     {
-      "id": 28,
+      "id": 29,
       "title": "Data Warehousing Journey",
       "description": "Documents the end-to-end process of data warehousing, focusing on data extraction, transformation, and loading for real-world datasets.",
       "impact": "Enhances data management skills through practical application.",
@@ -584,7 +605,7 @@
       "schemaVersion": 2
     },
     {
-      "id": 29,
+      "id": 30,
       "title": "Data Mining Lab",
       "description": "Documents hands-on learning in data mining, analysis, and machine learning through practical notebooks.",
       "impact": "Builds practical skills in data science.",
@@ -605,7 +626,7 @@
       "schemaVersion": 2
     },
     {
-      "id": 30,
+      "id": 31,
       "title": "Duplicate Question Detector",
       "description": "Detects duplicate questions using a BERT-based model, aiding platforms in improving user experience by reducing redundancy.",
       "impact": "Enhances question quality and user engagement.",
@@ -628,7 +649,7 @@
       "schemaVersion": 2
     },
     {
-      "id": 31,
+      "id": 32,
       "title": "Agrobot Weed Removal System",
       "description": "Operates an autonomous robot for weed detection, removal, and crop monitoring, enhancing agricultural efficiency.",
       "impact": "Improves crop yield by automating weed management.",
@@ -651,7 +672,7 @@
       "schemaVersion": 2
     },
     {
-      "id": 32,
+      "id": 33,
       "title": "Retail Insight Generator",
       "description": "Enables business users to query retail data in plain English, translating questions into SQL for actionable insights.",
       "impact": "Makes data exploration accessible without SQL expertise.",
@@ -673,7 +694,7 @@
       "schemaVersion": 2
     },
     {
-      "id": 33,
+      "id": 34,
       "title": "Data Science Toolkit",
       "description": "Provides essential tools and resources for data science projects, aiding data scientists in their workflows.",
       "impact": "Streamlines data science processes.",
@@ -692,7 +713,7 @@
       "schemaVersion": 2
     },
     {
-      "id": 34,
+      "id": 35,
       "title": "Data Science Tools Notebook",
       "description": "Provides a comprehensive notebook for learning essential data science tools and techniques, aimed at Coursera learners.",
       "impact": "Enhances learning experience for data science students.",
@@ -709,7 +730,7 @@
       "schemaVersion": 2
     },
     {
-      "id": 35,
+      "id": 36,
       "title": "Line-Following Robot",
       "description": "Builds a robot that detects and follows a line using IR sensors, ideal for robotics enthusiasts and educators.",
       "impact": "Enhances understanding of robotics and sensor integration.",
@@ -731,5 +752,5 @@
       "schemaVersion": 2
     }
   ],
-  "fetched_at": 1777990741.9018261
+  "fetched_at": 1783674693.504927
 }

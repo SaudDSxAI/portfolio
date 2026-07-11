@@ -1,48 +1,12 @@
-import { useState, useEffect, useCallback, useMemo, useRef } from 'react';
+import { useState, useMemo } from 'react';
+import { Link } from 'react-router-dom';
 import SectionHeading from './SectionHeading';
 import ProjectCard from './ProjectCard';
 import ScrollReveal from './ui/ScrollReveal';
-import { fetchProjects, refreshProjects } from '../lib/api';
-import { projects as fallbackProjects } from '../data/projects';
+import { projects } from '../data/projects';
 
 const ALL_CATEGORY = 'All';
 const PAGE_SIZE = 6;
-
-// ── Skeleton card ────────────────────────────────────────────────────────────
-function SkeletonCard() {
- return (
- <div className="relative rounded-2xl overflow-hidden border border-black/10 bg-warm-100/80 animate-pulse">
- <div className="h-44 bg-zinc-200/70" />
- <div className="p-5 space-y-3">
- <div className="h-2.5 w-20 rounded bg-zinc-300/70" />
- <div className="h-4 w-3/4 rounded bg-zinc-300/70" />
- <div className="h-3 w-full rounded bg-zinc-200/80" />
- <div className="h-3 w-5/6 rounded bg-zinc-200/80" />
- <div className="flex gap-2 pt-1">
- {[1, 2, 3].map((i) => (
- <div key={i} className="h-5 w-14 rounded-full bg-zinc-200/80" />
- ))}
- </div>
- </div>
- </div>
- );
-}
-
-// ── Status line ──────────────────────────────────────────────────────────────
-function StatusBadge({ fetched_at, total }) {
- const ago = fetched_at
- ? Math.floor((Date.now() / 1000 - fetched_at) / 60)
- : null;
- return (
- <div className="flex items-center gap-2 text-xs text-zinc-600">
- <span className="w-2 h-2 rounded-full bg-primary-600 animate-pulse" />
- <span>
- {total} repos
- {ago !== null && <> · synced {ago < 1 ? 'just now' : `${ago}m ago`}</>}
- </span>
- </div>
- );
-}
 
 // ── Category sidebar (desktop) ───────────────────────────────────────────────
 function CategorySidebar({ categories, counts, active, onChange, total }) {
@@ -132,43 +96,13 @@ function CategoryDropdown({ categories, counts, active, onChange, total }) {
  );
 }
 
-// ── Sync button ──────────────────────────────────────────────────────────────
-function SyncButton({ onClick, busy }) {
- return (
- <button
- id="projects-refresh-btn"
- onClick={onClick}
- disabled={busy}
- title="Pull latest repos from GitHub. New/changed repos are sent to the LLM; the rest are reused. Saved to disk."
- className="flex items-center gap-2 px-4 py-2.5 text-xs font-semibold rounded-xl bg-gradient-to-br from-primary-500 to-primary-700 text-white shadow-md shadow-primary-500/25 hover:shadow-lg hover:shadow-primary-500/40 hover:-translate-y-0.5 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed disabled:translate-y-0"
- >
- <svg
- className={`w-3.5 h-3.5 ${busy ? 'animate-spin' : ''}`}
- fill="none"
- viewBox="0 0 24 24"
- stroke="currentColor"
- strokeWidth={2}
- >
- <path strokeLinecap="round" strokeLinejoin="round" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
- </svg>
- {busy ? 'Syncing…' : 'Sync from GitHub'}
- </button>
- );
-}
-
 // ── Main component ───────────────────────────────────────────────────────────
+// Projects are maintained by hand in ../data/projects.js — no GitHub sync,
+// no AI-generated descriptions. Add/edit entries there directly.
 export default function Projects() {
- const sectionRef = useRef(null);
- const [projects, setProjects] = useState([]);
- const [meta, setMeta] = useState(null);
- const [loading, setLoading] = useState(true);
- const [shouldLoad, setShouldLoad] = useState(false);
- const [refreshing, setRefreshing] = useState(false);
- const [error, setError] = useState(null);
  const [activeCategory, setActiveCategory] = useState(ALL_CATEGORY);
  const [visibleCount, setVisibleCount] = useState(PAGE_SIZE);
 
- // Derive categories + per-category counts from live data
  const { categories, counts } = useMemo(() => {
  const c = {};
  for (const p of projects) {
@@ -176,157 +110,79 @@ export default function Projects() {
  }
  const cats = [ALL_CATEGORY, ...Object.keys(c).sort()];
  return { categories: cats, counts: c };
- }, [projects]);
+ }, []);
 
- // Filtered list
  const filtered = useMemo(
  () =>
  activeCategory === ALL_CATEGORY
  ? projects
  : projects.filter((p) => p.category === activeCategory),
- [projects, activeCategory]
+ [activeCategory]
  );
 
- // Visible slice (pagination)
  const visible = filtered.slice(0, visibleCount);
  const hasMore = filtered.length > visibleCount;
 
- // Reset pagination when filter changes
- useEffect(() => {
+ const changeCategory = (cat) => {
+ setActiveCategory(cat);
  setVisibleCount(PAGE_SIZE);
- }, [activeCategory]);
+ };
 
- // ── initial load (just reads cache from backend) ──────────────────────────
- const load = useCallback(async () => {
- try {
- setLoading(true);
- setError(null);
- const data = await fetchProjects(false);
- setProjects(data.projects || []);
- setMeta({
- cached: data.cached,
- fetched_at: data.fetched_at,
- total: data.total,
- });
- } catch (err) {
- console.error('Projects fetch failed:', err);
- setProjects(fallbackProjects);
- setMeta({
- cached: true,
- fetched_at: Math.floor(Date.now() / 1000),
- total: fallbackProjects.length,
- });
- setError('Live GitHub sync is unavailable. Showing saved projects.');
- } finally {
- setLoading(false);
- }
- }, []);
-
- // ── manual sync (POST /api/projects/refresh) ──────────────────────────────
- const sync = useCallback(async () => {
- try {
- setRefreshing(true);
- setError(null);
- await refreshProjects();
- // After the sync completes, fetch the fresh list
- const data = await fetchProjects(false);
- setProjects(data.projects || []);
- setMeta({
- cached: data.cached,
- fetched_at: data.fetched_at,
- total: data.total,
- });
- } catch (err) {
- console.error('Manual sync failed:', err);
- setError('Sync failed. Check the backend log.');
- } finally {
- setRefreshing(false);
- }
- }, []);
-
- useEffect(() => {
- const el = sectionRef.current;
- if (!el) return;
-
- const observer = new IntersectionObserver(
- ([entry]) => {
- if (entry.isIntersecting) {
- setShouldLoad(true);
- observer.disconnect();
- }
- },
- { rootMargin: '700px 0px', threshold: 0.01 }
- );
-
- observer.observe(el);
- return () => observer.disconnect();
- }, []);
-
- useEffect(() => {
- if (shouldLoad) load();
- }, [shouldLoad, load]);
-
- // ── render ────────────────────────────────────────────────────────────────
  return (
- <section ref={sectionRef} id="projects" className="relative py-24 px-6">
+ <section id="projects" className="relative py-24 px-6">
  <div className="relative max-w-6xl mx-auto">
- {/* Header row */}
- <div className="flex items-start justify-between flex-wrap gap-4 mb-2">
  <SectionHeading
  eyebrow="Selected Work"
  title="Projects"
- subtitle="Pulled from GitHub · enriched by AI · saved locally"
+ subtitle="A hand-picked selection — the ones worth your time"
  />
- <SyncButton onClick={sync} busy={refreshing} />
- </div>
 
- {/* Status */}
- {meta && !loading && (
- <div className="mb-8">
- <StatusBadge {...meta} />
+ {/* Callout: hand-crafted technical case studies live on their own pages */}
+ <Link
+ to="/ml"
+ className="group flex items-center justify-between gap-4 mb-10 p-5 rounded-2xl bg-gradient-to-br from-primary-500 to-primary-700 text-white shadow-lg shadow-primary-500/20 hover:shadow-xl hover:-translate-y-0.5 transition-all duration-300"
+ >
+ <div>
+ <div className="text-[11px] font-semibold uppercase tracking-[0.2em] text-primary-100 mb-1">
+ Deep dives
+ </div>
+ <div className="text-lg font-heading font-bold">
+ Explore ML case studies — real benchmarks, real charts
+ </div>
+ </div>
+ <svg className="w-6 h-6 flex-shrink-0 group-hover:translate-x-1 transition-transform" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor">
+ <path strokeLinecap="round" strokeLinejoin="round" d="M17.25 8.25 21 12m0 0-3.75 3.75M21 12H3" />
+ </svg>
+ </Link>
+
+ {projects.length === 0 && (
+ <div className="flex flex-col items-center py-20 text-center text-zinc-600">
+ <svg className="w-12 h-12 mb-4 opacity-30" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+ <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1} d="M12 4.5v15m7.5-7.5h-15" />
+ </svg>
+ <p className="text-sm">Project write-ups are being refreshed — check back soon.</p>
  </div>
  )}
 
- {/* Error state */}
- {error && (
- <div className="mb-8 p-4 rounded-xl bg-primary-100/50 border border-primary-400/40 text-sm text-primary-900">
- ⚠ {error}
- </div>
- )}
-
- {/* Loading */}
- {loading && (
- <div className="grid md:grid-cols-2 lg:grid-cols-2 gap-6">
- {Array.from({ length: PAGE_SIZE }).map((_, i) => (
- <SkeletonCard key={i} />
- ))}
- </div>
- )}
-
- {/* Layout: sidebar + content */}
- {!loading && projects.length > 0 && (
+ {projects.length > 0 && (
  <div className="grid grid-cols-1 lg:grid-cols-[14rem_1fr] gap-10">
- {/* Sidebar (desktop) */}
  <CategorySidebar
  categories={categories}
  counts={counts}
  active={activeCategory}
- onChange={setActiveCategory}
+ onChange={changeCategory}
  total={projects.length}
  />
 
- {/* Right column */}
  <div>
- {/* Mobile dropdown */}
  <CategoryDropdown
  categories={categories}
  counts={counts}
  active={activeCategory}
- onChange={setActiveCategory}
+ onChange={changeCategory}
  total={projects.length}
  />
 
- {/* Project grid */}
  {visible.length > 0 ? (
  <>
  <div className="grid md:grid-cols-2 auto-rows-fr gap-6">
@@ -344,7 +200,6 @@ export default function Projects() {
  })}
  </div>
 
- {/* Load more */}
  {hasMore && (
  <div className="flex flex-col items-center mt-12">
  <button

@@ -1,14 +1,12 @@
 import React, { Suspense } from 'react';
+import { Routes, Route } from 'react-router-dom';
 import Navbar from './components/Navbar';
-import Hero from './components/Hero';
 import Footer from './components/Footer';
 import SiteBackground from './components/ui/SiteBackground';
+import Home from './pages/Home';
+import CategoryPage from './pages/CategoryPage';
+import CaseStudyDetail from './pages/CaseStudyDetail';
 
-// Lazy load below-the-fold components to slash initial JS execution time
-const About = React.lazy(() => import('./components/About'));
-const Projects = React.lazy(() => import('./components/Projects'));
-const Skills = React.lazy(() => import('./components/Skills'));
-const Contact = React.lazy(() => import('./components/Contact'));
 const ChatWidget = React.lazy(() => import('./components/ChatWidget'));
 
 function DeferredChatWidget() {
@@ -70,13 +68,11 @@ export default function App() {
       <SiteBackground />
       <Navbar />
       <main>
-        <Hero />
-        <Suspense fallback={<div className="h-screen flex items-center justify-center text-zinc-500 opacity-70">Loading interface...</div>}>
-          <About />
-          <Projects />
-          <Skills />
-          <Contact />
-        </Suspense>
+        <Routes>
+          <Route path="/" element={<Home />} />
+          <Route path="/:category" element={<CategoryPage />} />
+          <Route path="/:category/:slug" element={<CaseStudyDetail />} />
+        </Routes>
       </main>
       <Footer />
       <DeferredChatWidget />
