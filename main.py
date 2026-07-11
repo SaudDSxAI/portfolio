@@ -403,6 +403,14 @@ async def health():
 from churn_model import router as churn_router
 app.include_router(churn_router)
 
+# Heart disease prediction demo — same pattern.
+from heart_model import router as heart_router
+app.include_router(heart_router)
+
+# Credit card fraud detection demo — same pattern.
+from fraud_model import router as fraud_router
+app.include_router(fraud_router)
+
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],

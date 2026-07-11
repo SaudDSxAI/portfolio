@@ -5,8 +5,19 @@ import {
 } from 'recharts';
 import TechBadge from '../components/ui/TechBadge';
 import ChurnLiveDemo from '../components/demos/ChurnLiveDemo';
+import HeartLiveDemo from '../components/demos/HeartLiveDemo';
+import FraudLiveDemo from '../components/demos/FraudLiveDemo';
 import ScrollReveal from '../components/ui/ScrollReveal';
 import { getCaseStudy, categories } from '../data/caseStudies';
+
+// Each case study that has hasLiveDemo:true also sets demoKey to pick which
+// widget renders — add a new entry here whenever a new project ships its
+// own live demo component.
+const DEMO_COMPONENTS = {
+  churn: ChurnLiveDemo,
+  heart: HeartLiveDemo,
+  fraud: FraudLiveDemo,
+};
 
 function MetricCard({ label, value }) {
   return (
@@ -17,13 +28,13 @@ function MetricCard({ label, value }) {
   );
 }
 
-function ModelComparisonChart({ data }) {
+function ModelComparisonChart({ data, metricKey = 'rocAuc', metricLabel = 'ROC-AUC' }) {
   // Zoom the axis into the range that actually contains the data instead of
-  // forcing 0–100 — these models sit within ~3 points of each other, which
-  // is real, meaningful separation (it's the whole evidence for the model
-  // choice), but a 0–100 axis flattens it into invisibility. Padding of ~4
-  // points on each side keeps bars readable without exaggerating the gap.
-  const values = data.map((d) => d.rocAuc);
+  // forcing 0–100 — these models sit within a few points of each other,
+  // which is real, meaningful separation (it's the whole evidence for the
+  // model choice), but a 0–100 axis flattens it into invisibility. Padding
+  // of ~4 points on each side keeps bars readable without exaggerating it.
+  const values = data.map((d) => d[metricKey]);
   const min = Math.min(...values);
   const max = Math.max(...values);
   const domain = [Math.max(0, Math.floor(min - 4)), Math.ceil(max + 4)];
@@ -38,12 +49,12 @@ function ModelComparisonChart({ data }) {
           formatter={(v) => `${v}%`}
           contentStyle={{ background: '#fff', border: '1px solid #e3d8c6', borderRadius: 10 }}
         />
-        <Bar dataKey="rocAuc" name="ROC-AUC" radius={[6, 6, 0, 0]}>
+        <Bar dataKey={metricKey} name={metricLabel} radius={[6, 6, 0, 0]}>
           {data.map((d, i) => (
             <Cell key={i} fill={d.chosen ? '#41432d' : '#dfe2bb'} />
           ))}
           <LabelList
-            dataKey="rocAuc"
+            dataKey={metricKey}
             position="top"
             formatter={(v) => `${v}%`}
             style={{ fontSize: 12, fontWeight: 700, fill: '#2c2e20' }}
@@ -190,14 +201,17 @@ export default function CaseStudyDetail() {
         </ScrollReveal>
 
         {/* Live demo */}
-        {study.hasLiveDemo && (
+        {study.hasLiveDemo && DEMO_COMPONENTS[study.demoKey] && (
           <ScrollReveal delay={150}>
             <div className="mb-14">
               <h2 className="text-lg font-heading font-bold text-black mb-1">Try it live</h2>
               <p className="text-sm text-zinc-600 mb-4">
-                Build a customer profile, pick a model, and see the real prediction — not a mockup.
+                Build a profile, pick a model, and see the real prediction — not a mockup.
               </p>
-              <ChurnLiveDemo />
+              {(() => {
+                const DemoComponent = DEMO_COMPONENTS[study.demoKey];
+                return <DemoComponent />;
+              })()}
             </div>
           </ScrollReveal>
         )}
@@ -222,7 +236,11 @@ export default function CaseStudyDetail() {
               <p className="text-sm text-zinc-600 mb-4">
                 Benchmarked under identical conditions — the highlighted bar is the model that was chosen, on evidence.
               </p>
-              <ModelComparisonChart data={study.modelComparison} />
+              <ModelComparisonChart
+                data={study.modelComparison}
+                metricKey={study.comparisonMetricKey || 'rocAuc'}
+                metricLabel={study.comparisonMetricLabel || 'ROC-AUC'}
+              />
             </div>
           </ScrollReveal>
         )}

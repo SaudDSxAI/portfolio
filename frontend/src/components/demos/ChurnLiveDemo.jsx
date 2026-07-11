@@ -99,7 +99,7 @@ export default function ChurnLiveDemo() {
       if (!hasInternet) internetFields.forEach((f) => (payload[f] = 'No internet service'));
       if (form.PhoneService === 'No') payload.MultipleLines = 'No phone service';
 
-      const res = await fetch(`${API_BASE}/predict`, {
+      const res = await fetchWithTimeout(`${API_BASE}/predict`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(payload),
@@ -120,10 +120,20 @@ export default function ChurnLiveDemo() {
     return (
       <div className="bg-amber-50 border border-amber-300/60 rounded-2xl p-6 text-sm text-amber-900">
         <p className="font-semibold mb-1">Live demo API isn't reachable right now.</p>
-        <p>
-          Run the churn API locally (<code className="bg-black/10 px-1.5 py-0.5 rounded">cd api && uvicorn main:app --reload --port 8000</code>)
-          to try this live, or check back once it's deployed.
+        <p className="mb-3">
+          This calls <code className="bg-black/10 px-1.5 py-0.5 rounded">/api/churn/models</code> on this
+          site's own backend. Run it locally with{' '}
+          <code className="bg-black/10 px-1.5 py-0.5 rounded">python main.py</code> (from the portfolio root,
+          after <code className="bg-black/10 px-1.5 py-0.5 rounded">pip install -r requirements.txt</code>),
+          or make sure the churn_model.py changes are deployed if you're viewing the live site.
         </p>
+        <p className="text-xs opacity-75 mb-3">Detail: {unreachableDetail}</p>
+        <button
+          onClick={() => setModelsAttempt((n) => n + 1)}
+          className="px-3 py-1.5 rounded-lg bg-amber-200/70 hover:bg-amber-300/70 text-xs font-semibold transition-colors"
+        >
+          Retry
+        </button>
       </div>
     );
   }
