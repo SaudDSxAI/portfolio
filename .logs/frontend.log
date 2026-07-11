@@ -11,3 +11,13 @@ Browserslist: browsers data (caniuse-lite) is 7 months old. Please run:
   npx update-browserslist-db@latest
   Why you should do it regularly: https://github.com/browserslist/update-db#readme
 11:46:06 PM [vite] hmr update /src/index.css, /src/components/Projects.jsx, /src/components/Skills.jsx, /src/components/About.jsx
+10:33:40 AM [vite] hmr update /src/components/Projects.jsx, /src/index.css
+10:39:40 AM [vite] hmr update /src/components/demos/ChurnLiveDemo.jsx, /src/index.css
+10:39:57 AM [vite] hmr update /src/components/demos/ChurnLiveDemo.jsx, /src/index.css
+10:40:13 AM [vite] hmr update /src/components/demos/ChurnLiveDemo.jsx, /src/index.css
+10:43:25 AM [vite] page reload dist_test_fresh/index.html
+10:46:36 AM [vite] hmr update /src/pages/CaseStudyDetail.jsx, /src/index.css
+10:46:51 AM [vite] hmr update /src/pages/CaseStudyDetail.jsx, /src/index.css
+10:47:23 AM [vite] hmr update /src/components/demos/ChurnLiveDemo.jsx, /src/index.css
+10:51:52 AM [vite] hmr update /src/components/demos/ChurnLiveDemo.jsx, /src/index.css
+10:53:09 AM [vite] hmr update /src/components/demos/ChurnLiveDemo.jsx, /src/index.css

@@ -1,11 +1,10 @@
 import { useEffect, useState } from 'react';
 
-// Points at the deployed churn-prediction API. Defaults to localhost so it
-// works out of the box when you run the churn API locally (uvicorn main:app
-// --reload --port 8000) alongside the portfolio dev server. Set
-// VITE_CHURN_API_URL once the churn API is deployed for this to work for
-// real site visitors.
-const API_URL = import.meta.env.VITE_CHURN_API_URL || 'http://localhost:8000';
+// Churn model is served by this portfolio's own backend (same origin,
+// mounted at /api/churn/*) — no separate deployment or CORS config needed.
+// In dev, Vite's proxy (vite.config.js) forwards /api/* to the local
+// FastAPI backend on :8000, same as the rest of the site's API calls.
+const API_BASE = (import.meta.env.VITE_API_URL || '') + '/api/churn';
 
 const DEFAULTS = {
   gender: 'Female', SeniorCitizen: 0, Partner: 'No', Dependents: 'No',
@@ -20,6 +19,25 @@ function riskLevel(prob, threshold) {
   if (prob < 0.3) return 'Low';
   if (prob < threshold) return 'Medium';
   return 'High';
+}
+
+// fetch with a hard timeout — without this, a hung request (cold start,
+// dropped connection, misconfigured proxy) leaves the UI stuck on
+// "Predicting…" forever with no feedback. 20s covers a slow Railway cold
+// start; anything past that should surface as an error, not a silent hang.
+async function fetchWithTimeout(url, opts = {}, timeoutMs = 20000) {
+  const controller = new AbortController();
+  const timer = setTimeout(() => controller.abort(), timeoutMs);
+  try {
+    return await fetch(url, { ...opts, signal: controller.signal });
+  } catch (err) {
+    if (err.name === 'AbortError') {
+      throw new Error(`Request timed out after ${timeoutMs / 1000}s`);
+    }
+    throw err;
+  } finally {
+    clearTimeout(timer);
+  }
 }
 
 function Field({ label, children }) {
@@ -44,9 +62,12 @@ export default function ChurnLiveDemo() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [apiUnreachable, setApiUnreachable] = useState(false);
+  const [unreachableDetail, setUnreachableDetail] = useState('');
+  const [modelsAttempt, setModelsAttempt] = useState(0);
 
   useEffect(() => {
-    fetch(`${API_URL}/models`)
+    setApiUnreachable(false);
+    fetchWithTimeout(`${API_BASE}/models`)
       .then((r) => {
         if (!r.ok) throw new Error(`HTTP ${r.status}`);
         return r.json();
@@ -55,8 +76,11 @@ export default function ChurnLiveDemo() {
         setModels(m);
         setThreshold(m[selectedModel].threshold);
       })
-      .catch(() => setApiUnreachable(true));
-  }, []);
+      .catch((err) => {
+        setUnreachableDetail(err.message || 'Unknown error');
+        setApiUnreachable(true);
+      });
+  }, [modelsAttempt]);
 
   useEffect(() => {
     if (models && !thresholdTouched) setThreshold(models[selectedModel].threshold);
@@ -75,7 +99,7 @@ export default function ChurnLiveDemo() {
       if (!hasInternet) internetFields.forEach((f) => (payload[f] = 'No internet service'));
       if (form.PhoneService === 'No') payload.MultipleLines = 'No phone service';
 
-      const res = await fetch(`${API_URL}/predict`, {
+      const res = await fetch(`${API_BASE}/predict`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(payload),
@@ -119,22 +143,42 @@ export default function ChurnLiveDemo() {
           </div>
         )}
 
-        <div className="grid grid-cols-2 gap-3">
-          <Field label="Contract">
-            <select className={selectClass} value={form.Contract} onChange={(e) => update('Contract', e.target.value)}>
-              <option>Month-to-month</option><option>One year</option><option>Two year</option>
+        <div className="grid grid-cols-2 gap-3 max-h-[420px] overflow-y-auto pr-1">
+          <Field label="Gender">
+            <select className={selectClass} value={form.gender} onChange={(e) => update('gender', e.target.value)}>
+              <option>Female</option><option>Male</option>
             </select>
           </Field>
-          <Field label="Internet service">
-            <select className={selectClass} value={form.InternetService} onChange={(e) => update('InternetService', e.target.value)}>
-              <option>DSL</option><option>Fiber optic</option><option>No</option>
+          <Field label="Senior citizen">
+            <select className={selectClass} value={form.SeniorCitizen} onChange={(e) => update('SeniorCitizen', Number(e.target.value))}>
+              <option value={0}>No</option><option value={1}>Yes</option>
             </select>
           </Field>
+          <Field label="Has partner">
+            <select className={selectClass} value={form.Partner} onChange={(e) => update('Partner', e.target.value)}>
+              <option>No</option><option>Yes</option>
+            </select>
+          </Field>
+          <Field label="Has dependents">
+            <select className={selectClass} value={form.Dependents} onChange={(e) => update('Dependents', e.target.value)}>
+              <option>No</option><option>Yes</option>
+            </select>
+          </Field>
+
           <Field label={`Tenure: ${form.tenure} months`}>
             <input type="range" min="0" max="72" value={form.tenure} onChange={(e) => update('tenure', Number(e.target.value))} className="accent-primary-600" />
           </Field>
           <Field label={`Monthly charges: $${form.MonthlyCharges}`}>
             <input type="range" min="0" max="150" value={form.MonthlyCharges} onChange={(e) => update('MonthlyCharges', Number(e.target.value))} className="accent-primary-600" />
+          </Field>
+          <Field label={`Total charges: $${form.TotalCharges}`}>
+            <input type="range" min="0" max="9000" step="10" value={form.TotalCharges} onChange={(e) => update('TotalCharges', Number(e.target.value))} className="accent-primary-600" />
+          </Field>
+
+          <Field label="Contract">
+            <select className={selectClass} value={form.Contract} onChange={(e) => update('Contract', e.target.value)}>
+              <option>Month-to-month</option><option>One year</option><option>Two year</option>
+            </select>
           </Field>
           <Field label="Payment method">
             <select className={selectClass} value={form.PaymentMethod} onChange={(e) => update('PaymentMethod', e.target.value)}>
@@ -147,6 +191,32 @@ export default function ChurnLiveDemo() {
               <option>Yes</option><option>No</option>
             </select>
           </Field>
+
+          <Field label="Phone service">
+            <select className={selectClass} value={form.PhoneService} onChange={(e) => update('PhoneService', e.target.value)}>
+              <option>Yes</option><option>No</option>
+            </select>
+          </Field>
+          {form.PhoneService === 'Yes' && (
+            <Field label="Multiple lines">
+              <select className={selectClass} value={form.MultipleLines} onChange={(e) => update('MultipleLines', e.target.value)}>
+                <option>No</option><option>Yes</option>
+              </select>
+            </Field>
+          )}
+          <Field label="Internet service">
+            <select className={selectClass} value={form.InternetService} onChange={(e) => update('InternetService', e.target.value)}>
+              <option>DSL</option><option>Fiber optic</option><option>No</option>
+            </select>
+          </Field>
+
+          {hasInternet && internetFields.map((key) => (
+            <Field key={key} label={key.replace(/([A-Z])/g, ' $1').trim()}>
+              <select className={selectClass} value={form[key]} onChange={(e) => update(key, e.target.value)}>
+                <option>No</option><option>Yes</option>
+              </select>
+            </Field>
+          ))}
         </div>
 
         <button

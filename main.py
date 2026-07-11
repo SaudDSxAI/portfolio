@@ -398,6 +398,11 @@ app = FastAPI(title="AskSaud API", version="2.1.0", lifespan=lifespan)
 async def health():
     return {"status": "healthy"}
 
+# Churn prediction demo (ML case study "Try it live") — same-origin, no
+# separate deployment or CORS wiring needed.
+from churn_model import router as churn_router
+app.include_router(churn_router)
+
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],

@@ -1,7 +1,7 @@
 import { useParams, useNavigate, Link } from 'react-router-dom';
 import { useEffect } from 'react';
 import {
-  BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Cell,
+  BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Cell, LabelList,
 } from 'recharts';
 import TechBadge from '../components/ui/TechBadge';
 import ChurnLiveDemo from '../components/demos/ChurnLiveDemo';
@@ -18,17 +18,36 @@ function MetricCard({ label, value }) {
 }
 
 function ModelComparisonChart({ data }) {
+  // Zoom the axis into the range that actually contains the data instead of
+  // forcing 0–100 — these models sit within ~3 points of each other, which
+  // is real, meaningful separation (it's the whole evidence for the model
+  // choice), but a 0–100 axis flattens it into invisibility. Padding of ~4
+  // points on each side keeps bars readable without exaggerating the gap.
+  const values = data.map((d) => d.rocAuc);
+  const min = Math.min(...values);
+  const max = Math.max(...values);
+  const domain = [Math.max(0, Math.floor(min - 4)), Math.ceil(max + 4)];
+
   return (
     <ResponsiveContainer width="100%" height={300}>
-      <BarChart data={data} margin={{ top: 10, right: 20, left: 0, bottom: 30 }}>
+      <BarChart data={data} margin={{ top: 24, right: 20, left: 0, bottom: 30 }}>
         <CartesianGrid strokeDasharray="3 3" stroke="#e3d8c6" />
         <XAxis dataKey="name" tick={{ fontSize: 11, fill: '#585b3c' }} angle={-15} textAnchor="end" height={50} />
-        <YAxis tick={{ fontSize: 11, fill: '#585b3c' }} unit="%" domain={[0, 100]} />
-        <Tooltip contentStyle={{ background: '#fff', border: '1px solid #e3d8c6', borderRadius: 10 }} />
+        <YAxis tick={{ fontSize: 11, fill: '#585b3c' }} unit="%" domain={domain} />
+        <Tooltip
+          formatter={(v) => `${v}%`}
+          contentStyle={{ background: '#fff', border: '1px solid #e3d8c6', borderRadius: 10 }}
+        />
         <Bar dataKey="rocAuc" name="ROC-AUC" radius={[6, 6, 0, 0]}>
           {data.map((d, i) => (
-            <Cell key={i} fill={d.chosen ? '#585b3c' : '#c9cba4'} />
+            <Cell key={i} fill={d.chosen ? '#41432d' : '#dfe2bb'} />
           ))}
+          <LabelList
+            dataKey="rocAuc"
+            position="top"
+            formatter={(v) => `${v}%`}
+            style={{ fontSize: 12, fontWeight: 700, fill: '#2c2e20' }}
+          />
         </Bar>
       </BarChart>
     </ResponsiveContainer>
