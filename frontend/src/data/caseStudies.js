@@ -293,6 +293,128 @@ export const caseStudies = {
         'Paired statistical testing to avoid overtrusting a small numeric gap between models — second time in this series, reinforcing it as a habit, not a one-off',
       ],
     },
+    {
+      slug: 'sales-demand-forecasting',
+      title: 'Sales Demand Forecasting',
+      tagline:
+        'The first project here that predicts the future instead of scoring a snapshot — and where two tied, heavier models lost to a simpler one once deployment cost got weighed in.',
+      categoryKey: 'ml',
+      summary:
+        'Forecasting monthly retail sales from 4 years of real transaction history — a genuinely different problem shape than every prior project: no rows to classify or price, just a sequence of months where the ordering itself is the signal.',
+      github: 'https://github.com/SaudDSxAI/sales-forecasting',
+      live: '',
+      tech: ['Python', 'Prophet', 'statsmodels (SARIMA)', 'pandas', 'NumPy', 'FastAPI', 'React', 'Recharts'],
+      hasLiveDemo: true,
+      demoKey: 'sales',
+      comparisonMetricKey: 'accuracy',
+      comparisonMetricLabel: 'Forecast Accuracy',
+      heroMetrics: [
+        { label: 'Forecast accuracy', value: '83.3%' },
+        { label: 'Typical monthly error', value: '±$13,600' },
+        { label: 'Months of history', value: '48' },
+        { label: 'Months forecast ahead', value: '6' },
+      ],
+      modelComparison: [
+        { name: 'Prophet', accuracy: 82.2, chosen: false },
+        { name: 'SARIMA', accuracy: 82.2, chosen: false },
+        { name: 'Trend + Seasonal (deployed)', accuracy: 83.3, chosen: true },
+      ],
+      featureImportance: [
+        { feature: 'November', coefficient: 36428 },
+        { feature: 'December', coefficient: 28369 },
+        { feature: 'February', coefficient: -28275 },
+        { feature: 'September', coefficient: 25690 },
+        { feature: 'January', coefficient: -18657 },
+        { feature: 'July', coefficient: -11176 },
+        { feature: 'April', coefficient: -10824 },
+        { feature: 'June', coefficient: -10212 },
+      ],
+      narrative: [
+        {
+          heading: 'The problem — predicting forward, not scoring a snapshot',
+          body: 'Forecast next month\'s retail sales from ~4 years of real order history (Superstore dataset, 9,800 transactions, 2015-2018). Every prior project here answered "given this row, what\'s the label/price" — a single snapshot in time. This one is different: the answer depends on the whole sequence leading up to it, and the evaluation has to respect time order too — shuffling months into a random train/test split would leak the future into training, so the split is strictly the last 6 months held out chronologically.',
+        },
+        {
+          heading: 'From transactions to a real time series',
+          body: 'The raw data is one row per order line item, not one row per day — the first real step was aggregating it into a proper regular time series. Daily aggregation was considered and rejected: with under 10,000 orders spread across 4 years, most individual days would be sparse or empty, producing a noisy series. Monthly aggregation (via pandas resample, which correctly fills order-free periods with 0 rather than silently dropping them) gave a clean 48-point series.',
+        },
+        {
+          heading: 'Confirming the pattern before modeling it',
+          body: 'A formal seasonal decomposition (trend/seasonal/residual) confirmed what a first look at the numbers suggested: a genuine upward trend (roughly $888/month growth on average) plus a strong, consistent yearly cycle — November and December reliably far above trend (holiday shopping), February reliably the weakest month. The leftover residual looked like real noise, not a missed pattern, which is what you want to see before trusting the decomposition.',
+        },
+        {
+          heading: 'Two tied models, then a deployment-driven third choice',
+          body: 'Prophet and SARIMA — both purpose-built for trend-plus-seasonality data, unlike anything used in the earlier projects — landed within $100 of each other on the same held-out 6 months (MAE $14,501 vs $14,601, both ~17.8% average error). With only 6 test points, there isn\'t enough data for a meaningful significance test the way earlier projects used one; the practical tiebreaker was that SARIMA threw a data-sufficiency warning on the seasonal component (three-plus years isn\'t quite enough to fully trust it) while Prophet didn\'t, favoring Prophet for the analysis. For deployment, a further consideration took over: both models carry real dependency weight (Prophet needs a compiled statistical backend; SARIMA needs a heavier statistics library) for a tied-accuracy choice. The deployed API instead implements the same core idea directly — a fitted linear trend plus a repeating monthly seasonal adjustment — with zero extra dependencies, and it verified at 16.7% average error on the identical test months, competitive with both heavier options.',
+        },
+      ],
+      skillsDemonstrated: [
+        'Aggregating transaction-level data into a proper, gap-free time series (not just resampling blindly)',
+        'Chronological train/test splitting instead of random splitting, and explaining why random splitting would leak information here specifically',
+        'Formal seasonal decomposition (trend/seasonal/residual) before choosing a model, not after',
+        'Selecting time-series-native models (Prophet, SARIMA) instead of defaulting to the classification/regression toolkit used in every prior project',
+        'Recognizing when a test set is too small for a meaningful significance test, rather than running one anyway',
+        'Weighing deployment cost (dependency weight) as a real factor in model choice, not just accuracy',
+        'Reimplementing a tied model\'s core mechanism directly when the off-the-shelf library isn\'t worth its deployment cost',
+      ],
+    },
+    {
+      slug: 'movie-recommendation-system',
+      title: 'Movie Recommendation System',
+      tagline:
+        'Collaborative filtering that barely beat a trivial baseline — and the honest write-up says so, instead of dressing up a marginal win.',
+      categoryKey: 'ml',
+      summary:
+        'A MovieLens-based recommender (100K ratings, 610 users) — the first project in this series with no label to predict at all, just patterns in who rated what. The interesting result isn\'t a clean win: the "smart" model only narrowly beat guessing everyone\'s average, a real finding worth explaining rather than hiding.',
+      github: 'https://github.com/SaudDSxAI/movie-recommender',
+      live: '',
+      tech: ['Python', 'scikit-surprise', 'scikit-learn', 'pandas', 'FastAPI', 'React'],
+      hasLiveDemo: true,
+      demoKey: 'movies',
+      comparisonMetricKey: 'accuracy',
+      comparisonMetricLabel: 'Rating Accuracy',
+      heroMetrics: [
+        { label: 'Users', value: '610' },
+        { label: 'Movies (after filtering)', value: '2,269' },
+        { label: 'Ratings used', value: '81,116' },
+        { label: 'Matrix sparsity', value: '98.3%' },
+      ],
+      modelComparison: [
+        { name: 'Baseline (averages only)', accuracy: 81.2, chosen: false },
+        { name: 'SVD (collaborative filtering)', accuracy: 81.2, chosen: true },
+        { name: 'KNN (similar users)', accuracy: 80.0, chosen: false },
+      ],
+      narrative: [
+        {
+          heading: 'A genuinely different kind of problem',
+          body: 'Recommend movies from the MovieLens dataset (100,836 ratings, 610 users, 9,742 movies). Unlike every prior project, there\'s no target column to predict — no churn label, no price, no future month. The task is to find structure in who rated what, from a matrix that\'s 98.3% empty (each user has rated under 2% of all movies), and use that structure to guess what an empty cell might have been.',
+        },
+        {
+          heading: 'The long tail problem',
+          body: 'Every user in this dataset has at least 20 ratings (MovieLens pre-filters for that), but movies are a different story — the median movie has just 3 ratings, and half of all 9,742 movies have essentially no signal to learn from. Filtering to movies with 10+ ratings cut the movie count by 77% (down to 2,269) while keeping 81% of the actual rating data — confirmation that a small number of popular movies account for most of the real signal, and trying to model the barely-rated long tail would mostly add noise.',
+        },
+        {
+          heading: 'A win that barely counts as one',
+          body: 'SVD (matrix factorization — the standard collaborative filtering technique) scored RMSE 0.8468, beating a baseline-only model (0.8475, which only accounts for "some users rate high" and "some movies get rated high," no deeper pattern-finding) by a razor-thin margin, and clearly beating a KNN similar-users approach (0.9001, the worst of the three). SVD is the right pick on evidence, but the honest headline is that with only 81K ratings, there wasn\'t much room for a more sophisticated method to meaningfully outperform the simple one — a real, worth-stating limitation rather than a result to spin as a clean win.',
+        },
+        {
+          heading: 'What the recommendations actually looked like',
+          body: 'Sanity-checking with real output mattered here: asking the model for a specific user\'s top picks returned genuinely excellent, broadly-acclaimed films (Shawshank Redemption, Seven Samurai, Spirited Away) — good movies, but ones that look more like "generally beloved classics" than picks tailored to that one person\'s specific taste. That observation lines up with the RMSE finding: a model only marginally ahead of a non-personalized baseline should be expected to lean on broad appeal rather than sharp personalization, and it did.',
+        },
+        {
+          heading: 'From rating prediction to item similarity',
+          body: 'The deployed live demo uses a different, more interactive framing than the analysis: instead of predicting a specific existing user\'s ratings, it computes item-item similarity from the same matrix factorization (via scikit-learn\'s TruncatedSVD, avoiding scikit-surprise as a production dependency) — pick movies you actually like, get real similar movies back. Checking it against Toy Story returned Aladdin, Lion King, Beauty and the Beast, and Toy Story 2 — a far more immediately convincing result than the rating-prediction numbers alone would suggest, since genre and style patterns come through clearly in the item similarity even though personalized rating prediction was only marginally better than guessing.',
+        },
+      ],
+      skillsDemonstrated: [
+        'Understanding an unlabeled, structure-finding problem (collaborative filtering) as distinct from every supervised problem in this series',
+        'Recognizing and quantifying data sparsity as the defining challenge of a problem, before choosing a technique',
+        'Long-tail filtering with an explicit tradeoff check (rows lost vs. movies lost)',
+        'Reporting a marginal win honestly instead of overstating it — the model beat the baseline, but barely, and the write-up says so',
+        'Qualitative sanity-checking of model output (reading actual recommendations) to catch a limitation that the RMSE number alone didn\'t make obvious',
+        'Reimplementing a technique with lighter dependencies for deployment (TruncatedSVD via scikit-learn instead of scikit-surprise), consistent with the same tradeoff made in the sales forecasting project',
+        'Choosing a different, more interactive live-demo framing (item similarity) than the analysis technique (rating prediction) when it better serves the audience',
+      ],
+    },
   ],
   dl: [],
 };

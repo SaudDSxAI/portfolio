@@ -1,0 +1,26 @@
+{
+  "chosen_model_analysis": "Prophet",
+  "chosen_model_deployed": "Trend + Seasonal Decomposition (lightweight equivalent)",
+  "chosen_reason": "Prophet and SARIMA tied on accuracy in the analysis (MAE $14,501 vs $14,601, both ~17.8% MAPE on a held-out 6-month test) -- a real production tradeoff followed from there: Prophet needs a compiled Stan backend and SARIMA needs a heavier statistics library, both unnecessary weight for a tied-accuracy choice. The deployed API instead uses a direct trend + seasonal-index implementation (linear trend fit plus average per-month seasonal deviation) -- the same core idea both models rely on, implemented with zero extra dependencies, and it verified at MAE $13,626 / 16.7% MAPE on the identical held-out test, competitive with both.",
+  "final_metrics": {
+    "mae_dollars": 13626,
+    "mape_pct": 16.7
+  },
+  "comparison": {
+    "prophet": {
+      "mae": 14501,
+      "mape": 17.8
+    },
+    "sarima": {
+      "mae": 14601,
+      "mape": 17.8
+    },
+    "trend_seasonal": {
+      "mae": 13626,
+      "mape": 16.7
+    }
+  },
+  "dataset_size": 48,
+  "test_months": 6,
+  "trend_dollars_per_month": 888.3121915816322
+}

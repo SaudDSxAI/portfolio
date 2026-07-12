@@ -41,3 +41,13 @@ Browserslist: browsers data (caniuse-lite) is 7 months old. Please run:
 3:00:47 PM [vite] hmr update /src/components/demos/HouseLiveDemo.jsx, /src/index.css
 3:00:47 PM [vite] hmr update /src/pages/CaseStudyDetail.jsx, /src/index.css
 3:00:47 PM [vite] hmr update /src/index.css, /src/pages/CategoryPage.jsx, /src/pages/CaseStudyDetail.jsx, /src/components/Projects.jsx
+6:31:58 PM [vite] hmr update /src/pages/CaseStudyDetail.jsx, /src/index.css
+6:32:46 PM [vite] hmr update /src/index.css, /src/pages/CategoryPage.jsx, /src/pages/CaseStudyDetail.jsx, /src/components/Projects.jsx
+12:50:29 PM [vite] hmr update /src/components/demos/SalesLiveDemo.jsx, /src/index.css
+12:50:29 PM [vite] hmr update /src/pages/CaseStudyDetail.jsx, /src/index.css
+12:50:29 PM [vite] hmr update /src/index.css, /src/pages/CategoryPage.jsx, /src/pages/CaseStudyDetail.jsx, /src/components/Projects.jsx
+1:23:30 PM [vite] hmr update /src/pages/CaseStudyDetail.jsx, /src/index.css
+1:24:25 PM [vite] hmr update /src/index.css, /src/pages/CategoryPage.jsx, /src/pages/CaseStudyDetail.jsx, /src/components/Projects.jsx
+1:27:18 PM [vite] hmr update /src/components/demos/MovieLiveDemo.jsx, /src/index.css
+1:27:18 PM [vite] hmr update /src/pages/CaseStudyDetail.jsx, /src/index.css
+1:27:18 PM [vite] hmr update /src/index.css, /src/pages/CategoryPage.jsx, /src/pages/CaseStudyDetail.jsx, /src/components/Projects.jsx

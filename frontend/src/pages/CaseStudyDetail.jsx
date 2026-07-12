@@ -8,6 +8,8 @@ import ChurnLiveDemo from '../components/demos/ChurnLiveDemo';
 import HeartLiveDemo from '../components/demos/HeartLiveDemo';
 import FraudLiveDemo from '../components/demos/FraudLiveDemo';
 import HouseLiveDemo from '../components/demos/HouseLiveDemo';
+import SalesLiveDemo from '../components/demos/SalesLiveDemo';
+import MovieLiveDemo from '../components/demos/MovieLiveDemo';
 import ScrollReveal from '../components/ui/ScrollReveal';
 import { getCaseStudy, categories } from '../data/caseStudies';
 
@@ -19,6 +21,8 @@ const DEMO_COMPONENTS = {
   heart: HeartLiveDemo,
   fraud: FraudLiveDemo,
   house: HouseLiveDemo,
+  sales: SalesLiveDemo,
+  movies: MovieLiveDemo,
 };
 
 function MetricCard({ label, value }) {

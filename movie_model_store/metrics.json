@@ -1,0 +1,23 @@
+{
+  "chosen_model_analysis": "SVD (scikit-surprise)",
+  "chosen_model_deployed": "Truncated SVD item-item similarity (lightweight equivalent)",
+  "chosen_reason": "SVD beat a baseline-only model and KNN in the analysis (RMSE 0.8468 vs 0.8475 vs 0.9001), though only marginally ahead of the baseline. The deployed API reimplements the same core matrix factorization idea with scikit-learn's TruncatedSVD instead of scikit-surprise, avoiding a heavier dependency, and switches from rating prediction to item-item similarity -- more useful for an interactive demo (pick movies you like, get similar ones) than simulating a specific existing user.",
+  "comparison": {
+    "svd": {
+      "rmse": 0.8468
+    },
+    "baseline": {
+      "rmse": 0.8475
+    },
+    "knn": {
+      "rmse": 0.9001
+    }
+  },
+  "dataset_size": {
+    "users": 610,
+    "movies_total": 9724,
+    "movies_after_filtering": 2269,
+    "ratings_used": 81116
+  },
+  "sparsity_pct": 98.3
+}

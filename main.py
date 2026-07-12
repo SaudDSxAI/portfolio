@@ -415,6 +415,17 @@ app.include_router(fraud_router)
 from house_model import router as house_router
 app.include_router(house_router)
 
+# Sales forecasting demo — same pattern, but serves a precomputed forecast
+# rather than scoring live user input (monthly forecasts aren't a per-row
+# prediction the way the other four projects are).
+from sales_model import router as sales_router
+app.include_router(sales_router)
+
+# Movie recommender demo — same pattern, item-similarity lookup instead of
+# scoring a single row.
+from movie_model import router as movie_router
+app.include_router(movie_router)
+
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
