@@ -31,6 +31,8 @@ export const caseStudies = {
       tech: ['Python', 'scikit-learn', 'XGBoost', 'pandas', 'SHAP', 'FastAPI', 'React', 'Recharts'],
       hasLiveDemo: true,
       demoKey: 'churn',
+      accentColor: 'blue',
+      icon: 'users',
       heroMetrics: [
         { label: 'ROC-AUC', value: '0.836' },
         { label: 'F1 (churners)', value: '0.63' },
@@ -97,6 +99,8 @@ export const caseStudies = {
       tech: ['Python', 'scikit-learn', 'pandas', 'SciPy', 'FastAPI', 'React', 'Recharts'],
       hasLiveDemo: true,
       demoKey: 'heart',
+      accentColor: 'rose',
+      icon: 'heartPulse',
       heroMetrics: [
         { label: 'ROC-AUC', value: '0.924' },
         { label: 'F1 (disease)', value: '0.88' },
@@ -164,6 +168,8 @@ export const caseStudies = {
       tech: ['Python', 'scikit-learn', 'XGBoost', 'imbalanced-learn', 'pandas', 'FastAPI', 'React', 'Recharts'],
       hasLiveDemo: true,
       demoKey: 'fraud',
+      accentColor: 'amber',
+      icon: 'shieldAlert',
       comparisonMetricKey: 'prAuc',
       comparisonMetricLabel: 'PR-AUC',
       heroMetrics: [
@@ -235,6 +241,8 @@ export const caseStudies = {
       tech: ['Python', 'scikit-learn', 'XGBoost', 'pandas', 'FastAPI', 'React', 'Recharts'],
       hasLiveDemo: true,
       demoKey: 'house',
+      accentColor: 'emerald',
+      icon: 'home',
       comparisonMetricKey: 'r2',
       comparisonMetricLabel: 'R²',
       heroMetrics: [
@@ -306,6 +314,8 @@ export const caseStudies = {
       tech: ['Python', 'Prophet', 'statsmodels (SARIMA)', 'pandas', 'NumPy', 'FastAPI', 'React', 'Recharts'],
       hasLiveDemo: true,
       demoKey: 'sales',
+      accentColor: 'violet',
+      icon: 'trendingUp',
       comparisonMetricKey: 'accuracy',
       comparisonMetricLabel: 'Forecast Accuracy',
       heroMetrics: [
@@ -370,6 +380,8 @@ export const caseStudies = {
       tech: ['Python', 'scikit-surprise', 'scikit-learn', 'pandas', 'FastAPI', 'React'],
       hasLiveDemo: true,
       demoKey: 'movies',
+      accentColor: 'fuchsia',
+      icon: 'clapperboard',
       comparisonMetricKey: 'accuracy',
       comparisonMetricLabel: 'Rating Accuracy',
       heroMetrics: [

@@ -12,6 +12,7 @@ import SalesLiveDemo from '../components/demos/SalesLiveDemo';
 import MovieLiveDemo from '../components/demos/MovieLiveDemo';
 import ScrollReveal from '../components/ui/ScrollReveal';
 import { getCaseStudy, categories } from '../data/caseStudies';
+import { getTheme, getIcon } from '../lib/projectTheme';
 
 // Each case study that has hasLiveDemo:true also sets demoKey to pick which
 // widget renders — add a new entry here whenever a new project ships its
@@ -34,7 +35,7 @@ function MetricCard({ label, value }) {
   );
 }
 
-function ModelComparisonChart({ data, metricKey = 'rocAuc', metricLabel = 'ROC-AUC' }) {
+function ModelComparisonChart({ data, metricKey = 'rocAuc', metricLabel = 'ROC-AUC', theme }) {
   // Zoom the axis into the range that actually contains the data instead of
   // forcing 0–100 — these models sit within a few points of each other,
   // which is real, meaningful separation (it's the whole evidence for the
@@ -57,7 +58,7 @@ function ModelComparisonChart({ data, metricKey = 'rocAuc', metricLabel = 'ROC-A
         />
         <Bar dataKey={metricKey} name={metricLabel} radius={[6, 6, 0, 0]}>
           {data.map((d, i) => (
-            <Cell key={i} fill={d.chosen ? '#41432d' : '#dfe2bb'} />
+            <Cell key={i} fill={d.chosen ? theme.chartChosen : theme.chartOther} />
           ))}
           <LabelList
             dataKey={metricKey}
@@ -71,7 +72,7 @@ function ModelComparisonChart({ data, metricKey = 'rocAuc', metricLabel = 'ROC-A
   );
 }
 
-function FeatureImportanceChart({ data }) {
+function FeatureImportanceChart({ data, theme }) {
   return (
     <ResponsiveContainer width="100%" height={320}>
       <BarChart
@@ -85,7 +86,7 @@ function FeatureImportanceChart({ data }) {
         <Tooltip formatter={(v) => v.toFixed(3)} contentStyle={{ background: '#fff', border: '1px solid #e3d8c6', borderRadius: 10 }} />
         <Bar dataKey="coefficient" radius={[0, 6, 6, 0]}>
           {data.map((d, i) => (
-            <Cell key={i} fill={d.coefficient >= 0 ? '#b45309' : '#585b3c'} />
+            <Cell key={i} fill={d.coefficient >= 0 ? theme.chartChosen : '#585b3c'} />
           ))}
         </Bar>
       </BarChart>
@@ -144,6 +145,9 @@ export default function CaseStudyDetail() {
     );
   }
 
+  const theme = getTheme(study.accentColor);
+  const Icon = getIcon(study.icon);
+
   return (
     <article className="relative py-28 px-6">
       <div className="max-w-4xl mx-auto">
@@ -159,8 +163,13 @@ export default function CaseStudyDetail() {
 
         {/* Hero */}
         <ScrollReveal>
-          <div className="text-[11px] font-semibold text-primary-700 uppercase tracking-[0.25em] mb-3">
-            {meta?.label} Case Study
+          <div className="flex items-center gap-4 mb-5">
+            <span className={`flex items-center justify-center w-14 h-14 rounded-2xl ${theme.iconBg} text-white shadow-lg ${theme.iconShadow} flex-shrink-0`}>
+              <Icon className="w-7 h-7" strokeWidth={2} />
+            </span>
+            <div className={`text-[11px] font-semibold ${theme.text} uppercase tracking-[0.25em]`}>
+              {meta?.label} Case Study
+            </div>
           </div>
           <h1 className="text-4xl md:text-5xl font-heading font-bold text-black mb-4 tracking-tight leading-[1.05]">
             {study.title}
@@ -186,7 +195,7 @@ export default function CaseStudyDetail() {
                 href={study.live}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="flex items-center gap-2 px-4 py-2 rounded-xl bg-gradient-to-br from-primary-500 to-primary-700 text-white text-sm font-semibold shadow-md shadow-primary-500/25 hover:shadow-lg transition-all"
+                className={`flex items-center gap-2 px-4 py-2 rounded-xl ${theme.button} text-white text-sm font-semibold shadow-md hover:shadow-lg transition-all`}
               >
                 <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" d="M13.5 6H5.25A2.25 2.25 0 003 8.25v10.5A2.25 2.25 0 005.25 21h10.5A2.25 2.25 0 0018 18.75V10.5m-10.5 6L21 3m0 0h-5.25M21 3v5.25" />
@@ -210,7 +219,10 @@ export default function CaseStudyDetail() {
         {study.hasLiveDemo && DEMO_COMPONENTS[study.demoKey] && (
           <ScrollReveal delay={150}>
             <div className="mb-14">
-              <h2 className="text-lg font-heading font-bold text-black mb-1">Try it live</h2>
+              <div className="flex items-center gap-2 mb-1">
+                <Icon className={`w-5 h-5 ${theme.text}`} strokeWidth={2} />
+                <h2 className="text-lg font-heading font-bold text-black">Try it live</h2>
+              </div>
               <p className="text-sm text-zinc-600 mb-4">
                 Build a profile, pick a model, and see the real prediction — not a mockup.
               </p>
@@ -246,6 +258,7 @@ export default function CaseStudyDetail() {
                 data={study.modelComparison}
                 metricKey={study.comparisonMetricKey || 'rocAuc'}
                 metricLabel={study.comparisonMetricLabel || 'ROC-AUC'}
+                theme={theme}
               />
             </div>
           </ScrollReveal>
@@ -265,7 +278,7 @@ export default function CaseStudyDetail() {
             <div className="bg-warm-100/60 border border-black/10 rounded-2xl p-6 mb-8">
               <h2 className="text-lg font-heading font-bold text-black mb-1">What drives the outcome</h2>
               <p className="text-sm text-zinc-600 mb-4">Model coefficients — positive pushes toward the predicted outcome, negative pushes away.</p>
-              <FeatureImportanceChart data={study.featureImportance} />
+              <FeatureImportanceChart data={study.featureImportance} theme={theme} />
             </div>
           </ScrollReveal>
         )}
@@ -288,11 +301,14 @@ export default function CaseStudyDetail() {
         {study.skillsDemonstrated?.length > 0 && (
           <ScrollReveal>
             <div className="bg-black text-white rounded-2xl p-6 md:p-8">
-              <h2 className="text-lg font-heading font-bold mb-4">Skills demonstrated</h2>
+              <div className="flex items-center gap-2 mb-4">
+                <Icon className={`w-5 h-5 ${theme.onDark}`} strokeWidth={2} />
+                <h2 className="text-lg font-heading font-bold">Skills demonstrated</h2>
+              </div>
               <ul className="space-y-3">
                 {study.skillsDemonstrated.map((skill, i) => (
                   <li key={i} className="flex items-start gap-3 text-sm text-zinc-200 leading-relaxed">
-                    <svg className="w-4 h-4 mt-0.5 flex-shrink-0 text-primary-300" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor">
+                    <svg className={`w-4 h-4 mt-0.5 flex-shrink-0 ${theme.onDark}`} fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor">
                       <path strokeLinecap="round" strokeLinejoin="round" d="m4.5 12.75 6 6 9-13.5" />
                     </svg>
                     {skill}
