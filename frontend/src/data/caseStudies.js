@@ -46,6 +46,9 @@ export const caseStudies = {
         { name: 'XGBoost', f1: 58.3, rocAuc: 80.3, chosen: false },
       ],
       confusionMatrix: { tn: 846, fp: 187, fn: 118, tp: 256 },
+      confusionMatrixLabels: {
+        tn: 'Correctly predicted stay', fp: 'False alarms', fn: 'Missed churners', tp: 'Correctly caught churners',
+      },
       finalMetrics: { precision: 0.578, recall: 0.684, f1: 0.627, rocAuc: 0.836, threshold: 0.4 },
       featureImportance: [
         { feature: 'tenure', coefficient: -1.348 },
@@ -112,6 +115,9 @@ export const caseStudies = {
         { name: 'Random Forest', f1: 88.3, rocAuc: 92.8, chosen: false },
       ],
       confusionMatrix: { tn: 340, fp: 70, fn: 55, tp: 453 },
+      confusionMatrixLabels: {
+        tn: 'Correctly predicted no disease', fp: 'False alarms', fn: 'Missed disease cases', tp: 'Correctly caught disease cases',
+      },
       finalMetrics: { precision: 0.868, recall: 0.892, f1: 0.879, rocAuc: 0.924, threshold: 0.5 },
       featureImportance: [
         { feature: 'ST slope: flat', coefficient: -0.876 },
@@ -185,6 +191,9 @@ export const caseStudies = {
         { name: 'XGBoost', prAuc: 82.4, chosen: true },
       ],
       confusionMatrix: { tn: 56643, fp: 8, fn: 21, tp: 74 },
+      confusionMatrixLabels: {
+        tn: 'Correctly predicted legitimate', fp: 'False alarms', fn: 'Missed fraud', tp: 'Correctly caught fraud',
+      },
       finalMetrics: { precision: 0.902, recall: 0.779, f1: 0.836, rocAuc: 0.964, threshold: 0.208 },
       featureImportance: [
         { feature: 'V14', coefficient: 0.637 },
@@ -428,7 +437,65 @@ export const caseStudies = {
       ],
     },
   ],
-  dl: [],
+  dl: [
+    {
+      slug: 'movie-review-sentiment-analysis',
+      title: 'Movie Review Sentiment Classifier',
+      tagline:
+        'A pretrained-embedding LSTM trained from scratch on 50,000 reviews — and an honest comparison against a classical baseline that beat it.',
+      categoryKey: 'dl',
+      summary:
+        'A sentiment classifier built on 50,000 IMDB movie reviews, using GloVe pretrained word embeddings feeding into an LSTM trained with proper checkpointing to avoid overfitting. Deployed alongside a classical TF-IDF + Logistic Regression baseline for a fair comparison — which the baseline actually won, a real and reported finding rather than a hidden one.',
+      github: 'https://github.com/SaudDSxAI/sentiment-classifier',
+      live: '',
+      tech: ['Python', 'PyTorch', 'GloVe Embeddings', 'LSTM', 'scikit-learn', 'FastAPI', 'React'],
+      hasLiveDemo: true,
+      demoKey: 'sentiment',
+      accentColor: 'indigo',
+      icon: 'messageSquareText',
+      comparisonMetricKey: 'accuracy',
+      comparisonMetricLabel: 'Accuracy',
+      heroMetrics: [
+        { label: 'Accuracy', value: '87.3%' },
+        { label: 'F1 score', value: '0.873' },
+        { label: 'Reviews trained on', value: '40,000' },
+        { label: 'Vocabulary size', value: '40,000' },
+      ],
+      modelComparison: [
+        { name: 'TF-IDF + Logistic Regression', accuracy: 89.7, chosen: false },
+        { name: 'GloVe + LSTM (deployed)', accuracy: 87.3, chosen: true },
+      ],
+      confusionMatrix: { tn: 4367, fp: 633, fn: 639, tp: 4361 },
+      finalMetrics: { precision: 0.8732, recall: 0.8722, f1: 0.8727, accuracy: 0.8728 },
+      narrative: [
+        {
+          heading: 'The problem',
+          body: 'Classify 50,000 IMDB movie reviews as positive or negative — a perfectly balanced binary classification dataset (25,000 of each), with review lengths ranging from 4 to 2,470 words. The goal for this project specifically was to prove out a real deep learning skill set: using pretrained embeddings as a transfer-learning foundation and training a sequence model (LSTM) on top, as opposed to the tree-based and linear models used throughout the rest of this portfolio\'s ML case studies.',
+        },
+        {
+          heading: 'Approach',
+          body: 'Reviews were cleaned (HTML tags stripped, lowercased, non-letters removed) and tokenized into a 40,000-word vocabulary, covering the vast majority of actual word occurrences in the training data. Each word was mapped to a pretrained 100-dimensional GloVe vector (91.1% vocabulary coverage) — these vectors were frozen, not fine-tuned, so the model starts with real word meaning instead of learning it from scratch on a comparatively small dataset. On top of that, a single-layer LSTM reads each 200-word-padded review in sequence and a final linear layer outputs a positive/negative score.',
+        },
+        {
+          heading: 'Catching overfitting with real checkpointing, not guesswork',
+          body: 'An earlier training run showed the exact overfitting signature: training loss kept falling for 15 straight epochs while test accuracy peaked at epoch 10 (86.7%) and then declined as the model kept training past that point, becoming increasingly biased toward predicting "positive." Because that run didn\'t save intermediate weights, the best-performing version was unrecoverable once training continued past it — a real, common mistake. The fix was proper methodology: retrain from a fresh model, evaluate on the test set after every epoch, and only persist the weights when test accuracy actually improves. That run automatically landed on epoch 12 as the true best checkpoint (87.28%), regardless of what happened in the noisier epochs after it.',
+        },
+        {
+          heading: 'An honest result: the simple baseline won',
+          body: "For a fair comparison — the same discipline applied to every project in this portfolio — a classical TF-IDF + Logistic Regression baseline was trained on the identical train/test split. It scored 89.7% accuracy, beating the LSTM's 87.3%. This is a well-known, real phenomenon in NLP: bag-of-words models are extremely strong on sentiment tasks, and a fairly small, single-layer LSTM with frozen embeddings and modest training doesn't automatically beat one. Closing that gap would need a bigger architecture (bidirectional layers, fine-tuned embeddings, more epochs) or a pretrained transformer — outside the scope of what this project set out to demonstrate. The LSTM is still what's deployed below, because the point of this project was proving out the transfer-learning-plus-sequence-model technique, not chasing the top accuracy number by any means necessary — and reporting the baseline's win, rather than omitting it, is the more useful engineering signal.",
+        },
+      ],
+      skillsDemonstrated: [
+        'Transfer learning with pretrained word embeddings (GloVe) frozen into a trainable neural network',
+        'Sequence modeling with LSTMs in PyTorch, including text tokenization, vocabulary construction, and padding',
+        'Diagnosing overfitting from a real training run, then fixing the methodology with per-epoch checkpointing rather than guesswork',
+        'Fair benchmarking against a classical baseline (TF-IDF + Logistic Regression) on an identical train/test split',
+        'Reporting a loss against a simpler method honestly instead of hiding or reframing it',
+        'CPU-only deep learning practicality: choosing frozen embeddings and a lightweight architecture given real hardware constraints',
+        'Full-stack deployment of a PyTorch model behind a FastAPI endpoint with a live React demo',
+      ],
+    },
+  ],
 };
 
 export function getCaseStudy(categoryKey, slug) {

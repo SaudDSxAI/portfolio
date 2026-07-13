@@ -1,0 +1,7 @@
+[
+  { "label": "Clearly positive", "text": "This movie was absolutely fantastic, the acting was great and I loved every minute!" },
+  { "label": "Clearly negative", "text": "Terrible film, complete waste of time. Bad acting and a boring plot." },
+  { "label": "Mixed / ambiguous", "text": "It was okay, not great but not terrible either." },
+  { "label": "Strongly negative", "text": "One of the worst movies I have ever seen, I want my money back." },
+  { "label": "Strongly positive", "text": "A masterpiece of modern cinema, beautifully shot and deeply moving." }
+]

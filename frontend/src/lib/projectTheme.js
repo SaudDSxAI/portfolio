@@ -1,5 +1,6 @@
 import {
   Users, HeartPulse, ShieldAlert, Home, TrendingUp, Clapperboard, FolderKanban,
+  MessageSquareText,
 } from 'lucide-react';
 
 // Per-project visual identity — icon + accent color, so each ML case study
@@ -16,6 +17,7 @@ export const PROJECT_ICONS = {
   home: Home,
   trendingUp: TrendingUp,
   clapperboard: Clapperboard,
+  messageSquareText: MessageSquareText,
 };
 
 // Fallback icon for any case study that doesn't set one.
@@ -111,6 +113,21 @@ const THEMES = {
     chartChosen: '#a21caf',
     chartOther: '#f5d0fe',
     onDark: 'text-fuchsia-300',
+  },
+  indigo: {
+    iconBg: 'bg-gradient-to-br from-indigo-500 to-indigo-700',
+    iconShadow: 'shadow-indigo-700/30',
+    badge: 'bg-indigo-100 text-indigo-800 border-indigo-300',
+    hoverBorder: 'hover:border-indigo-500/50',
+    hoverShadow: 'hover:shadow-indigo-500/20',
+    glowFrom: 'group-hover:from-indigo-400/40',
+    glowVia: 'group-hover:via-indigo-500/30',
+    glowTo: 'group-hover:to-indigo-700/40',
+    text: 'text-indigo-700',
+    button: 'bg-gradient-to-br from-indigo-500 to-indigo-700 shadow-indigo-500/25',
+    chartChosen: '#4338ca',
+    chartOther: '#c7d2fe',
+    onDark: 'text-indigo-300',
   },
 };
 

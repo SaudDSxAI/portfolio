@@ -10,6 +10,7 @@ import FraudLiveDemo from '../components/demos/FraudLiveDemo';
 import HouseLiveDemo from '../components/demos/HouseLiveDemo';
 import SalesLiveDemo from '../components/demos/SalesLiveDemo';
 import MovieLiveDemo from '../components/demos/MovieLiveDemo';
+import SentimentLiveDemo from '../components/demos/SentimentLiveDemo';
 import ScrollReveal from '../components/ui/ScrollReveal';
 import { getCaseStudy, categories } from '../data/caseStudies';
 import { getTheme, getIcon } from '../lib/projectTheme';
@@ -24,6 +25,7 @@ const DEMO_COMPONENTS = {
   house: HouseLiveDemo,
   sales: SalesLiveDemo,
   movies: MovieLiveDemo,
+  sentiment: SentimentLiveDemo,
 };
 
 function MetricCard({ label, value }) {
@@ -94,13 +96,20 @@ function FeatureImportanceChart({ data, theme }) {
   );
 }
 
-function ConfusionMatrix({ cm }) {
+function ConfusionMatrix({ cm, labels }) {
   const total = cm.tn + cm.fp + cm.fn + cm.tp;
+  const defaultLabels = {
+    tn: 'Correctly predicted negative',
+    fp: 'False positives',
+    fn: 'False negatives',
+    tp: 'Correctly predicted positive',
+  };
+  const l = { ...defaultLabels, ...labels };
   const cells = [
-    { value: cm.tn, label: 'Correctly predicted stay', tone: 'good' },
-    { value: cm.fp, label: 'False alarms', tone: 'bad' },
-    { value: cm.fn, label: 'Missed churners', tone: 'bad' },
-    { value: cm.tp, label: 'Correctly caught churners', tone: 'good' },
+    { value: cm.tn, label: l.tn, tone: 'good' },
+    { value: cm.fp, label: l.fp, tone: 'bad' },
+    { value: cm.fn, label: l.fn, tone: 'bad' },
+    { value: cm.tp, label: l.tp, tone: 'good' },
   ];
   return (
     <div>
@@ -268,7 +277,7 @@ export default function CaseStudyDetail() {
           <ScrollReveal>
             <div className="bg-warm-100/60 border border-black/10 rounded-2xl p-6 mb-8">
               <h2 className="text-lg font-heading font-bold text-black mb-4">Confusion matrix</h2>
-              <ConfusionMatrix cm={study.confusionMatrix} />
+              <ConfusionMatrix cm={study.confusionMatrix} labels={study.confusionMatrixLabels} />
             </div>
           </ScrollReveal>
         )}

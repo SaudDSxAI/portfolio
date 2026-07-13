@@ -1,0 +1,7 @@
+{
+  "vocab_size": 40000,
+  "embed_dim": 100,
+  "hidden_dim": 64,
+  "max_len": 200,
+  "best_test_accuracy": 0.8728
+}

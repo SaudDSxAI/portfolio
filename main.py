@@ -426,6 +426,11 @@ app.include_router(sales_router)
 from movie_model import router as movie_router
 app.include_router(movie_router)
 
+# Sentiment classifier demo — first Deep Learning case study, PyTorch LSTM
+# with frozen pretrained GloVe embeddings instead of a tabular sklearn model.
+from sentiment_model import router as sentiment_router
+app.include_router(sentiment_router)
+
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
