@@ -43,9 +43,3 @@ export const skills = [
   },
 ];
 
-export const stats = [
-  { label: 'GitHub Repositories', value: '38', icon: '' },
-  { label: 'Projects Built', value: '15+', icon: '' },
-  { label: 'Technologies', value: '30+', icon: '' },
-  { label: 'Production Systems', value: '4+', icon: '' },
-];

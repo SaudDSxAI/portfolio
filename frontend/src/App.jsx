@@ -1,11 +1,14 @@
 import React, { Suspense } from 'react';
 import { Routes, Route } from 'react-router-dom';
-import Navbar from './components/Navbar';
-import Footer from './components/Footer';
 import SiteBackground from './components/ui/SiteBackground';
+import PageTransition from './components/ui/PageTransition';
 import Home from './pages/Home';
 import CategoryPage from './pages/CategoryPage';
 import CaseStudyDetail from './pages/CaseStudyDetail';
+
+const Projects = React.lazy(() => import('./components/Projects'));
+const Skills = React.lazy(() => import('./components/Skills'));
+const Contact = React.lazy(() => import('./components/Contact'));
 
 const ChatWidget = React.lazy(() => import('./components/ChatWidget'));
 
@@ -66,15 +69,39 @@ export default function App() {
   return (
     <div className="min-h-screen text-black antialiased relative">
       <SiteBackground />
-      <Navbar />
       <main>
-        <Routes>
-          <Route path="/" element={<Home />} />
-          <Route path="/:category" element={<CategoryPage />} />
-          <Route path="/:category/:slug" element={<CaseStudyDetail />} />
-        </Routes>
+        <PageTransition>
+          <Routes>
+            <Route path="/" element={<Home />} />
+            <Route
+              path="/projects"
+              element={
+                <Suspense fallback={<div className="h-screen flex items-center justify-center text-zinc-500 opacity-70">Loading...</div>}>
+                  <Projects />
+                </Suspense>
+              }
+            />
+            <Route
+              path="/skills"
+              element={
+                <Suspense fallback={<div className="h-screen flex items-center justify-center text-zinc-500 opacity-70">Loading...</div>}>
+                  <Skills />
+                </Suspense>
+              }
+            />
+            <Route
+              path="/contact"
+              element={
+                <Suspense fallback={<div className="h-screen flex items-center justify-center text-zinc-500 opacity-70">Loading...</div>}>
+                  <Contact />
+                </Suspense>
+              }
+            />
+            <Route path="/:category" element={<CategoryPage />} />
+            <Route path="/:category/:slug" element={<CaseStudyDetail />} />
+          </Routes>
+        </PageTransition>
       </main>
-      <Footer />
       <DeferredChatWidget />
     </div>
   );

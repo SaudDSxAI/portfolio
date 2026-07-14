@@ -1,13 +1,15 @@
+import BackButton from './ui/BackButton';
 import SectionHeading from './SectionHeading';
 import ScrollReveal from './ui/ScrollReveal';
 import { skills } from '../data/projects';
 
 export default function Skills() {
  return (
- <section id="skills" className="relative py-24 px-6 overflow-hidden">
+ <section id="skills" className="relative min-h-screen py-20 px-6 overflow-hidden">
  {/* Background accent */}
  <div className="absolute inset-0 bg-gradient-to-b from-transparent via-warm-100/70 to-transparent pointer-events-none" />
 
+ <BackButton to="/" label="Back home" />
  <div className="relative max-w-6xl mx-auto">
  <SectionHeading
  title="Skills & Expertise"

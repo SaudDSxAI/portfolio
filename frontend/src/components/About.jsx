@@ -1,6 +1,5 @@
 import SectionHeading from './SectionHeading';
 import ScrollReveal from './ui/ScrollReveal';
-import { stats } from '../data/projects';
 
 export default function About() {
  return (
@@ -14,7 +13,7 @@ export default function About() {
  subtitle="AI Engineer & Co-Founder at Oval Labs building production-grade LLM applications and agentic systems."
  />
 
- <div className="grid md:grid-cols-5 gap-12 items-center mb-16">
+ <div className="grid md:grid-cols-5 gap-12 items-center">
  {/* Photo */}
  <ScrollReveal className="md:col-span-2 flex justify-center">
  <div className="relative group">
@@ -38,19 +37,19 @@ export default function About() {
  {/* Bio */}
  <ScrollReveal delay={200} className="md:col-span-3 space-y-5">
  <p className="text-lg text-zinc-800 leading-relaxed">
- I'm <span className="text-black font-semibold">Saud Ahmad</span>, an AI Engineer and Co-Founder of Oval Labs
- specializing in <span className="text-primary-400 font-medium">Large Language Models</span>,{' '}
- <span className="text-primary-400 font-medium">Retrieval-Augmented Generation</span>, and{' '}
- <span className="text-primary-400 font-medium">Agentic AI Systems</span>.
+ I'm <span className="text-black font-semibold">Saud Ahmad</span> — AI Engineer and Co-Founder at Oval Labs.
+ Most of my work is around <span className="text-primary-400 font-medium">Large Language Models</span>,{' '}
+ <span className="text-primary-400 font-medium">Retrieval-Augmented Generation</span> and{' '}
+ <span className="text-primary-400 font-medium">agentic AI systems</span>.
  </p>
  <p className="text-zinc-700 leading-relaxed">
- I have commercial experience shipping production-grade AI systems. I built Nebula — a 
- live multi-tenant SaaS recruitment platform — from scratch, featuring a 3-LLM CV 
- evaluation pipeline and RAG-powered assistants deployed for real clients in the UAE.
+ I've actually shipped production AI, not just prototypes. Built Nebula from scratch — a live
+ multi-tenant SaaS recruitment platform with a 3-LLM CV evaluation pipeline and RAG assistants,
+ running for real clients in the UAE.
  </p>
  <p className="text-zinc-700 leading-relaxed">
- With a hands-on background across the full AI stack using Python, TypeScript, and FastAPI, 
- I am looking to bring this same build-and-ship mentality to client-facing AI engineering.
+ I've worked across the full AI stack — Python, TypeScript, FastAPI — and I'm looking to bring
+ that same build-and-ship attitude to client-facing AI work.
  </p>
 
  {/* Quick Info */}
@@ -74,20 +73,6 @@ export default function About() {
  </div>
  </div>
  </ScrollReveal>
- </div>
-
- {/* Stats */}
- <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
- {stats.map((stat, index) => (
- <ScrollReveal key={stat.label} delay={index * 100}>
- <div className="group relative bg-warm-100/80 border border-black/10 rounded-2xl p-6 text-center hover:border-black/20 hover:shadow-xl hover:shadow-black/10 hover:-translate-y-1 transition-all duration-300">
- <div className="text-3xl md:text-4xl font-heading font-bold text-black mb-2 drop-shadow-md">
- {stat.value}
- </div>
- <div className="text-sm text-zinc-600">{stat.label}</div>
- </div>
- </ScrollReveal>
- ))}
  </div>
  </div>
  </section>

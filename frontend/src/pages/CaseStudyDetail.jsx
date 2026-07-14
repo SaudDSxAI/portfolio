@@ -1,5 +1,5 @@
-import { useParams, useNavigate, Link } from 'react-router-dom';
-import { useEffect } from 'react';
+import { useParams } from 'react-router-dom';
+import BackButton from '../components/ui/BackButton';
 import {
   BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Cell, LabelList,
 } from 'recharts';
@@ -288,21 +288,14 @@ function RulesTable({ rows, theme, columns = DEFAULT_RULE_COLUMNS }) {
 
 export default function CaseStudyDetail() {
   const { category, slug } = useParams();
-  const navigate = useNavigate();
   const study = getCaseStudy(category, slug);
   const meta = categories[category];
-
-  useEffect(() => {
-    window.scrollTo(0, 0);
-  }, [slug]);
 
   if (!study) {
     return (
       <div className="min-h-screen flex flex-col items-center justify-center px-6 text-center">
         <p className="text-zinc-600 mb-4">Case study not found.</p>
-        <Link to={`/${category}`} className="text-primary-700 font-semibold hover:text-primary-900">
-          ← Back to {meta?.label || 'projects'}
-        </Link>
+        <BackButton to={`/${category}`} label={`Back to ${meta?.label || 'projects'}`} />
       </div>
     );
   }
@@ -312,16 +305,8 @@ export default function CaseStudyDetail() {
 
   return (
     <article className="relative py-28 px-6">
+      <BackButton to={`/${category}`} label={`Back to ${meta?.label || 'projects'}`} />
       <div className="max-w-4xl mx-auto">
-        <button
-          onClick={() => navigate(`/${category}`)}
-          className="inline-flex items-center gap-1.5 text-sm text-zinc-600 hover:text-primary-800 transition-colors mb-8"
-        >
-          <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor">
-            <path strokeLinecap="round" strokeLinejoin="round" d="M10.5 19.5 3 12m0 0 7.5-7.5M3 12h18" />
-          </svg>
-          Back to {meta?.label}
-        </button>
 
         {/* Hero */}
         <ScrollReveal>

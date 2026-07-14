@@ -76,3 +76,371 @@ AggregateError [ECONNREFUSED]:
 1:55:42 PM [vite] hmr update /src/index.css, /src/pages/CaseStudyDetail.jsx, /src/components/CaseStudyCard.jsx
 1:56:42 PM [vite] hmr update /src/index.css, /src/pages/CaseStudyDetail.jsx, /src/components/CaseStudyCard.jsx
 2:01:12 PM [vite] hmr update /src/index.css, /src/pages/CategoryPage.jsx, /src/pages/CaseStudyDetail.jsx, /src/components/Projects.jsx
+4:50:53 PM [vite] hmr update /src/components/Hero.jsx, /src/index.css
+4:51:03 PM [vite] hmr update /src/components/Hero.jsx, /src/index.css
+4:51:08 PM [vite] hmr update /src/components/Hero.jsx, /src/index.css
+4:51:13 PM [vite] hmr update /src/components/Hero.jsx, /src/index.css
+4:51:21 PM [vite] hmr update /src/components/Hero.jsx, /src/index.css
+4:51:25 PM [vite] hmr update /src/components/About.jsx, /src/index.css
+4:51:32 PM [vite] hmr update /src/components/About.jsx, /src/index.css
+4:51:40 PM [vite] hmr update /src/components/About.jsx, /src/index.css
+4:51:50 PM [vite] hmr update /src/components/About.jsx, /src/index.css
+4:51:58 PM [vite] hmr update /src/index.css, /src/components/Skills.jsx
+5:02:04 PM [vite] hmr update /src/components/Hero.jsx, /src/index.css
+5:02:32 PM [vite] page reload tailwind.config.js
+5:02:42 PM [vite] hmr update /src/App.jsx, /src/index.css
+5:02:49 PM [vite] hmr update /src/App.jsx, /src/index.css
+5:03:01 PM [vite] hmr update /src/pages/Home.jsx, /src/index.css
+5:03:12 PM [vite] hmr update /src/components/Projects.jsx, /src/index.css
+5:03:22 PM [vite] hmr update /src/components/Skills.jsx, /src/index.css
+5:03:26 PM [vite] hmr update /src/components/Contact.jsx, /src/index.css
+5:03:33 PM [vite] hmr update /src/components/Contact.jsx, /src/index.css
+5:03:41 PM [vite] hmr update /src/App.jsx, /src/index.css
+5:04:13 PM [vite] hmr update /src/index.css
+5:06:06 PM [vite] http proxy error: /health
+AggregateError [ECONNREFUSED]: 
+    at internalConnectMultiple (node:net:1134:18)
+    at afterConnectMultiple (node:net:1715:7)
+5:08:01 PM [vite] http proxy error: /health
+AggregateError [ECONNREFUSED]: 
+    at internalConnectMultiple (node:net:1134:18)
+    at afterConnectMultiple (node:net:1715:7)
+6:05:00 PM [vite] hmr update /src/components/Hero.jsx, /src/index.css
+6:05:03 PM [vite] hmr update /src/components/Hero.jsx, /src/index.css
+6:05:15 PM [vite] hmr update /src/App.jsx, /src/index.css
+6:05:21 PM [vite] hmr update /src/App.jsx, /src/index.css
+6:05:27 PM [vite] hmr update /src/App.jsx, /src/index.css
+6:06:05 PM [vite] hmr update /src/components/CaseStudyCard.jsx, /src/index.css
+6:06:10 PM [vite] hmr update /src/components/CaseStudyCard.jsx, /src/index.css
+6:06:10 PM [vite] Internal server error: /Users/saudahmad/Desktop/portfolio/portfolio/frontend/src/components/CaseStudyCard.jsx: Expected corresponding JSX closing tag for <TransitionLink>. (84:4)
+
+  82 |         </div>
+  83 |       </div>
+> 84 |     </Link>
+     |     ^
+  85 |   );
+  86 | }
+  87 |
+  Plugin: vite:react-babel
+  File: /Users/saudahmad/Desktop/portfolio/portfolio/frontend/src/components/CaseStudyCard.jsx:84:4
+  82 |          </div>
+  83 |        </div>
+  84 |      </Link>
+     |      ^
+  85 |    );
+  86 |  }
+      at constructor (/Users/saudahmad/Desktop/portfolio/portfolio/frontend/node_modules/@babel/parser/lib/index.js:367:19)
+      at JSXParserMixin.raise (/Users/saudahmad/Desktop/portfolio/portfolio/frontend/node_modules/@babel/parser/lib/index.js:6624:19)
+      at JSXParserMixin.jsxParseElementAt (/Users/saudahmad/Desktop/portfolio/portfolio/frontend/node_modules/@babel/parser/lib/index.js:4756:16)
+      at JSXParserMixin.jsxParseElement (/Users/saudahmad/Desktop/portfolio/portfolio/frontend/node_modules/@babel/parser/lib/index.js:4778:17)
+      at JSXParserMixin.parseExprAtom (/Users/saudahmad/Desktop/portfolio/portfolio/frontend/node_modules/@babel/parser/lib/index.js:4788:19)
+      at JSXParserMixin.parseExprSubscripts (/Users/saudahmad/Desktop/portfolio/portfolio/frontend/node_modules/@babel/parser/lib/index.js:11145:23)
+      at JSXParserMixin.parseUpdate (/Users/saudahmad/Desktop/portfolio/portfolio/frontend/node_modules/@babel/parser/lib/index.js:11130:21)
+      at JSXParserMixin.parseMaybeUnary (/Users/saudahmad/Desktop/portfolio/portfolio/frontend/node_modules/@babel/parser/lib/index.js:11110:23)
+      at JSXParserMixin.parseMaybeUnaryOrPrivate (/Users/saudahmad/Desktop/portfolio/portfolio/frontend/node_modules/@babel/parser/lib/index.js:10963:61)
+      at JSXParserMixin.parseExprOps (/Users/saudahmad/Desktop/portfolio/portfolio/frontend/node_modules/@babel/parser/lib/index.js:10968:23)
+      at JSXParserMixin.parseMaybeConditional (/Users/saudahmad/Desktop/portfolio/portfolio/frontend/node_modules/@babel/parser/lib/index.js:10945:23)
+      at JSXParserMixin.parseMaybeAssign (/Users/saudahmad/Desktop/portfolio/portfolio/frontend/node_modules/@babel/parser/lib/index.js:10895:21)
+      at /Users/saudahmad/Desktop/portfolio/portfolio/frontend/node_modules/@babel/parser/lib/index.js:10864:39
+      at JSXParserMixin.allowInAnd (/Users/saudahmad/Desktop/portfolio/portfolio/frontend/node_modules/@babel/parser/lib/index.js:12500:12)
+      at JSXParserMixin.parseMaybeAssignAllowIn (/Users/saudahmad/Desktop/portfolio/portfolio/frontend/node_modules/@babel/parser/lib/index.js:10864:17)
+      at JSXParserMixin.parseMaybeAssignAllowInOrVoidPattern (/Users/saudahmad/Desktop/portfolio/portfolio/frontend/node_modules/@babel/parser/lib/index.js:12567:17)
+      at JSXParserMixin.parseParenAndDistinguishExpression (/Users/saudahmad/Desktop/portfolio/portfolio/frontend/node_modules/@babel/parser/lib/index.js:11747:28)
+      at JSXParserMixin.parseExprAtom (/Users/saudahmad/Desktop/portfolio/portfolio/frontend/node_modules/@babel/parser/lib/index.js:11395:23)
+      at JSXParserMixin.parseExprAtom (/Users/saudahmad/Desktop/portfolio/portfolio/frontend/node_modules/@babel/parser/lib/index.js:4793:20)
+      at JSXParserMixin.parseExprSubscripts (/Users/saudahmad/Desktop/portfolio/portfolio/frontend/node_modules/@babel/parser/lib/index.js:11145:23)
+      at JSXParserMixin.parseUpdate (/Users/saudahmad/Desktop/portfolio/portfolio/frontend/node_modules/@babel/parser/lib/index.js:11130:21)
+      at JSXParserMixin.parseMaybeUnary (/Users/saudahmad/Desktop/portfolio/portfolio/frontend/node_modules/@babel/parser/lib/index.js:11110:23)
+      at JSXParserMixin.parseMaybeUnaryOrPrivate (/Users/saudahmad/Desktop/portfolio/portfolio/frontend/node_modules/@babel/parser/lib/index.js:10963:61)
+      at JSXParserMixin.parseExprOps (/Users/saudahmad/Desktop/portfolio/portfolio/frontend/node_modules/@babel/parser/lib/index.js:10968:23)
+      at JSXParserMixin.parseMaybeConditional (/Users/saudahmad/Desktop/portfolio/portfolio/frontend/node_modules/@babel/parser/lib/index.js:10945:23)
+      at JSXParserMixin.parseMaybeAssign (/Users/saudahmad/Desktop/portfolio/portfolio/frontend/node_modules/@babel/parser/lib/index.js:10895:21)
+      at JSXParserMixin.parseExpressionBase (/Users/saudahmad/Desktop/portfolio/portfolio/frontend/node_modules/@babel/parser/lib/index.js:10848:23)
+      at /Users/saudahmad/Desktop/portfolio/portfolio/frontend/node_modules/@babel/parser/lib/index.js:10844:39
+      at JSXParserMixin.allowInAnd (/Users/saudahmad/Desktop/portfolio/portfolio/frontend/node_modules/@babel/parser/lib/index.js:12495:16)
+      at JSXParserMixin.parseExpression (/Users/saudahmad/Desktop/portfolio/portfolio/frontend/node_modules/@babel/parser/lib/index.js:10844:17)
+      at JSXParserMixin.parseReturnStatement (/Users/saudahmad/Desktop/portfolio/portfolio/frontend/node_modules/@babel/parser/lib/index.js:13218:28)
+      at JSXParserMixin.parseStatementContent (/Users/saudahmad/Desktop/portfolio/portfolio/frontend/node_modules/@babel/parser/lib/index.js:12874:21)
+      at JSXParserMixin.parseStatementLike (/Users/saudahmad/Desktop/portfolio/portfolio/frontend/node_modules/@babel/parser/lib/index.js:12843:17)
+      at JSXParserMixin.parseStatementListItem (/Users/saudahmad/Desktop/portfolio/portfolio/frontend/node_modules/@babel/parser/lib/index.js:12823:17)
+      at JSXParserMixin.parseBlockOrModuleBlockBody (/Users/saudahmad/Desktop/portfolio/portfolio/frontend/node_modules/@babel/parser/lib/index.js:13392:61)
+      at JSXParserMixin.parseBlockBody (/Users/saudahmad/Desktop/portfolio/portfolio/frontend/node_modules/@babel/parser/lib/index.js:13385:10)
+      at JSXParserMixin.parseBlock (/Users/saudahmad/Desktop/portfolio/portfolio/frontend/node_modules/@babel/parser/lib/index.js:13373:10)
+      at JSXParserMixin.parseFunctionBody (/Users/saudahmad/Desktop/portfolio/portfolio/frontend/node_modules/@babel/parser/lib/index.js:12174:24)
+      at JSXParserMixin.parseFunctionBodyAndFinish (/Users/saudahmad/Desktop/portfolio/portfolio/frontend/node_modules/@babel/parser/lib/index.js:12160:10)
+      at /Users/saudahmad/Desktop/portfolio/portfolio/frontend/node_modules/@babel/parser/lib/index.js:13521:12
+      at JSXParserMixin.withSmartMixTopicForbiddingContext (/Users/saudahmad/Desktop/portfolio/portfolio/frontend/node_modules/@babel/parser/lib/index.js:12477:14)
+      at JSXParserMixin.parseFunction (/Users/saudahmad/Desktop/portfolio/portfolio/frontend/node_modules/@babel/parser/lib/index.js:13520:10)
+      at JSXParserMixin.parseExportDefaultExpression (/Users/saudahmad/Desktop/portfolio/portfolio/frontend/node_modules/@babel/parser/lib/index.js:13983:19)
+      at JSXParserMixin.parseExport (/Users/saudahmad/Desktop/portfolio/portfolio/frontend/node_modules/@babel/parser/lib/index.js:13904:25)
+      at JSXParserMixin.parseStatementContent (/Users/saudahmad/Desktop/portfolio/portfolio/frontend/node_modules/@babel/parser/lib/index.js:12954:27)
+      at JSXParserMixin.parseStatementLike (/Users/saudahmad/Desktop/portfolio/portfolio/frontend/node_modules/@babel/parser/lib/index.js:12843:17)
+      at JSXParserMixin.parseModuleItem (/Users/saudahmad/Desktop/portfolio/portfolio/frontend/node_modules/@babel/parser/lib/index.js:12820:17)
+      at JSXParserMixin.parseBlockOrModuleBlockBody (/Users/saudahmad/Desktop/portfolio/portfolio/frontend/node_modules/@babel/parser/lib/index.js:13392:36)
+      at JSXParserMixin.parseBlockBody (/Users/saudahmad/Desktop/portfolio/portfolio/frontend/node_modules/@babel/parser/lib/index.js:13385:10)
+      at JSXParserMixin.parseProgram (/Users/saudahmad/Desktop/portfolio/portfolio/frontend/node_modules/@babel/parser/lib/index.js:12698:10)
+6:06:14 PM [vite] hmr update /src/components/CaseStudyCard.jsx, /src/index.css
+6:06:47 PM [vite] hmr update /src/components/CategoryBrowserCard.jsx, /src/index.css
+6:06:52 PM [vite] hmr update /src/components/CategoryBrowserCard.jsx, /src/index.css
+6:06:52 PM [vite] Internal server error: /Users/saudahmad/Desktop/portfolio/portfolio/frontend/src/components/CategoryBrowserCard.jsx: Expected corresponding JSX closing tag for <TransitionLink>. (88:4)
+
+  86 |         </div>
+  87 |       </div>
+> 88 |     </Link>
+     |     ^
+  89 |   );
+  90 | }
+  91 |
+  Plugin: vite:react-babel
+  File: /Users/saudahmad/Desktop/portfolio/portfolio/frontend/src/components/CategoryBrowserCard.jsx:88:4
+  86 |          </div>
+  87 |        </div>
+  88 |      </Link>
+     |      ^
+  89 |    );
+  90 |  }
+      at constructor (/Users/saudahmad/Desktop/portfolio/portfolio/frontend/node_modules/@babel/parser/lib/index.js:367:19)
+      at JSXParserMixin.raise (/Users/saudahmad/Desktop/portfolio/portfolio/frontend/node_modules/@babel/parser/lib/index.js:6624:19)
+      at JSXParserMixin.jsxParseElementAt (/Users/saudahmad/Desktop/portfolio/portfolio/frontend/node_modules/@babel/parser/lib/index.js:4756:16)
+      at JSXParserMixin.jsxParseElement (/Users/saudahmad/Desktop/portfolio/portfolio/frontend/node_modules/@babel/parser/lib/index.js:4778:17)
+      at JSXParserMixin.parseExprAtom (/Users/saudahmad/Desktop/portfolio/portfolio/frontend/node_modules/@babel/parser/lib/index.js:4788:19)
+      at JSXParserMixin.parseExprSubscripts (/Users/saudahmad/Desktop/portfolio/portfolio/frontend/node_modules/@babel/parser/lib/index.js:11145:23)
+      at JSXParserMixin.parseUpdate (/Users/saudahmad/Desktop/portfolio/portfolio/frontend/node_modules/@babel/parser/lib/index.js:11130:21)
+      at JSXParserMixin.parseMaybeUnary (/Users/saudahmad/Desktop/portfolio/portfolio/frontend/node_modules/@babel/parser/lib/index.js:11110:23)
+      at JSXParserMixin.parseMaybeUnaryOrPrivate (/Users/saudahmad/Desktop/portfolio/portfolio/frontend/node_modules/@babel/parser/lib/index.js:10963:61)
+      at JSXParserMixin.parseExprOps (/Users/saudahmad/Desktop/portfolio/portfolio/frontend/node_modules/@babel/parser/lib/index.js:10968:23)
+      at JSXParserMixin.parseMaybeConditional (/Users/saudahmad/Desktop/portfolio/portfolio/frontend/node_modules/@babel/parser/lib/index.js:10945:23)
+      at JSXParserMixin.parseMaybeAssign (/Users/saudahmad/Desktop/portfolio/portfolio/frontend/node_modules/@babel/parser/lib/index.js:10895:21)
+      at /Users/saudahmad/Desktop/portfolio/portfolio/frontend/node_modules/@babel/parser/lib/index.js:10864:39
+      at JSXParserMixin.allowInAnd (/Users/saudahmad/Desktop/portfolio/portfolio/frontend/node_modules/@babel/parser/lib/index.js:12500:12)
+      at JSXParserMixin.parseMaybeAssignAllowIn (/Users/saudahmad/Desktop/portfolio/portfolio/frontend/node_modules/@babel/parser/lib/index.js:10864:17)
+      at JSXParserMixin.parseMaybeAssignAllowInOrVoidPattern (/Users/saudahmad/Desktop/portfolio/portfolio/frontend/node_modules/@babel/parser/lib/index.js:12567:17)
+      at JSXParserMixin.parseParenAndDistinguishExpression (/Users/saudahmad/Desktop/portfolio/portfolio/frontend/node_modules/@babel/parser/lib/index.js:11747:28)
+      at JSXParserMixin.parseExprAtom (/Users/saudahmad/Desktop/portfolio/portfolio/frontend/node_modules/@babel/parser/lib/index.js:11395:23)
+      at JSXParserMixin.parseExprAtom (/Users/saudahmad/Desktop/portfolio/portfolio/frontend/node_modules/@babel/parser/lib/index.js:4793:20)
+      at JSXParserMixin.parseExprSubscripts (/Users/saudahmad/Desktop/portfolio/portfolio/frontend/node_modules/@babel/parser/lib/index.js:11145:23)
+      at JSXParserMixin.parseUpdate (/Users/saudahmad/Desktop/portfolio/portfolio/frontend/node_modules/@babel/parser/lib/index.js:11130:21)
+      at JSXParserMixin.parseMaybeUnary (/Users/saudahmad/Desktop/portfolio/portfolio/frontend/node_modules/@babel/parser/lib/index.js:11110:23)
+      at JSXParserMixin.parseMaybeUnaryOrPrivate (/Users/saudahmad/Desktop/portfolio/portfolio/frontend/node_modules/@babel/parser/lib/index.js:10963:61)
+      at JSXParserMixin.parseExprOps (/Users/saudahmad/Desktop/portfolio/portfolio/frontend/node_modules/@babel/parser/lib/index.js:10968:23)
+      at JSXParserMixin.parseMaybeConditional (/Users/saudahmad/Desktop/portfolio/portfolio/frontend/node_modules/@babel/parser/lib/index.js:10945:23)
+      at JSXParserMixin.parseMaybeAssign (/Users/saudahmad/Desktop/portfolio/portfolio/frontend/node_modules/@babel/parser/lib/index.js:10895:21)
+      at JSXParserMixin.parseExpressionBase (/Users/saudahmad/Desktop/portfolio/portfolio/frontend/node_modules/@babel/parser/lib/index.js:10848:23)
+      at /Users/saudahmad/Desktop/portfolio/portfolio/frontend/node_modules/@babel/parser/lib/index.js:10844:39
+      at JSXParserMixin.allowInAnd (/Users/saudahmad/Desktop/portfolio/portfolio/frontend/node_modules/@babel/parser/lib/index.js:12495:16)
+      at JSXParserMixin.parseExpression (/Users/saudahmad/Desktop/portfolio/portfolio/frontend/node_modules/@babel/parser/lib/index.js:10844:17)
+      at JSXParserMixin.parseReturnStatement (/Users/saudahmad/Desktop/portfolio/portfolio/frontend/node_modules/@babel/parser/lib/index.js:13218:28)
+      at JSXParserMixin.parseStatementContent (/Users/saudahmad/Desktop/portfolio/portfolio/frontend/node_modules/@babel/parser/lib/index.js:12874:21)
+      at JSXParserMixin.parseStatementLike (/Users/saudahmad/Desktop/portfolio/portfolio/frontend/node_modules/@babel/parser/lib/index.js:12843:17)
+      at JSXParserMixin.parseStatementListItem (/Users/saudahmad/Desktop/portfolio/portfolio/frontend/node_modules/@babel/parser/lib/index.js:12823:17)
+      at JSXParserMixin.parseBlockOrModuleBlockBody (/Users/saudahmad/Desktop/portfolio/portfolio/frontend/node_modules/@babel/parser/lib/index.js:13392:61)
+      at JSXParserMixin.parseBlockBody (/Users/saudahmad/Desktop/portfolio/portfolio/frontend/node_modules/@babel/parser/lib/index.js:13385:10)
+      at JSXParserMixin.parseBlock (/Users/saudahmad/Desktop/portfolio/portfolio/frontend/node_modules/@babel/parser/lib/index.js:13373:10)
+      at JSXParserMixin.parseFunctionBody (/Users/saudahmad/Desktop/portfolio/portfolio/frontend/node_modules/@babel/parser/lib/index.js:12174:24)
+      at JSXParserMixin.parseFunctionBodyAndFinish (/Users/saudahmad/Desktop/portfolio/portfolio/frontend/node_modules/@babel/parser/lib/index.js:12160:10)
+      at /Users/saudahmad/Desktop/portfolio/portfolio/frontend/node_modules/@babel/parser/lib/index.js:13521:12
+      at JSXParserMixin.withSmartMixTopicForbiddingContext (/Users/saudahmad/Desktop/portfolio/portfolio/frontend/node_modules/@babel/parser/lib/index.js:12477:14)
+      at JSXParserMixin.parseFunction (/Users/saudahmad/Desktop/portfolio/portfolio/frontend/node_modules/@babel/parser/lib/index.js:13520:10)
+      at JSXParserMixin.parseExportDefaultExpression (/Users/saudahmad/Desktop/portfolio/portfolio/frontend/node_modules/@babel/parser/lib/index.js:13983:19)
+      at JSXParserMixin.parseExport (/Users/saudahmad/Desktop/portfolio/portfolio/frontend/node_modules/@babel/parser/lib/index.js:13904:25)
+      at JSXParserMixin.parseStatementContent (/Users/saudahmad/Desktop/portfolio/portfolio/frontend/node_modules/@babel/parser/lib/index.js:12954:27)
+      at JSXParserMixin.parseStatementLike (/Users/saudahmad/Desktop/portfolio/portfolio/frontend/node_modules/@babel/parser/lib/index.js:12843:17)
+      at JSXParserMixin.parseModuleItem (/Users/saudahmad/Desktop/portfolio/portfolio/frontend/node_modules/@babel/parser/lib/index.js:12820:17)
+      at JSXParserMixin.parseBlockOrModuleBlockBody (/Users/saudahmad/Desktop/portfolio/portfolio/frontend/node_modules/@babel/parser/lib/index.js:13392:36)
+      at JSXParserMixin.parseBlockBody (/Users/saudahmad/Desktop/portfolio/portfolio/frontend/node_modules/@babel/parser/lib/index.js:13385:10)
+      at JSXParserMixin.parseProgram (/Users/saudahmad/Desktop/portfolio/portfolio/frontend/node_modules/@babel/parser/lib/index.js:12698:10)
+6:06:57 PM [vite] hmr update /src/components/CategoryBrowserCard.jsx, /src/index.css
+6:07:03 PM [vite] hmr update /src/components/Projects.jsx, /src/index.css
+6:07:10 PM [vite] hmr update /src/components/Projects.jsx, /src/index.css
+6:07:16 PM [vite] hmr update /src/components/Skills.jsx, /src/index.css
+6:07:23 PM [vite] hmr update /src/components/Skills.jsx, /src/index.css
+6:07:27 PM [vite] hmr update /src/components/Contact.jsx, /src/index.css
+6:07:33 PM [vite] hmr update /src/components/Contact.jsx, /src/index.css
+6:08:02 PM [vite] hmr update /src/pages/CaseStudyDetail.jsx, /src/index.css
+6:08:11 PM [vite] hmr update /src/pages/CaseStudyDetail.jsx, /src/index.css
+6:08:15 PM [vite] hmr update /src/pages/CaseStudyDetail.jsx, /src/index.css
+6:08:21 PM [vite] hmr update /src/pages/CaseStudyDetail.jsx, /src/index.css
+6:08:31 PM [vite] hmr update /src/pages/CategoryPage.jsx, /src/index.css
+6:08:37 PM [vite] hmr update /src/pages/CategoryPage.jsx, /src/index.css
+6:08:43 PM [vite] hmr update /src/pages/CategoryPage.jsx, /src/index.css
+6:08:49 PM [vite] hmr update /src/components/Hero.jsx, /src/index.css
+6:08:54 PM [vite] hmr update /src/components/Hero.jsx, /src/index.css
+6:09:05 PM [vite] hmr update /src/components/ui/PageTransition.jsx, /src/index.css
+6:09:12 PM [vite] page reload tailwind.config.js
+6:09:21 PM [vite] hmr update /src/index.css
+6:20:35 PM [vite] hmr update /src/components/Hero.jsx, /src/index.css
+6:20:35 PM [vite] Internal server error: Failed to resolve import "./ui/OvalLabsModal" from "src/components/Hero.jsx". Does the file exist?
+  Plugin: vite:import-analysis
+  File: /Users/saudahmad/Desktop/portfolio/portfolio/frontend/src/components/Hero.jsx:3:26
+  18 |  import { useState, useEffect } from "react";
+  19 |  import { useTransitionNavigate } from "../lib/useTransitionNavigate";
+  20 |  import OvalLabsModal from "./ui/OvalLabsModal";
+     |                             ^
+  21 |  const roles = [
+  22 |    "AI/ML Engineer",
+      at TransformPluginContext._formatError (file:///Users/saudahmad/Desktop/portfolio/portfolio/frontend/node_modules/vite/dist/node/chunks/dep-BK3b2jBa.js:49258:41)
+      at TransformPluginContext.error (file:///Users/saudahmad/Desktop/portfolio/portfolio/frontend/node_modules/vite/dist/node/chunks/dep-BK3b2jBa.js:49253:16)
+      at normalizeUrl (file:///Users/saudahmad/Desktop/portfolio/portfolio/frontend/node_modules/vite/dist/node/chunks/dep-BK3b2jBa.js:64307:23)
+      at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+      at async file:///Users/saudahmad/Desktop/portfolio/portfolio/frontend/node_modules/vite/dist/node/chunks/dep-BK3b2jBa.js:64439:39
+      at async Promise.all (index 5)
+      at async TransformPluginContext.transform (file:///Users/saudahmad/Desktop/portfolio/portfolio/frontend/node_modules/vite/dist/node/chunks/dep-BK3b2jBa.js:64366:7)
+      at async PluginContainer.transform (file:///Users/saudahmad/Desktop/portfolio/portfolio/frontend/node_modules/vite/dist/node/chunks/dep-BK3b2jBa.js:49099:18)
+      at async loadAndTransform (file:///Users/saudahmad/Desktop/portfolio/portfolio/frontend/node_modules/vite/dist/node/chunks/dep-BK3b2jBa.js:51978:27)
+      at async viteTransformMiddleware (file:///Users/saudahmad/Desktop/portfolio/portfolio/frontend/node_modules/vite/dist/node/chunks/dep-BK3b2jBa.js:62106:24)
+6:20:41 PM [vite] hmr update /src/index.css, /src/pages/Home.jsx
+6:20:42 PM [vite] Internal server error: Failed to resolve import "./ui/OvalLabsModal" from "src/components/Hero.jsx". Does the file exist?
+  Plugin: vite:import-analysis
+  File: /Users/saudahmad/Desktop/portfolio/portfolio/frontend/src/components/Hero.jsx:3:26
+  18 |  import { useState, useEffect } from "react";
+  19 |  import { useTransitionNavigate } from "../lib/useTransitionNavigate";
+  20 |  import OvalLabsModal from "./ui/OvalLabsModal";
+     |                             ^
+  21 |  const roles = [
+  22 |    "AI/ML Engineer",
+      at TransformPluginContext._formatError (file:///Users/saudahmad/Desktop/portfolio/portfolio/frontend/node_modules/vite/dist/node/chunks/dep-BK3b2jBa.js:49258:41)
+      at TransformPluginContext.error (file:///Users/saudahmad/Desktop/portfolio/portfolio/frontend/node_modules/vite/dist/node/chunks/dep-BK3b2jBa.js:49253:16)
+      at normalizeUrl (file:///Users/saudahmad/Desktop/portfolio/portfolio/frontend/node_modules/vite/dist/node/chunks/dep-BK3b2jBa.js:64307:23)
+      at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+      at async file:///Users/saudahmad/Desktop/portfolio/portfolio/frontend/node_modules/vite/dist/node/chunks/dep-BK3b2jBa.js:64439:39
+      at async Promise.all (index 5)
+      at async TransformPluginContext.transform (file:///Users/saudahmad/Desktop/portfolio/portfolio/frontend/node_modules/vite/dist/node/chunks/dep-BK3b2jBa.js:64366:7)
+      at async PluginContainer.transform (file:///Users/saudahmad/Desktop/portfolio/portfolio/frontend/node_modules/vite/dist/node/chunks/dep-BK3b2jBa.js:49099:18)
+      at async loadAndTransform (file:///Users/saudahmad/Desktop/portfolio/portfolio/frontend/node_modules/vite/dist/node/chunks/dep-BK3b2jBa.js:51978:27)
+6:20:42 PM [vite] Pre-transform error: Failed to resolve import "./ui/OvalLabsModal" from "src/components/Hero.jsx". Does the file exist?
+6:20:51 PM [vite] hmr update /src/index.css, /src/pages/Home.jsx
+6:20:51 PM [vite] Internal server error: Failed to resolve import "./ui/OvalLabsModal" from "src/components/Hero.jsx". Does the file exist?
+  Plugin: vite:import-analysis
+  File: /Users/saudahmad/Desktop/portfolio/portfolio/frontend/src/components/Hero.jsx:3:26
+  18 |  import { useState, useEffect } from "react";
+  19 |  import { useTransitionNavigate } from "../lib/useTransitionNavigate";
+  20 |  import OvalLabsModal from "./ui/OvalLabsModal";
+     |                             ^
+  21 |  const roles = [
+  22 |    "AI/ML Engineer",
+      at TransformPluginContext._formatError (file:///Users/saudahmad/Desktop/portfolio/portfolio/frontend/node_modules/vite/dist/node/chunks/dep-BK3b2jBa.js:49258:41)
+      at TransformPluginContext.error (file:///Users/saudahmad/Desktop/portfolio/portfolio/frontend/node_modules/vite/dist/node/chunks/dep-BK3b2jBa.js:49253:16)
+      at normalizeUrl (file:///Users/saudahmad/Desktop/portfolio/portfolio/frontend/node_modules/vite/dist/node/chunks/dep-BK3b2jBa.js:64307:23)
+      at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+      at async file:///Users/saudahmad/Desktop/portfolio/portfolio/frontend/node_modules/vite/dist/node/chunks/dep-BK3b2jBa.js:64439:39
+      at async Promise.all (index 5)
+      at async TransformPluginContext.transform (file:///Users/saudahmad/Desktop/portfolio/portfolio/frontend/node_modules/vite/dist/node/chunks/dep-BK3b2jBa.js:64366:7)
+      at async PluginContainer.transform (file:///Users/saudahmad/Desktop/portfolio/portfolio/frontend/node_modules/vite/dist/node/chunks/dep-BK3b2jBa.js:49099:18)
+      at async loadAndTransform (file:///Users/saudahmad/Desktop/portfolio/portfolio/frontend/node_modules/vite/dist/node/chunks/dep-BK3b2jBa.js:51978:27)
+6:20:51 PM [vite] Pre-transform error: Failed to resolve import "./ui/OvalLabsModal" from "src/components/Hero.jsx". Does the file exist?
+6:20:58 PM [vite] hmr update /src/index.css, /src/pages/Home.jsx
+6:20:59 PM [vite] Internal server error: Failed to resolve import "./ui/OvalLabsModal" from "src/components/Hero.jsx". Does the file exist?
+  Plugin: vite:import-analysis
+  File: /Users/saudahmad/Desktop/portfolio/portfolio/frontend/src/components/Hero.jsx:3:26
+  18 |  import { useState, useEffect } from "react";
+  19 |  import { useTransitionNavigate } from "../lib/useTransitionNavigate";
+  20 |  import OvalLabsModal from "./ui/OvalLabsModal";
+     |                             ^
+  21 |  const roles = [
+  22 |    "AI/ML Engineer",
+      at TransformPluginContext._formatError (file:///Users/saudahmad/Desktop/portfolio/portfolio/frontend/node_modules/vite/dist/node/chunks/dep-BK3b2jBa.js:49258:41)
+      at TransformPluginContext.error (file:///Users/saudahmad/Desktop/portfolio/portfolio/frontend/node_modules/vite/dist/node/chunks/dep-BK3b2jBa.js:49253:16)
+      at normalizeUrl (file:///Users/saudahmad/Desktop/portfolio/portfolio/frontend/node_modules/vite/dist/node/chunks/dep-BK3b2jBa.js:64307:23)
+      at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+      at async file:///Users/saudahmad/Desktop/portfolio/portfolio/frontend/node_modules/vite/dist/node/chunks/dep-BK3b2jBa.js:64439:39
+      at async Promise.all (index 5)
+      at async TransformPluginContext.transform (file:///Users/saudahmad/Desktop/portfolio/portfolio/frontend/node_modules/vite/dist/node/chunks/dep-BK3b2jBa.js:64366:7)
+      at async PluginContainer.transform (file:///Users/saudahmad/Desktop/portfolio/portfolio/frontend/node_modules/vite/dist/node/chunks/dep-BK3b2jBa.js:49099:18)
+      at async loadAndTransform (file:///Users/saudahmad/Desktop/portfolio/portfolio/frontend/node_modules/vite/dist/node/chunks/dep-BK3b2jBa.js:51978:27)
+6:20:59 PM [vite] Pre-transform error: Failed to resolve import "./ui/OvalLabsModal" from "src/components/Hero.jsx". Does the file exist?
+6:21:04 PM [vite] hmr update /src/index.css, /src/pages/Home.jsx
+6:21:04 PM [vite] Internal server error: Failed to resolve import "./ui/OvalLabsModal" from "src/components/Hero.jsx". Does the file exist?
+  Plugin: vite:import-analysis
+  File: /Users/saudahmad/Desktop/portfolio/portfolio/frontend/src/components/Hero.jsx:3:26
+  18 |  import { useState, useEffect } from "react";
+  19 |  import { useTransitionNavigate } from "../lib/useTransitionNavigate";
+  20 |  import OvalLabsModal from "./ui/OvalLabsModal";
+     |                             ^
+  21 |  const roles = [
+  22 |    "AI/ML Engineer",
+      at TransformPluginContext._formatError (file:///Users/saudahmad/Desktop/portfolio/portfolio/frontend/node_modules/vite/dist/node/chunks/dep-BK3b2jBa.js:49258:41)
+      at TransformPluginContext.error (file:///Users/saudahmad/Desktop/portfolio/portfolio/frontend/node_modules/vite/dist/node/chunks/dep-BK3b2jBa.js:49253:16)
+      at normalizeUrl (file:///Users/saudahmad/Desktop/portfolio/portfolio/frontend/node_modules/vite/dist/node/chunks/dep-BK3b2jBa.js:64307:23)
+      at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+      at async file:///Users/saudahmad/Desktop/portfolio/portfolio/frontend/node_modules/vite/dist/node/chunks/dep-BK3b2jBa.js:64439:39
+      at async Promise.all (index 5)
+      at async TransformPluginContext.transform (file:///Users/saudahmad/Desktop/portfolio/portfolio/frontend/node_modules/vite/dist/node/chunks/dep-BK3b2jBa.js:64366:7)
+      at async PluginContainer.transform (file:///Users/saudahmad/Desktop/portfolio/portfolio/frontend/node_modules/vite/dist/node/chunks/dep-BK3b2jBa.js:49099:18)
+      at async loadAndTransform (file:///Users/saudahmad/Desktop/portfolio/portfolio/frontend/node_modules/vite/dist/node/chunks/dep-BK3b2jBa.js:51978:27)
+6:21:04 PM [vite] Pre-transform error: Failed to resolve import "./ui/OvalLabsModal" from "src/components/Hero.jsx". Does the file exist?
+6:21:20 PM [vite] hmr update /src/index.css, /src/pages/Home.jsx
+6:21:33 PM [vite] hmr update /src/App.jsx, /src/index.css
+6:21:38 PM [vite] hmr update /src/App.jsx, /src/index.css
+6:21:46 PM [vite] hmr update /src/App.jsx, /src/index.css
+6:22:01 PM [vite] hmr update /src/components/Projects.jsx, /src/index.css
+6:22:15 PM [vite] hmr update /src/components/Projects.jsx, /src/index.css
+6:22:24 PM [vite] hmr update /src/components/Skills.jsx, /src/index.css
+6:22:33 PM [vite] hmr update /src/components/Skills.jsx, /src/index.css
+6:22:43 PM [vite] hmr update /src/components/Contact.jsx, /src/index.css
+6:22:54 PM [vite] hmr update /src/components/Contact.jsx, /src/index.css
+6:23:23 PM [vite] hmr update /src/pages/CategoryPage.jsx, /src/index.css
+6:23:56 PM [vite] hmr update /src/pages/CaseStudyDetail.jsx, /src/index.css
+6:24:20 PM [vite] hmr update /src/pages/CaseStudyDetail.jsx, /src/index.css
+6:24:39 PM [vite] hmr update /src/components/ui/PageTransition.jsx, /src/index.css
+6:25:50 PM [vite] http proxy error: /api/sentiment/examples
+AggregateError [ECONNREFUSED]: 
+    at internalConnectMultiple (node:net:1134:18)
+    at afterConnectMultiple (node:net:1715:7)
+6:26:10 PM [vite] http proxy error: /api/sentiment/examples
+AggregateError [ECONNREFUSED]: 
+    at internalConnectMultiple (node:net:1134:18)
+    at afterConnectMultiple (node:net:1715:7)
+6:32:54 PM [vite] hmr update /src/components/ui/OvalLabsModal.jsx, /src/index.css
+6:33:07 PM [vite] hmr update /src/components/ui/OvalLabsModal.jsx, /src/index.css
+6:33:37 PM [vite] hmr update /src/components/Hero.jsx, /src/index.css
+6:42:20 PM [vite] hmr update /src/components/Hero.jsx, /src/index.css
+6:42:30 PM [vite] hmr update /src/components/Hero.jsx, /src/index.css
+6:42:38 PM [vite] hmr update /src/components/Hero.jsx, /src/index.css
+6:43:29 PM [vite] hmr update /src/components/Contact.jsx, /src/index.css
+6:43:50 PM [vite] hmr update /src/components/Contact.jsx, /src/index.css
+6:44:02 PM [vite] http proxy error: /health
+AggregateError [ECONNREFUSED]: 
+    at internalConnectMultiple (node:net:1134:18)
+    at afterConnectMultiple (node:net:1715:7)
+6:47:09 PM [vite] hmr update /src/components/Hero.jsx, /src/index.css
+6:47:32 PM [vite] hmr update /src/components/Hero.jsx, /src/index.css
+6:48:34 PM [vite] http proxy error: /health
+AggregateError [ECONNREFUSED]: 
+    at internalConnectMultiple (node:net:1134:18)
+    at afterConnectMultiple (node:net:1715:7)
+6:49:00 PM [vite] http proxy error: /health
+AggregateError [ECONNREFUSED]: 
+    at internalConnectMultiple (node:net:1134:18)
+    at afterConnectMultiple (node:net:1715:7)
+6:55:52 PM [vite] hmr update /src/components/ui/OvalLabsModal.jsx, /src/index.css
+6:56:05 PM [vite] hmr update /src/components/Hero.jsx, /src/index.css
+7:00:30 PM [vite] hmr update /src/pages/CategoryPage.jsx, /src/index.css
+7:06:26 PM [vite] http proxy error: /api/sentiment/examples
+AggregateError [ECONNREFUSED]: 
+    at internalConnectMultiple (node:net:1134:18)
+    at afterConnectMultiple (node:net:1715:7)
+7:06:46 PM [vite] http proxy error: /api/sentiment/examples
+AggregateError [ECONNREFUSED]: 
+    at internalConnectMultiple (node:net:1134:18)
+    at afterConnectMultiple (node:net:1715:7)
+7:09:34 PM [vite] hmr update /src/components/Hero.jsx, /src/index.css
+7:10:41 PM [vite] http proxy error: /api/churn/models
+AggregateError [ECONNREFUSED]: 
+    at internalConnectMultiple (node:net:1134:18)
+    at afterConnectMultiple (node:net:1715:7)
+7:11:01 PM [vite] http proxy error: /api/churn/models
+AggregateError [ECONNREFUSED]: 
+    at internalConnectMultiple (node:net:1134:18)
+    at afterConnectMultiple (node:net:1715:7)
+7:30:17 PM [vite] http proxy error: /health
+AggregateError [ECONNREFUSED]: 
+    at internalConnectMultiple (node:net:1134:18)
+    at afterConnectMultiple (node:net:1715:7)
+7:30:20 PM [vite] http proxy error: /health
+AggregateError [ECONNREFUSED]: 
+    at internalConnectMultiple (node:net:1134:18)
+    at afterConnectMultiple (node:net:1715:7)
+7:30:23 PM [vite] http proxy error: /health
+AggregateError [ECONNREFUSED]: 
+    at internalConnectMultiple (node:net:1134:18)
+    at afterConnectMultiple (node:net:1715:7)

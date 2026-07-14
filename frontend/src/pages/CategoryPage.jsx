@@ -1,5 +1,5 @@
-import { useParams, Link } from 'react-router-dom';
-import { useEffect } from 'react';
+import { useParams } from 'react-router-dom';
+import BackButton from '../components/ui/BackButton';
 import SectionHeading from '../components/SectionHeading';
 import CaseStudyCard from '../components/CaseStudyCard';
 import ScrollReveal from '../components/ui/ScrollReveal';
@@ -10,34 +10,19 @@ export default function CategoryPage() {
   const meta = categories[category];
   const studies = caseStudies[category] || [];
 
-  useEffect(() => {
-    window.scrollTo(0, 0);
-  }, [category]);
-
   if (!meta) {
     return (
       <div className="min-h-screen flex flex-col items-center justify-center px-6 text-center">
         <p className="text-zinc-600 mb-4">Category not found.</p>
-        <Link to="/" className="text-primary-700 font-semibold hover:text-primary-900">
-          ← Back home
-        </Link>
+        <BackButton to="/projects" label="Back to Projects" />
       </div>
     );
   }
 
   return (
     <section className="relative py-32 px-6 min-h-screen">
+      <BackButton to="/projects" label="Back to Projects" />
       <div className="max-w-6xl mx-auto">
-        <Link
-          to="/"
-          className="inline-flex items-center gap-1.5 text-sm text-zinc-600 hover:text-primary-800 transition-colors mb-8"
-        >
-          <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor">
-            <path strokeLinecap="round" strokeLinejoin="round" d="M10.5 19.5 3 12m0 0 7.5-7.5M3 12h18" />
-          </svg>
-          Back home
-        </Link>
-
         <SectionHeading eyebrow={meta.eyebrow} title={meta.label} subtitle={meta.subtitle} align="left" />
 
         {studies.length > 0 ? (

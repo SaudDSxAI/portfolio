@@ -53,7 +53,6 @@ section {
 /* Performance: skip rendering off-screen sections until they enter the
    viewport. `contain-intrinsic-size` reserves the right amount of layout
    space so the scrollbar doesn't jump. No visual change. */
-#about,
 #projects,
 #skills,
 #contact {
@@ -67,4 +66,40 @@ section {
   will-change: transform;
   transform: translateZ(0);
   backface-visibility: hidden;
+}
+
+/* Page-to-page navigation transition (native View Transitions API, see
+   useTransitionNavigate.js). The browser snapshots the page before and
+   after the navigation and cross-fades between them using these keyframes
+   — a real animated swap between Landing/Projects/Skills/Contact/case
+   studies, not a CSS class faking it. No-op in browsers without support
+   (e.g. Firefox), which just get an instant swap. */
+::view-transition-old(root) {
+  animation: view-transition-exit 0.35s cubic-bezier(0.4, 0, 1, 1) both;
+}
+
+::view-transition-new(root) {
+  animation: view-transition-enter 0.4s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+@keyframes view-transition-exit {
+  from {
+    opacity: 1;
+    transform: scale(1);
+  }
+  to {
+    opacity: 0;
+    transform: scale(0.98);
+  }
+}
+
+@keyframes view-transition-enter {
+  from {
+    opacity: 0;
+    transform: scale(1.015) translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
 }

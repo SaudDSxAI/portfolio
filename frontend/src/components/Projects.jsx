@@ -1,3 +1,4 @@
+import BackButton from './ui/BackButton';
 import SectionHeading from './SectionHeading';
 import CategoryBrowserCard from './CategoryBrowserCard';
 import ScrollReveal from './ui/ScrollReveal';
@@ -12,7 +13,8 @@ export default function Projects() {
   const categoryKeys = Object.keys(categories);
 
   return (
-    <section id="projects" className="relative py-24 px-6">
+    <section id="projects" className="relative min-h-screen py-20 px-6">
+      <BackButton to="/" label="Back home" />
       <div className="relative max-w-6xl mx-auto">
         <SectionHeading
           eyebrow="Selected Work"

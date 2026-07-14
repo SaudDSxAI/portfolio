@@ -1,4 +1,4 @@
-import { Link } from 'react-router-dom';
+import TransitionLink from './ui/TransitionLink';
 import { BarChart, Bar, ResponsiveContainer, Cell } from 'recharts';
 import TechBadge from './ui/TechBadge';
 import { getTheme, getIcon } from '../lib/projectTheme';
@@ -29,7 +29,7 @@ export default function CaseStudyCard({ study, categoryKey, index = 0 }) {
   const metricKey = study.comparisonMetricKey || 'rocAuc';
 
   return (
-    <Link
+    <TransitionLink
       to={`/${categoryKey}/${study.slug}`}
       className="group relative rounded-2xl overflow-hidden transition-all duration-500 hover:-translate-y-2 h-full block"
       style={{ animationDelay: `${index * 100}ms` }}
@@ -81,6 +81,6 @@ export default function CaseStudyCard({ study, categoryKey, index = 0 }) {
           </div>
         </div>
       </div>
-    </Link>
+    </TransitionLink>
   );
 }

@@ -57,6 +57,215 @@ def load_system_prompt():
 
 SYSTEM_PROMPT = load_system_prompt()
 
+
+# ================= PROJECT TOOL-CALLING =================
+# Source of truth for every project the AI assistant can talk about is
+# frontend/src/data/caseStudies.js — the same data the actual Projects
+# pages render. `scripts/export_projects.mjs` exports it to this JSON file
+# (index + full per-project pointers). Re-run that script whenever a
+# project is added/edited on the site; this file is re-read on every chat
+# request (same hot-reload pattern as the system prompt), so a fresh
+# export takes effect immediately with no server restart.
+PROJECTS_DATA_FILE = Path("data") / "projects.json"
+
+
+def load_projects_data() -> Dict[str, Any]:
+    """Load the exported project index + pointers. Never raises — a missing
+    or malformed file just means the assistant temporarily has no project
+    detail to pull from, not a broken chat."""
+    if not PROJECTS_DATA_FILE.exists():
+        print(f"⚠️ {PROJECTS_DATA_FILE} not found — run scripts/export_projects.mjs")
+        return {"index": [], "pointers": {}}
+    try:
+        with open(PROJECTS_DATA_FILE, "r", encoding="utf-8") as f:
+            data = json.load(f)
+        return {"index": data.get("index", []), "pointers": data.get("pointers", {})}
+    except Exception as e:
+        print(f"⚠️ Failed to load {PROJECTS_DATA_FILE}: {e}")
+        return {"index": [], "pointers": {}}
+
+
+def format_project_index(index: List[Dict[str, Any]]) -> str:
+    """Render the compact project index injected into every system prompt so
+    the model always knows what projects exist and their exact slugs, even
+    before it decides to call get_project_details for full detail."""
+    if not index:
+        return "PROJECT INDEX: (none currently loaded)"
+    lines = ["PROJECT INDEX (slug — title (category): tagline):"]
+    for item in index:
+        lines.append(
+            f"- {item.get('slug')} — {item.get('title')} ({item.get('categoryLabel')}): {item.get('tagline')}"
+        )
+    return "\n".join(lines)
+
+
+def get_project_details(slug: str) -> str:
+    """Tool implementation: returns one project's full write-up by slug."""
+    data = load_projects_data()
+    pointer = data["pointers"].get(slug)
+    if pointer:
+        return pointer
+    available = ", ".join(data["pointers"].keys()) or "(none loaded)"
+    return f"No project found with slug '{slug}'. Available slugs: {available}"
+
+
+PROJECT_TOOLS = [
+    {
+        "type": "function",
+        "function": {
+            "name": "get_project_details",
+            "description": (
+                "Get the complete write-up for one specific project — full narrative, "
+                "tech stack, real metrics, and skills demonstrated. Call this with the "
+                "project's exact slug from the PROJECT INDEX whenever the user asks about "
+                "a specific project by name, or asks something a specific project would "
+                "answer better than a generic summary."
+            ),
+            "parameters": {
+                "type": "object",
+                "properties": {
+                    "slug": {
+                        "type": "string",
+                        "description": "The project's exact slug from the PROJECT INDEX, e.g. 'coter-global-recruitment-agent'",
+                    }
+                },
+                "required": ["slug"],
+            },
+        },
+    }
+]
+
+
+def _execute_tool_call(name: str, arguments_json: str) -> str:
+    """Dispatch a single tool call by name. Arguments arrive as a raw JSON
+    string from the OpenAI API (streaming or not) — parsed defensively since
+    a partially-formed or malformed call should never crash the chat."""
+    try:
+        args = json.loads(arguments_json) if arguments_json else {}
+    except json.JSONDecodeError:
+        args = {}
+
+    if name == "get_project_details":
+        return get_project_details(args.get("slug", ""))
+    return f"Unknown tool: {name}"
+
+
+def run_chat_completion(messages: List[dict], max_tool_rounds: int = 3) -> str:
+    """Non-streaming tool-calling loop used by /chat: ask the model, and if
+    it wants a project's details, fetch them and ask again, up to a few
+    rounds, until it produces a final text answer."""
+    working_messages = list(messages)
+    for _ in range(max_tool_rounds):
+        response = openai_client.chat.completions.create(
+            model="gpt-4o-mini",
+            messages=working_messages,
+            tools=PROJECT_TOOLS,
+            tool_choice="auto",
+            temperature=0.7,
+            max_tokens=1000,
+        )
+        choice = response.choices[0].message
+
+        if choice.tool_calls:
+            working_messages.append({
+                "role": "assistant",
+                "content": choice.content or "",
+                "tool_calls": [
+                    {
+                        "id": tc.id,
+                        "type": "function",
+                        "function": {"name": tc.function.name, "arguments": tc.function.arguments},
+                    }
+                    for tc in choice.tool_calls
+                ],
+            })
+            for tc in choice.tool_calls:
+                result = _execute_tool_call(tc.function.name, tc.function.arguments)
+                working_messages.append({
+                    "role": "tool",
+                    "tool_call_id": tc.id,
+                    "content": result,
+                })
+            continue  # let the model use the tool result
+
+        return choice.content or ""
+
+    return (
+        "I looked into a few things but couldn't quite pull it together — "
+        "could you rephrase, or ask about one project at a time?"
+    )
+
+
+def stream_chat_completion(messages: List[dict], max_tool_rounds: int = 3):
+    """Streaming counterpart of run_chat_completion, yielding {'type': 'content',
+    'content': str} chunks for /chat/stream to forward as SSE events. Content
+    deltas are forwarded live as they arrive; if a round turns out to be a
+    tool call instead (the normal case — OpenAI's function-calling rounds
+    carry no real content), nothing meaningful gets shown early, the tool
+    is executed, and the loop asks the model again for the real answer."""
+    working_messages = list(messages)
+    for round_num in range(max_tool_rounds):
+        stream = openai_client.chat.completions.create(
+            model="gpt-4o-mini",
+            messages=working_messages,
+            tools=PROJECT_TOOLS,
+            tool_choice="auto",
+            temperature=0.7,
+            max_tokens=1000,
+            stream=True,
+        )
+
+        tool_call_chunks: Dict[int, Dict[str, str]] = {}
+        saw_tool_call = False
+
+        for chunk in stream:
+            delta = chunk.choices[0].delta
+
+            if delta.tool_calls:
+                saw_tool_call = True
+                for tc_delta in delta.tool_calls:
+                    slot = tool_call_chunks.setdefault(tc_delta.index, {"id": "", "name": "", "arguments": ""})
+                    if tc_delta.id:
+                        slot["id"] = tc_delta.id
+                    if tc_delta.function:
+                        if tc_delta.function.name:
+                            slot["name"] += tc_delta.function.name
+                        if tc_delta.function.arguments:
+                            slot["arguments"] += tc_delta.function.arguments
+
+            if delta.content and not saw_tool_call:
+                yield {"type": "content", "content": delta.content}
+
+        if saw_tool_call:
+            tool_calls_sorted = [tool_call_chunks[i] for i in sorted(tool_call_chunks.keys())]
+            working_messages.append({
+                "role": "assistant",
+                "content": "",
+                "tool_calls": [
+                    {
+                        "id": tc["id"],
+                        "type": "function",
+                        "function": {"name": tc["name"], "arguments": tc["arguments"]},
+                    }
+                    for tc in tool_calls_sorted
+                ],
+            })
+            for tc in tool_calls_sorted:
+                result = _execute_tool_call(tc["name"], tc["arguments"])
+                working_messages.append({
+                    "role": "tool",
+                    "tool_call_id": tc["id"],
+                    "content": result,
+                })
+            continue  # next round: model answers using the tool result
+
+        return  # finished a normal content round — done
+
+    yield {
+        "type": "content",
+        "content": "I looked into a few things but couldn't quite pull it together — could you rephrase, or ask about one project at a time?",
+    }
+
 # ================= BACKGROUND SERVICES =================
 class DataHandler(FileSystemEventHandler):
     """Watch for file changes in data directory"""
@@ -510,9 +719,11 @@ def get_or_create_session(session_id: Optional[str] = None) -> str:
     return new_id
 
 
-def build_messages(history: List, context: str) -> List[dict]:
+def build_messages(history: List) -> List[dict]:
     current_system_prompt = load_system_prompt()
-    messages = [{"role": "system", "content": f"{current_system_prompt}\n\n--- CONTEXT FROM EMBEDDINGS ---\n{context}\n--- END CONTEXT ---"}]
+    project_index_text = format_project_index(load_projects_data()["index"])
+    full_system = f"{current_system_prompt}\n\n---\n\n{project_index_text}"
+    messages = [{"role": "system", "content": full_system}]
     for msg in history:
         if isinstance(msg, HumanMessage):
             messages.append({"role": "user", "content": msg.content})
@@ -608,21 +819,13 @@ async def chat(request: ChatRequest):
         session_id = get_or_create_session(request.session_id)
         history = sessions[session_id]
         history.append(HumanMessage(content=request.message))
-        
-        context = search_collections(request.message)
-        messages = build_messages(history, context)
-        
-        response = openai_client.chat.completions.create(
-            model="gpt-4o-mini",
-            messages=messages,
-            temperature=0.7,
-            max_tokens=1000
-        )
-        
-        ai_response = response.choices[0].message.content
+
+        messages = build_messages(history)
+        ai_response = run_chat_completion(messages)
+
         history.append(AIMessage(content=ai_response))
         sessions[session_id] = history
-        
+
         return ChatResponse(response=ai_response, session_id=session_id)
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
@@ -641,8 +844,7 @@ async def chat_stream(request: ChatRequest):
         session_id = get_or_create_session(request.session_id)
         history = sessions[session_id]
         history.append(HumanMessage(content=request.message))
-        context = search_collections(request.message)
-        messages = build_messages(history, context)
+        messages = build_messages(history)
     except Exception as e:
         import traceback
         traceback.print_exc()
@@ -662,19 +864,10 @@ async def chat_stream(request: ChatRequest):
                 yield f"data: {json.dumps({'type': 'error', 'error': 'OPENAI_API_KEY is not set on the server'})}\n\n"
                 return
 
-            stream = openai_client.chat.completions.create(
-                model="gpt-4o-mini",
-                messages=messages,
-                temperature=0.7,
-                max_tokens=1000,
-                stream=True
-            )
-
-            for chunk in stream:
-                if chunk.choices[0].delta.content:
-                    content = chunk.choices[0].delta.content
-                    full_response += content
-                    yield f"data: {json.dumps({'type': 'content', 'content': content})}\n\n"
+            for event in stream_chat_completion(messages):
+                if event["type"] == "content" and event["content"]:
+                    full_response += event["content"]
+                    yield f"data: {json.dumps(event)}\n\n"
 
             history.append(AIMessage(content=full_response))
             sessions[session_id] = history

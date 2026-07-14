@@ -1,4 +1,4 @@
-import { Link } from 'react-router-dom';
+import TransitionLink from './ui/TransitionLink';
 import { BarChart, Bar, ResponsiveContainer, Cell } from 'recharts';
 
 // Icons per category key — add one here when a new category is introduced.
@@ -52,7 +52,7 @@ export default function CategoryBrowserCard({ categoryKey, meta, studies }) {
   const isEmpty = count === 0;
 
   return (
-    <Link
+    <TransitionLink
       to={`/${categoryKey}`}
       className="group relative rounded-2xl overflow-hidden transition-all duration-500 hover:-translate-y-2 block h-full"
     >
@@ -85,6 +85,6 @@ export default function CategoryBrowserCard({ categoryKey, meta, studies }) {
           </span>
         </div>
       </div>
-    </Link>
+    </TransitionLink>
   );
 }

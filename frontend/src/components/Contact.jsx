@@ -1,3 +1,4 @@
+import BackButton from './ui/BackButton';
 import SectionHeading from './SectionHeading';
 import ScrollReveal from './ui/ScrollReveal';
 
@@ -13,8 +14,9 @@ const contactInfo = [
  ),
  },
  {
- label: 'Phone',
+ label: 'Phone & WhatsApp',
  value: '+92 346 2936273',
+ note: 'Also reachable on WhatsApp',
  href: 'tel:+923462936273',
  icon: (
  <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor">
@@ -47,27 +49,35 @@ const socialLinks = [
 
 export default function Contact() {
  return (
- <section id="contact" className="relative py-24 px-6">
+ <section id="contact" className="relative min-h-screen py-24 px-6 overflow-hidden">
+ {/* Subtle background accent, matching the rest of the site */}
+ <div className="absolute inset-0 bg-gradient-to-b from-transparent via-warm-100/70 to-transparent pointer-events-none" />
+
+ <BackButton to="/" label="Back home" />
  <div className="relative max-w-4xl mx-auto text-center">
  <SectionHeading
+ eyebrow="Get In Touch"
  title="Let's Build Something Together"
  subtitle="Looking for an AI engineer who can deliver production systems? Let's talk."
  />
 
  {/* Contact Cards */}
- <div className="grid sm:grid-cols-2 gap-4 mb-12">
+ <div className="grid sm:grid-cols-2 gap-5 mb-14">
  {contactInfo.map((item, index) => (
  <ScrollReveal key={item.label} delay={index * 100}>
  <a
  href={item.href}
- className="group flex items-center gap-4 p-5 bg-warm-100/85 border border-black/10 rounded-2xl hover:border-black/20 hover:bg-warm-100 transition-all duration-300"
+ className="group relative flex items-center gap-4 p-6 bg-warm-100/90 border border-black/10 rounded-2xl hover:border-primary-500/30 hover:shadow-xl hover:shadow-primary-500/10 hover:-translate-y-1 transition-all duration-300 h-full"
  >
- <div className="w-12 h-12 bg-black/10 border border-black/20 rounded-xl flex items-center justify-center text-black group-hover:scale-110 transition-transform duration-300">
+ <div className="w-14 h-14 shrink-0 bg-gradient-to-br from-primary-500 to-primary-700 rounded-2xl flex items-center justify-center text-white shadow-md shadow-primary-700/25 group-hover:scale-110 transition-transform duration-300">
  {item.icon}
  </div>
- <div className="text-left">
- <div className="text-xs text-zinc-500 uppercase tracking-wider font-medium">{item.label}</div>
- <div className="text-black font-medium">{item.value}</div>
+ <div className="text-left min-w-0">
+ <div className="text-xs text-zinc-500 uppercase tracking-wider font-semibold mb-1">{item.label}</div>
+ <div className="text-black font-semibold text-lg truncate">{item.value}</div>
+ {item.note && (
+ <div className="text-xs text-primary-700 font-medium mt-1">{item.note}</div>
+ )}
  </div>
  </a>
  </ScrollReveal>
@@ -76,6 +86,8 @@ export default function Contact() {
 
  {/* Social Links */}
  <ScrollReveal delay={200}>
+ <div className="flex flex-col items-center gap-4">
+ <span className="text-xs uppercase tracking-[0.2em] text-zinc-500 font-semibold">Find me elsewhere</span>
  <div className="flex justify-center gap-4">
  {socialLinks.map((link) => (
  <a
@@ -83,27 +95,13 @@ export default function Contact() {
  href={link.href}
  target="_blank"
  rel="noopener noreferrer"
- className="group w-12 h-12 bg-warm-100 border border-black/10 rounded-xl flex items-center justify-center text-zinc-700 hover:text-black hover:bg-black/10 hover:border-black/20 transition-all duration-300 hover:scale-110"
+ className="group w-14 h-14 bg-warm-100/90 border border-black/10 rounded-2xl flex items-center justify-center text-zinc-700 hover:text-white hover:bg-gradient-to-br hover:from-primary-500 hover:to-primary-700 hover:border-primary-600/40 hover:shadow-lg hover:shadow-primary-500/20 transition-all duration-300 hover:-translate-y-1"
  title={link.label}
  >
  {link.icon}
  </a>
  ))}
  </div>
- </ScrollReveal>
-
- {/* CTA */}
- <ScrollReveal delay={300}>
- <div className="mt-12 p-8 bg-black border border-black rounded-2xl">
- <p className="text-zinc-200 mb-4">
- Or just ask my AI assistant — it knows everything about my work!
- </p>
- <button
- onClick={() => window.dispatchEvent(new Event('openChat'))}
- className="px-6 py-3 bg-black hover:bg-zinc-800 text-white font-semibold rounded-xl transition-all duration-200 shadow-lg shadow-primary-900/30 active:scale-95"
- >
- Ask AI About Me
- </button>
  </div>
  </ScrollReveal>
  </div>
