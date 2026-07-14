@@ -11,6 +11,8 @@ import HouseLiveDemo from '../components/demos/HouseLiveDemo';
 import SalesLiveDemo from '../components/demos/SalesLiveDemo';
 import MovieLiveDemo from '../components/demos/MovieLiveDemo';
 import SentimentLiveDemo from '../components/demos/SentimentLiveDemo';
+import SmartNestLiveDemo from '../components/demos/SmartNestLiveDemo';
+import AgenticChatDemo from '../components/demos/AgenticChatDemo';
 import ScrollReveal from '../components/ui/ScrollReveal';
 import { getCaseStudy, categories } from '../data/caseStudies';
 import { getTheme, getIcon } from '../lib/projectTheme';
@@ -26,6 +28,8 @@ const DEMO_COMPONENTS = {
   sales: SalesLiveDemo,
   movies: MovieLiveDemo,
   sentiment: SentimentLiveDemo,
+  smartnest: SmartNestLiveDemo,
+  agenticChat: AgenticChatDemo,
 };
 
 function MetricCard({ label, value }) {
@@ -133,6 +137,155 @@ function ConfusionMatrix({ cm, labels }) {
   );
 }
 
+function ScreenshotGallery({ items, theme }) {
+  return (
+    <div className="space-y-10">
+      {items.map((item, i) => (
+        <div key={i}>
+          <h3 className="text-base font-heading font-bold text-black mb-1">{item.heading}</h3>
+          {item.caption && <p className="text-sm text-zinc-600 mb-3 leading-relaxed">{item.caption}</p>}
+          <a
+            href={item.image}
+            target="_blank"
+            rel="noopener noreferrer"
+            className={`flex items-center justify-center bg-black/5 rounded-2xl overflow-hidden border border-black/10 ${theme.hoverBorder} hover:shadow-xl ${theme.hoverShadow} transition-all duration-300`}
+          >
+            {/* Capped height so tall portrait photos (phone shots) don't turn the
+                page into an endless scroll of mostly-empty pavement/sky — click
+                through to see the full-resolution original. */}
+            <img
+              src={item.image}
+              alt={item.heading}
+              className="max-h-[560px] w-auto max-w-full object-contain block"
+              loading="lazy"
+            />
+          </a>
+        </div>
+      ))}
+    </div>
+  );
+}
+
+// A vertical build-journey timeline — for the rare project (hardware builds,
+// mainly) that actually has a chronological "before it existed → it exists →
+// it was shown to people" story worth telling as a timeline, instead of a
+// flat grid of same-sized photo cards like every other project uses.
+function BuildTimeline({ stages, theme }) {
+  return (
+    <div className="relative">
+      <div className="absolute left-[19px] top-2 bottom-2 w-px bg-black/10" aria-hidden />
+      <div className="space-y-14">
+        {stages.map((s, i) => {
+          const imgs = s.images || (s.image ? [s.image] : []);
+          return (
+            <div key={i} className="relative pl-14">
+              <div className={`absolute left-0 top-0 flex items-center justify-center w-10 h-10 rounded-full ${theme.iconBg} text-white text-xs font-heading font-bold shadow-md ${theme.iconShadow} z-10`}>
+                {s.stage}
+              </div>
+              <div className={`text-[11px] font-semibold ${theme.text} uppercase tracking-[0.2em] mb-1`}>
+                {s.label}
+              </div>
+              <h3 className="text-lg font-heading font-bold text-black mb-2">{s.heading}</h3>
+              <p className="text-sm text-zinc-700 leading-relaxed mb-4 max-w-2xl">{s.body}</p>
+              <div className={`grid gap-3 ${imgs.length > 1 ? 'grid-cols-2' : 'grid-cols-1'} max-w-xl`}>
+                {imgs.map((src, j) => (
+                  <a
+                    key={j}
+                    href={src}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className={`flex items-center justify-center bg-black/5 rounded-xl overflow-hidden border border-black/10 ${theme.hoverBorder} hover:shadow-lg ${theme.hoverShadow} transition-all duration-300`}
+                  >
+                    <img src={src} alt={s.heading} className="max-h-[420px] w-auto max-w-full object-contain block" loading="lazy" />
+                  </a>
+                ))}
+              </div>
+            </div>
+          );
+        })}
+      </div>
+    </div>
+  );
+}
+
+// Three connected boxes instead of narrative prose — for projects whose
+// architecture is genuinely simple enough that a diagram says it faster
+// and more accurately than paragraphs would.
+function ArchitectureDiagram({ nodes, theme }) {
+  return (
+    <div className="flex flex-col md:flex-row items-stretch gap-3">
+      {nodes.map((node, i) => (
+        <div key={i} className="flex items-center flex-1">
+          <div className={`flex-1 rounded-2xl border border-black/10 bg-warm-100/60 p-5`}>
+            <div className={`text-[11px] font-semibold ${theme.text} uppercase tracking-[0.2em] mb-2`}>
+              {node.title}
+            </div>
+            <ul className="space-y-1.5">
+              {node.items.map((item, j) => (
+                <li key={j} className="text-sm text-zinc-700 leading-snug">{item}</li>
+              ))}
+            </ul>
+          </div>
+          {i < nodes.length - 1 && (
+            <div className="hidden md:flex flex-col items-center justify-center px-2 flex-shrink-0 w-24">
+              <svg className={`w-8 h-8 ${theme.text}`} fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" d="M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3" />
+              </svg>
+              {node.arrowLabel && (
+                <span className="text-[10px] text-zinc-500 text-center leading-tight mt-1">{node.arrowLabel}</span>
+              )}
+            </div>
+          )}
+        </div>
+      ))}
+    </div>
+  );
+}
+
+// A visual rules table — for genuinely tabular data (condition -> action
+// mappings, or command references) that reads faster as a table than as a
+// bulleted list. `columns` lets different projects reuse this for different
+// tabular data (device rules, command protocols, etc.) without hardcoding
+// one project's column names into the component.
+const DEFAULT_RULE_COLUMNS = [
+  { key: 'device', label: 'Device', emphasis: true },
+  { key: 'sensor', label: 'Sensor' },
+  { key: 'condition', label: 'Condition' },
+  { key: 'threshold', label: 'Default threshold', accent: true },
+];
+
+function RulesTable({ rows, theme, columns = DEFAULT_RULE_COLUMNS }) {
+  return (
+    <div className="overflow-x-auto rounded-2xl border border-black/10">
+      <table className="w-full text-sm">
+        <thead>
+          <tr className="bg-warm-100/80 border-b border-black/10">
+            {columns.map((c) => (
+              <th key={c.key} className="text-left px-4 py-3 font-heading font-bold text-black text-xs uppercase tracking-wide">
+                {c.label}
+              </th>
+            ))}
+          </tr>
+        </thead>
+        <tbody>
+          {rows.map((r, i) => (
+            <tr key={i} className={i % 2 === 0 ? 'bg-white/40' : 'bg-transparent'}>
+              {columns.map((c) => (
+                <td
+                  key={c.key}
+                  className={`px-4 py-3 ${c.emphasis ? 'font-semibold text-black' : c.accent ? `font-medium ${theme.text}` : 'text-zinc-700'}`}
+                >
+                  {r[c.key]}
+                </td>
+              ))}
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+  );
+}
+
 export default function CaseStudyDetail() {
   const { category, slug } = useParams();
   const navigate = useNavigate();
@@ -224,21 +377,53 @@ export default function CaseStudyDetail() {
           </div>
         </ScrollReveal>
 
+        {/* Build timeline — hardware projects with a real chronological build
+            story get this instead of a flat photo gallery. */}
+        {study.buildTimeline?.length > 0 && (
+          <ScrollReveal delay={120}>
+            <div className="mb-16">
+              <div className="flex items-center gap-2 mb-1">
+                <Icon className={`w-5 h-5 ${theme.text}`} strokeWidth={2} />
+                <h2 className="text-lg font-heading font-bold text-black">Workbench to field</h2>
+              </div>
+              <p className="text-sm text-zinc-600 mb-8">
+                From bare welded metal to a robot presented in front of a judging panel.
+              </p>
+              <BuildTimeline stages={study.buildTimeline} theme={theme} />
+            </div>
+          </ScrollReveal>
+        )}
+
         {/* Live demo */}
         {study.hasLiveDemo && DEMO_COMPONENTS[study.demoKey] && (
           <ScrollReveal delay={150}>
             <div className="mb-14">
               <div className="flex items-center gap-2 mb-1">
                 <Icon className={`w-5 h-5 ${theme.text}`} strokeWidth={2} />
-                <h2 className="text-lg font-heading font-bold text-black">Try it live</h2>
+                <h2 className="text-lg font-heading font-bold text-black">{study.liveDemoHeading || 'Try it live'}</h2>
               </div>
               <p className="text-sm text-zinc-600 mb-4">
-                Build a profile, pick a model, and see the real prediction — not a mockup.
+                {study.liveDemoBlurb || 'Build a profile, pick a model, and see the real prediction — not a mockup.'}
               </p>
               {(() => {
                 const DemoComponent = DEMO_COMPONENTS[study.demoKey];
                 return <DemoComponent />;
               })()}
+            </div>
+          </ScrollReveal>
+        )}
+
+        {/* Architecture diagram — replaces prose for projects simple enough
+            that three connected boxes say it faster than paragraphs. */}
+        {study.architecture?.length > 0 && (
+          <ScrollReveal delay={170}>
+            <div className="mb-14">
+              <div className="flex items-center gap-2 mb-1">
+                <Icon className={`w-5 h-5 ${theme.text}`} strokeWidth={2} />
+                <h2 className="text-lg font-heading font-bold text-black">How it's wired together</h2>
+              </div>
+              <p className="text-sm text-zinc-600 mb-6">{study.architectureBlurb}</p>
+              <ArchitectureDiagram nodes={study.architecture} theme={theme} />
             </div>
           </ScrollReveal>
         )}
@@ -254,6 +439,39 @@ export default function CaseStudyDetail() {
             </ScrollReveal>
           ))}
         </div>
+
+        {/* Automation rules table — genuinely tabular condition->action data
+            shown as a table instead of a bulleted list. */}
+        {study.rules?.length > 0 && (
+          <ScrollReveal>
+            <div className="mb-14">
+              <div className="flex items-center gap-2 mb-1">
+                <Icon className={`w-5 h-5 ${theme.text}`} strokeWidth={2} />
+                <h2 className="text-lg font-heading font-bold text-black">{study.rulesHeading || 'Auto mode, exactly as coded'}</h2>
+              </div>
+              <p className="text-sm text-zinc-600 mb-6">
+                {study.rulesBlurb || 'What each device does when Auto is on — the fan is deliberately excluded, manual only.'}
+              </p>
+              <RulesTable rows={study.rules} theme={theme} columns={study.rulesColumns} />
+            </div>
+          </ScrollReveal>
+        )}
+
+        {/* Screenshot gallery — for deployed products without a live demo */}
+        {study.screenshots?.length > 0 && (
+          <ScrollReveal>
+            <div className="mb-14">
+              <div className="flex items-center gap-2 mb-1">
+                <Icon className={`w-5 h-5 ${theme.text}`} strokeWidth={2} />
+                <h2 className="text-lg font-heading font-bold text-black">Inside the app</h2>
+              </div>
+              <p className="text-sm text-zinc-600 mb-6">
+                Real screenshots from the deployed product, not mockups.
+              </p>
+              <ScreenshotGallery items={study.screenshots} theme={theme} />
+            </div>
+          </ScrollReveal>
+        )}
 
         {/* Charts */}
         {study.modelComparison && (

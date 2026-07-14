@@ -1,6 +1,6 @@
 INFO:     Will watch for changes in these directories: ['/Users/saudahmad/Desktop/portfolio/portfolio']
 INFO:     Uvicorn running on http://0.0.0.0:8000 (Press CTRL+C to quit)
-INFO:     Started reloader process [94058] using WatchFiles
+INFO:     Started reloader process [17655] using WatchFiles
 Failed to send telemetry event ClientStartEvent: capture() takes 1 positional argument but 3 were given
 Failed to send telemetry event ClientStartEvent: capture() takes 1 positional argument but 3 were given
 Process SpawnProcess-1:
@@ -50,7 +50,7 @@ Traceback (most recent call last):
   File "/Users/saudahmad/Desktop/portfolio/portfolio/churn_model.py", line 16, in <module>
     import joblib
 ModuleNotFoundError: No module named 'joblib'
-WARNING:  WatchFiles detected changes in 'sentiment_model.py'. Reloading...
+WARNING:  WatchFiles detected changes in 'agentic_chat_model.py'. Reloading...
 Failed to send telemetry event ClientStartEvent: capture() takes 1 positional argument but 3 were given
 Failed to send telemetry event ClientStartEvent: capture() takes 1 positional argument but 3 were given
 Process SpawnProcess-2:

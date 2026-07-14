@@ -431,6 +431,12 @@ app.include_router(movie_router)
 from sentiment_model import router as sentiment_router
 app.include_router(sentiment_router)
 
+# Agentic AI demo — LangGraph deep-research agent, ported from a Streamlit
+# prototype. Reuses this same process's OPENAI_API_KEY rather than a
+# separate one.
+from agentic_chat_model import router as agentic_chat_router
+app.include_router(agentic_chat_router)
+
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],

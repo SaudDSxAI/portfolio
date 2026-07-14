@@ -22,3 +22,6 @@ joblib==1.4.2
 pandas==2.2.2
 numpy==1.26.4
 torch==2.13.0
+langchain-openai==0.1.23
+beautifulsoup4==4.12.3
+ddgs==9.0.0
