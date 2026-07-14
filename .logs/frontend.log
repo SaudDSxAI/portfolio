@@ -444,3 +444,45 @@ AggregateError [ECONNREFUSED]:
 AggregateError [ECONNREFUSED]: 
     at internalConnectMultiple (node:net:1134:18)
     at afterConnectMultiple (node:net:1715:7)
+7:30:53 PM [vite] hmr update /src/components/ChatWidget.jsx, /src/index.css
+7:31:00 PM [vite] hmr update /src/components/ChatWidget.jsx, /src/index.css
+7:31:05 PM [vite] hmr update /src/components/ChatWidget.jsx, /src/index.css
+7:31:14 PM [vite] hmr update /src/components/ChatWidget.jsx, /src/index.css
+7:31:23 PM [vite] hmr update /src/components/ChatWidget.jsx, /src/index.css
+7:31:51 PM [vite] hmr update /src/components/ChatWidget.jsx, /src/index.css
+7:31:52 PM [vite] warning: The character "}" is not valid inside a JSX element
+586|   </div>
+587|   </div>
+588|   )}
+   |    ^
+589|  
+590|   {activeTab === 'cv' &&
+
+  Plugin: vite:esbuild
+  File: /Users/saudahmad/Desktop/portfolio/portfolio/frontend/src/components/ChatWidget.jsx
+7:32:05 PM [vite] hmr update /src/components/ChatWidget.jsx, /src/index.css
+7:39:25 PM [vite] http proxy error: /health
+AggregateError [ECONNREFUSED]: 
+    at internalConnectMultiple (node:net:1134:18)
+    at afterConnectMultiple (node:net:1715:7)
+7:39:48 PM [vite] http proxy error: /health
+AggregateError [ECONNREFUSED]: 
+    at internalConnectMultiple (node:net:1134:18)
+    at afterConnectMultiple (node:net:1715:7)
+7:39:49 PM [vite] http proxy error: /health
+AggregateError [ECONNREFUSED]: 
+    at internalConnectMultiple (node:net:1134:18)
+    at afterConnectMultiple (node:net:1715:7)
+11:09:10 PM [vite] http proxy error: /health
+AggregateError [ECONNREFUSED]: 
+    at internalConnectMultiple (node:net:1134:18)
+    at afterConnectMultiple (node:net:1715:7)
+11:10:26 PM [vite] hmr update /src/components/ChatWidget.jsx, /src/index.css
+11:10:43 PM [vite] hmr update /src/components/ChatWidget.jsx, /src/index.css
+11:10:53 PM [vite] hmr update /src/components/ChatWidget.jsx, /src/index.css
+11:11:11 PM [vite] hmr update /src/components/ChatWidget.jsx, /src/index.css
+11:11:52 PM [vite] hmr update /src/components/ChatWidget.jsx, /src/index.css
+11:16:58 PM [vite] http proxy error: /health
+AggregateError [ECONNREFUSED]: 
+    at internalConnectMultiple (node:net:1134:18)
+    at afterConnectMultiple (node:net:1715:7)

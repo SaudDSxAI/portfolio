@@ -126,14 +126,19 @@ export default function ChatWidget({ initialOpen = false } = {}) {
  const [isConnected, setIsConnected] = useState(false);
  const [showSuggestions, setShowSuggestions] = useState(true);
  const [hasNewMessage, setHasNewMessage] = useState(false);
- const [activeTab, setActiveTab] = useState('chat'); // 'chat' | 'cv'
- const [jdText, setJdText] = useState('');
- const [isGeneratingCV, setIsGeneratingCV] = useState(false);
- const [cvError, setCvError] = useState('');
 
  const messagesEndRef = useRef(null);
  const inputRef = useRef(null);
  const chatContainerRef = useRef(null);
+
+ // Whether we should auto-scroll to the newest message. True by default,
+ // but flips to false the moment the user manually scrolls away from the
+ // bottom (e.g. to reread something while a reply is still streaming in) —
+ // otherwise every streamed chunk would yank them back down. Flips back to
+ // true once they scroll back near the bottom themselves, or send a new
+ // message (at which point they clearly want to follow the conversation
+ // again).
+ const stickToBottomRef = useRef(true);
 
  // Track the visual viewport so the mobile chat follows the part of the
  // screen that remains visible above the soft keyboard.
@@ -202,18 +207,32 @@ export default function ChatWidget({ initialOpen = false } = {}) {
  }
  }, []);
 
- useEffect(() => { scrollToBottom(); }, [messages, scrollToBottom, isStreaming]);
+ // Near the bottom = "stick" (auto-scroll keeps following new content).
+ // Scrolled away = the user is deliberately reading something earlier;
+ // leave them alone until they scroll back down themselves.
+ const handleMessagesScroll = useCallback(() => {
+ const el = chatContainerRef.current;
+ if (!el) return;
+ const distanceFromBottom = el.scrollHeight - el.scrollTop - el.clientHeight;
+ stickToBottomRef.current = distanceFromBottom < 80;
+ }, []);
+
+ useEffect(() => {
+ if (stickToBottomRef.current) scrollToBottom();
+ }, [messages, scrollToBottom, isStreaming]);
 
  // When the visual viewport changes (keyboard open/close), pin the latest
- // message to the bottom so the user always sees what they're typing about.
+ // message to the bottom so the user always sees what they're typing about
+ // — but only if they were already following along at the bottom.
  useEffect(() => {
  if (!isOpen || !isMobileChat) return;
- scrollToBottom('auto');
+ if (stickToBottomRef.current) scrollToBottom('auto');
  }, [viewport.height, viewport.offsetTop, isOpen, isMobileChat, scrollToBottom]);
 
  useEffect(() => {
  if (isOpen) {
  setHasNewMessage(false);
+ stickToBottomRef.current = true;
  checkHealth();
  requestAnimationFrame(() => {
  inputRef.current?.focus({ preventScroll: true });
@@ -223,7 +242,7 @@ export default function ChatWidget({ initialOpen = false } = {}) {
  }, [isOpen, scrollToBottom]);
 
  useEffect(() => {
- if (!isOpen || activeTab !== 'chat' || !isMobileChat) return;
+ if (!isOpen || !isMobileChat) return;
  const refocus = () => {
  if (document.activeElement !== inputRef.current) {
  inputRef.current?.focus({ preventScroll: true });
@@ -231,7 +250,7 @@ export default function ChatWidget({ initialOpen = false } = {}) {
  };
  window.addEventListener('orientationchange', refocus);
  return () => window.removeEventListener('orientationchange', refocus);
- }, [isOpen, activeTab, isMobileChat]);
+ }, [isOpen, isMobileChat]);
 
  const checkHealth = async () => {
  try {
@@ -281,6 +300,9 @@ export default function ChatWidget({ initialOpen = false } = {}) {
  }
 
  setShowSuggestions(false);
+ // Sending a message means the user wants to follow the conversation
+ // again — resume auto-scroll even if they'd scrolled away earlier.
+ stickToBottomRef.current = true;
  const userMessage = {
  id: Date.now(),
  content: text,
@@ -393,42 +415,6 @@ export default function ChatWidget({ initialOpen = false } = {}) {
  }
  };
 
- const generateCV = async () => {
- if (!jdText.trim() || jdText.length < 10) {
- setCvError('Please paste a longer job description.');
- return;
- }
- setIsGeneratingCV(true);
- setCvError('');
- 
- try {
- const res = await fetch(`${API_URL}/generate-cv`, {
- method: 'POST',
- headers: { 'Content-Type': 'application/json' },
- body: JSON.stringify({ job_description: jdText }),
- });
-
- if (!res.ok) {
- throw new Error('Failed to generate CV');
- }
-
- // Download the file
- const blob = await res.blob();
- const url = window.URL.createObjectURL(blob);
- const a = document.createElement('a');
- a.href = url;
- a.download = 'Saud_Ahmad_CV.pdf';
- document.body.appendChild(a);
- a.click();
- a.remove();
- window.URL.revokeObjectURL(url);
- } catch (err) {
- setCvError('Error generating CV. Please try again later.');
- } finally {
- setIsGeneratingCV(false);
- }
- };
-
  // Critical for mobile: focus must stay on the input synchronously so the
  // keyboard never collapses. We refocus *immediately* (no setTimeout)
  // before any state updates can cause a re-render that yanks focus.
@@ -502,24 +488,9 @@ export default function ChatWidget({ initialOpen = false } = {}) {
  <div className="w-full h-full bg-dark-900/95 border border-white/10 rounded-2xl max-sm:rounded-none shadow-2xl shadow-black/40 flex flex-col overflow-hidden max-sm:border-0">
  {/* Header */}
  <div className="flex items-center justify-between gap-3 px-4 py-3 bg-dark-800/90 border-b border-white/5 shrink-0 max-sm:pt-[calc(env(safe-area-inset-top)+0.75rem)]">
- <div className="flex bg-dark-900 rounded-lg p-1 border border-white/5 min-w-0">
- <button
- onClick={() => setActiveTab('chat')}
- className={`px-3 py-1 rounded-md text-xs font-semibold transition-all ${
- activeTab === 'chat' ? 'bg-black text-white shadow-sm' : 'text-zinc-400 hover:text-white'
- }`}
- >
- Chat
- </button>
- <button
- onClick={() => setActiveTab('cv')}
- className={`flex items-center gap-1.5 px-3 py-1 rounded-md text-xs font-semibold transition-all ${
- activeTab === 'cv' ? 'bg-black text-white shadow-sm' : 'text-zinc-400 hover:text-white'
- }`}
- >
- Tailor CV
- <span className="w-1.5 h-1.5 rounded-full bg-black animate-pulse" />
- </button>
+ <div className="flex items-center gap-2 min-w-0">
+ <span className="w-2 h-2 rounded-full bg-primary-500 shrink-0" />
+ <span className="text-sm font-semibold text-white truncate">Ask Saud's AI</span>
  </div>
  <div className="flex items-center gap-2">
  <button
@@ -545,11 +516,11 @@ export default function ChatWidget({ initialOpen = false } = {}) {
  </div>
  </div>
 
- {activeTab === 'chat' && (
  <div className="flex-1 min-h-0 flex flex-col">
  {/* Messages */}
  <div
  ref={chatContainerRef}
+ onScroll={handleMessagesScroll}
  className="flex-1 min-h-0 overflow-y-auto overscroll-contain px-3 py-4 space-y-0"
  style={{
  scrollbarWidth: 'none',
@@ -622,50 +593,6 @@ export default function ChatWidget({ initialOpen = false } = {}) {
  </form>
  </div>
  </div>
- )}
-
- {activeTab === 'cv' && (
- <div
- className="flex-1 min-h-0 flex flex-col p-4 overflow-y-auto overscroll-contain"
- style={{ WebkitOverflowScrolling: 'touch', touchAction: 'pan-y' }}
- >
- <h3 className="text-white font-heading font-bold text-lg mb-2">Tailor My CV</h3>
- <p className="text-zinc-400 text-xs mb-4">Paste a Job Description. I will use AI and my embedded experiences/projects to generate a tailored ATS-friendly PDF CV matching the role requirements.</p>
-
- <textarea
- value={jdText}
- onChange={(e) => setJdText(e.target.value)}
- placeholder="Paste Job Description here..."
- className="flex-1 min-h-48 w-full bg-dark-800/80 border border-white/5 rounded-xl p-3 text-[16px] sm:text-sm text-white placeholder-zinc-500 outline-none focus:border-primary-500/50 transition-colors resize-none mb-4"
- />
-
- {cvError && <p className="text-black text-xs mb-2">{cvError}</p>}
-
- <button
- onClick={generateCV}
- disabled={isGeneratingCV || !jdText.trim()}
- className={`w-full py-3 rounded-xl flex justify-center items-center gap-2 text-sm font-semibold transition-all shadow-lg ${
- isGeneratingCV || !jdText.trim()
- ? 'bg-dark-800 text-zinc-500 cursor-not-allowed'
- : 'bg-black hover:bg-zinc-800 text-white active:scale-95'
- }`}
- >
- {isGeneratingCV ? (
- <>
- <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
- Generating PDF (might take ~15s)...
- </>
- ) : (
- <>
- <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor">
- <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25m.75 12l3 3m0 0l3-3m-3 3v-6m-1.5-9H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 00-9-9z" />
- </svg>
- Generate Tailored CV PDF
- </>
- )}
- </button>
- </div>
- )}
  </div>
  </div>
  </>
