@@ -25,3 +25,76 @@ AggregateError [ECONNREFUSED]:
 AggregateError [ECONNREFUSED]: 
     at internalConnectMultiple (node:net:1134:18)
     at afterConnectMultiple (node:net:1715:7)
+3:45:32 PM [vite] http proxy error: /api/rag/status
+AggregateError [ECONNREFUSED]: 
+    at internalConnectMultiple (node:net:1134:18)
+    at afterConnectMultiple (node:net:1715:7)
+3:45:42 PM [vite] http proxy error: /api/rag/status
+AggregateError [ECONNREFUSED]: 
+    at internalConnectMultiple (node:net:1134:18)
+    at afterConnectMultiple (node:net:1715:7)
+3:45:51 PM [vite] http proxy error: /api/rag/status
+AggregateError [ECONNREFUSED]: 
+    at internalConnectMultiple (node:net:1134:18)
+    at afterConnectMultiple (node:net:1715:7)
+3:46:01 PM [vite] http proxy error: /api/rag/status
+AggregateError [ECONNREFUSED]: 
+    at internalConnectMultiple (node:net:1134:18)
+    at afterConnectMultiple (node:net:1715:7)
+3:49:35 PM [vite] http proxy error: /api/rag/status
+AggregateError [ECONNREFUSED]: 
+    at internalConnectMultiple (node:net:1134:18)
+    at afterConnectMultiple (node:net:1715:7)
+3:49:44 PM [vite] http proxy error: /api/rag/status
+AggregateError [ECONNREFUSED]: 
+    at internalConnectMultiple (node:net:1134:18)
+    at afterConnectMultiple (node:net:1715:7)
+5:13:45 PM [vite] hmr update /src/index.css, /src/pages/CategoryPage.jsx, /src/pages/CaseStudyDetail.jsx, /src/components/Projects.jsx
+5:15:47 PM [vite] hmr update /src/components/demos/RAGComparisonDemo.jsx, /src/index.css
+5:17:18 PM [vite] hmr update /src/index.css, /src/pages/CategoryPage.jsx, /src/pages/CaseStudyDetail.jsx, /src/components/Projects.jsx
+5:18:01 PM [vite] hmr update /src/pages/CaseStudyDetail.jsx, /src/index.css
+5:18:04 PM [vite] hmr update /src/pages/CaseStudyDetail.jsx, /src/index.css
+5:18:11 PM [vite] hmr update /src/pages/CaseStudyDetail.jsx, /src/index.css
+5:18:41 PM [vite] hmr update /src/pages/CategoryPage.jsx, /src/index.css
+5:18:44 PM [vite] hmr update /src/pages/CategoryPage.jsx, /src/index.css
+5:18:50 PM [vite] hmr update /src/index.css, /src/pages/CategoryPage.jsx, /src/pages/CaseStudyDetail.jsx, /src/components/Projects.jsx
+5:20:05 PM [vite] http proxy error: /api/rag/status
+AggregateError [ECONNREFUSED]: 
+    at internalConnectMultiple (node:net:1134:18)
+    at afterConnectMultiple (node:net:1715:7)
+5:20:25 PM [vite] http proxy error: /api/rag/status
+AggregateError [ECONNREFUSED]: 
+    at internalConnectMultiple (node:net:1134:18)
+    at afterConnectMultiple (node:net:1715:7)
+5:20:29 PM [vite] http proxy error: /api/rag/stream/hybrid
+AggregateError [ECONNREFUSED]: 
+    at internalConnectMultiple (node:net:1134:18)
+    at afterConnectMultiple (node:net:1715:7)
+5:20:29 PM [vite] http proxy error: /api/rag/stream/naive
+AggregateError [ECONNREFUSED]: 
+    at internalConnectMultiple (node:net:1134:18)
+    at afterConnectMultiple (node:net:1715:7)
+5:20:29 PM [vite] http proxy error: /api/rag/stream/naive
+AggregateError [ECONNREFUSED]: 
+    at internalConnectMultiple (node:net:1134:18)
+    at afterConnectMultiple (node:net:1715:7)
+5:20:29 PM [vite] http proxy error: /api/rag/stream/agentic
+AggregateError [ECONNREFUSED]: 
+    at internalConnectMultiple (node:net:1134:18)
+    at afterConnectMultiple (node:net:1715:7)
+5:20:29 PM [vite] http proxy error: /api/rag/stream/hyde
+AggregateError [ECONNREFUSED]: 
+    at internalConnectMultiple (node:net:1134:18)
+    at afterConnectMultiple (node:net:1715:7)
+5:20:29 PM [vite] http proxy error: /api/rag/stream/agentic
+AggregateError [ECONNREFUSED]: 
+    at internalConnectMultiple (node:net:1134:18)
+    at afterConnectMultiple (node:net:1715:7)
+5:20:29 PM [vite] http proxy error: /api/rag/stream/hyde
+AggregateError [ECONNREFUSED]: 
+    at internalConnectMultiple (node:net:1134:18)
+    at afterConnectMultiple (node:net:1715:7)
+5:20:29 PM [vite] http proxy error: /api/rag/stream/hybrid
+AggregateError [ECONNREFUSED]: 
+    at internalConnectMultiple (node:net:1134:18)
+    at afterConnectMultiple (node:net:1715:7)

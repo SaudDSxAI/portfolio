@@ -2,8 +2,16 @@ import { useParams } from 'react-router-dom';
 import BackButton from '../components/ui/BackButton';
 import SectionHeading from '../components/SectionHeading';
 import CaseStudyCard from '../components/CaseStudyCard';
+import RAGProjectCard from '../components/RAGProjectCard';
 import ScrollReveal from '../components/ui/ScrollReveal';
 import { caseStudies, categories } from '../data/caseStudies';
+
+// A few projects don't fit the generic "icon + headline metric + mini
+// chart" card — set study.customCard to one of these keys to opt in to a
+// bespoke card layout instead.
+const CUSTOM_CARD_COMPONENTS = {
+  ragComparison: RAGProjectCard,
+};
 
 export default function CategoryPage() {
   const { category } = useParams();
@@ -27,11 +35,14 @@ export default function CategoryPage() {
 
         {studies.length > 0 ? (
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {studies.map((study, i) => (
-              <ScrollReveal key={study.slug} delay={i * 80}>
-                <CaseStudyCard study={study} categoryKey={category} index={i} />
-              </ScrollReveal>
-            ))}
+            {studies.map((study, i) => {
+              const Card = CUSTOM_CARD_COMPONENTS[study.customCard] || CaseStudyCard;
+              return (
+                <ScrollReveal key={study.slug} delay={i * 80}>
+                  <Card study={study} categoryKey={category} index={i} />
+                </ScrollReveal>
+              );
+            })}
           </div>
         ) : (
           <div className="flex flex-col items-center py-24 text-center">

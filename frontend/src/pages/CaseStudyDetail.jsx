@@ -19,6 +19,7 @@ import MiniLlavaDemo from '../components/demos/MiniLlavaDemo';
 import DiffusionGanDemo from '../components/demos/DiffusionGanDemo';
 import GPT2LoraDemo from '../components/demos/GPT2LoraDemo';
 import RAGComparisonDemo from '../components/demos/RAGComparisonDemo';
+import RAGCaseStudyPage from './RAGCaseStudyPage';
 import FrozenTrainableDiagram from '../components/demos/FrozenTrainableDiagram';
 import TrainingCurvesComparison from '../components/demos/TrainingCurvesComparison';
 import FinetuneLoraCurves from '../components/demos/FinetuneLoraCurves';
@@ -60,6 +61,15 @@ const CUSTOM_ARCHITECTURE_COMPONENTS = {
 const CUSTOM_CHART_COMPONENTS = {
   trainingCurves: TrainingCurvesComparison,
   finetuneLoraCurves: FinetuneLoraCurves,
+};
+
+// A few projects don't fit the generic template at all — their story is
+// better told with a genuinely different page structure, not the same
+// hero -> metrics -> narrative -> skills shape every other project uses.
+// Set study.customPage to one of these keys to opt a project fully out of
+// the generic render below.
+const CUSTOM_PAGE_COMPONENTS = {
+  ragComparison: RAGCaseStudyPage,
 };
 
 function MetricCard({ label, value }) {
@@ -328,6 +338,11 @@ export default function CaseStudyDetail() {
         <BackButton to={`/${category}`} label={`Back to ${meta?.label || 'projects'}`} />
       </div>
     );
+  }
+
+  if (study.customPage && CUSTOM_PAGE_COMPONENTS[study.customPage]) {
+    const CustomPage = CUSTOM_PAGE_COMPONENTS[study.customPage];
+    return <CustomPage study={study} categoryMeta={meta} />;
   }
 
   const theme = getTheme(study.accentColor);

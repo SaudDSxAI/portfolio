@@ -47,7 +47,7 @@ export const categories = {
   rag: {
     label: 'RAG & Retrieval',
     eyebrow: 'Learning Journey',
-    subtitle: 'Four retrieval-augmented generation techniques, built from scratch and run live side by side over the same corpus — with the real failures each one hits, not just the wins.',
+    subtitle: 'Retrieval-augmented generation, built from scratch — real retrieval techniques compared honestly, not imported from a framework.',
   },
 };
 
@@ -771,44 +771,49 @@ export const caseStudies = {
       liveDemoBlurb: 'Type a question about my projects or background — it runs through Naive, Hybrid, HyDE, and Agentic RAG at the same time, so you can compare what each one retrieves and answers.',
       accentColor: 'blue',
       icon: 'gitCompare',
-      rulesHeading: 'What each technique actually does, and how it held up',
-      rulesBlurb: 'Real results from a 5-question test set run against all four techniques.',
-      rulesColumns: [
-        { key: 'technique', label: 'Technique', emphasis: true },
-        { key: 'approach', label: 'How it retrieves' },
-        { key: 'finding', label: 'Real result' },
-      ],
-      rules: [
-        { technique: 'Naive', approach: 'Embed the question, cosine similarity top-3', finding: '5/5 test questions correct — the reliable baseline' },
-        { technique: 'Hybrid', approach: 'BM25 keyword search + embeddings, merged with Reciprocal Rank Fusion', finding: '5/5 correct, matched Naive\'s reliability' },
-        { technique: 'HyDE', approach: 'LLM writes a hypothetical answer first, embeds that instead of the question', finding: '3/5 correct — both failures traced directly to a wrong hypothetical pulling retrieval off target' },
-        { technique: 'Agentic', approach: 'LLM decides whether to search, can reformulate and search again, then answers', finding: 'Most detailed answers when it worked, but got stuck without answering on list-type questions, and gave a different answer to the same question on different runs' },
-      ],
-      heroMetrics: [
+      customPage: 'ragComparison',
+      customCard: 'ragComparison',
+      corpusStats: [
         { label: 'Corpus chunks', value: '161' },
         { label: 'Projects + personal', value: '151 + 10' },
         { label: 'Live techniques', value: '4' },
         { label: 'Embedding model', value: 'MiniLM-L6-v2' },
       ],
-      narrative: [
+      verdicts: [
+        { key: 'naive', label: 'Naive', status: 'reliable', statusLabel: 'Reliable', approach: 'Embed the question, cosine similarity top-3', finding: '5/5 test questions correct — the baseline that just worked' },
+        { key: 'hybrid', label: 'Hybrid', status: 'reliable', statusLabel: 'Reliable', approach: 'BM25 keyword search + embeddings, merged with Reciprocal Rank Fusion', finding: '5/5 correct, matched Naive — extra signal didn\'t hurt, didn\'t change the outcome either' },
+        { key: 'hyde', label: 'HyDE', status: 'fragile', statusLabel: 'Fragile', approach: 'LLM writes a hypothetical answer first, embeds that instead of the question', finding: '3/5 correct — both failures traced directly to a wrong hypothetical pulling retrieval off target' },
+        { key: 'agentic', label: 'Agentic', status: 'inconsistent', statusLabel: 'Inconsistent', approach: 'LLM decides whether to search, can reformulate and search again', finding: 'Most detailed answers when it worked, but got stuck on list-type questions and gave different answers on different runs' },
+      ],
+      techniqueDeepDives: [
         {
-          heading: 'The setup: one real corpus, one embedding model, four techniques',
-          body: 'Rather than testing RAG on a toy dataset, the corpus here is this portfolio itself — the full write-ups of all 24 case studies plus a personal-profile document (background, Oval Labs attribution, contact, skills), chunked into 161 pieces and embedded once with all-MiniLM-L6-v2. Every technique below searches the exact same 161 embeddings; the only thing that changes between them is how the search itself works. Generation uses the OpenAI API already configured for this site\'s chat assistant (gpt-5-mini) — the skill being demonstrated here is retrieval engineering, not the LLM itself.',
+          key: 'setup',
+          label: 'The setup',
+          summary: 'One real corpus, one embedding model, four techniques',
+          body: 'Rather than testing RAG on a toy dataset, the corpus here is this portfolio itself — the full write-ups of all 24 case studies plus a personal-profile document (background, Oval Labs attribution, contact, skills), chunked into 161 pieces and embedded once with all-MiniLM-L6-v2. Every technique searches the exact same 161 embeddings; the only thing that changes between them is how the search itself works. Generation uses the OpenAI API already configured for this site\'s chat assistant (gpt-5-mini) — the skill being demonstrated here is retrieval engineering, not the LLM itself.',
         },
         {
-          heading: 'Naive and Hybrid: the reliable baselines',
+          key: 'naive-hybrid',
+          label: 'Naive & Hybrid',
+          summary: 'The reliable baselines — a genuinely boring result',
           body: 'Naive RAG embeds the raw question and takes the top-3 chunks by cosine similarity — the simplest possible version of RAG. Hybrid RAG runs that same embedding search alongside a BM25 keyword search, then merges the two rankings with Reciprocal Rank Fusion (each chunk\'s score is 1/(60+rank) summed across both methods, since BM25 and cosine scores live on incompatible scales and can\'t be averaged directly). Across a 5-question test set spanning different projects, both got every question right. Hybrid\'s extra keyword signal didn\'t change the outcome on this corpus, but it didn\'t hurt either — a genuinely boring, reliable result worth reporting as-is rather than dressing up as more interesting than it was.',
         },
         {
-          heading: 'HyDE: when the hypothetical answer is wrong',
+          key: 'hyde',
+          label: 'HyDE',
+          summary: 'What happens when the hypothetical answer is wrong',
           body: 'HyDE asks the LLM to write a plausible-sounding hypothetical answer first, then embeds that instead of the question — the idea being that an answer-shaped piece of text sits closer in embedding space to the real answer chunks than a short question does. It worked well on general ML topics the LLM already knows (a question about GAN loss curves retrieved correctly, even scoring slightly higher than Naive). But on two questions specific to this portfolio\'s actual content, the LLM\'s hypothetical guess was simply wrong: asked what mistake was corrected during the fine-tuning project, it hallucinated an entirely different bug (an "off-by-one label mapping" that never happened) and pulled in content from an unrelated project as a result. Asked which projects deployed to Railway, its hypothetical invented five projects that don\'t exist in this portfolio at all, and the resulting retrieval missed a real one. Both failures are a direct, traceable consequence of the same mechanism that makes HyDE work when it works — the technique lives or dies on whether the LLM\'s guess happens to be right.',
         },
         {
-          heading: 'Agentic RAG: richer answers, but genuinely inconsistent',
+          key: 'agentic',
+          label: 'Agentic RAG',
+          summary: 'Richer answers, but genuinely inconsistent',
           body: 'Agentic RAG gives the LLM a search_corpus tool and lets it decide, turn by turn, whether it has enough information or needs to search again. When it worked, its answers were the most detailed of any technique — pulling in exact figures other variants left out. But on two "which projects..." style questions, it kept reformulating and re-searching without ever generating a final answer, hitting a hard turn limit. Adding an explicit separate judge call (a second LLM call whose only job is answering "is this sufficient, yes or no") fixed the outright failures, but revealed a deeper issue: the same question, run twice, returned two different lists of matching projects. The real cause isn\'t a prompt bug — it\'s that top-k retrieval only ever returns a handful of chunks per search, so a question whose true answer spans more chunks than any single search returns will always be at the mercy of which slice the model happens to land on. No amount of prompt tuning fixes that; it\'s a structural limitation of top-k semantic search for enumerate-style questions, reported here honestly rather than hidden behind a lucky demo run.',
         },
         {
-          heading: 'What\'s not in the live demo',
+          key: 'not-live',
+          label: 'Not in the live demo',
+          summary: 'Re-ranked RAG — built, evaluated, kept in the notebook',
           body: 'A fifth technique, Re-ranked RAG, was also built and evaluated: retrieve a wide candidate set cheaply with embeddings, then re-score it with a cross-encoder that reads the query and each chunk together for a more accurate relevance judgment. It\'s in the companion notebook, but isn\'t wired into this live demo — the cross-encoder is a second, separate model that needs its own download, and given the added latency and infrastructure cost of a fifth live variant on top of four, it was kept to the notebook for now rather than shipped here.',
         },
       ],
