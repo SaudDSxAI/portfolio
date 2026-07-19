@@ -1,4 +1,4 @@
-// Hand-crafted technical case studies — real numbers, real charts, not
+// Hand-crafted technical case studies: real numbers, real charts, not
 // auto-generated from GitHub READMEs like the main Projects section.
 // Add a new entry to the relevant category array to publish a new page.
 // Update `github` / `live` once the repo is pushed / the app is deployed.
@@ -7,47 +7,47 @@ export const categories = {
   ml: {
     label: 'Machine Learning',
     eyebrow: 'Case Studies',
-    subtitle: 'Classical ML — benchmarked models, real evaluation, explainability.',
+    subtitle: 'Models trained on real data, tested honestly, and explained in plain terms.',
   },
   dl: {
     label: 'Deep Learning',
     eyebrow: 'Case Studies',
-    subtitle: 'Neural networks, computer vision, and sequence models.',
+    subtitle: 'Neural networks for images, text, and sequences.',
   },
   production: {
     label: 'Production Systems',
     eyebrow: 'Deployed Work',
-    subtitle: 'Real systems, live at real companies — not benchmarks, production.',
+    subtitle: 'Full apps built and used by real companies, not demos.',
   },
   robotics: {
     label: 'Robotics & IoT',
     eyebrow: 'Hardware in Motion',
-    subtitle: 'Real hardware, real sensors, and connected systems that work in the physical world.',
+    subtitle: 'Physical builds with real sensors, motors, and code running on hardware.',
   },
   tools: {
     label: 'Tools & Utilities',
     eyebrow: 'Built to Use',
-    subtitle: 'Real software built to solve a real personal problem, not a portfolio exercise.',
+    subtitle: 'Small apps built to solve a real, everyday problem.',
   },
   agentic: {
     label: 'Agentic AI',
     eyebrow: 'Learning Journey',
-    subtitle: 'Ongoing experiments with autonomous agents — not polished products, real hands-on learning.',
+    subtitle: 'Experiments with AI agents that plan and take actions on their own.',
   },
   vlm: {
     label: 'VLM & Multimodal AI',
     eyebrow: 'Learning Journey',
-    subtitle: 'Building the actual components behind vision-language models — from shared embedding spaces to a real vision-tower-and-LLM pipeline, trained by hand.',
+    subtitle: 'Models that connect images and language, built and trained from scratch.',
   },
   finetuning: {
     label: 'Fine-Tuning & PEFT',
     eyebrow: 'Learning Journey',
-    subtitle: 'Real fine-tuning techniques, built and compared head-to-head — full fine-tuning, LoRA and its variants, adapters, and beyond — with honest, measured tradeoffs instead of secondhand claims.',
+    subtitle: 'Different ways to fine-tune a language model, tested side by side.',
   },
   rag: {
     label: 'RAG & Retrieval',
     eyebrow: 'Learning Journey',
-    subtitle: 'Retrieval-augmented generation, built from scratch — real retrieval techniques compared honestly, not imported from a framework.',
+    subtitle: 'Search and retrieval techniques for grounding AI answers in real documents, built from scratch.',
   },
 };
 
@@ -57,7 +57,7 @@ export const caseStudies = {
       slug: 'customer-churn-prediction',
       title: 'Customer Churn Prediction',
       tagline:
-        'Benchmarked three models on real evidence, tuned the decision threshold, and caught a production bug before it shipped.',
+        "Predicts whether a telecom customer is about to cancel their subscription, using their account and usage details.",
       categoryKey: 'ml',
       summary:
         'A telecom churn predictor built to prove ML understanding, not just produce a number: three models benchmarked under identical conditions, the simplest one won on evidence, and the whole thing is served live through a FastAPI backend and a React dashboard.',
@@ -66,6 +66,7 @@ export const caseStudies = {
       tech: ['Python', 'scikit-learn', 'XGBoost', 'pandas', 'SHAP', 'FastAPI', 'React', 'Recharts'],
       hasLiveDemo: true,
       demoKey: 'churn',
+      customResults: 'churn',
       accentColor: 'blue',
       icon: 'users',
       heroMetrics: [
@@ -102,15 +103,15 @@ export const caseStudies = {
         },
         {
           heading: 'Approach',
-          body: 'Cleaned and encoded the data (dropped 11 rows with undefined TotalCharges for brand-new customers), then benchmarked Logistic Regression, Random Forest, and XGBoost under identical class-imbalance handling — a fairness detail that mattered: an early, uneven comparison would have quietly favored the tree models. Logistic Regression won on ROC-AUC despite being the simplest model, because churn in this dataset is driven by mostly linear relationships (tenure, contract length, monthly charges). The decision threshold was then tuned by sweeping values and maximizing F1 on the minority class, landing on 0.40 instead of the default 0.5.',
+          body: 'Cleaned and encoded the data (dropped 11 rows with undefined TotalCharges for brand-new customers), then benchmarked Logistic Regression, Random Forest, and XGBoost under identical class-imbalance handling, a fairness detail that mattered: an early, uneven comparison would have quietly favored the tree models. Logistic Regression won on ROC-AUC despite being the simplest model, because churn in this dataset is driven by mostly linear relationships (tenure, contract length, monthly charges). The decision threshold was then tuned by sweeping values and maximizing F1 on the minority class, landing on 0.40 instead of the default 0.5.',
         },
         {
           heading: 'A real bug, caught by testing',
-          body: "While building the live prediction API, single-row predictions were silently ignoring every categorical input (InternetService, Contract, PaymentMethod). The cause: pandas.get_dummies(drop_first=True) on a one-row DataFrame always drops the only category present, producing zero dummy columns regardless of the actual value. Every prediction was scoring as if the customer had the reference category for every field. Caught by testing an obviously high-risk profile and noticing the output didn't match the direction the model's own coefficients predicted — fixed with explicit, training-set-aligned one-hot encoding.",
+          body: "While building the live prediction API, single-row predictions were silently ignoring every categorical input (InternetService, Contract, PaymentMethod). The cause: pandas.get_dummies(drop_first=True) on a one-row DataFrame always drops the only category present, producing zero dummy columns regardless of the actual value. Every prediction was scoring as if the customer had the reference category for every field. Caught by testing an obviously high-risk profile and noticing the output didn't match the direction the model's own coefficients predicted, then fixed with explicit, training-set-aligned one-hot encoding.",
         },
         {
           heading: 'What it does now',
-          body: 'A FastAPI backend serves all three benchmarked models behind a /predict endpoint, each with its own tuned threshold. The React dashboard shows the full benchmarking story (model comparison, ROC curve, confusion matrix, SHAP-based feature importance) plus a live prediction tool where you can build a customer profile, pick a model, and drag a threshold slider to see the precision/recall tradeoff happen in real time — the probability doesn\'t change, only how it gets classified.',
+          body: 'A FastAPI backend serves all three benchmarked models behind a /predict endpoint, each with its own tuned threshold. The React dashboard shows the full benchmarking story (model comparison, ROC curve, confusion matrix, SHAP-based feature importance) plus a live prediction tool where you can build a customer profile, pick a model, and drag a threshold slider to see the precision/recall tradeoff happen in real time. The probability doesn\'t change, only how it gets classified.',
         },
       ],
       skillsDemonstrated: [
@@ -128,15 +129,16 @@ export const caseStudies = {
       slug: 'heart-disease-prediction',
       title: 'Heart Disease Risk Prediction',
       tagline:
-        'Two models tied statistically, not just numerically — proven with a paired significance test, not eyeballed off a leaderboard.',
+        "Predicts a patient's risk of heart disease from clinical results like cholesterol, blood pressure, and chest pain type.",
       categoryKey: 'ml',
       summary:
-        'A clinical risk model built the same disciplined way as the churn project, but with a twist: after two rounds of catching bad source data, the final benchmark between Logistic Regression and Random Forest came back statistically tied — and the write-up says so, instead of declaring a fake winner.',
+        'A clinical risk model built the same disciplined way as the churn project, but with a twist: after two rounds of catching bad source data, the final benchmark between Logistic Regression and Random Forest came back statistically tied, and the write-up says so, instead of declaring a fake winner.',
       github: 'https://github.com/SaudDSxAI/heart-disease-prediction',
       live: '',
       tech: ['Python', 'scikit-learn', 'pandas', 'SciPy', 'FastAPI', 'React', 'Recharts'],
       hasLiveDemo: true,
       demoKey: 'heart',
+      customResults: 'heart',
       accentColor: 'rose',
       icon: 'heartPulse',
       heroMetrics: [
@@ -167,23 +169,23 @@ export const caseStudies = {
       narrative: [
         {
           heading: 'The problem',
-          body: 'Predict heart disease presence from clinical markers (age, chest pain type, cholesterol, exercise test results, etc.), following up on the churn project\'s model-comparison approach — but this time on a genuinely different domain and a smaller, medically-framed dataset, to test whether the earlier finding (simpler models winning) actually generalizes.',
+          body: 'Predict heart disease presence from clinical markers (age, chest pain type, cholesterol, exercise test results, etc.), following up on the churn project\'s model-comparison approach, but this time on a genuinely different domain and a smaller, medically-framed dataset, to test whether the earlier finding (simpler models winning) actually generalizes.',
         },
         {
           heading: 'Round one: a dataset that lied',
-          body: 'The first public CSV mirror (1,025 rows) turned out to be 723 exact duplicate rows — the same ~302 patients repeated roughly 3.4x to pad out a small dataset. Trained anyway to see what happened: Logistic Regression \"won\" cleanly. But several coefficients pointed in medically backwards directions (male sex and exercise-induced angina both reducing predicted risk), which is a red flag, not a footnote. Concluded the mirror likely had corrupted or inconsistently labeled data and started over rather than write up a result built on bad data.',
+          body: 'The first public CSV mirror (1,025 rows) turned out to be 723 exact duplicate rows: the same ~302 patients repeated roughly 3.4x to pad out a small dataset. Trained anyway to see what happened: Logistic Regression \"won\" cleanly. But several coefficients pointed in medically backwards directions (male sex and exercise-induced angina both reducing predicted risk), which is a red flag, not a footnote. Concluded the mirror likely had corrupted or inconsistently labeled data and started over rather than write up a result built on bad data.',
         },
         {
           heading: 'Round two: sourcing it properly',
-          body: 'Switched to a dataset combining five independent clinical databases (Cleveland, Hungarian, Switzerland, Long Beach VA, Statlog — 1,190 rows total), backed by a peer-reviewed Nature Scientific Data paper rather than an anonymous CSV upload. Still found 272 duplicate rows (partly genuine patient overlap between source databases, partly coincidental collisions across only 11 low-cardinality features) and dropped them, landing on 918 clean, real records. This time the feature coefficients aligned with clinical expectation.',
+          body: 'Switched to a dataset combining five independent clinical databases (Cleveland, Hungarian, Switzerland, Long Beach VA, Statlog: 1,190 rows total), backed by a peer-reviewed Nature Scientific Data paper rather than an anonymous CSV upload. Still found 272 duplicate rows (partly genuine patient overlap between source databases, partly coincidental collisions across only 11 low-cardinality features) and dropped them, landing on 918 clean, real records. This time the feature coefficients aligned with clinical expectation.',
         },
         {
           heading: 'Cross-validation instead of a single split',
-          body: 'With only ~918 rows (and as few as 302 in the first attempt), a single train/test split is unreliable — whichever rows land in the 20% test set can swing results by chance. Used 5-fold stratified cross-validation for every reported number instead, evaluating on the full dataset across folds rather than trusting one split.',
+          body: 'With only ~918 rows (and as few as 302 in the first attempt), a single train/test split is unreliable, since whichever rows land in the 20% test set can swing results by chance. Used 5-fold stratified cross-validation for every reported number instead, evaluating on the full dataset across folds rather than trusting one split.',
         },
         {
           heading: 'A tie, proven statistically',
-          body: 'Random Forest scored marginally higher than Logistic Regression on most metrics (ROC-AUC 0.928 vs 0.925). Rather than declaring a winner off a 0.3-point gap, ran a paired t-test comparing both models\' per-fold ROC-AUC scores: p = 0.419, far above the 0.05 significance threshold — the models are statistically indistinguishable on this dataset. Chose Logistic Regression anyway, specifically because the performance is equivalent and it is the more interpretable, auditable option for a clinical-adjacent tool — a judgment call made explicit and justified, not a default.',
+          body: 'Random Forest scored marginally higher than Logistic Regression on most metrics (ROC-AUC 0.928 vs 0.925). Rather than declaring a winner off a 0.3-point gap, ran a paired t-test comparing both models\' per-fold ROC-AUC scores: p = 0.419, far above the 0.05 significance threshold. The models are statistically indistinguishable on this dataset. Chose Logistic Regression anyway, specifically because the performance is equivalent and it is the more interpretable, auditable option for a clinical-adjacent tool: a judgment call made explicit and justified, not a default.',
         },
       ],
       skillsDemonstrated: [
@@ -200,15 +202,16 @@ export const caseStudies = {
       slug: 'credit-card-fraud-detection',
       title: 'Credit Card Fraud Detection',
       tagline:
-        'Extreme imbalance (0.17% fraud), a SMOTE trap that looked great on paper and failed in practice, and the first project in this series where a complex model actually won.',
+        'Flags fraudulent credit card transactions in real time, even though fraud makes up less than 0.2% of all transactions.',
       categoryKey: 'ml',
       summary:
-        'A fraud detector built on 284K real anonymized transactions, where the interesting story isn\'t the final model — it\'s catching that a textbook SMOTE approach produced a 95% false-alarm rate despite a great ROC-AUC, and fixing it with the right metric and the right technique instead of declaring victory early.',
+        'A fraud detector built on 284K real anonymized transactions, where the interesting story isn\'t the final model. It\'s catching that a textbook SMOTE approach produced a 95% false-alarm rate despite a great ROC-AUC, and fixing it with the right metric and the right technique instead of declaring victory early.',
       github: 'https://github.com/SaudDSxAI/credit-fraud-detection',
       live: '',
       tech: ['Python', 'scikit-learn', 'XGBoost', 'imbalanced-learn', 'pandas', 'FastAPI', 'React', 'Recharts'],
       hasLiveDemo: true,
       demoKey: 'fraud',
+      customResults: 'fraud',
       accentColor: 'amber',
       icon: 'shieldAlert',
       comparisonMetricKey: 'prAuc',
@@ -243,19 +246,19 @@ export const caseStudies = {
       narrative: [
         {
           heading: 'The problem',
-          body: 'Detect fraudulent transactions in 284,807 real, anonymized European credit card transactions (the ULB dataset) — with only 492 labeled as fraud, a 0.17% positive rate. This is an order of magnitude more imbalanced than churn (73/27) or heart disease (roughly balanced), which makes almost every earlier assumption about metrics and evaluation need re-checking rather than reused.',
+          body: 'Detect fraudulent transactions in 284,807 real, anonymized European credit card transactions (the ULB dataset), with only 492 labeled as fraud, a 0.17% positive rate. This is an order of magnitude more imbalanced than churn (73/27) or heart disease (roughly balanced), which makes almost every earlier assumption about metrics and evaluation need re-checking rather than reused.',
         },
         {
           heading: 'A dataset that mostly speaks for itself, and one that doesn\'t',
-          body: 'Features V1-V28 are PCA components the card issuer generated to anonymize the data before release — genuinely useful for modeling, but meaningless to inspect individually (no "V14 represents X" story is possible, unlike tenure or cholesterol in the other two projects). Correlation with the target topped out around -0.33 for the strongest feature, modest by normal standards, but a class-conditional boxplot comparison showed real, visible separation between fraud and non-fraud for the top features despite the muted correlation numbers, since correlation understates non-linear separation.',
+          body: 'Features V1-V28 are PCA components the card issuer generated to anonymize the data before release: genuinely useful for modeling, but meaningless to inspect individually (no "V14 represents X" story is possible, unlike tenure or cholesterol in the other two projects). Correlation with the target topped out around -0.33 for the strongest feature, modest by normal standards, but a class-conditional boxplot comparison showed real, visible separation between fraud and non-fraud for the top features despite the muted correlation numbers, since correlation understates non-linear separation.',
         },
         {
           heading: 'The SMOTE trap',
-          body: 'A standard approach — SMOTE oversampling to fully balance the training set, then Logistic Regression — produced an ROC-AUC of 0.961 and 87% recall, which looks like a strong result. It wasn\'t: at the default 0.5 threshold, precision was 0.05 — 19 false alarms for every real fraud caught, which would be operationally unusable in a real fraud team. The cause: SMOTE\'s full 1:1 rebalancing trains the model as if fraud were 50% of transactions instead of 0.17%, shifting the decision boundary far more aggressively toward "fraud" than the real world warrants. Tuning the classification threshold recovered a workable 50% precision at 79% recall — a large improvement, but still not the final answer.',
+          body: 'A standard approach, SMOTE oversampling to fully balance the training set, then Logistic Regression, produced an ROC-AUC of 0.961 and 87% recall, which looks like a strong result. It wasn\'t: at the default 0.5 threshold, precision was 0.05, meaning 19 false alarms for every real fraud caught, which would be operationally unusable in a real fraud team. The cause: SMOTE\'s full 1:1 rebalancing trains the model as if fraud were 50% of transactions instead of 0.17%, shifting the decision boundary far more aggressively toward "fraud" than the real world warrants. Tuning the classification threshold recovered a workable 50% precision at 79% recall, a large improvement, but still not the final answer.',
         },
         {
           heading: 'Testing whether SMOTE was even the right tool',
-          body: 'Rather than accepting a tuned-but-mediocre SMOTE model, four different imbalance-handling strategies were benchmarked head-to-head using PR-AUC (a far more honest metric than ROC-AUC at this level of imbalance, since ROC-AUC\'s false-positive-rate denominator is so large that it stays deceptively high even with many false alarms): light SMOTE, class-weighting alone, Random Forest, and XGBoost with scale_pos_weight. XGBoost won decisively (PR-AUC 0.824 vs 0.67-0.68 for both linear approaches) — the first project in this series where a complex model beat simpler ones by a wide margin, rather than tying or losing. Dropping SMOTE entirely in favor of XGBoost\'s native class-weighting mechanism also outperformed every SMOTE variant tested, a useful, slightly counter-intuitive finding: the "obvious" imbalance-handling technique isn\'t always the best one.',
+          body: 'Rather than accepting a tuned-but-mediocre SMOTE model, four different imbalance-handling strategies were benchmarked head-to-head using PR-AUC (a far more honest metric than ROC-AUC at this level of imbalance, since ROC-AUC\'s false-positive-rate denominator is so large that it stays deceptively high even with many false alarms): light SMOTE, class-weighting alone, Random Forest, and XGBoost with scale_pos_weight. XGBoost won decisively (PR-AUC 0.824 vs 0.67-0.68 for both linear approaches), the first project in this series where a complex model beat simpler ones by a wide margin, rather than tying or losing. Dropping SMOTE entirely in favor of XGBoost\'s native class-weighting mechanism also outperformed every SMOTE variant tested, a useful, slightly counter-intuitive finding: the "obvious" imbalance-handling technique isn\'t always the best one.',
         },
         {
           heading: 'The final operating point',
@@ -276,15 +279,16 @@ export const caseStudies = {
       slug: 'house-price-prediction',
       title: 'House Price Prediction',
       tagline:
-        'The first regression project in this series — 216 features, meaningful-not-missing data, and a one-hot encoding artifact caught by checking value_counts before trusting a coefficient.',
+        "Estimates a home's sale price from its size, location, condition, and other features.",
       categoryKey: 'ml',
       summary:
-        'Predicting real Ames, Iowa home sale prices from 79 raw features — the first project here where the target is a continuous number, not a category, which changes the metrics, the encoding strategy, and even how "missing data" gets interpreted.',
+        'Predicting real Ames, Iowa home sale prices from 79 raw features, the first project here where the target is a continuous number, not a category, which changes the metrics, the encoding strategy, and even how "missing data" gets interpreted.',
       github: 'https://github.com/SaudDSxAI/house-price-prediction',
       live: '',
       tech: ['Python', 'scikit-learn', 'XGBoost', 'pandas', 'FastAPI', 'React', 'Recharts'],
       hasLiveDemo: true,
       demoKey: 'house',
+      customResults: 'house',
       accentColor: 'emerald',
       icon: 'home',
       comparisonMetricKey: 'r2',
@@ -315,49 +319,50 @@ export const caseStudies = {
       ],
       narrative: [
         {
-          heading: 'The problem — and the first regression project here',
-          body: 'Predict real home sale prices in Ames, Iowa (2,930 houses, 79 raw features) from the classic Kaggle "House Prices" dataset. Every prior project here was classification — predicting a category. This is the first with a continuous target, which changes the toolkit: no precision/recall/F1, no ROC curve; instead RMSE, R², and MAE, and a completely different set of models (Linear/Ridge/Lasso instead of Logistic Regression — using Logistic Regression here would have been a real conceptual error, not just an unoriginal choice, since it is built for categories, not continuous numbers).',
+          heading: 'The problem, and the first regression project here',
+          body: 'Predict real home sale prices in Ames, Iowa (2,930 houses, 79 raw features) from the classic Kaggle "House Prices" dataset. Every prior project here was classification, predicting a category. This is the first with a continuous target, which changes the toolkit: no precision/recall/F1, no ROC curve; instead RMSE, R², and MAE, and a completely different set of models (Linear/Ridge/Lasso instead of Logistic Regression: using Logistic Regression here would have been a real conceptual error, not just an unoriginal choice, since it is built for categories, not continuous numbers).',
         },
         {
           heading: 'Missing data that isn\'t actually missing',
-          body: 'Roughly 20 columns had substantial "missing" values — but nearly all of it was meaningful, not an error. Pool QC is empty for 2,917 of 2,930 houses simply because almost no house has a pool; Bsmt Qual, Garage Type, and Fireplace Qu show the same pattern, confirmed by cross-checking that the corresponding square-footage columns were genuinely 0 for those same rows, not separately missing. Filling these with "None" (categorical) or 0 (numeric) rather than dropping rows or imputing a guess preserved real signal instead of discarding it. Only one column, Lot Frontage, was genuinely missing data, imputed using the neighborhood median rather than a single global value, since frontage varies systematically by area.',
+          body: 'Roughly 20 columns had substantial "missing" values, but nearly all of it was meaningful, not an error. Pool QC is empty for 2,917 of 2,930 houses simply because almost no house has a pool; Bsmt Qual, Garage Type, and Fireplace Qu show the same pattern, confirmed by cross-checking that the corresponding square-footage columns were genuinely 0 for those same rows, not separately missing. Filling these with "None" (categorical) or 0 (numeric) rather than dropping rows or imputing a guess preserved real signal instead of discarding it. Only one column, Lot Frontage, was genuinely missing data, imputed using the neighborhood median rather than a single global value, since frontage varies systematically by area.',
         },
         {
-          heading: 'Ordinal vs. nominal — a new encoding decision',
+          heading: 'Ordinal vs. nominal: a new encoding decision',
           body: 'About half the categorical columns are ordinal quality scales (Po < Fa < TA < Gd < Ex) rather than true unordered categories. One-hot encoding those would discard real ranking information for no benefit, so they were mapped to ordered integers instead; the remaining ~25 genuinely nominal columns (Neighborhood, Foundation, Sale Type) were one-hot encoded as usual, producing 216 total features from the original 79.',
         },
         {
           heading: 'Fixing the target\'s skew before modeling',
-          body: 'SalePrice is right-skewed (skewness 1.74) — a small number of very expensive homes stretch the distribution, since price has a hard floor at zero but no ceiling. Modeling log(SalePrice) instead of raw price (standard practice for this exact competition) made the target far more symmetric and meant prediction errors become roughly proportional to price rather than a fixed dollar amount — a 10% miss means the same thing whether the house is worth $100K or $700K, which a raw-dollar model wouldn\'t reflect.',
+          body: 'SalePrice is right-skewed (skewness 1.74). A small number of very expensive homes stretch the distribution, since price has a hard floor at zero but no ceiling. Modeling log(SalePrice) instead of raw price (standard practice for this exact competition) made the target far more symmetric and meant prediction errors become roughly proportional to price rather than a fixed dollar amount. A 10% miss means the same thing whether the house is worth $100K or $700K, which a raw-dollar model wouldn\'t reflect.',
         },
         {
-          heading: 'Another statistical tie — and a coefficient that didn\'t survive scrutiny',
-          body: 'XGBoost scored highest numerically (R² 0.874 vs. Lasso\'s 0.856), but a paired t-test across cross-validation folds came back p = 0.215 — not statistically significant, the same conclusion as the heart disease project. Lasso was chosen for the tie, plus a concrete practical bonus: it automatically zeroed out 68 of 216 coefficients, in effect doing feature selection on its own. One coefficient needed a second look before trusting it: Roof Matl (composite shingle) came out as the single strongest predictor, which made no sense on its face — checking value_counts showed composite shingle roofing on 2,887 of 2,930 houses, with the one-hot reference category dropped during encoding being a roof material used by exactly one house. That coefficient is really measuring "everyone" against a single outlier house, not a genuine roofing effect — a real artifact of one-hot encoding a near-constant column with an ultra-rare reference category, caught by checking the underlying category counts rather than taking the coefficient ranking at face value.',
+          heading: 'Another statistical tie, and a coefficient that didn\'t survive scrutiny',
+          body: 'XGBoost scored highest numerically (R² 0.874 vs. Lasso\'s 0.856), but a paired t-test across cross-validation folds came back p = 0.215, not statistically significant, the same conclusion as the heart disease project. Lasso was chosen for the tie, plus a concrete practical bonus: it automatically zeroed out 68 of 216 coefficients, in effect doing feature selection on its own. One coefficient needed a second look before trusting it: Roof Matl (composite shingle) came out as the single strongest predictor, which made no sense on its face. Checking value_counts showed composite shingle roofing on 2,887 of 2,930 houses, with the one-hot reference category dropped during encoding being a roof material used by exactly one house. That coefficient is really measuring "everyone" against a single outlier house, not a genuine roofing effect: a real artifact of one-hot encoding a near-constant column with an ultra-rare reference category, caught by checking the underlying category counts rather than taking the coefficient ranking at face value.',
         },
       ],
       skillsDemonstrated: [
         'Correctly distinguishing regression from classification at the model-selection level, not just swapping datasets',
         'Recognizing meaningful missingness (NA = "doesn\'t have this feature") vs. genuine missing data, and treating them differently',
         'Neighborhood-conditional imputation instead of a single global fill value',
-        'Ordinal vs. nominal categorical encoding — preserving rank information instead of discarding it via blanket one-hot encoding',
+        'Ordinal vs. nominal categorical encoding, preserving rank information instead of discarding it via blanket one-hot encoding',
         'Log-transforming a skewed regression target and explaining the practical reason (proportional vs. absolute error)',
         'Diagnosing a one-hot encoding artifact from an implausible coefficient by checking raw category counts, not trusting the ranking blindly',
-        'Paired statistical testing to avoid overtrusting a small numeric gap between models — second time in this series, reinforcing it as a habit, not a one-off',
+        'Paired statistical testing to avoid overtrusting a small numeric gap between models, the second time in this series, reinforcing it as a habit, not a one-off',
       ],
     },
     {
       slug: 'sales-demand-forecasting',
       title: 'Sales Demand Forecasting',
       tagline:
-        'The first project here that predicts the future instead of scoring a snapshot — and where two tied, heavier models lost to a simpler one once deployment cost got weighed in.',
+        "Forecasts next month's retail sales using four years of past sales history.",
       categoryKey: 'ml',
       summary:
-        'Forecasting monthly retail sales from 4 years of real transaction history — a genuinely different problem shape than every prior project: no rows to classify or price, just a sequence of months where the ordering itself is the signal.',
+        'Forecasting monthly retail sales from 4 years of real transaction history, a genuinely different problem shape than every prior project: no rows to classify or price, just a sequence of months where the ordering itself is the signal.',
       github: 'https://github.com/SaudDSxAI/sales-forecasting',
       live: '',
       tech: ['Python', 'Prophet', 'statsmodels (SARIMA)', 'pandas', 'NumPy', 'FastAPI', 'React', 'Recharts'],
       hasLiveDemo: true,
       demoKey: 'sales',
+      customResults: 'sales',
       accentColor: 'violet',
       icon: 'trendingUp',
       comparisonMetricKey: 'accuracy',
@@ -385,20 +390,20 @@ export const caseStudies = {
       ],
       narrative: [
         {
-          heading: 'The problem — predicting forward, not scoring a snapshot',
-          body: 'Forecast next month\'s retail sales from ~4 years of real order history (Superstore dataset, 9,800 transactions, 2015-2018). Every prior project here answered "given this row, what\'s the label/price" — a single snapshot in time. This one is different: the answer depends on the whole sequence leading up to it, and the evaluation has to respect time order too — shuffling months into a random train/test split would leak the future into training, so the split is strictly the last 6 months held out chronologically.',
+          heading: 'The problem: predicting forward, not scoring a snapshot',
+          body: 'Forecast next month\'s retail sales from ~4 years of real order history (Superstore dataset, 9,800 transactions, 2015-2018). Every prior project here answered "given this row, what\'s the label/price," a single snapshot in time. This one is different: the answer depends on the whole sequence leading up to it, and the evaluation has to respect time order too. Shuffling months into a random train/test split would leak the future into training, so the split is strictly the last 6 months held out chronologically.',
         },
         {
           heading: 'From transactions to a real time series',
-          body: 'The raw data is one row per order line item, not one row per day — the first real step was aggregating it into a proper regular time series. Daily aggregation was considered and rejected: with under 10,000 orders spread across 4 years, most individual days would be sparse or empty, producing a noisy series. Monthly aggregation (via pandas resample, which correctly fills order-free periods with 0 rather than silently dropping them) gave a clean 48-point series.',
+          body: 'The raw data is one row per order line item, not one row per day. The first real step was aggregating it into a proper regular time series. Daily aggregation was considered and rejected: with under 10,000 orders spread across 4 years, most individual days would be sparse or empty, producing a noisy series. Monthly aggregation (via pandas resample, which correctly fills order-free periods with 0 rather than silently dropping them) gave a clean 48-point series.',
         },
         {
           heading: 'Confirming the pattern before modeling it',
-          body: 'A formal seasonal decomposition (trend/seasonal/residual) confirmed what a first look at the numbers suggested: a genuine upward trend (roughly $888/month growth on average) plus a strong, consistent yearly cycle — November and December reliably far above trend (holiday shopping), February reliably the weakest month. The leftover residual looked like real noise, not a missed pattern, which is what you want to see before trusting the decomposition.',
+          body: 'A formal seasonal decomposition (trend/seasonal/residual) confirmed what a first look at the numbers suggested: a genuine upward trend (roughly $888/month growth on average) plus a strong, consistent yearly cycle, with November and December reliably far above trend (holiday shopping) and February reliably the weakest month. The leftover residual looked like real noise, not a missed pattern, which is what you want to see before trusting the decomposition.',
         },
         {
           heading: 'Two tied models, then a deployment-driven third choice',
-          body: 'Prophet and SARIMA — both purpose-built for trend-plus-seasonality data, unlike anything used in the earlier projects — landed within $100 of each other on the same held-out 6 months (MAE $14,501 vs $14,601, both ~17.8% average error). With only 6 test points, there isn\'t enough data for a meaningful significance test the way earlier projects used one; the practical tiebreaker was that SARIMA threw a data-sufficiency warning on the seasonal component (three-plus years isn\'t quite enough to fully trust it) while Prophet didn\'t, favoring Prophet for the analysis. For deployment, a further consideration took over: both models carry real dependency weight (Prophet needs a compiled statistical backend; SARIMA needs a heavier statistics library) for a tied-accuracy choice. The deployed API instead implements the same core idea directly — a fitted linear trend plus a repeating monthly seasonal adjustment — with zero extra dependencies, and it verified at 16.7% average error on the identical test months, competitive with both heavier options.',
+          body: 'Prophet and SARIMA, both purpose-built for trend-plus-seasonality data, unlike anything used in the earlier projects, landed within $100 of each other on the same held-out 6 months (MAE $14,501 vs $14,601, both ~17.8% average error). With only 6 test points, there isn\'t enough data for a meaningful significance test the way earlier projects used one; the practical tiebreaker was that SARIMA threw a data-sufficiency warning on the seasonal component (three-plus years isn\'t quite enough to fully trust it) while Prophet didn\'t, favoring Prophet for the analysis. For deployment, a further consideration took over: both models carry real dependency weight (Prophet needs a compiled statistical backend; SARIMA needs a heavier statistics library) for a tied-accuracy choice. The deployed API instead implements the same core idea directly, a fitted linear trend plus a repeating monthly seasonal adjustment, with zero extra dependencies, and it verified at 16.7% average error on the identical test months, competitive with both heavier options.',
         },
       ],
       skillsDemonstrated: [
@@ -415,15 +420,16 @@ export const caseStudies = {
       slug: 'movie-recommendation-system',
       title: 'Movie Recommendation System',
       tagline:
-        'Collaborative filtering that barely beat a trivial baseline — and the honest write-up says so, instead of dressing up a marginal win.',
+        'Recommends movies to watch based on what similar users have rated highly.',
       categoryKey: 'ml',
       summary:
-        'A MovieLens-based recommender (100K ratings, 610 users) — the first project in this series with no label to predict at all, just patterns in who rated what. The interesting result isn\'t a clean win: the "smart" model only narrowly beat guessing everyone\'s average, a real finding worth explaining rather than hiding.',
+        'A MovieLens-based recommender (100K ratings, 610 users), the first project in this series with no label to predict at all, just patterns in who rated what. The interesting result isn\'t a clean win: the "smart" model only narrowly beat guessing everyone\'s average, a real finding worth explaining rather than hiding.',
       github: 'https://github.com/SaudDSxAI/movie-recommender',
       live: '',
       tech: ['Python', 'scikit-surprise', 'scikit-learn', 'pandas', 'FastAPI', 'React'],
       hasLiveDemo: true,
       demoKey: 'movies',
+      customResults: 'movies',
       accentColor: 'fuchsia',
       icon: 'clapperboard',
       comparisonMetricKey: 'accuracy',
@@ -442,30 +448,30 @@ export const caseStudies = {
       narrative: [
         {
           heading: 'A genuinely different kind of problem',
-          body: 'Recommend movies from the MovieLens dataset (100,836 ratings, 610 users, 9,742 movies). Unlike every prior project, there\'s no target column to predict — no churn label, no price, no future month. The task is to find structure in who rated what, from a matrix that\'s 98.3% empty (each user has rated under 2% of all movies), and use that structure to guess what an empty cell might have been.',
+          body: 'Recommend movies from the MovieLens dataset (100,836 ratings, 610 users, 9,742 movies). Unlike every prior project, there\'s no target column to predict: no churn label, no price, no future month. The task is to find structure in who rated what, from a matrix that\'s 98.3% empty (each user has rated under 2% of all movies), and use that structure to guess what an empty cell might have been.',
         },
         {
           heading: 'The long tail problem',
-          body: 'Every user in this dataset has at least 20 ratings (MovieLens pre-filters for that), but movies are a different story — the median movie has just 3 ratings, and half of all 9,742 movies have essentially no signal to learn from. Filtering to movies with 10+ ratings cut the movie count by 77% (down to 2,269) while keeping 81% of the actual rating data — confirmation that a small number of popular movies account for most of the real signal, and trying to model the barely-rated long tail would mostly add noise.',
+          body: 'Every user in this dataset has at least 20 ratings (MovieLens pre-filters for that), but movies are a different story. The median movie has just 3 ratings, and half of all 9,742 movies have essentially no signal to learn from. Filtering to movies with 10+ ratings cut the movie count by 77% (down to 2,269) while keeping 81% of the actual rating data, confirmation that a small number of popular movies account for most of the real signal, and trying to model the barely-rated long tail would mostly add noise.',
         },
         {
           heading: 'A win that barely counts as one',
-          body: 'SVD (matrix factorization — the standard collaborative filtering technique) scored RMSE 0.8468, beating a baseline-only model (0.8475, which only accounts for "some users rate high" and "some movies get rated high," no deeper pattern-finding) by a razor-thin margin, and clearly beating a KNN similar-users approach (0.9001, the worst of the three). SVD is the right pick on evidence, but the honest headline is that with only 81K ratings, there wasn\'t much room for a more sophisticated method to meaningfully outperform the simple one — a real, worth-stating limitation rather than a result to spin as a clean win.',
+          body: 'SVD (matrix factorization, the standard collaborative filtering technique) scored RMSE 0.8468, beating a baseline-only model (0.8475, which only accounts for "some users rate high" and "some movies get rated high," no deeper pattern-finding) by a razor-thin margin, and clearly beating a KNN similar-users approach (0.9001, the worst of the three). SVD is the right pick on evidence, but the honest headline is that with only 81K ratings, there wasn\'t much room for a more sophisticated method to meaningfully outperform the simple one, a real, worth-stating limitation rather than a result to spin as a clean win.',
         },
         {
           heading: 'What the recommendations actually looked like',
-          body: 'Sanity-checking with real output mattered here: asking the model for a specific user\'s top picks returned genuinely excellent, broadly-acclaimed films (Shawshank Redemption, Seven Samurai, Spirited Away) — good movies, but ones that look more like "generally beloved classics" than picks tailored to that one person\'s specific taste. That observation lines up with the RMSE finding: a model only marginally ahead of a non-personalized baseline should be expected to lean on broad appeal rather than sharp personalization, and it did.',
+          body: 'Sanity-checking with real output mattered here: asking the model for a specific user\'s top picks returned genuinely excellent, broadly-acclaimed films (Shawshank Redemption, Seven Samurai, Spirited Away), good movies, but ones that look more like "generally beloved classics" than picks tailored to that one person\'s specific taste. That observation lines up with the RMSE finding: a model only marginally ahead of a non-personalized baseline should be expected to lean on broad appeal rather than sharp personalization, and it did.',
         },
         {
           heading: 'From rating prediction to item similarity',
-          body: 'The deployed live demo uses a different, more interactive framing than the analysis: instead of predicting a specific existing user\'s ratings, it computes item-item similarity from the same matrix factorization (via scikit-learn\'s TruncatedSVD, avoiding scikit-surprise as a production dependency) — pick movies you actually like, get real similar movies back. Checking it against Toy Story returned Aladdin, Lion King, Beauty and the Beast, and Toy Story 2 — a far more immediately convincing result than the rating-prediction numbers alone would suggest, since genre and style patterns come through clearly in the item similarity even though personalized rating prediction was only marginally better than guessing.',
+          body: 'The deployed live demo uses a different, more interactive framing than the analysis: instead of predicting a specific existing user\'s ratings, it computes item-item similarity from the same matrix factorization (via scikit-learn\'s TruncatedSVD, avoiding scikit-surprise as a production dependency). Pick movies you actually like, get real similar movies back. Checking it against Toy Story returned Aladdin, Lion King, Beauty and the Beast, and Toy Story 2, a far more immediately convincing result than the rating-prediction numbers alone would suggest, since genre and style patterns come through clearly in the item similarity even though personalized rating prediction was only marginally better than guessing.',
         },
       ],
       skillsDemonstrated: [
         'Understanding an unlabeled, structure-finding problem (collaborative filtering) as distinct from every supervised problem in this series',
         'Recognizing and quantifying data sparsity as the defining challenge of a problem, before choosing a technique',
         'Long-tail filtering with an explicit tradeoff check (rows lost vs. movies lost)',
-        'Reporting a marginal win honestly instead of overstating it — the model beat the baseline, but barely, and the write-up says so',
+        'Reporting a marginal win honestly instead of overstating it: the model beat the baseline, but barely, and the write-up says so',
         'Qualitative sanity-checking of model output (reading actual recommendations) to catch a limitation that the RMSE number alone didn\'t make obvious',
         'Reimplementing a technique with lighter dependencies for deployment (TruncatedSVD via scikit-learn instead of scikit-surprise), consistent with the same tradeoff made in the sales forecasting project',
         'Choosing a different, more interactive live-demo framing (item similarity) than the analysis technique (rating prediction) when it better serves the audience',
@@ -477,15 +483,16 @@ export const caseStudies = {
       slug: 'movie-review-sentiment-analysis',
       title: 'Movie Review Sentiment Classifier',
       tagline:
-        'A pretrained-embedding LSTM trained from scratch on 50,000 reviews — and an honest comparison against a classical baseline that beat it.',
+        'Classifies movie reviews as positive or negative, and compares a deep learning model against a simpler classical one.',
       categoryKey: 'dl',
       summary:
-        'A sentiment classifier built on 50,000 IMDB movie reviews, using GloVe pretrained word embeddings feeding into an LSTM trained with proper checkpointing to avoid overfitting. Deployed alongside a classical TF-IDF + Logistic Regression baseline for a fair comparison — which the baseline actually won, a real and reported finding rather than a hidden one.',
+        'A sentiment classifier built on 50,000 IMDB movie reviews, using GloVe pretrained word embeddings feeding into an LSTM trained with proper checkpointing to avoid overfitting. Deployed alongside a classical TF-IDF + Logistic Regression baseline for a fair comparison, which the baseline actually won, a real and reported finding rather than a hidden one.',
       github: 'https://github.com/SaudDSxAI/sentiment-classifier',
       live: '',
       tech: ['Python', 'PyTorch', 'GloVe Embeddings', 'LSTM', 'scikit-learn', 'FastAPI', 'React'],
       hasLiveDemo: true,
       demoKey: 'sentiment',
+      customResults: 'sentiment',
       accentColor: 'indigo',
       icon: 'messageSquareText',
       comparisonMetricKey: 'accuracy',
@@ -505,19 +512,19 @@ export const caseStudies = {
       narrative: [
         {
           heading: 'The problem',
-          body: 'Classify 50,000 IMDB movie reviews as positive or negative — a perfectly balanced binary classification dataset (25,000 of each), with review lengths ranging from 4 to 2,470 words. The goal for this project specifically was to prove out a real deep learning skill set: using pretrained embeddings as a transfer-learning foundation and training a sequence model (LSTM) on top, as opposed to the tree-based and linear models used throughout the rest of this portfolio\'s ML case studies.',
+          body: 'Classify 50,000 IMDB movie reviews as positive or negative, a perfectly balanced binary classification dataset (25,000 of each), with review lengths ranging from 4 to 2,470 words. The goal for this project specifically was to prove out a real deep learning skill set: using pretrained embeddings as a transfer-learning foundation and training a sequence model (LSTM) on top, as opposed to the tree-based and linear models used throughout the rest of this portfolio\'s ML case studies.',
         },
         {
           heading: 'Approach',
-          body: 'Reviews were cleaned (HTML tags stripped, lowercased, non-letters removed) and tokenized into a 40,000-word vocabulary, covering the vast majority of actual word occurrences in the training data. Each word was mapped to a pretrained 100-dimensional GloVe vector (91.1% vocabulary coverage) — these vectors were frozen, not fine-tuned, so the model starts with real word meaning instead of learning it from scratch on a comparatively small dataset. On top of that, a single-layer LSTM reads each 200-word-padded review in sequence and a final linear layer outputs a positive/negative score.',
+          body: 'Reviews were cleaned (HTML tags stripped, lowercased, non-letters removed) and tokenized into a 40,000-word vocabulary, covering the vast majority of actual word occurrences in the training data. Each word was mapped to a pretrained 100-dimensional GloVe vector (91.1% vocabulary coverage). These vectors were frozen, not fine-tuned, so the model starts with real word meaning instead of learning it from scratch on a comparatively small dataset. On top of that, a single-layer LSTM reads each 200-word-padded review in sequence and a final linear layer outputs a positive/negative score.',
         },
         {
           heading: 'Catching overfitting with real checkpointing, not guesswork',
-          body: 'An earlier training run showed the exact overfitting signature: training loss kept falling for 15 straight epochs while test accuracy peaked at epoch 10 (86.7%) and then declined as the model kept training past that point, becoming increasingly biased toward predicting "positive." Because that run didn\'t save intermediate weights, the best-performing version was unrecoverable once training continued past it — a real, common mistake. The fix was proper methodology: retrain from a fresh model, evaluate on the test set after every epoch, and only persist the weights when test accuracy actually improves. That run automatically landed on epoch 12 as the true best checkpoint (87.28%), regardless of what happened in the noisier epochs after it.',
+          body: 'An earlier training run showed the exact overfitting signature: training loss kept falling for 15 straight epochs while test accuracy peaked at epoch 10 (86.7%) and then declined as the model kept training past that point, becoming increasingly biased toward predicting "positive." Because that run didn\'t save intermediate weights, the best-performing version was unrecoverable once training continued past it, a real, common mistake. The fix was proper methodology: retrain from a fresh model, evaluate on the test set after every epoch, and only persist the weights when test accuracy actually improves. That run automatically landed on epoch 12 as the true best checkpoint (87.28%), regardless of what happened in the noisier epochs after it.',
         },
         {
           heading: 'An honest result: the simple baseline won',
-          body: "For a fair comparison — the same discipline applied to every project in this portfolio — a classical TF-IDF + Logistic Regression baseline was trained on the identical train/test split. It scored 89.7% accuracy, beating the LSTM's 87.3%. This is a well-known, real phenomenon in NLP: bag-of-words models are extremely strong on sentiment tasks, and a fairly small, single-layer LSTM with frozen embeddings and modest training doesn't automatically beat one. Closing that gap would need a bigger architecture (bidirectional layers, fine-tuned embeddings, more epochs) or a pretrained transformer — outside the scope of what this project set out to demonstrate. The LSTM is still what's deployed below, because the point of this project was proving out the transfer-learning-plus-sequence-model technique, not chasing the top accuracy number by any means necessary — and reporting the baseline's win, rather than omitting it, is the more useful engineering signal.",
+          body: "For a fair comparison, the same discipline applied to every project in this portfolio, a classical TF-IDF + Logistic Regression baseline was trained on the identical train/test split. It scored 89.7% accuracy, beating the LSTM's 87.3%. This is a well-known, real phenomenon in NLP: bag-of-words models are extremely strong on sentiment tasks, and a fairly small, single-layer LSTM with frozen embeddings and modest training doesn't automatically beat one. Closing that gap would need a bigger architecture (bidirectional layers, fine-tuned embeddings, more epochs) or a pretrained transformer, outside the scope of what this project set out to demonstrate. The LSTM is still what's deployed below, because the point of this project was proving out the transfer-learning-plus-sequence-model technique, not chasing the top accuracy number by any means necessary, and reporting the baseline's win, rather than omitting it, is the more useful engineering signal.",
         },
       ],
       skillsDemonstrated: [
@@ -532,19 +539,20 @@ export const caseStudies = {
     },
     {
       slug: 'network-anomaly-autoencoder',
-      title: 'Network Anomaly Detector — Unsupervised Autoencoder',
+      title: 'Network Anomaly Detector: Unsupervised Autoencoder',
       tagline:
-        "A PyTorch autoencoder trained on zero labeled attacks — only normal network traffic — that still catches 85% of real intrusions in a held-out test set it's never seen.",
+        'Flags unusual network traffic as a possible intrusion, trained only on normal traffic with no labeled attacks.',
       categoryKey: 'dl',
       summary:
-        "An unsupervised deep learning project, deliberately different in kind from every other case study here: instead of learning to classify normal vs. attack traffic from labeled examples, this autoencoder only ever practices reconstructing normal NSL-KDD network connections. On 22,544 held-out test connections (a genuine mix of normal and real intrusion types), it separates the two with a 0.95 ROC-AUC, 92.6% precision, and 85.2% recall — without a single labeled attack ever entering training.",
+        "An unsupervised deep learning project, deliberately different in kind from every other case study here: instead of learning to classify normal vs. attack traffic from labeled examples, this autoencoder only ever practices reconstructing normal NSL-KDD network connections. On 22,544 held-out test connections (a genuine mix of normal and real intrusion types), it separates the two with a 0.95 ROC-AUC, 92.6% precision, and 85.2% recall, without a single labeled attack ever entering training.",
       github: '',
       live: '',
       tech: ['PyTorch', 'scikit-learn', 'pandas', 'NSL-KDD Dataset', 'FastAPI', 'React'],
       hasLiveDemo: true,
       demoKey: 'anomaly',
+      customResults: 'anomaly',
       liveDemoHeading: 'Try it live',
-      liveDemoBlurb: 'Real held-out network connections, including two the model actually got wrong — run any of them through the autoencoder.',
+      liveDemoBlurb: 'Real held-out network connections, including two the model actually got wrong. Run any of them through the autoencoder.',
       accentColor: 'gray',
       icon: 'radar',
       heroMetrics: [
@@ -577,27 +585,27 @@ export const caseStudies = {
       narrative: [
         {
           heading: 'The problem',
-          body: "Every other model-benchmarking project in this portfolio is supervised — trained on examples explicitly labeled 'this one is fraud,' 'this one churned.' Real intrusion detection often can't work that way: new attack types don't come with labeled training examples, almost by definition. This project deliberately drops the labels during training and asks a different question: can a model learn what normal network traffic looks like well enough that anything unusual — including attack types it's never been shown — stands out on its own?",
+          body: "Every other model-benchmarking project in this portfolio is supervised, trained on examples explicitly labeled 'this one is fraud,' 'this one churned.' Real intrusion detection often can't work that way: new attack types don't come with labeled training examples, almost by definition. This project deliberately drops the labels during training and asks a different question: can a model learn what normal network traffic looks like well enough that anything unusual, including attack types it's never been shown, stands out on its own?",
         },
         {
           heading: 'What an autoencoder is actually doing here',
-          body: "The network is shaped like an hourglass: an encoder squeezes each 122-number connection record down to just 8 numbers (the bottleneck), and a decoder tries to expand those 8 numbers back into the original 122. Trained only on normal traffic, it gets very good at that specific reconstruction job — normal connections come back out almost unchanged. Traffic patterns it's never seen (attacks) don't compress and rebuild nearly as cleanly, so the reconstruction error itself becomes the anomaly signal, with no attack labels required anywhere in training.",
+          body: "The network is shaped like an hourglass: an encoder squeezes each 122-number connection record down to just 8 numbers (the bottleneck), and a decoder tries to expand those 8 numbers back into the original 122. Trained only on normal traffic, it gets very good at that specific reconstruction job, and normal connections come back out almost unchanged. Traffic patterns it's never seen (attacks) don't compress and rebuild nearly as cleanly, so the reconstruction error itself becomes the anomaly signal, with no attack labels required anywhere in training.",
         },
         {
           heading: 'A genuinely painful environment bug, included honestly',
-          body: 'Midway through training, this exact environment hit a real, multi-layered dependency conflict: PyTorch compiled against NumPy 1.x broke under NumPy 2.x, downgrading NumPy then broke SciPy (which had already moved to requiring NumPy 2.x), and downgrading SciPy then broke scikit-learn for the same reason. Patching each broken import one at a time just kept surfacing the next one underneath it. The actual fix was a full clean rebuild — deleting the virtual environment and reinstalling numpy, scipy, scikit-learn, and torch together in one pinned, compatible command instead of layering fixes onto an already-inconsistent set of packages.',
+          body: 'Midway through training, this exact environment hit a real, multi-layered dependency conflict: PyTorch compiled against NumPy 1.x broke under NumPy 2.x, downgrading NumPy then broke SciPy (which had already moved to requiring NumPy 2.x), and downgrading SciPy then broke scikit-learn for the same reason. Patching each broken import one at a time just kept surfacing the next one underneath it. The actual fix was a full clean rebuild: deleting the virtual environment and reinstalling numpy, scipy, scikit-learn, and torch together in one pinned, compatible command instead of layering fixes onto an already-inconsistent set of packages.',
         },
         {
           heading: 'Setting the threshold without cheating',
-          body: "The cutoff for 'this reconstructs badly enough to be suspicious' was set using only a held-out slice of normal training data (the 95th percentile of its reconstruction error) — never the test set's labels. Picking a threshold by peeking at test labels would inflate the reported numbers in a way that wouldn't hold up on genuinely new data, so the threshold-setting step never sees a single test-set row.",
+          body: "The cutoff for 'this reconstructs badly enough to be suspicious' was set using only a held-out slice of normal training data (the 95th percentile of its reconstruction error), never the test set's labels. Picking a threshold by peeking at test labels would inflate the reported numbers in a way that wouldn't hold up on genuinely new data, so the threshold-setting step never sees a single test-set row.",
         },
         {
           heading: 'Real results, including two the model got wrong',
-          body: "On the full 22,544-connection test set — a real mix of normal traffic and several actual NSL-KDD intrusion types — the model reaches a 0.95 ROC-AUC, 92.6% precision, and 85.2% recall. The live demo below includes two deliberately-kept misclassifications from that same test set: a normal UDP connection flagged as suspicious (a false alarm), and — more interesting — an actual attack that reconstructed with almost no error at all, meaning it happened to resemble normal traffic closely enough to slip past undetected. That second case is the honest limit of this approach: an unsupervised model can only flag what looks different from normal, not attacks clever enough to look ordinary.",
+          body: "On the full 22,544-connection test set, a real mix of normal traffic and several actual NSL-KDD intrusion types, the model reaches a 0.95 ROC-AUC, 92.6% precision, and 85.2% recall. The live demo below includes two deliberately-kept misclassifications from that same test set: a normal UDP connection flagged as suspicious (a false alarm), and, more interesting, an actual attack that reconstructed with almost no error at all, meaning it happened to resemble normal traffic closely enough to slip past undetected. That second case is the honest limit of this approach: an unsupervised model can only flag what looks different from normal, not attacks clever enough to look ordinary.",
         },
       ],
       skillsDemonstrated: [
-        'Unsupervised deep learning — training exclusively on normal data and using reconstruction error as the anomaly signal, with zero labeled attacks used in training',
+        'Unsupervised deep learning: training exclusively on normal data and using reconstruction error as the anomaly signal, with zero labeled attacks used in training',
         'Correct autoencoder architecture design (a real bottleneck that forces compression, not just a wide network that could trivially copy its input)',
         'Threshold selection using only held-out normal data, avoiding any test-label leakage into the decision rule',
         'Diagnosing and fixing a real, cascading dependency conflict (NumPy/SciPy/scikit-learn/PyTorch version mismatches) with a clean environment rebuild rather than patchwork fixes',
@@ -607,12 +615,12 @@ export const caseStudies = {
     },
     {
       slug: 'diffusion-vs-gan-image-generation',
-      title: 'Diffusion vs. GAN — Two Ways to Generate an Image',
+      title: 'Diffusion vs. GAN: Two Ways to Generate an Image',
       tagline:
-        'A DDPM and a DCGAN, both built from scratch and trained on the same 60,000-image MNIST set — including a real, well-documented GAN failure mode where the loss numbers said one thing and the actual images said another.',
+        'Generates handwritten digit images from scratch, comparing two different approaches: diffusion models and GANs.',
       categoryKey: 'dl',
       summary:
-        'Two generative models built from scratch on the same task — generating handwritten digits — specifically to compare how they work, not just read about the difference. A DDPM (denoising diffusion) learns to reverse a noising process over 300 steps with a custom U-Net; a DCGAN learns the same distribution through a single generator/discriminator adversarial game. Both were trained on the full 60,000-image MNIST set with real checkpointing, and the comparison surfaced a genuine, documented GAN quirk: the generator\'s loss trended upward across training even as its actual output quality visibly improved.',
+        'Two generative models built from scratch on the same task, generating handwritten digits, specifically to compare how they work, not just read about the difference. A DDPM (denoising diffusion) learns to reverse a noising process over 300 steps with a custom U-Net; a DCGAN learns the same distribution through a single generator/discriminator adversarial game. Both were trained on the full 60,000-image MNIST set with real checkpointing, and the comparison surfaced a genuine, documented GAN quirk: the generator\'s loss trended upward across training even as its actual output quality visibly improved.',
       github: '',
       live: '',
       notebookUrl: '/notebooks/diffusion-vs-gan-notebook.html',
@@ -620,12 +628,12 @@ export const caseStudies = {
       hasLiveDemo: true,
       demoKey: 'diffusionGan',
       liveDemoHeading: 'Generate digits, live',
-      liveDemoBlurb: 'Pick a model and generate brand-new digits from pure random noise — nothing pre-made, no dataset lookup.',
+      liveDemoBlurb: 'Pick a model and generate brand-new digits from pure random noise, nothing pre-made, no dataset lookup.',
       accentColor: 'neutral',
       icon: 'sparkles',
       customChart: 'trainingCurves',
-      customChartHeading: 'Training curves — one clean signal, one adversarial tug-of-war',
-      customChartBlurb: 'Same 10 epochs, same 60,000 images, same hardware — the shape of the two loss curves is the whole story.',
+      customChartHeading: 'Training curves: one clean signal, one adversarial tug-of-war',
+      customChartBlurb: 'Same 10 epochs, same 60,000 images, same hardware. The shape of the two loss curves is the whole story.',
       rulesHeading: 'Diffusion vs. GAN, side by side',
       rulesBlurb: 'What actually differed in practice, not just in theory.',
       rulesColumns: [
@@ -634,9 +642,9 @@ export const caseStudies = {
         { key: 'gan', label: 'GAN' },
       ],
       rules: [
-        { aspect: 'Training signal', ddpm: 'One loss (MSE on predicted noise), decreases steadily', gan: 'Two competing losses — generator loss actually rose overall' },
-        { aspect: 'Generation speed', ddpm: '~300 sequential denoising steps per image', gan: '1 forward pass — near instant' },
-        { aspect: 'Loss as a quality signal', ddpm: 'Reliable — lower validation loss visibly means better digits', gan: 'Misleading on its own — rising generator loss, yet real images improved epoch 1 to 10' },
+        { aspect: 'Training signal', ddpm: 'One loss (MSE on predicted noise), decreases steadily', gan: 'Two competing losses, generator loss actually rose overall' },
+        { aspect: 'Generation speed', ddpm: '~300 sequential denoising steps per image', gan: '1 forward pass, near instant' },
+        { aspect: 'Loss as a quality signal', ddpm: 'Reliable: lower validation loss visibly means better digits', gan: 'Misleading on its own: rising generator loss, yet real images improved epoch 1 to 10' },
         { aspect: 'Best result on this task', ddpm: '6 of 8 generated digits recognizable', gan: 'Visibly cleaner digits by epoch 10, despite the loss trend' },
       ],
       heroMetrics: [
@@ -648,23 +656,23 @@ export const caseStudies = {
       narrative: [
         {
           heading: 'The problem',
-          body: 'Diffusion models and GANs are usually described in comparison to each other in articles and papers, but reading about the tradeoff isn\'t the same as feeling it. This project builds both from scratch — a DDPM and a DCGAN — on the exact same task (generating 28x28 handwritten digits from MNIST) so the differences in training behavior, generation speed, and reliability show up as real, measured numbers instead of secondhand claims.',
+          body: 'Diffusion models and GANs are usually described in comparison to each other in articles and papers, but reading about the tradeoff isn\'t the same as feeling it. This project builds both from scratch, a DDPM and a DCGAN, on the exact same task (generating 28x28 handwritten digits from MNIST) so the differences in training behavior, generation speed, and reliability show up as real, measured numbers instead of secondhand claims.',
         },
         {
           heading: 'Two very different ways to generate an image from nothing',
-          body: 'The DDPM works by learning to undo noise: a forward process gradually destroys a real digit into pure static over 300 steps using a fixed schedule, and a U-Net is trained to predict exactly how much noise was added at each step (a simple MSE loss between predicted and actual noise). At generation time, that process runs in reverse — starting from pure random noise and subtracting the U-Net\'s predicted noise 300 times until a digit emerges. The GAN works completely differently: a generator turns a random 100-number vector directly into a 28x28 image in one forward pass, while a discriminator is simultaneously trained to tell real digits from generated ones — the two networks improve by competing against each other, not by reconstructing anything step by step.',
+          body: 'The DDPM works by learning to undo noise: a forward process gradually destroys a real digit into pure static over 300 steps using a fixed schedule, and a U-Net is trained to predict exactly how much noise was added at each step (a simple MSE loss between predicted and actual noise). At generation time, that process runs in reverse, starting from pure random noise and subtracting the U-Net\'s predicted noise 300 times until a digit emerges. The GAN works completely differently: a generator turns a random 100-number vector directly into a 28x28 image in one forward pass, while a discriminator is simultaneously trained to tell real digits from generated ones. The two networks improve by competing against each other, not by reconstructing anything step by step.',
         },
         {
           heading: 'Scaling the DDPM, with real checkpointing',
-          body: 'The U-Net (550,081 parameters) was first proven out on a 5,000-image subset, producing only 2 of 8 generated digits that were actually recognizable. Scaling to the full 60,000-image MNIST training set and checkpointing on validation loss after every epoch found the best model at epoch 6 (val loss 0.0271) — training was deliberately stopped there once results plateaued rather than running all planned epochs blindly. That full-scale run produced 6 of 8 recognizable digits, a real, measured improvement directly attributable to more training data rather than a lucky sample.',
+          body: 'The U-Net (550,081 parameters) was first proven out on a 5,000-image subset, producing only 2 of 8 generated digits that were actually recognizable. Scaling to the full 60,000-image MNIST training set and checkpointing on validation loss after every epoch found the best model at epoch 6 (val loss 0.0271). Training was deliberately stopped there once results plateaued rather than running all planned epochs blindly. That full-scale run produced 6 of 8 recognizable digits, a real, measured improvement directly attributable to more training data rather than a lucky sample.',
         },
         {
-          heading: 'Training the GAN — and a genuine, honest disconnect',
-          body: 'The DCGAN (Generator: 778,305 parameters, Discriminator: 138,817 parameters) was trained adversarially for 10 epochs on the same 60,000 images. The loss numbers told a discouraging story on their face: generator loss rose from 2.786 to 3.178 across training while discriminator loss stayed low and stable (0.310 to 0.272) — the textbook signature of a discriminator overpowering its generator. But visually inspecting actual generated samples from epoch 1, 5, and 10 showed the opposite: the digits got cleaner and more recognizable as training went on, not worse. This is a real, well-documented GAN quirk, not a bug — adversarial loss values don\'t map onto output quality the way a simple reconstruction loss does, because both networks are moving targets for each other. The only reliable way to judge a GAN here was to actually look at the images, not trust the numbers alone.',
+          heading: 'Training the GAN: a genuine, honest disconnect',
+          body: 'The DCGAN (Generator: 778,305 parameters, Discriminator: 138,817 parameters) was trained adversarially for 10 epochs on the same 60,000 images. The loss numbers told a discouraging story on their face: generator loss rose from 2.786 to 3.178 across training while discriminator loss stayed low and stable (0.310 to 0.272), the textbook signature of a discriminator overpowering its generator. But visually inspecting actual generated samples from epoch 1, 5, and 10 showed the opposite: the digits got cleaner and more recognizable as training went on, not worse. This is a real, well-documented GAN quirk, not a bug. Adversarial loss values don\'t map onto output quality the way a simple reconstruction loss does, because both networks are moving targets for each other. The only reliable way to judge a GAN here was to actually look at the images, not trust the numbers alone.',
         },
         {
           heading: 'What the comparison actually shows',
-          body: 'On the same task, same data, and same training budget, the DDPM gave a slower but far more legible signal — one number that reliably tracked real quality, at the cost of 300 sequential steps per generated image. The GAN generated instantly but its loss curve was actively misleading without visual verification. Neither result is a verdict that one architecture is simply "better" — it\'s a firsthand demonstration of the actual tradeoff: diffusion trades generation speed for training reliability, and GANs trade training reliability for generation speed. The full, unedited notebook — every cell, every real output, including the loss curves and generated-sample grids referenced above — is linked at the top of this page.',
+          body: 'On the same task, same data, and same training budget, the DDPM gave a slower but far more legible signal: one number that reliably tracked real quality, at the cost of 300 sequential steps per generated image. The GAN generated instantly but its loss curve was actively misleading without visual verification. Neither result is a verdict that one architecture is simply "better." It\'s a firsthand demonstration of the actual tradeoff: diffusion trades generation speed for training reliability, and GANs trade training reliability for generation speed. The full, unedited notebook, every cell, every real output, including the loss curves and generated-sample grids referenced above, is linked at the top of this page.',
         },
       ],
       skillsDemonstrated: [
@@ -681,12 +689,12 @@ export const caseStudies = {
   finetuning: [
     {
       slug: 'full-finetune-vs-lora-gpt2',
-      title: 'Full Fine-Tuning vs. LoRA — Teaching GPT-2 to Write Like Shakespeare',
+      title: 'Full Fine-Tuning vs. LoRA: Teaching GPT-2 to Write Like Shakespeare',
       tagline:
-        'The exact same fine-tuning task, run two ways: updating all 124 million of GPT-2\'s parameters vs. training a 442,000-parameter LoRA adapter — including a repetition bug that turned out to affect both equally, not the one it was expected to.',
+        'The exact same fine-tuning task, run two ways: updating all 124 million of GPT-2\'s parameters versus training a 442,000-parameter LoRA adapter, including a repetition bug that turned out to affect both equally, not the one it was expected to.',
       categoryKey: 'finetuning',
       summary:
-        'GPT-2 (124M) fine-tuned on Tiny Shakespeare two different ways on the exact same data split: once updating every parameter directly, once with a from-scratch LoRA implementation that freezes the entire model and trains only small low-rank adapter matrices injected into the attention layers. The comparison is real and complete — trainable parameter counts, training speed, checkpoint size, and final loss all measured directly, plus an honest correction of an initial hypothesis about which method would be more prone to overfitting.',
+        'GPT-2 (124M) fine-tuned on Tiny Shakespeare two different ways on the exact same data split: once updating every parameter directly, once with a from-scratch LoRA implementation that freezes the entire model and trains only small low-rank adapter matrices injected into the attention layers. The comparison is real and complete. Trainable parameter counts, training speed, checkpoint size, and final loss are all measured directly, plus there\'s an honest correction of an initial hypothesis about which method would be more prone to overfitting.',
       github: '',
       live: '',
       notebookUrl: '/notebooks/finetune-lora-notebook.html',
@@ -698,7 +706,7 @@ export const caseStudies = {
       accentColor: 'amber',
       icon: 'slidersHorizontal',
       customChart: 'finetuneLoraCurves',
-      customChartHeading: 'Training curves — same task, same 4 epochs, same data split',
+      customChartHeading: 'Training curves: same task, same 4 epochs, same data split',
       customChartBlurb: 'Full fine-tuning\'s train loss pulls away from its val loss; LoRA\'s two curves stay much closer together.',
       rulesHeading: 'Full fine-tuning vs. LoRA, side by side',
       rulesBlurb: 'Real numbers from the exact same 4-epoch run on the exact same data.',
@@ -709,10 +717,10 @@ export const caseStudies = {
       ],
       rules: [
         { aspect: 'Trainable parameters', full: '124,439,808 (100%)', lora: '442,368 (0.354%)' },
-        { aspect: 'Training speed', full: '~1,837s/epoch (avg)', lora: '~990s/epoch (avg) — ~1.85x faster' },
-        { aspect: 'Checkpoint file size', full: '474.8 MB', lora: '1.70 MB — 279x smaller' },
+        { aspect: 'Training speed', full: '~1,837s/epoch (avg)', lora: '~990s/epoch (avg), about 1.85x faster' },
+        { aspect: 'Checkpoint file size', full: '474.8 MB', lora: '1.70 MB, 279x smaller' },
         { aspect: 'Best validation loss', full: '3.4087 (epoch 4)', lora: '3.5872 (epoch 4, still improving)' },
-        { aspect: 'Repetition bug at epoch 4', full: 'Present', lora: 'Also present — not method-specific' },
+        { aspect: 'Repetition bug at epoch 4', full: 'Present', lora: 'Also present, not method-specific' },
       ],
       heroMetrics: [
         { label: 'Trainable params (LoRA)', value: '442K' },
@@ -723,27 +731,27 @@ export const caseStudies = {
       narrative: [
         {
           heading: 'The problem',
-          body: 'Full fine-tuning and LoRA are usually compared in articles by citing someone else\'s benchmark numbers. This project runs both, from scratch, on the exact same task — teaching GPT-2 (124M parameters) to write in Shakespeare\'s style from the Tiny Shakespeare dataset — with the identical train/validation split (same random seed) and the identical number of epochs, so every number in the comparison below came from a fair, controlled pair of real runs, not two different sources measured two different ways.',
+          body: 'Full fine-tuning and LoRA are usually compared in articles by citing someone else\'s benchmark numbers. This project runs both, from scratch, on the exact same task: teaching GPT-2 (124M parameters) to write in Shakespeare\'s style from the Tiny Shakespeare dataset, with the identical train and validation split (same random seed) and the identical number of epochs. Every number in the comparison below came from a fair, controlled pair of real runs, not two different sources measured two different ways.',
         },
         {
           heading: 'Full fine-tuning: touching every one of GPT-2\'s numbers',
-          body: 'The first run left nothing frozen — all 124,439,808 parameters were eligible for updates. Baseline GPT-2 (before any training) responded to "To be, or not to be," by wandering into an unrelated sentence about "the Church of Jesus Christ of Latter-day Saints." After just 1 epoch, that same prompt produced properly formatted Shakespeare-style dialogue, complete with character names like "DUKE VINCENTIO:" and "ROMEO:" — a real, immediate style shift. By epoch 4 (the checkpoint with the best validation loss, 3.4087), the model generalized well to a brand-new prompt it had never seen ("My lord, what shall we do about the king?"), correctly inventing plausible character names like "KING RICHARD II" and "QUEEN MARGARET." But on the original, repeatedly-tested prompt, epoch 4 also produced a genuine failure: a repetition loop ("I\'ll be a gentleman, and I\'ll be a gentleman." repeated twice) — a real, observed degeneracy, not a hidden or cherry-picked result.',
+          body: 'The first run left nothing frozen. All 124,439,808 parameters were eligible for updates. Baseline GPT-2 (before any training) responded to "To be, or not to be," by wandering into an unrelated sentence about "the Church of Jesus Christ of Latter-day Saints." After just 1 epoch, that same prompt produced properly formatted Shakespeare-style dialogue, complete with character names like "DUKE VINCENTIO:" and "ROMEO:," a real, immediate style shift. By epoch 4 (the checkpoint with the best validation loss, 3.4087), the model generalized well to a brand-new prompt it had never seen ("My lord, what shall we do about the king?"), correctly inventing plausible character names like "KING RICHARD II" and "QUEEN MARGARET." But on the original, repeatedly-tested prompt, epoch 4 also produced a genuine failure: a repetition loop ("I\'ll be a gentleman, and I\'ll be a gentleman." repeated twice), a real, observed degeneracy, not a hidden or cherry-picked result.',
         },
         {
           heading: 'Building LoRA from scratch, not importing it',
-          body: 'Instead of using an existing LoRA library, the adapter mechanism was implemented directly: a custom module wraps a frozen linear layer, adds two small trainable matrices (rank 8), and computes the layer\'s output as the frozen original result plus a small low-rank correction. Attached to the query/value and output-projection matrices (GPT-2\'s "c_attn" and "c_proj" layers, one of HuggingFace\'s own implementation quirks — internally Conv1D, not nn.Linear, requiring a small compatibility fix) across all 12 transformer blocks, this brought total trainable parameters down to 442,368 — 0.354% of the model, a 281x reduction. A zero-initialization sanity check (LoRA\'s second matrix starts at exactly zero) confirmed training genuinely started from identical behavior to the untouched frozen model, before a single gradient step was taken.',
+          body: 'Instead of using an existing LoRA library, the adapter mechanism was implemented directly: a custom module wraps a frozen linear layer, adds two small trainable matrices (rank 8), and computes the layer\'s output as the frozen original result plus a small low-rank correction. It\'s attached to the query and value and output-projection matrices (GPT-2\'s "c_attn" and "c_proj" layers, one of HuggingFace\'s own implementation quirks, internally Conv1D rather than nn.Linear, which required a small compatibility fix) across all 12 transformer blocks. That brought total trainable parameters down to 442,368, or 0.354% of the model, a 281x reduction. A zero-initialization sanity check (LoRA\'s second matrix starts at exactly zero) confirmed training genuinely started from identical behavior to the untouched frozen model, before a single gradient step was taken.',
         },
         {
           heading: 'A wrong hypothesis, corrected by the actual data',
-          body: 'The expectation going in was that LoRA\'s far smaller parameter count would act as a natural brake against overfitting, and would therefore avoid the repetition-loop failure seen in the full fine-tune. That turned out to be wrong: the LoRA-trained model produced the exact same kind of repetition loop, on both the original prompt and a fresh one. Looking back at the raw training data explained why — Tiny Shakespeare\'s actual crowd-scene dialogue contains real repeated lines ("Resolved. resolved." and "We know\'t, we know\'t." appear in the source text itself), meaning both models correctly learned that repetition is a genuine part of this style. The actual cause of the degenerate loop was greedy decoding (always picking the single most probable next word, with no mechanism to escape a repeat once it starts) interacting with that learned pattern — a decoding-strategy issue, not something either training method caused or could have prevented on its own. Reporting the wrong initial hypothesis alongside the corrected explanation is more useful than silently only presenting the theory that happened to be right.',
+          body: 'The expectation going in was that LoRA\'s far smaller parameter count would act as a natural brake against overfitting, and would therefore avoid the repetition-loop failure seen in the full fine-tune. That turned out to be wrong: the LoRA-trained model produced the exact same kind of repetition loop, on both the original prompt and a fresh one. Looking back at the raw training data explained why. Tiny Shakespeare\'s actual crowd-scene dialogue contains real repeated lines ("Resolved. resolved." and "We know\'t, we know\'t." appear in the source text itself), meaning both models correctly learned that repetition is a genuine part of this style. The actual cause of the degenerate loop was greedy decoding (always picking the single most probable next word, with no mechanism to escape a repeat once it starts) interacting with that learned pattern, a decoding-strategy issue, not something either training method caused or could have prevented on its own. Reporting the wrong initial hypothesis alongside the corrected explanation is more useful than silently only presenting the theory that happened to be right.',
         },
         {
           heading: 'The real, measured tradeoffs',
-          body: 'On identical data and epochs: full fine-tuning reached a lower final validation loss (3.4087 vs. 3.5872), meaning it adapted the model\'s behavior more completely — a genuine advantage of having the whole model\'s capacity available. LoRA trained about 1.85x faster per epoch (990s vs. 1,837s average), because PyTorch skips computing weight-gradients entirely for the 124M frozen parameters, only computing them for the 442K trainable ones — a real compute saving, not just a memory one. And the checkpoint size difference has a genuine practical consequence beyond training: the full fine-tune\'s 474.8MB checkpoint is too large to commit to this site\'s GitHub repository (which has a 100MB per-file limit), so it isn\'t served by the live demo below at all — only LoRA\'s 1.70MB checkpoint is small enough to ship and run live. The full fine-tune\'s real outputs are shown as recorded examples instead, an honest limitation rather than a hidden one.',
+          body: 'On identical data and epochs, full fine-tuning reached a lower final validation loss (3.4087 versus 3.5872), meaning it adapted the model\'s behavior more completely, a genuine advantage of having the whole model\'s capacity available. LoRA trained about 1.85x faster per epoch (990s versus 1,837s average), because PyTorch skips computing weight-gradients entirely for the 124M frozen parameters, only computing them for the 442K trainable ones, a real compute saving, not just a memory one. The checkpoint size difference has a genuine practical consequence beyond training too: the full fine-tune\'s 474.8MB checkpoint is too large to commit to this site\'s GitHub repository (which has a 100MB per-file limit), so it isn\'t served by the live demo below at all. Only LoRA\'s 1.70MB checkpoint is small enough to ship and run live. The full fine-tune\'s real outputs are shown as recorded examples instead, an honest limitation rather than a hidden one.',
         },
       ],
       skillsDemonstrated: [
-        'Full fine-tuning a 124M-parameter transformer end-to-end, with proper train/validation splitting and checkpointing on validation loss',
+        'Full fine-tuning a 124M-parameter transformer end-to-end, with proper train and validation splitting and checkpointing on validation loss',
         'Implementing LoRA (low-rank adaptation) entirely from scratch as a custom PyTorch module, rather than relying on an existing library, including handling HuggingFace GPT-2\'s Conv1D attention layers',
         'Designing and verifying a zero-initialization sanity check to confirm a new training method starts from provably identical behavior to the frozen baseline',
         'Running a genuinely controlled comparison (identical data split, identical epoch count) between two fine-tuning methods rather than citing unverified numbers',
@@ -756,19 +764,19 @@ export const caseStudies = {
   rag: [
     {
       slug: 'comparative-rag-techniques',
-      title: 'Comparative RAG — Four Retrieval Techniques, Built From Scratch',
+      title: 'Comparative RAG: Four Retrieval Techniques, Built From Scratch',
       tagline:
-        'Naive, Hybrid, HyDE, and Agentic RAG, all built from scratch and run live side by side over the same corpus — including the real failures each one hits, like HyDE hallucinating from a bad guess and Agentic giving a different answer to the same question on different runs.',
+        'Naive, Hybrid, HyDE, and Agentic RAG, all built from scratch and run live side by side over the same corpus, including the real failures each one hits, like HyDE hallucinating from a bad guess and Agentic giving a different answer to the same question on different runs.',
       categoryKey: 'rag',
       summary:
-        'Four retrieval-augmented generation techniques built entirely from scratch — no LangChain retrieval chains, no prebuilt RAG framework — sharing one corpus (this portfolio\'s 24 project write-ups plus a personal-profile document, 161 chunks total) and one embedding model (all-MiniLM-L6-v2). Naive RAG and Hybrid RAG (BM25 + embeddings, merged with Reciprocal Rank Fusion) were reliable across every test question. HyDE (which embeds an LLM-generated hypothetical answer instead of the raw question) and Agentic RAG (which lets the LLM decide when to search and reformulate) both produced real, honestly-documented failures — not edge cases invented for the demo, but ones that showed up during actual testing.',
+        'Four retrieval-augmented generation techniques built entirely from scratch, with no LangChain retrieval chains and no prebuilt RAG framework, sharing one corpus (this portfolio\'s 24 project write-ups plus a personal-profile document, 161 chunks total) and one embedding model (all-MiniLM-L6-v2). Naive RAG and Hybrid RAG (BM25 and embeddings, merged with Reciprocal Rank Fusion) were reliable across every test question. HyDE (which embeds an LLM-generated hypothetical answer instead of the raw question) and Agentic RAG (which lets the LLM decide when to search and reformulate) both produced real, honestly-documented failures, not edge cases invented for the demo, but ones that showed up during actual testing.',
       github: '',
       live: '',
       tech: ['Python', 'sentence-transformers', 'rank-bm25', 'OpenAI API', 'FastAPI', 'React', 'asyncio'],
       hasLiveDemo: true,
       demoKey: 'ragCompare',
       liveDemoHeading: 'Ask one question, watch all four techniques answer it',
-      liveDemoBlurb: 'Type a question about my projects or background — it runs through Naive, Hybrid, HyDE, and Agentic RAG at the same time, so you can compare what each one retrieves and answers.',
+      liveDemoBlurb: 'Type a question about my projects or background. It runs through Naive, Hybrid, HyDE, and Agentic RAG at the same time, so you can compare what each one retrieves and answers.',
       accentColor: 'blue',
       icon: 'gitCompare',
       customPage: 'ragComparison',
@@ -780,9 +788,9 @@ export const caseStudies = {
         { label: 'Embedding model', value: 'MiniLM-L6-v2' },
       ],
       verdicts: [
-        { key: 'naive', label: 'Naive', status: 'reliable', statusLabel: 'Reliable', approach: 'Embed the question, cosine similarity top-3', finding: '5/5 test questions correct — the baseline that just worked' },
-        { key: 'hybrid', label: 'Hybrid', status: 'reliable', statusLabel: 'Reliable', approach: 'BM25 keyword search + embeddings, merged with Reciprocal Rank Fusion', finding: '5/5 correct, matched Naive — extra signal didn\'t hurt, didn\'t change the outcome either' },
-        { key: 'hyde', label: 'HyDE', status: 'fragile', statusLabel: 'Fragile', approach: 'LLM writes a hypothetical answer first, embeds that instead of the question', finding: '3/5 correct — both failures traced directly to a wrong hypothetical pulling retrieval off target' },
+        { key: 'naive', label: 'Naive', status: 'reliable', statusLabel: 'Reliable', approach: 'Embed the question, cosine similarity top-3', finding: '5/5 test questions correct, the baseline that just worked' },
+        { key: 'hybrid', label: 'Hybrid', status: 'reliable', statusLabel: 'Reliable', approach: 'BM25 keyword search + embeddings, merged with Reciprocal Rank Fusion', finding: '5/5 correct, matched Naive. Extra signal didn\'t hurt, didn\'t change the outcome either' },
+        { key: 'hyde', label: 'HyDE', status: 'fragile', statusLabel: 'Fragile', approach: 'LLM writes a hypothetical answer first, embeds that instead of the question', finding: '3/5 correct, both failures traced directly to a wrong hypothetical pulling retrieval off target' },
         { key: 'agentic', label: 'Agentic', status: 'inconsistent', statusLabel: 'Inconsistent', approach: 'LLM decides whether to search, can reformulate and search again', finding: 'Most detailed answers when it worked, but got stuck on list-type questions and gave different answers on different runs' },
       ],
       techniqueDeepDives: [
@@ -790,35 +798,35 @@ export const caseStudies = {
           key: 'setup',
           label: 'The setup',
           summary: 'One real corpus, one embedding model, four techniques',
-          body: 'Rather than testing RAG on a toy dataset, the corpus here is this portfolio itself — the full write-ups of all 24 case studies plus a personal-profile document (background, Oval Labs attribution, contact, skills), chunked into 161 pieces and embedded once with all-MiniLM-L6-v2. Every technique searches the exact same 161 embeddings; the only thing that changes between them is how the search itself works. Generation uses the OpenAI API already configured for this site\'s chat assistant (gpt-5-mini) — the skill being demonstrated here is retrieval engineering, not the LLM itself.',
+          body: 'Rather than testing RAG on a toy dataset, the corpus here is this portfolio itself: the full write-ups of all 24 case studies plus a personal-profile document (background, Oval Labs attribution, contact, skills), chunked into 161 pieces and embedded once with all-MiniLM-L6-v2. Every technique searches the exact same 161 embeddings; the only thing that changes between them is how the search itself works. Generation uses the OpenAI API already configured for this site\'s chat assistant (gpt-5-mini). The skill being demonstrated here is retrieval engineering, not the LLM itself.',
         },
         {
           key: 'naive-hybrid',
           label: 'Naive & Hybrid',
-          summary: 'The reliable baselines — a genuinely boring result',
-          body: 'Naive RAG embeds the raw question and takes the top-3 chunks by cosine similarity — the simplest possible version of RAG. Hybrid RAG runs that same embedding search alongside a BM25 keyword search, then merges the two rankings with Reciprocal Rank Fusion (each chunk\'s score is 1/(60+rank) summed across both methods, since BM25 and cosine scores live on incompatible scales and can\'t be averaged directly). Across a 5-question test set spanning different projects, both got every question right. Hybrid\'s extra keyword signal didn\'t change the outcome on this corpus, but it didn\'t hurt either — a genuinely boring, reliable result worth reporting as-is rather than dressing up as more interesting than it was.',
+          summary: 'The reliable baselines, a genuinely boring result',
+          body: 'Naive RAG embeds the raw question and takes the top-3 chunks by cosine similarity, the simplest possible version of RAG. Hybrid RAG runs that same embedding search alongside a BM25 keyword search, then merges the two rankings with Reciprocal Rank Fusion (each chunk\'s score is 1/(60+rank) summed across both methods, since BM25 and cosine scores live on incompatible scales and can\'t be averaged directly). Across a 5-question test set spanning different projects, both got every question right. Hybrid\'s extra keyword signal didn\'t change the outcome on this corpus, but it didn\'t hurt either. It\'s a genuinely boring, reliable result worth reporting as-is rather than dressing up as more interesting than it was.',
         },
         {
           key: 'hyde',
           label: 'HyDE',
           summary: 'What happens when the hypothetical answer is wrong',
-          body: 'HyDE asks the LLM to write a plausible-sounding hypothetical answer first, then embeds that instead of the question — the idea being that an answer-shaped piece of text sits closer in embedding space to the real answer chunks than a short question does. It worked well on general ML topics the LLM already knows (a question about GAN loss curves retrieved correctly, even scoring slightly higher than Naive). But on two questions specific to this portfolio\'s actual content, the LLM\'s hypothetical guess was simply wrong: asked what mistake was corrected during the fine-tuning project, it hallucinated an entirely different bug (an "off-by-one label mapping" that never happened) and pulled in content from an unrelated project as a result. Asked which projects deployed to Railway, its hypothetical invented five projects that don\'t exist in this portfolio at all, and the resulting retrieval missed a real one. Both failures are a direct, traceable consequence of the same mechanism that makes HyDE work when it works — the technique lives or dies on whether the LLM\'s guess happens to be right.',
+          body: 'HyDE asks the LLM to write a plausible-sounding hypothetical answer first, then embeds that instead of the question. The idea is that an answer-shaped piece of text sits closer in embedding space to the real answer chunks than a short question does. It worked well on general ML topics the LLM already knows (a question about GAN loss curves retrieved correctly, even scoring slightly higher than Naive). But on two questions specific to this portfolio\'s actual content, the LLM\'s hypothetical guess was simply wrong: asked what mistake was corrected during the fine-tuning project, it hallucinated an entirely different bug (an "off-by-one label mapping" that never happened) and pulled in content from an unrelated project as a result. Asked which projects deployed to Railway, its hypothetical invented five projects that don\'t exist in this portfolio at all, and the resulting retrieval missed a real one. Both failures are a direct, traceable consequence of the same mechanism that makes HyDE work when it works. The technique lives or dies on whether the LLM\'s guess happens to be right.',
         },
         {
           key: 'agentic',
           label: 'Agentic RAG',
           summary: 'Richer answers, but genuinely inconsistent',
-          body: 'Agentic RAG gives the LLM a search_corpus tool and lets it decide, turn by turn, whether it has enough information or needs to search again. When it worked, its answers were the most detailed of any technique — pulling in exact figures other variants left out. But on two "which projects..." style questions, it kept reformulating and re-searching without ever generating a final answer, hitting a hard turn limit. Adding an explicit separate judge call (a second LLM call whose only job is answering "is this sufficient, yes or no") fixed the outright failures, but revealed a deeper issue: the same question, run twice, returned two different lists of matching projects. The real cause isn\'t a prompt bug — it\'s that top-k retrieval only ever returns a handful of chunks per search, so a question whose true answer spans more chunks than any single search returns will always be at the mercy of which slice the model happens to land on. No amount of prompt tuning fixes that; it\'s a structural limitation of top-k semantic search for enumerate-style questions, reported here honestly rather than hidden behind a lucky demo run.',
+          body: 'Agentic RAG gives the LLM a search_corpus tool and lets it decide, turn by turn, whether it has enough information or needs to search again. When it worked, its answers were the most detailed of any technique, pulling in exact figures other variants left out. But on two "which projects..." style questions, it kept reformulating and re-searching without ever generating a final answer, hitting a hard turn limit. Adding an explicit separate judge call (a second LLM call whose only job is answering "is this sufficient, yes or no") fixed the outright failures, but revealed a deeper issue: the same question, run twice, returned two different lists of matching projects. The real cause isn\'t a prompt bug. It\'s that top-k retrieval only ever returns a handful of chunks per search, so a question whose true answer spans more chunks than any single search returns will always be at the mercy of which slice the model happens to land on. No amount of prompt tuning fixes that; it\'s a structural limitation of top-k semantic search for enumerate-style questions, reported here honestly rather than hidden behind a lucky demo run.',
         },
         {
           key: 'not-live',
           label: 'Not in the live demo',
-          summary: 'Re-ranked RAG — built, evaluated, kept in the notebook',
-          body: 'A fifth technique, Re-ranked RAG, was also built and evaluated: retrieve a wide candidate set cheaply with embeddings, then re-score it with a cross-encoder that reads the query and each chunk together for a more accurate relevance judgment. It\'s in the companion notebook, but isn\'t wired into this live demo — the cross-encoder is a second, separate model that needs its own download, and given the added latency and infrastructure cost of a fifth live variant on top of four, it was kept to the notebook for now rather than shipped here.',
+          summary: 'Re-ranked RAG: built, evaluated, kept in the notebook',
+          body: 'A fifth technique, Re-ranked RAG, was also built and evaluated: retrieve a wide candidate set cheaply with embeddings, then re-score it with a cross-encoder that reads the query and each chunk together for a more accurate relevance judgment. It\'s in the companion notebook, but isn\'t wired into this live demo. The cross-encoder is a second, separate model that needs its own download, and given the added latency and infrastructure cost of a fifth live variant on top of four, it was kept to the notebook for now rather than shipped here.',
         },
       ],
       skillsDemonstrated: [
-        'Building four distinct RAG retrieval strategies from scratch — no prebuilt RAG framework — sharing one corpus and one embedding model for a genuinely controlled comparison',
+        'Building four distinct RAG retrieval strategies from scratch, with no prebuilt RAG framework, sharing one corpus and one embedding model for a genuinely controlled comparison',
         'Implementing Reciprocal Rank Fusion to merge BM25 keyword search and embedding search rankings that live on incompatible scales',
         'Implementing HyDE (Hypothetical Document Embeddings) and diagnosing, with real examples, exactly how and why it fails when the LLM\'s hypothetical guess is wrong',
         'Building an agentic retrieval loop with LLM-driven tool calling, then diagnosing a real structural limitation (top-k retrieval on enumerate-style questions) that a better prompt alone couldn\'t fix',
@@ -834,10 +842,10 @@ export const caseStudies = {
       slug: 'coter-global-recruitment-agent',
       title: 'COTER Global Recruitment Agent',
       tagline:
-        'A multi-channel AI recruitment platform live at a real staffing firm — WhatsApp and Gmail screening agents, AI CV evaluation, and direct social publishing, running in production.',
+        'A recruitment platform used by a real staffing firm to screen candidates over WhatsApp and email, score CVs, and post jobs to social media automatically.',
       categoryKey: 'production',
       summary:
-        'A full-stack recruitment automation platform built for and deployed at COTER Global, a UAE-focused staffing firm. AI agents run candidate screening conversations over WhatsApp and Gmail, score CVs against open job requirements, and generate and publish job postings directly to LinkedIn, Facebook, and Instagram — all backed by a candidate CRM, a recruitment pipeline, and a self-service candidate portal.',
+        'A full-stack recruitment automation platform built for and deployed at COTER Global, a UAE-focused staffing firm. AI agents run candidate screening conversations over WhatsApp and Gmail, score CVs against open job requirements, and generate and publish job postings directly to LinkedIn, Facebook, and Instagram. It\'s all backed by a candidate CRM, a recruitment pipeline, and a self-service candidate portal.',
       github: '',
       live: '',
       tech: [
@@ -847,16 +855,24 @@ export const caseStudies = {
       hasLiveDemo: false,
       accentColor: 'teal',
       icon: 'briefcase',
+      customResults: 'coter',
       heroMetrics: [
         { label: 'Candidates managed', value: '5,862' },
         { label: 'Channels automated', value: '5' },
         { label: 'Open requirements', value: '9' },
         { label: 'Status', value: 'Live in production' },
       ],
+      channels: [
+        { name: 'WhatsApp', icon: 'messageCircle', stat: '256 messages sent, 46 replies' },
+        { name: 'Gmail', icon: 'mail', stat: 'Up to 36% reply rate across campaigns' },
+        { name: 'Facebook', icon: 'facebook', stat: 'Connected and publishing live' },
+        { name: 'LinkedIn', icon: 'linkedin', stat: 'OAuth connected, ready to publish' },
+        { name: 'Instagram', icon: 'instagram', stat: 'OAuth connected, ready to publish' },
+      ],
       screenshots: [
         {
           heading: 'Landing page',
-          caption: "The public entry point at coter.ovallabs.org — candidates can start an application, sign in, or reach the firm directly via LinkedIn or WhatsApp. Construction/HSE-themed, matching COTER Global's actual recruitment niche.",
+          caption: "The public entry point at coter.ovallabs.org. Candidates can start an application, sign in, or reach the firm directly via LinkedIn or WhatsApp. It's themed around construction and HSE, matching COTER Global's actual recruitment niche.",
           image: '/screenshots/coter/landing-page.png',
         },
         {
@@ -866,100 +882,100 @@ export const caseStudies = {
         },
         {
           heading: 'Candidates',
-          caption: 'A searchable, filterable pool of nearly 6,000 candidates, including a natural-language AI filter ("Indian HSE Officers in Dubai with 5+ years") on top of the structured filters, plus bulk actions like assigning candidates or launching a WhatsApp campaign directly from a filtered list.',
+          caption: 'A searchable, filterable pool of nearly 6,000 candidates. There\'s a natural-language AI filter ("Indian HSE Officers in Dubai with 5+ years") on top of the structured filters, plus bulk actions like assigning candidates or launching a WhatsApp campaign from a filtered list.',
           image: '/screenshots/coter/candidates.png',
         },
         {
           heading: 'Requirements',
-          caption: 'Open job requirements, each created either through structured fields or by pasting a free-text brief into "Create Requirement via AI," which parses it into the structured fields automatically. Roles shown are real, live construction/HSE openings across the UAE.',
+          caption: 'Open job requirements, created either through structured fields or by pasting a free-text brief into "Create Requirement via AI," which parses it into structured fields automatically. The roles shown are real, live construction and HSE openings across the UAE.',
           image: '/screenshots/coter/requirements.png',
         },
         {
           heading: 'Recruitment pipeline',
-          caption: 'A kanban view tracking every candidate through real recruitment stages — Assigned, Screening, Shortlisted, Interviewing, Offered, Selected — so recruiters can see exactly where each candidate stands without digging through messages.',
+          caption: 'A kanban view tracking every candidate through real recruitment stages: Assigned, Screening, Shortlisted, Interviewing, Offered, Selected. Recruiters can see exactly where each candidate stands without digging through messages.',
           image: '/screenshots/coter/pipeline.png',
         },
         {
           heading: 'WhatsApp automation',
-          caption: 'Live campaign stats from the deployed bot: 256 messages sent, 46 replies, 174 flagged for recruiter review, across 4 active campaigns — with a daily send cap (300/day) to keep outreach within safe limits for the WhatsApp account.',
+          caption: 'Live campaign stats from the deployed bot: 256 messages sent, 46 replies, 174 flagged for recruiter review, across 4 active campaigns. A daily send cap of 300 keeps outreach within safe limits for the WhatsApp account.',
           image: '/screenshots/coter/whatsapp.png',
         },
         {
           heading: 'Gmail automation',
-          caption: 'AI-classified, AI-replied email campaigns — separated into candidate campaigns and client campaigns, since the same automation also handles business-development outreach. Real reply rates shown per campaign (25%, 36%, 16%, 15%) across 120 candidates and 5 clients.',
+          caption: 'AI-classified, AI-replied email campaigns, split into candidate campaigns and client campaigns since the same automation also handles business-development outreach. Real reply rates are shown per campaign (25%, 36%, 16%, 15%) across 120 candidates and 5 clients.',
           image: '/screenshots/coter/gmail.png',
         },
         {
           heading: 'Reminders',
-          caption: 'Scheduled follow-ups over WhatsApp or Gmail, to an individual or a group, on a recurring daily or weekly schedule with timezone handling — so a recruiter never forgets to chase a client or candidate.',
+          caption: 'Scheduled follow-ups over WhatsApp or Gmail, to an individual or a group, on a recurring daily or weekly schedule with timezone handling, so a recruiter never forgets to chase a client or candidate.',
           image: '/screenshots/coter/reminders.png',
         },
         {
           heading: 'Document generator',
-          caption: 'Turns pasted context — email threads, pricing notes, plain-language instructions — into a formatted quotation or agreement, with a live preview before saving.',
+          caption: 'Turns pasted context, like email threads, pricing notes, or plain-language instructions, into a formatted quotation or agreement, with a live preview before saving.',
           image: '/screenshots/coter/documents.png',
         },
         {
           heading: 'Poster generator',
-          caption: "Real, connected OAuth integrations (Facebook page connected, LinkedIn and Instagram ready to connect) — generates a branded poster and platform-specific copy from an open requirement, then publishes it directly, not just as a draft.",
+          caption: "Real, connected OAuth integrations (Facebook page connected, LinkedIn and Instagram ready to connect). Generates a branded poster and platform-specific copy from an open requirement, then publishes it directly instead of just saving a draft.",
           image: '/screenshots/coter/posters.png',
         },
         {
           heading: 'Settings & team',
-          caption: "The actual team using this daily — four real accounts (an admin and three team members) with role-based access, alongside team workload tracking, a system audit log, and AI configuration.",
+          caption: "The actual team using this daily: four real accounts (an admin and three team members) with role-based access, plus team workload tracking, a system audit log, and AI configuration.",
           image: '/screenshots/coter/settings.png',
         },
         {
           heading: 'Candidate application (portal)',
-          caption: "Candidates don't fill out a static form — they apply through a guided chat that walks them through uploading a CV and answering questions conversationally, feeding directly into the same candidate pipeline recruiters see internally.",
+          caption: "Candidates apply through a guided chat instead of a static form. It walks them through uploading a CV and answering questions conversationally, feeding directly into the same candidate pipeline recruiters see internally.",
           image: '/screenshots/coter/candidate-portal.png',
         },
       ],
       narrative: [
         {
           heading: 'The problem',
-          body: 'COTER Global runs recruitment for construction, HSE, and technical roles across the UAE — high volume, multi-channel candidate sourcing (WhatsApp, email, social media, referrals) that was previously tracked across spreadsheets and manual conversations. The brief was to replace that with a single platform: one place to manage requirements, candidates, and outreach, with AI doing the repetitive parts (screening conversations, CV triage, job post copywriting) so recruiters spend their time on judgment calls, not data entry.',
+          body: 'COTER Global handles recruitment for construction, HSE, and technical roles across the UAE. Candidates came in through WhatsApp, email, social media, and referrals, and the firm tracked all of it manually across spreadsheets and conversations. The goal was one platform to manage requirements, candidates, and outreach, with AI handling the repetitive parts like screening conversations, CV triage, and job post copywriting, so recruiters could focus on judgment calls instead of data entry.',
         },
         {
           heading: 'Architecture',
-          body: 'A Next.js frontend talks to a FastAPI backend (PostgreSQL for data, Redis for background-job locking and caching), with a separate Node.js microservice (using Baileys, a WhatsApp Web protocol library) handling the actual WhatsApp connection — kept isolated from the main API so a WhatsApp session drop never takes down the rest of the platform. An OpenAI + LangChain RAG assistant, grounded in a FAISS vector store of company-specific knowledge, powers both an internal AI assistant and a public chat widget on the company website. The whole stack is containerized and deployed on Railway.',
+          body: 'A Next.js frontend talks to a FastAPI backend, with PostgreSQL for data and Redis for background job locking and caching. A separate Node.js microservice, built with Baileys (a WhatsApp Web protocol library), handles the actual WhatsApp connection. It runs isolated from the main API, so a dropped WhatsApp session never takes down the rest of the platform. An OpenAI and LangChain RAG assistant, grounded in a FAISS vector store of company knowledge, powers both an internal AI assistant and a public chat widget on the company website. The whole stack is containerized and deployed on Railway.',
         },
         {
-          heading: 'AI-driven candidate screening, on the channels candidates actually use',
-          body: "Instead of a form candidates have to fill out, screening happens as a real conversation over WhatsApp or Gmail. The AI agent asks for the specific fields a given job requirement needs (visa status, experience, salary expectations, certifications), tracks what's been collected versus what's still missing across the conversation, and hands off a structured, scored profile to the recruiter once screening completes — with an AI-generated priority (high/medium/low) and reasoning attached, not just a raw transcript to re-read.",
+          heading: 'AI screening on the channels candidates already use',
+          body: "Instead of filling out a form, candidates go through a real conversation over WhatsApp or Gmail. The AI agent asks for whatever a job requirement needs (visa status, experience, salary expectations, certifications), keeps track of what's been collected versus what's still missing, and hands the recruiter a structured, scored profile once screening is done, complete with a priority level and the reasoning behind it.",
         },
         {
           heading: 'CV intelligence and the recruitment pipeline',
-          body: "Uploaded CVs are parsed and scored against a specific job requirement's criteria automatically, with results feeding a kanban-style pipeline view so recruiters can see where every candidate stands at a glance. Candidates themselves don't fill out a static form — the public candidate portal is a guided chat that walks them through uploading a CV and answering a few questions conversationally, feeding directly into the same pipeline recruiters use internally. A duplicate-detection tool (admin-only) catches the same candidate re-submitted under slightly different details — a real, recurring problem in high-volume recruitment databases.",
+          body: "Uploaded CVs are parsed and scored against a job requirement's criteria automatically, and the results feed a kanban-style pipeline so recruiters can see where every candidate stands at a glance. Candidates apply through a guided chat rather than a static form, which walks them through uploading a CV and answering a few questions, and feeds straight into the same pipeline recruiters use internally. An admin-only duplicate-detection tool catches the same candidate re-submitted under slightly different details, a common problem in a database this size.",
         },
         {
-          heading: 'One job requirement, five channels, without rewriting the copy five times',
-          body: "Posting a new job opening used to mean manually writing separate copy for LinkedIn, Facebook, Instagram, and WhatsApp, each with a different tone and format. The poster generator does this in one step — AI writes channel-appropriate copy for all four, generates a matching graphic, and publishes directly to LinkedIn, Facebook, and Instagram through their own OAuth-authenticated APIs. This is real publishing, not a draft queue: connecting each platform is a genuine OAuth flow with token storage and refresh handling per channel.",
+          heading: 'One job requirement, five channels, one step',
+          body: "Posting a new job used to mean writing separate copy for LinkedIn, Facebook, Instagram, and WhatsApp by hand, each in a different tone and format. The poster generator does this in one step: AI writes channel-appropriate copy for all four, generates a matching graphic, and publishes directly to LinkedIn, Facebook, and Instagram through their own APIs. This is real publishing, not a draft queue. Connecting each platform is a genuine OAuth flow with token storage and refresh handling per channel.",
         },
         {
-          heading: 'Production details that matter more than the AI features',
-          body: "A few unglamorous engineering choices are what actually make this reliable in production: every auto-reply is guarded by a pre-send idempotency record (so a crash or retry can never double-send a message to a candidate), background schedulers (WhatsApp reminders, Gmail polling, daily digest emails) acquire a Redis lock before running so a redeploy or multiple instances can't fire the same job twice, and every database migration is written as an additive, existence-checked ALTER — never a destructive drop — so upgrading the schema in place never risks the live client's data.",
+          heading: 'The engineering behind the reliability',
+          body: "A few unglamorous choices are what actually make this reliable in production. Every auto-reply is guarded by a pre-send idempotency record, so a crash or retry can never double-send a message to a candidate. Background schedulers for WhatsApp reminders, Gmail polling, and daily digest emails acquire a Redis lock before running, so a redeploy or a second instance can't fire the same job twice. And every database migration is written as an additive, existence-checked change rather than a destructive drop, so upgrading the schema never risks the live client's data.",
         },
       ],
       skillsDemonstrated: [
         'Multi-channel conversational AI agents (WhatsApp, Gmail) with stateful, field-tracking screening flows rather than static forms',
         'AI-driven CV evaluation and candidate scoring against structured job requirements',
-        'Retrieval-augmented chatbot grounded in company-specific knowledge (OpenAI + LangChain + FAISS)',
-        'Real OAuth-based multi-platform publishing (LinkedIn, Facebook, Instagram Graph APIs), not just draft generation',
+        'Retrieval-augmented chatbot grounded in company-specific knowledge, built with OpenAI, LangChain, and FAISS',
+        'Real OAuth-based multi-platform publishing to LinkedIn, Facebook, and Instagram, not just draft generation',
         'Production reliability patterns: pre-send idempotency to prevent duplicate sends, Redis-locked background schedulers, additive-only database migrations',
-        'Service isolation for stability — an unofficial WhatsApp protocol library run as its own microservice, so a dropped session never takes down the core API',
+        'Service isolation for stability, running an unofficial WhatsApp protocol library as its own microservice so a dropped session never takes down the core API',
         'Full-stack ownership across a real client deployment: Next.js, FastAPI, PostgreSQL, Redis, Docker, Railway',
-        'Role-based access control and a self-service candidate portal embeddable on the client\'s own website',
+        "Role-based access control and a self-service candidate portal embeddable on the client's own website",
       ],
     },
     {
       slug: 'zyp-assembly-qc-system',
       title: 'ZYP Assembly QC System',
       tagline:
-        'A station-by-station quality control platform live on an electric motorcycle assembly line — 14 stations, 62 tracked tasks, and a final pre-delivery gate before any bike ships.',
+        'Tracks quality checks across every station of an electric motorcycle assembly line, ending with a final inspection before a bike ships.',
       categoryKey: 'production',
       summary:
-        'A quality control platform (internally named Asteria) built for and deployed at ZYP Technologies, an electric motorcycle manufacturer. Operators work through station-based checklists as a bike moves down the assembly line, a registered verifier signs off on completed inspections, and a separate Pre-Delivery Inspection gate catches anything before a bike is cleared to ship — with live analytics surfacing real pass rates, not vanity metrics.',
+        'A quality control platform (internally named Asteria) built for and deployed at ZYP Technologies, an electric motorcycle manufacturer. Operators work through station-based checklists as a bike moves down the assembly line, a registered verifier signs off on completed inspections, and a separate Pre-Delivery Inspection gate catches anything before a bike is cleared to ship. Live analytics surface real pass rates, not vanity metrics.',
       github: '',
       live: '',
       tech: ['Next.js', 'FastAPI', 'PostgreSQL', 'Google Sheets API', 'Docker', 'Railway'],
@@ -972,71 +988,86 @@ export const caseStudies = {
         { label: 'Tracked tasks', value: '62' },
         { label: 'Status', value: 'Live in production' },
       ],
+      architectureBlurb: 'Every bike passes through two independent gates before it ships: station-level checks, then a separate final inspection.',
+      architecture: [
+        {
+          title: 'In-line inspection',
+          items: ['14 assembly stations, 62 tasks', 'Operator completes each checklist', 'Registered verifier signs off'],
+        },
+        {
+          title: 'Pre-Delivery Inspection',
+          items: ['Only appears once in-line is complete', 'Re-checks tyres, electrical, functionality', '33% first-pass clearance rate'],
+        },
+        {
+          title: 'Cleared to ship',
+          items: ['Unit passes the final gate', 'Synced to a Google Sheet automatically', 'Ready for delivery'],
+        },
+      ],
       screenshots: [
         {
           heading: 'Sign in',
-          caption: "The branded entry point — 'Control every assembly checkpoint from station setup to final sign-off.' Three roles laid out up front: managers define stations and checkpoints, operators record pass/fail results with photos, and QC leads lock stations and export inspection history.",
+          caption: "The branded entry point: 'Control every assembly checkpoint from station setup to final sign-off.' Three roles are laid out up front. Managers define stations and checkpoints, operators record pass or fail results with photos, and QC leads lock stations and export inspection history.",
           image: '/screenshots/qc/login.png',
         },
         {
           heading: 'Dashboard',
-          caption: 'Live production numbers, not a mockup: 50% pass rate across 2 recent inspections, 3 PDI reports, 33% PDI clearance rate. Time-windowed (7 days / 30 days / 3 months / all time) so a manager can see today\'s line performance or the long-term trend.',
+          caption: 'Live production numbers, not a mockup: a 50% pass rate across 2 recent inspections, 3 PDI reports, and a 33% PDI clearance rate. It\'s time-windowed (7 days, 30 days, 3 months, all time) so a manager can see today\'s line performance or the long-term trend.',
           image: '/screenshots/qc/dashboard-overview.png',
         },
         {
           heading: 'Inspection deep-dive',
-          caption: 'Drills from the dashboard into individual inspection units (each tagged bike, with per-unit pass rate and how many of its stations are locked) down to per-station label analytics — which specific checkpoints are passing or failing across the whole line.',
+          caption: 'Drills from the dashboard into individual inspection units, each a tagged bike with its own pass rate and how many stations are locked, down to per-station analytics showing which checkpoints are passing or failing across the whole line.',
           image: '/screenshots/qc/inspection-deepdive.png',
         },
         {
           heading: 'PDI deep-dive',
-          caption: 'Pre-Delivery Inspection analytics, tracked completely separately from in-line station inspections: clearance rate, first-pass rate, and a full checklist section breakdown (Tyre, Accessories, Electrical Work, Functionality Tests, and more) each with their own pass counts.',
+          caption: 'Pre-Delivery Inspection analytics, tracked completely separately from in-line station inspections: clearance rate, first-pass rate, and a full checklist section breakdown (Tyre, Accessories, Electrical Work, Functionality Tests, and more), each with their own pass counts.',
           image: '/screenshots/qc/pdi-deepdive.png',
         },
         {
           heading: 'Inline quality inspection',
-          caption: 'The working list of in-progress and completed inspections — each one a real, tagged unit moving through the line, with live progress (e.g. "9/14" stations complete), pass/fail status, and one-click resume or edit.',
+          caption: 'The working list of in-progress and completed inspections. Each one is a real, tagged unit moving through the line, with live progress (like "9/14 stations complete"), pass/fail status, and one-click resume or edit.',
           image: '/screenshots/qc/inspections-list.png',
         },
         {
           heading: 'Pre-delivery inspection reports',
-          caption: 'PDI reports only appear here once a unit\'s in-line inspection is fully complete — each one shows its checklist completion (e.g. "43/43") and whether it\'s ready, pending, or flagged for rework, linked back to its original inspection ID.',
+          caption: 'PDI reports only appear once a unit\'s in-line inspection is fully complete. Each one shows its checklist completion (like "43/43") and whether it\'s ready, pending, or flagged for rework, linked back to its original inspection.',
           image: '/screenshots/qc/pdi-reports.png',
         },
         {
           heading: 'Admin overview',
-          caption: 'Real operational numbers from the live deployment: 5 of 5 operator accounts active, 14 stations configured across 11 grouped areas, 3 of 3 sign-off verifiers active. Tabs for managing operators, verifiers, task assignments, settings, and security all live in this one admin workspace.',
+          caption: 'Real operational numbers from the live deployment: 5 of 5 operator accounts active, 14 stations configured across 11 grouped areas, and 3 of 3 sign-off verifiers active. Tabs for managing operators, verifiers, task assignments, settings, and security all live in this one workspace.',
           image: '/screenshots/qc/admin-overview.png',
         },
       ],
       narrative: [
         {
           heading: 'The problem',
-          body: 'ZYP Technologies builds electric motorcycles, and quality control across a multi-station assembly line was tracked without a system built for it — no structured, auditable record of which checkpoints a specific unit passed, who verified it, or where in the process something failed. The brief: a real QC system with accountability built in, where every task on every station is tied to a specific unit, a specific operator, and a timestamp, with a final gate before anything is cleared to ship.',
+          body: 'ZYP Technologies builds electric motorcycles, and quality control across the multi-station assembly line was tracked without a system built for it. There was no structured, auditable record of which checkpoints a specific unit passed, who verified it, or where in the process something failed. The brief was a real QC system with accountability built in: every task on every station tied to a specific unit, a specific operator, and a timestamp, with a final gate before anything is cleared to ship.',
         },
         {
           heading: 'Architecture',
-          body: "A Next.js frontend (a single, tightly-scoped workspace with lazily-loaded sections rather than a sprawling multi-page site) talks to a FastAPI backend on PostgreSQL, deployed on Railway. A background service syncs completed station data straight into a Google Sheet the moment a station is locked — the client's team was already used to spreadsheets for cross-checking, so this meant zero workflow disruption instead of asking them to abandon a tool they trusted.",
+          body: "A Next.js frontend, built as a single tightly-scoped workspace with lazily-loaded sections rather than a sprawling multi-page site, talks to a FastAPI backend on PostgreSQL, deployed on Railway. A background service syncs completed station data straight into a Google Sheet the moment a station is locked. The client's team was already used to spreadsheets for cross-checking, so this meant zero workflow disruption instead of asking them to abandon a tool they trusted.",
         },
         {
-          heading: 'Two-tier quality control: station inspections, then a separate final gate',
-          body: "The system deliberately models QC as two distinct layers, not one. In-line inspections track a unit through 14 real assembly stations (62 tasks total, grouped into 11 areas) as it's built — an operator works through each station's checklist, and a registered verifier signs off once it's complete. Separately, a Pre-Delivery Inspection only appears once a unit's in-line inspection is fully done, and re-checks final readiness (tyres, accessories, electrical work, functionality tests) before a unit is cleared to ship. Keeping these separate means a station-level failure and a pre-delivery failure are two different, independently-tracked signals — not lumped into one pass/fail number.",
+          heading: 'Two-tier quality control: station inspections, then a final gate',
+          body: "The system deliberately models QC as two distinct layers, not one. In-line inspections track a unit through 14 real assembly stations, 62 tasks total across 11 grouped areas, as it's built. An operator works through each station's checklist, and a registered verifier signs off once it's complete. Separately, a Pre-Delivery Inspection only appears once a unit's in-line inspection is fully done, and re-checks final readiness (tyres, accessories, electrical work, functionality tests) before a unit is cleared to ship. Keeping these separate means a station-level failure and a pre-delivery failure are two different, independently tracked signals instead of one flattened pass/fail number.",
         },
         {
-          heading: 'Analytics that show the real number, not a flattering one',
-          body: "The dashboard reports a 33% PDI first-pass rate in the current deployment data — reported as-is, because the whole point of building this system was to surface exactly that kind of number where it would otherwise be invisible. Deep-dive views break it down further: per-unit pass rates, per-checkpoint label analytics across the whole line, and a full PDI checklist section breakdown, all filterable by time window (7 days, 30 days, 3 months, all time) so a manager can tell a bad week from a real trend.",
+          heading: 'Analytics that show the real number',
+          body: "The dashboard reports a 33% PDI first-pass rate in the current deployment data, reported as-is, because the whole point of building this system was to surface exactly that kind of number where it would otherwise stay invisible. Deep-dive views break it down further: per-unit pass rates, per-checkpoint analytics across the whole line, and a full PDI checklist breakdown, all filterable by time window (7 days, 30 days, 3 months, all time) so a manager can tell a bad week from a real trend.",
         },
         {
-          heading: 'Scope discipline: a real feature, deliberately kept off the operator-facing UI',
-          body: "The backend has a full CRUD API for managing inspection templates — creating and editing stations, sections, and tasks, including file uploads — but no frontend page calls it. That's intentional, not an oversight: station and task configuration changes rarely once a line is set up, so exposing a full template builder to end users would have added UI surface and risk for a feature used maybe a handful of times. It's managed directly through the API for now, with the option to build a real admin UI for it later if the client's needs change.",
+          heading: 'A feature deliberately kept off the operator-facing UI',
+          body: "The backend has a full CRUD API for managing inspection templates, including creating and editing stations, sections, and tasks with file uploads, but no frontend page calls it. That's intentional, not an oversight. Station and task configuration rarely changes once a line is set up, so exposing a full template builder to end users would have added UI surface and risk for a feature used maybe a handful of times. It's managed directly through the API for now, with the option to build a real admin UI later if the client's needs change.",
         },
       ],
       skillsDemonstrated: [
-        'Modeling a two-tier QC system (in-line station inspections + an independent Pre-Delivery Inspection gate) as genuinely separate tracked signals, not one flattened pass/fail number',
-        'Time-windowed analytics (7 days / 30 days / 3 months / all time) built directly on live production data, including per-station and per-checkpoint drill-down views',
+        'Modeling a two-tier QC system (in-line station inspections plus an independent Pre-Delivery Inspection gate) as genuinely separate tracked signals, not one flattened pass/fail number',
+        'Time-windowed analytics (7 days, 30 days, 3 months, all time) built directly on live production data, including per-station and per-checkpoint drill-down views',
         'Event-triggered background integration (Google Sheets sync on station lock) designed around the client\'s existing workflow instead of replacing it',
-        'Deliberate scope discipline — a full CRUD API built for template management, intentionally left off the UI to keep the operator-facing surface focused for actual usage',
-        'Role-based workflow design (operator vs. manager) with a formal sign-off/verification step for accountability',
+        'Deliberate scope discipline: a full CRUD API built for template management, intentionally left off the UI to keep the operator-facing surface focused',
+        'Role-based workflow design for operators and managers, with a formal sign-off and verification step for accountability',
         'Reporting and export (PDF-style reports, CSV/Excel) tied to a real audit trail per inspection',
         'Full-stack ownership of a real client deployment: Next.js, FastAPI, PostgreSQL, Railway',
       ],
@@ -1045,10 +1076,10 @@ export const caseStudies = {
       slug: 'oval-labs-outreach-tool',
       title: 'Oval Labs Outreach Tool',
       tagline:
-        'An AI cold-email platform built and used internally at Oval Labs itself — the same system that helped land the other two companies in this section as clients.',
+        'Writes and sends personalized cold emails to leads, then automatically follows up and sorts replies.',
       categoryKey: 'production',
       summary:
-        'A self-built AI-powered outreach platform Oval Labs uses for its own client acquisition: upload a lead list, AI writes a personalized cold email per lead, send through Gmail with rate limiting, then let an automatic multi-step follow-up sequence and IMAP-based reply/bounce detection take over — with a kanban board and a categorized reply inbox to work leads from there.',
+        'A self-built AI-powered outreach platform Oval Labs uses for its own client acquisition. Upload a lead list, AI writes a personalized cold email per lead, and it sends through Gmail with rate limiting. From there, an automatic multi-step follow-up sequence and IMAP-based reply and bounce detection take over, with a kanban board and a categorized reply inbox to work leads from.',
       github: '',
       live: '',
       tech: ['Next.js', 'FastAPI', 'PostgreSQL', 'OpenAI', 'Gmail SMTP', 'IMAP', 'Railway'],
@@ -1061,58 +1092,73 @@ export const caseStudies = {
         { label: 'Daily send limit', value: '150' },
         { label: 'Status', value: 'Live in production' },
       ],
+      architectureBlurb: 'Every lead moves through the same sequence, each step written with its own angle rather than a repeated template.',
+      architecture: [
+        {
+          title: 'New lead',
+          items: ['Uploaded via Excel or CSV', 'Validated for company name and email', 'AI drafts the first cold email'],
+        },
+        {
+          title: 'Follow-up sequence',
+          items: ['3 configurable steps (day 2, 3, 4+)', 'Each step takes a different angle', 'Sent under Gmail-safe rate limits'],
+        },
+        {
+          title: 'Reply or bounce',
+          items: ['Detected over IMAP automatically', 'Sorted into working categories', 'Worked from the kanban board'],
+        },
+      ],
       screenshots: [
         {
           heading: 'New campaign',
-          caption: "The four-step flow: upload a leads list (Excel/CSV, validated for company name and email), configure AI tone and sender identity, then generate and review AI-drafted emails before launch. Multi-workspace support (the 'haha' workspace switcher, top right) means separate campaigns don't mix leads or sending identities.",
+          caption: "The four-step flow: upload a leads list (Excel or CSV, validated for company name and email), configure AI tone and sender identity, then generate and review AI-drafted emails before launch. Multi-workspace support means separate campaigns don't mix leads or sending identities.",
           image: '/screenshots/outreach/new-campaign.png',
         },
         {
           heading: 'Data pipeline',
-          caption: 'The live working view of a campaign — real leads (TalentBridge Solutions, PeakHire Consulting) with tracked status, plus aggregate stats: total leads, remaining, failed sends, contacted, sent today, total sent, reply rate, and open rate, all computed from real send/tracking data.',
+          caption: 'The live working view of a campaign, showing real leads (TalentBridge Solutions, PeakHire Consulting) with tracked status, plus aggregate stats: total leads, remaining, failed sends, contacted, sent today, total sent, reply rate, and open rate, all computed from real send and tracking data.',
           image: '/screenshots/outreach/pipeline.png',
         },
         {
           heading: 'Replies inbox',
-          caption: "Replies are pulled automatically from the inbox over IMAP and sorted into working categories — New, Needs Response, Interested, Booked, Not Interested — so following up on a real reply doesn't mean re-reading an entire inbox by hand.",
+          caption: "Replies are pulled automatically from the inbox over IMAP and sorted into working categories: New, Needs Response, Interested, Booked, Not Interested. Following up on a real reply doesn't mean re-reading an entire inbox by hand.",
           image: '/screenshots/outreach/replies.png',
         },
         {
           heading: 'Kanban board',
-          caption: 'A drag-and-drop view of every lead\'s position in the outreach sequence — New Leads, Step 1 Sent, Step 2 Sent, Step 3 Sent — so it\'s immediately visible how far each lead has progressed without opening a spreadsheet.',
+          caption: "A drag-and-drop view of every lead's position in the outreach sequence, from New Leads through Step 1, 2, and 3 Sent, so it's immediately visible how far each lead has progressed without opening a spreadsheet.",
           image: '/screenshots/outreach/kanban.png',
         },
         {
           heading: 'Account settings',
-          caption: "Real sending controls, not just cosmetic settings: a daily send limit (150) and per-send delay to stay within Gmail's safe sending thresholds, configurable day-delays between each follow-up step, and two advanced deliverability features — Inbox Warm-up (auto-simulating replies to build sender reputation) and A/B testing mode (automatically splitting sequence variations when generating).",
+          caption: "Real sending controls, not just cosmetic ones: a daily send limit of 150 and a per-send delay to stay within Gmail's safe sending thresholds, configurable delays between each follow-up step, and two deliverability features, Inbox Warm-up (auto-simulating replies to build sender reputation) and A/B testing mode (automatically splitting sequence variations when generating).",
           image: '/screenshots/outreach/settings.png',
         },
       ],
       narrative: [
         {
           heading: 'The problem',
-          body: "Oval Labs needed a real client-acquisition channel — manually researching leads, writing personalized outreach, and tracking replies and follow-ups in a spreadsheet doesn't scale past a handful of prospects a week. This tool is the direct answer: it's the actual system used to reach and land clients, including the two other companies featured in this Production Systems section.",
+          body: "Oval Labs needed a real client-acquisition channel. Manually researching leads, writing personalized outreach, and tracking replies and follow-ups in a spreadsheet doesn't scale past a handful of prospects a week. This tool is the direct answer: it's the actual system used to reach and land clients, including the two other companies featured in this section.",
         },
         {
           heading: 'Architecture',
-          body: 'A Next.js frontend and FastAPI backend on PostgreSQL, deployed on Railway. Sending goes through Gmail SMTP directly (not a third-party email API), with reply and bounce detection both implemented over IMAP against the same inbox — polling and parsing real email headers and bodies rather than depending on a paid deliverability platform.',
+          body: 'A Next.js frontend and FastAPI backend on PostgreSQL, deployed on Railway. Sending goes through Gmail SMTP directly instead of a third-party email API, and reply and bounce detection are both implemented over IMAP against the same inbox, polling and parsing real email headers and bodies rather than depending on a paid deliverability platform.',
         },
         {
-          heading: 'AI writing that adapts per follow-up step, not a template with fields swapped in',
-          body: "The initial cold email and each follow-up step use separate AI prompts — a follow-up email deliberately takes a different angle than the first touch (different value proposition, different framing) rather than just re-sending the same pitch with a 'following up' line added, which is what most cold-email tools actually do. Follow-up cadence is fully configurable per step (day 2, day 3, day 4+) rather than a fixed interval.",
+          heading: 'AI writing that adapts per follow-up step',
+          body: "The initial cold email and each follow-up step use separate AI prompts. A follow-up deliberately takes a different angle than the first touch, with a different value proposition and framing, instead of just re-sending the same pitch with a 'following up' line added, which is what most cold-email tools actually do. Follow-up cadence is fully configurable per step (day 2, day 3, day 4 and beyond) rather than a fixed interval.",
         },
         {
           heading: 'Real deliverability engineering, not just AI copywriting',
-          body: "The AI-generated email is the visible part, but the settings that actually determine whether a campaign works are the send-rate controls: a daily send cap and per-message delay to stay under Gmail's spam thresholds, plus two advanced features — Inbox Warm-up, which auto-simulates replies to build sending reputation before a real campaign goes out, and A/B testing mode, which automatically generates sequence variations to test what actually gets replies. These are the unglamorous parts of cold email that determine whether messages land in an inbox or a spam folder, and they got the same engineering attention as the AI generation itself.",
+          body: "The AI-generated email is the visible part, but what actually determines whether a campaign works is the send-rate controls: a daily send cap and per-message delay to stay under Gmail's spam thresholds. Two more advanced features help too. Inbox Warm-up auto-simulates replies to build sending reputation before a real campaign goes out, and A/B testing mode automatically generates sequence variations to test what actually gets replies. These are the unglamorous parts of cold email that decide whether messages land in an inbox or a spam folder, and they got the same engineering attention as the AI generation itself.",
         },
         {
           heading: 'Multi-workspace support',
-          body: "Campaigns are scoped to switchable workspaces rather than one global lead list — so different campaigns, sender identities, and lead pools stay cleanly separated instead of accumulating into one undifferentiated pile as outreach volume grows.",
+          body: "Campaigns are scoped to switchable workspaces rather than one global lead list, so different campaigns, sender identities, and lead pools stay cleanly separated instead of piling up together as outreach volume grows.",
         },
       ],
       skillsDemonstrated: [
-        'Building and operating the actual growth infrastructure for a real company, not just a client deliverable — this tool is how Oval Labs itself acquires clients',
-        'AI email generation that varies meaningfully by sequence step (different angle per follow-up) rather than templated re-sends',
+        "Building and operating real growth infrastructure for a company, not just a client deliverable. This tool is how Oval Labs itself acquires clients",
+        'AI email generation that varies meaningfully by sequence step, taking a different angle per follow-up rather than templated re-sends',
         'IMAP-based reply and bounce detection against a live Gmail inbox, with automatic reply categorization',
         'Deliverability-focused engineering: send-rate limiting, configurable follow-up cadence, inbox warm-up, and automatic A/B sequence variation',
         'Multi-workspace data isolation for running separate campaigns without cross-contamination',
@@ -1121,12 +1167,12 @@ export const caseStudies = {
     },
     {
       slug: 'truesight-deepfake-detection',
-      title: 'TrueSight — AI Deepfake Detection System',
+      title: 'TrueSight: AI Deepfake Detection System',
       tagline:
-        'A freelance-built forensic tool that checks video and audio for AI manipulation using two real published detection models, plus a rule-based metadata forensics layer that has nothing to do with either model.',
+        'Checks an uploaded video or audio clip for signs of AI manipulation, using two detection models plus a separate file-forensics check.',
       categoryKey: 'production',
       summary:
-        "A deepfake detection system built as freelance client work: upload a video or audio file and it runs three independent layers of analysis — a published video deepfake detection model (frame sampling, face detection, and a 2-factor consensus rule), a published audio deepfake detection model (segment-by-segment timeline scoring), and a rule-based forensic metadata scanner that flags re-encoding signatures, suspicious compression, and stripped metadata, none of which depend on either AI model. Pre-flight quality checks grade whether a file is even good enough to trust the result before committing to full analysis.",
+        "A deepfake detection system built as freelance client work. Upload a video or audio file and it runs three independent layers of analysis: a published video deepfake detection model (frame sampling, face detection, and a 2-factor consensus rule), a published audio deepfake detection model (segment-by-segment timeline scoring), and a rule-based forensic metadata scanner that flags re-encoding signatures, suspicious compression, and stripped metadata, none of which depend on either AI model. Pre-flight quality checks grade whether a file is even good enough to trust the result before committing to full analysis.",
       github: '',
       live: '',
       tech: ['Python', 'FastAPI', 'PyTorch', 'HuggingFace Transformers', 'MTCNN', 'FFmpeg', 'React', 'SQLite'],
@@ -1139,7 +1185,7 @@ export const caseStudies = {
         { label: 'Decision logic', value: '2-factor' },
         { label: 'Status', value: 'Delivered to client' },
       ],
-      architectureBlurb: "Three independent layers run on whatever gets uploaded — the two AI models never see each other's output, and the forensic scanner doesn't need either of them to flag a suspicious file.",
+      architectureBlurb: "Three independent layers run on whatever gets uploaded. The two AI models never see each other's output, and the forensic scanner doesn't need either of them to flag a suspicious file.",
       architecture: [
         {
           title: 'Video path',
@@ -1157,37 +1203,37 @@ export const caseStudies = {
       screenshots: [
         {
           heading: 'Upload',
-          caption: 'The entry point — drag-and-drop upload supporting a wide format range (WhatsApp audio, MP4, MOV, MKV, MP3, WAV, OPUS) up to 100MB, framed clearly as a multi-modal detection engine rather than a single-model demo.',
+          caption: 'The entry point: drag-and-drop upload supporting a wide format range (WhatsApp audio, MP4, MOV, MKV, MP3, WAV, OPUS) up to 100MB, framed clearly as a multi-modal detection engine rather than a single-model demo.',
           image: '/screenshots/truesight/upload.png',
         },
       ],
       narrative: [
         {
           heading: 'The brief',
-          body: "Freelance client work: build a tool that can look at an uploaded video or audio clip and give a real, defensible answer on whether it's likely AI-generated or manipulated — not just a single probability number with no way to sanity-check it.",
+          body: "Freelance client work: build a tool that can look at an uploaded video or audio clip and give a real, defensible answer on whether it's likely AI-generated or manipulated, not just a single probability number with no way to sanity-check it.",
         },
         {
           heading: 'Two real models, not one glued-on demo',
-          body: "Video and audio each get their own dedicated, published detection model rather than one general-purpose model stretched across both. Video runs through MTCNN face detection with margin-cropping and a blur/size quality filter before any frame reaches the deepfake model itself — low-quality faces are excluded rather than fed in and hoped for the best. The video decision requires both a high average fake-probability across sampled frames AND majority agreement across those frames, so a handful of anomalous frames in an otherwise-clean video won't flip the verdict.",
+          body: "Video and audio each get their own dedicated, published detection model rather than one general-purpose model stretched across both. Video runs through MTCNN face detection with margin-cropping and a blur and size quality filter before any frame reaches the deepfake model itself, so low-quality faces are excluded rather than fed in and hoped for the best. The video decision requires both a high average fake-probability across sampled frames and majority agreement across those frames, so a handful of anomalous frames in an otherwise-clean video won't flip the verdict.",
         },
         {
           heading: 'Audio gets a timeline, not just a verdict',
-          body: "Rather than one score for an entire clip, audio is split into segments and each is scored independently, so the result includes a full timeline — useful for pointing at exactly where in a clip something looks synthetic rather than a single opaque number. Longer clips fall back to a segment-averaged estimate instead of a slow full-pass, keeping analysis time reasonable.",
+          body: "Rather than one score for an entire clip, audio is split into segments and each is scored independently, so the result includes a full timeline. That's useful for pointing at exactly where in a clip something looks synthetic instead of a single opaque number. Longer clips fall back to a segment-averaged estimate instead of a slow full pass, keeping analysis time reasonable.",
         },
         {
           heading: 'A forensic layer that owes nothing to either AI model',
-          body: "Separately from both detection models, every file gets probed for its own container-level tells: re-encoding signatures from tools like FFmpeg or Adobe Premiere, a resolution/bitrate mismatch consistent with double compression, stripped or missing metadata, and filename patterns consistent with social media transit. Each starts a file at a perfect integrity score and deducts points per flag — a second, independent signal that doesn't rely on either neural network being right.",
+          body: "Separately from both detection models, every file gets probed for its own container-level tells: re-encoding signatures from tools like FFmpeg or Adobe Premiere, a resolution or bitrate mismatch consistent with double compression, stripped or missing metadata, and filename patterns consistent with social media transit. Each file starts at a perfect integrity score and loses points per flag. It's a second, independent signal that doesn't rely on either neural network being right.",
         },
         {
           heading: 'Checking if the file is even worth analyzing',
-          body: "Before committing to a full model pass, dedicated face- and audio-quality checks grade whether the input is actually good enough to trust — face size, blur (via Laplacian variance), brightness, and contrast are scored and combined into a usability grade with a specific recommendation, rather than silently returning a low-confidence result on unusable input and letting the user assume the model just wasn't sure.",
+          body: "Before committing to a full model pass, dedicated face and audio quality checks grade whether the input is actually good enough to trust. Face size, blur (via Laplacian variance), brightness, and contrast are scored and combined into a usability grade with a specific recommendation, instead of silently returning a low-confidence result on unusable input and letting the user assume the model just wasn't sure.",
         },
       ],
       skillsDemonstrated: [
-        'Integrating two independent, published deep learning models (video + audio deepfake detection) from HuggingFace into one coherent pipeline',
-        'Consensus-based decision logic (probability threshold AND frame/segment agreement) to reduce false positives from isolated anomalous samples',
-        'Building an independent, rule-based forensic layer (metadata/re-encoding analysis) that corroborates AI verdicts without depending on them',
-        'Pre-flight input quality assessment (face and audio) with actionable recommendations, instead of returning low-confidence results on unusable input silently',
+        'Integrating two independent, published deep learning models (video and audio deepfake detection) from HuggingFace into one coherent pipeline',
+        'Consensus-based decision logic (probability threshold and frame or segment agreement) to reduce false positives from isolated anomalous samples',
+        'Building an independent, rule-based forensic layer (metadata and re-encoding analysis) that corroborates AI verdicts without depending on them',
+        'Pre-flight input quality assessment for face and audio, with actionable recommendations instead of silently returning low-confidence results',
         'Robust media format handling via FFmpeg (WhatsApp audio, MP4, MOV, MKV, MP3, WAV, OPUS) for real-world file variety, not just clean lab-format input',
         'Delivering a complete freelance client product: upload, background processing, history, and PDF report export, not just a model in a notebook',
       ],
@@ -1196,75 +1242,81 @@ export const caseStudies = {
       slug: 'hse-performance-tracker',
       title: 'HSE Performance Tracker',
       tagline:
-        'A multi-tenant construction safety compliance platform tracking 30 real HSE fields per worker per day — freelance-built for a UAE construction client, live and in use.',
+        'Tracks daily safety compliance for construction workers across multiple projects, and rolls it up into a live performance score.',
       categoryKey: 'production',
       summary:
-        "A safety (Health, Safety, Environment) compliance platform built as freelance work for a UAE-based construction client: organizations manage multiple projects, each with sections and workers, and every worker gets a daily log covering 30 distinct real HSE compliance fields — task briefings, toolbox talks, safety observations, NCR closures, safety walks, training sessions, and more — rolled up into a live performance score and monthly KPI tracking. Multi-tenant from the ground up, with project-level access control so a site lead only sees the projects they're assigned to.",
+        "A safety (Health, Safety, Environment) compliance platform built as freelance work for a UAE-based construction client. Organizations manage multiple projects, each with sections and workers, and every worker gets a daily log covering 30 distinct real HSE compliance fields: task briefings, toolbox talks, safety observations, NCR closures, safety walks, training sessions, and more. It all rolls up into a live performance score and monthly KPI tracking. The platform is multi-tenant from the ground up, with project-level access control so a site lead only sees the projects they're assigned to.",
       github: '',
       live: '',
       tech: ['React', 'FastAPI', 'PostgreSQL', 'SQLAlchemy', 'Tailwind CSS', 'Railway'],
       hasLiveDemo: false,
       accentColor: 'zinc',
       icon: 'hardHat',
+      customResults: 'hse',
       heroMetrics: [
         { label: 'Daily log fields', value: '30' },
         { label: 'Access tiers', value: '3' },
         { label: 'Multi-tenant', value: 'Yes' },
         { label: 'Status', value: 'Live for client' },
       ],
+      complianceFields: [
+        'Toolbox talks', 'Site observation reports', 'Non-conformance closure',
+        'Method statement risk assessment', 'Permit-linked barcode compliance',
+        'Mock drills', 'Welfare facility monitoring',
+      ],
       screenshots: [
         {
           heading: 'Projects dashboard',
-          caption: 'Real data from the live deployment: a construction project in the UAE, 123 manpower, 3,000 man-hours, 23 inductions, tagged by work type (Excavation, Lifting, Marine), sitting at a 90% "Excellent" performance score.',
+          caption: 'Real data from the live deployment: a construction project in the UAE with 123 manpower, 3,000 man-hours, and 23 inductions, tagged by work type (Excavation, Lifting, Marine), sitting at a 90% "Excellent" performance score.',
           image: '/screenshots/hse-tracker/projects.png',
         },
         {
           heading: 'Project performance overview',
-          caption: 'A configurable audit timeframe (7 days up to 1 year, or a custom range), an overall project score gauge, a score-distribution breakdown, and the roster of workers being tracked under that project — each with their own live score.',
+          caption: 'A configurable audit timeframe (7 days up to 1 year, or a custom range), an overall project score gauge, a score-distribution breakdown, and the roster of workers being tracked under that project, each with their own live score.',
           image: '/screenshots/hse-tracker/project-overview.png',
         },
         {
           heading: 'Individual worker detail',
-          caption: "A week/month/year trend chart per field, and the full 30-field Daily Monitoring grid for a specific date — attendance, inductions, barcode compliance, task briefings, TBT, violations, SOR/NCR closure, mock drills, safety walks, training, and more — plus monthly KPI totals below it.",
+          caption: "A week, month, or year trend chart per field, and the full 30-field Daily Monitoring grid for a specific date: attendance, inductions, barcode compliance, task briefings, TBT, violations, SOR/NCR closure, mock drills, safety walks, training, and more, plus monthly KPI totals below it.",
           image: '/screenshots/hse-tracker/candidate-detail.png',
         },
       ],
       narrative: [
         {
           heading: 'The brief',
-          body: "Freelance client work for a UAE construction company: replace manual, paper-based HSE compliance tracking with a real system — one place to see, per worker and per project, whether the actual safety processes (briefings, toolbox talks, inspections, NCR closures) are happening, not just whether an incident has occurred.",
+          body: "Freelance client work for a UAE construction company: replace manual, paper-based HSE compliance tracking with a real system. One place to see, per worker and per project, whether the actual safety processes (briefings, toolbox talks, inspections, NCR closures) are happening, not just whether an incident has occurred.",
         },
         {
           heading: 'Real domain depth, not a generic checklist app',
-          body: "The 30 daily-log fields aren't generic placeholders — they're specific, real construction-site HSE practices: TBT (toolbox talks), SOR/NCR (site observation reports / non-conformance reports), MSRA (method statement risk assessment communication), PTW-linked barcode compliance, mock drills, and welfare facility monitoring, among others. Getting the data model right meant encoding the client's actual safety process, not a generic 'yes/no' form.",
+          body: "The 30 daily-log fields aren't generic placeholders. They're specific, real construction-site HSE practices: TBT (toolbox talks), SOR/NCR (site observation reports and non-conformance reports), MSRA (method statement risk assessment communication), PTW-linked barcode compliance, mock drills, and welfare facility monitoring, among others. Getting the data model right meant encoding the client's actual safety process, not building a generic yes/no form.",
         },
         {
           heading: 'Multi-tenant, with real access boundaries',
-          body: "Organizations, users, and projects are modeled properly for multi-tenancy: a user has a role (admin, lead, or viewer) and is explicitly assigned to specific projects through a join table, so a site lead sees only the projects they're responsible for rather than every project in the system. This was built to actually support more than one client/organization on the same platform, not just one company's data with a login screen in front of it.",
+          body: "Organizations, users, and projects are modeled properly for multi-tenancy. A user has a role (admin, lead, or viewer) and is explicitly assigned to specific projects through a join table, so a site lead sees only the projects they're responsible for rather than every project in the system. This was built to actually support more than one client or organization on the same platform, not just one company's data with a login screen in front of it.",
         },
         {
           heading: 'A real bug, caught by a real test',
-          body: "A dedicated regression test was written specifically to check whether monthly KPI history was retrievable across multiple months — and it caught a real issue: the API was silently returning only the latest month's KPIs, flattened, with earlier months inaccessible. The current code fixes this by keying the response by month string, so a project's full KPI history is actually retrievable, not just the most recent snapshot. Writing a test that goes looking for exactly this kind of silent data-loss bug, rather than only testing the happy path, is the detail worth calling out here.",
+          body: "A dedicated regression test was written specifically to check whether monthly KPI history was retrievable across multiple months, and it caught a real issue: the API was silently returning only the latest month's KPIs, flattened, with earlier months inaccessible. The current code fixes this by keying the response by month string, so a project's full KPI history is actually retrievable, not just the most recent snapshot. Writing a test that goes looking for exactly this kind of silent data-loss bug, rather than only testing the happy path, is the detail worth calling out here.",
         },
       ],
       skillsDemonstrated: [
-        'Multi-tenant SaaS data modeling — organizations, role-based users, and project-level access control via an explicit assignment table',
+        'Multi-tenant SaaS data modeling: organizations, role-based users, and project-level access control via an explicit assignment table',
         'Translating a real, detailed client safety process (30 distinct HSE compliance fields) into a correct, structured data model',
         'Writing a regression test that specifically targets silent data-loss bugs (flattened KPI history) rather than only the happy path',
         'Rolling up granular daily compliance data into project- and worker-level performance scores with configurable time windows',
-        'Delivering and maintaining a real freelance client product — live in production, not a one-off delivery',
+        'Delivering and maintaining a real freelance client product, live in production, not a one-off delivery',
       ],
     },
   ],
   robotics: [
     {
       slug: 'agrobot-weed-detection-robot',
-      title: 'AgroBot — Solar-Powered Autonomous Weed Removal Robot',
+      title: 'AgroBot: Solar-Powered Autonomous Weed Removal Robot',
       tagline:
-        'A solar-powered ground robot that autonomously covers a field in a zigzag pattern, stops on weed detection, and removes it with an onboard 2-axis gantry before continuing — a full perceive-stop-act-resume loop, not a detection demo.',
+        'A solar-powered ground robot that covers a field in a zigzag pattern on its own, stops when it detects a weed, and removes it with an onboard robotic arm before continuing.',
       categoryKey: 'robotics',
       summary:
-        "A final year engineering project: an autonomous ground robot built from scratch — welded chassis, chain-drive wheels, solar power sized to run the motors directly, and a 2-axis gantry mechanism that physically removes a weed once it's found. A user-defined target area is covered via autonomous zigzag navigation; a YOLOv8 model on an NVIDIA Jetson Orin Nano handles detection, an Arduino Mega runs all mobility, coverage, and obstacle-avoidance logic, and an ESP32 connects the robot to a custom-built remote control interface.",
+        "A final year engineering project: an autonomous ground robot built from scratch, with a welded chassis, chain-drive wheels, solar power sized to run the motors directly, and a 2-axis gantry mechanism that physically removes a weed once it's found. A user-defined target area is covered through autonomous zigzag navigation. A YOLOv8 model on an NVIDIA Jetson Orin Nano handles detection, an Arduino Mega runs all mobility, coverage, and obstacle-avoidance logic, and an ESP32 connects the robot to a custom-built remote control interface.",
       github: '',
       live: '',
       tech: [
@@ -1285,14 +1337,14 @@ export const caseStudies = {
           stage: '01',
           label: 'Fabrication',
           heading: 'Built from raw metal',
-          body: "It started as a hand-welded frame, no wheels or electronics attached yet. Every structural part of this robot — the chassis, the leg mounts, the gantry frame — was fabricated for the project rather than bought as a kit.",
+          body: "It started as a hand-welded frame, no wheels or electronics attached yet. Every structural part of this robot, including the chassis, the leg mounts, and the gantry frame, was fabricated for the project rather than bought as a kit.",
           image: '/screenshots/agrobot/build-process.jpg',
         },
         {
           stage: '02',
           label: 'Assembly & systems',
           heading: 'Chassis, wheels, and power online',
-          body: "Chain-drive wheels went on next, each independently mounted on its own spring-loaded arm for rough terrain rather than a rigid fixed axle. Solar panels, the camera/sensor mast, and a transparent electronics enclosure — kept see-through deliberately, so wiring stays inspectable instead of hidden — completed the build.",
+          body: "Chain-drive wheels went on next, each independently mounted on its own spring-loaded arm for rough terrain rather than a rigid fixed axle. Solar panels, the camera and sensor mast, and a transparent electronics enclosure completed the build. The enclosure was kept see-through deliberately, so wiring stays inspectable instead of hidden.",
           images: ['/screenshots/agrobot/hero-front.jpg', '/screenshots/agrobot/hero-side.jpg'],
         },
         {
@@ -1306,46 +1358,46 @@ export const caseStudies = {
       narrative: [
         {
           heading: 'The problem',
-          body: "Manual weed control in agriculture is labor-intensive and doesn't scale — someone has to walk the field, spot each weed, and remove it by hand. The goal was a robot that closes that entire loop itself: cover a defined field area on its own, detect a weed in real time, and physically remove it on the spot — not just flag it for a person to deal with later.",
+          body: "Manual weed control in agriculture is labor-intensive and doesn't scale. Someone has to walk the field, spot each weed, and remove it by hand. The goal was a robot that closes that entire loop itself: cover a defined field area on its own, detect a weed in real time, and physically remove it on the spot, instead of just flagging it for a person to deal with later.",
         },
         {
           heading: 'The coverage loop: zigzag, stop, remove, resume',
-          body: "A target area is specified on a map, and the robot autonomously follows a zigzag path to cover it end to end. The moment the vision model detects a weed, the robot stops — the 2-axis (X-Y) gantry mechanism then positions the removal tool precisely over that exact spot and removes the weed. Once removal is complete, the robot resumes its zigzag route and continues until the whole designated area has been covered. Detection triggers a real physical action and a return to coverage, not just a logged event.",
+          body: "A target area is specified on a map, and the robot autonomously follows a zigzag path to cover it end to end. The moment the vision model detects a weed, the robot stops. The 2-axis (X-Y) gantry mechanism then positions the removal tool precisely over that exact spot and removes the weed. Once removal is complete, the robot resumes its zigzag route and continues until the whole designated area has been covered. Detection triggers a real physical action and a return to coverage, not just a logged event.",
         },
         {
           heading: 'Three controllers, three clear jobs',
-          body: "The control architecture is deliberately split by responsibility rather than centralized in one board: an Arduino Mega runs all of the automation — zigzag path coverage, mobility control, and obstacle-avoidance logic. An NVIDIA Jetson Orin Nano is dedicated solely to weed detection, running the YOLOv8 model against the live camera feed. An ESP32 handles communication between the robot and a custom-built remote control interface, letting multiple functions be operated remotely without routing that traffic through either of the other two boards.",
+          body: "The control architecture is deliberately split by responsibility rather than centralized in one board. An Arduino Mega runs all of the automation: zigzag path coverage, mobility control, and obstacle-avoidance logic. An NVIDIA Jetson Orin Nano is dedicated solely to weed detection, running the YOLOv8 model against the live camera feed. An ESP32 handles communication between the robot and a custom-built remote control interface, letting multiple functions be operated remotely without routing that traffic through either of the other two boards.",
         },
         {
           heading: 'Obstacle detection: why ultrasonic',
-          body: "A 360° ultrasonic sensor array handles obstacle detection, chosen specifically over infrared and other shorter-range options because ultrasonic gives meaningfully better detection range — which matters directly for stopping distance at any real driving speed. When something unexpected enters the robot's path, the Arduino Mega reads the array and stops the robot immediately to avoid a collision, independent of whatever the zigzag/removal cycle is doing at that moment.",
+          body: "A 360-degree ultrasonic sensor array handles obstacle detection, chosen specifically over infrared and other shorter-range options because ultrasonic gives meaningfully better detection range, which matters directly for stopping distance at any real driving speed. When something unexpected enters the robot's path, the Arduino Mega reads the array and stops the robot immediately to avoid a collision, independent of whatever the zigzag or removal cycle is doing at that moment.",
         },
         {
           heading: 'Power: solar-primary, battery as backup',
-          body: "The robot runs on solar panels sized against the motors' calculated power draw, so under normal conditions solar generation alone is enough to drive the motors directly — lithium-ion battery cells exist specifically as a backup for when solar input isn't sufficient, not as the primary power source. That's a real sizing exercise (matching panel output to actual motor consumption), not just 'a robot with a solar panel on it.'",
+          body: "The robot runs on solar panels sized against the motors' calculated power draw, so under normal conditions solar generation alone is enough to drive the motors directly. Lithium-ion battery cells exist specifically as a backup for when solar input isn't sufficient, not as the primary power source. That's a real sizing exercise, matching panel output to actual motor consumption, not just a robot with a solar panel on it.",
         },
         {
           heading: 'Positioning: self-installed encoders on the drive motors',
-          body: "Precise movement and positioning come from encoders the team installed themselves on the geared drive motors — not off-the-shelf encoder motors. Reading the encoder pulses (ticks) as the motors turn gives an accurate measurement of rotation, which is what makes precise zigzag-path tracking and accurate stopping over a detected weed possible.",
+          body: "Precise movement and positioning come from encoders the team installed themselves on the geared drive motors, rather than off-the-shelf encoder motors. Reading the encoder pulses (ticks) as the motors turn gives an accurate measurement of rotation, which is what makes precise zigzag-path tracking and accurate stopping over a detected weed possible.",
         },
         {
           heading: 'Real-time weed detection',
-          body: "The YOLOv8 model was trained on a 4,203-image weed dataset (sourced via Roboflow) for 25 epochs, reaching 95.6% mAP50, 89.8% precision, and 91.7% recall on the validation set — real numbers pulled directly from the training run's own logs. It runs on the Jetson Orin Nano against a live Raspberry Pi CSI camera feed, doing real-time inference on video rather than batch-processing static images, since it's what triggers the stop-and-remove step of the coverage loop, not a standalone research demo.",
+          body: "The YOLOv8 model was trained on a 4,203-image weed dataset (sourced via Roboflow) for 25 epochs, reaching 95.6% mAP50, 89.8% precision, and 91.7% recall on the validation set. These are real numbers pulled directly from the training run's own logs. It runs on the Jetson Orin Nano against a live Raspberry Pi CSI camera feed, doing real-time inference on video rather than batch-processing static images, since it's what triggers the stop-and-remove step of the coverage loop, not a standalone research demo.",
         },
         {
           heading: 'From workbench to field',
-          body: "The photos here span the full build process — from the bare welded chassis with no wheels or electronics yet attached, to the finished robot tested outdoors near real vegetation, to the final formal presentation at a project exhibition with a judged evaluation panel. A lot of student robotics projects only ever get demoed indoors on a clean floor; this one was tested in a real outdoor setting resembling where it would actually need to operate.",
+          body: "The photos here span the full build process, from the bare welded chassis with no wheels or electronics yet attached, to the finished robot tested outdoors near real vegetation, to the final formal presentation at a project exhibition with a judged evaluation panel. A lot of student robotics projects only ever get demoed indoors on a clean floor. This one was tested in a real outdoor setting resembling where it would actually need to operate.",
         },
       ],
       skillsDemonstrated: [
-        'End-to-end hardware fabrication — designing and welding a physical chassis, not assembling a pre-built robot kit',
+        'End-to-end hardware fabrication, designing and welding a physical chassis rather than assembling a pre-built robot kit',
         'Autonomous field-coverage path planning (zigzag traversal of a user-defined area) with a real detect-stop-act-resume control loop, not just open-loop driving',
-        'Split control architecture across three purpose-specific controllers (Arduino Mega for automation/mobility/obstacle-avoidance, Jetson Orin Nano for vision only, ESP32 for remote UI communication)',
-        'Training and validating a real YOLOv8 object detection model, with precision/recall/mAP metrics reported directly from the training logs',
+        'Split control architecture across three purpose-specific controllers: Arduino Mega for automation, mobility, and obstacle avoidance; Jetson Orin Nano for vision only; ESP32 for remote UI communication',
+        'Training and validating a real YOLOv8 object detection model, with precision, recall, and mAP metrics reported directly from the training logs',
         'Edge deployment of a trained CV model for real-time inference on an NVIDIA Jetson Orin Nano, not just notebook-based batch inference',
-        'Closing the loop from perception to physical action — a 2-axis gantry mechanism that acts on a detection instead of just reporting it',
+        'Closing the loop from perception to physical action, with a 2-axis gantry mechanism that acts on a detection instead of just reporting it',
         'Sensor selection grounded in a real engineering tradeoff (ultrasonic over infrared for detection range) rather than a default choice',
-        'Power system sizing — matching solar panel output to calculated motor power draw, with battery as backup rather than primary supply',
+        'Power system sizing, matching solar panel output to calculated motor power draw, with battery as backup rather than primary supply',
         'Custom encoder installation on geared motors, using pulse-tick counting for precise position and movement control',
         'Custom remote control interface development (ESP32-based), independent of any third-party IoT platform',
         'Taking a project from raw fabrication through outdoor field testing to a formally judged public presentation',
@@ -1355,10 +1407,10 @@ export const caseStudies = {
       slug: 'multi-mode-rc-robot',
       title: 'Multi-Mode RC Robot',
       tagline:
-        "One Arduino Mega chassis, three real driving modes — obstacle avoidance, line following, and full 8-direction Bluetooth RC — switched from a phone app.",
+        "One Arduino Mega chassis with three real driving modes, obstacle avoidance, line following, and full 8-direction Bluetooth RC, switched from a phone app.",
       categoryKey: 'robotics',
       summary:
-        "A university-vacation project: a single robot chassis that behaves completely differently depending on which of three modes it's in. Obstacle avoidance combines three ultrasonic sensors with two angled IR sensors specifically placed to cover the ultrasonic array's blind spot. Line following runs a 5-sensor IR array with two different correction strategies. RC mode gives full manual control over Bluetooth — 8 directions, including diagonals, and 10 discrete speed levels — all from a mobile app.",
+        "A university-vacation project: a single robot chassis that behaves completely differently depending on which of three modes it's in. Obstacle avoidance combines three ultrasonic sensors with two angled IR sensors specifically placed to cover the ultrasonic array's blind spot. Line following runs a 5-sensor IR array with two different correction strategies. RC mode gives full manual control over Bluetooth, with 8 directions including diagonals and 10 discrete speed levels, all from a mobile app.",
       github: '',
       live: '',
       tech: ['Arduino Mega', 'Ultrasonic Sensors', 'IR Sensor Array', 'I2C LCD', 'Bluetooth Serial', 'Motor Driver', 'C++'],
@@ -1371,23 +1423,23 @@ export const caseStudies = {
         { label: 'RC directions', value: '8' },
         { label: 'Status', value: 'Built & working' },
       ],
-      architectureBlurb: "All three modes run on the same Arduino Mega and the same motor pins. Switching modes from the phone app means cycling through a fixed sequence of states — sent as repeated 'W' characters over Bluetooth — rather than jumping directly to one.",
+      architectureBlurb: "All three modes run on the same Arduino Mega and the same motor pins. Switching modes from the phone app means cycling through a fixed sequence of states, sent as repeated 'W' characters over Bluetooth, rather than jumping directly to one.",
       architecture: [
         {
           title: 'Obstacle Avoidance',
-          items: ['3 ultrasonic sensors — front, left, right', '2 IR sensors covering the ~45° corner blind spots', 'Reverses and re-scans if boxed in on all sides'],
+          items: ['3 ultrasonic sensors: front, left, right', '2 IR sensors covering the ~45° corner blind spots', 'Reverses and re-scans if boxed in on all sides'],
         },
         {
           title: 'Line Following',
-          items: ['5-sensor IR array on the underside', 'Two independent correction strategies', 'Forward / left / right correction per sensor pattern'],
+          items: ['5-sensor IR array on the underside', 'Two independent correction strategies', 'Forward, left, or right correction per sensor pattern'],
         },
         {
           title: 'Remote Control (RC)',
-          items: ['8 directions over Bluetooth', '10 discrete speed levels (digits 0–9)', 'Diagonal turns at reduced inner-wheel speed'],
+          items: ['8 directions over Bluetooth', '10 discrete speed levels (digits 0 to 9)', 'Diagonal turns at reduced inner-wheel speed'],
         },
       ],
       rulesHeading: 'The RC command set, exactly as coded',
-      rulesBlurb: 'Single characters sent over Bluetooth map directly to motor behavior — 8 directions, including 4 diagonals at reduced inner-wheel speed, not just basic forward/back/left/right.',
+      rulesBlurb: 'Single characters sent over Bluetooth map directly to motor behavior: 8 directions, including 4 diagonals at reduced inner-wheel speed, not just basic forward, back, left, and right.',
       rulesColumns: [
         { key: 'command', label: 'Command', emphasis: true },
         { key: 'direction', label: 'Direction' },
@@ -1418,21 +1470,21 @@ export const caseStudies = {
         },
         {
           heading: 'Sensor placement, not just sensor count',
-          body: "The three ultrasonic sensors cover front, left, and right — but ultrasonic sensors have a narrow-ish forward-facing cone, so an object approaching at roughly 45° near a front corner can sit in a gap between them. Two IR sensors are mounted specifically between those corners to cover exactly that blind spot, rather than just adding a fourth ultrasonic sensor and hoping for the best. When obstacle avoidance can't find a clear path in front, left, or right, it reverses while continuously re-scanning the side sensors until one clears, then turns toward whichever side opened up.",
+          body: "The three ultrasonic sensors cover front, left, and right, but ultrasonic sensors have a narrow-ish forward-facing cone, so an object approaching at roughly 45 degrees near a front corner can sit in a gap between them. Two IR sensors are mounted specifically between those corners to cover exactly that blind spot, rather than just adding a fourth ultrasonic sensor and hoping for the best. When obstacle avoidance can't find a clear path in front, left, or right, it reverses while continuously re-scanning the side sensors until one clears, then turns toward whichever side opened up.",
         },
         {
           heading: 'Mode switching is a cycle, not a menu',
-          body: "There's no direct 'jump to obstacle avoidance' command. The phone app advances the robot through a fixed sequence of states by sending 'W' repeatedly — speed setup, distance-threshold setup, two line-following variants, obstacle avoidance, then Bluetooth RC, looping back to the start. An onboard 16x2 I2C LCD shows which state is currently active, so the cycle is never a guessing game from the driver's seat.",
+          body: "There's no direct 'jump to obstacle avoidance' command. The phone app advances the robot through a fixed sequence of states by sending 'W' repeatedly: speed setup, distance-threshold setup, two line-following variants, obstacle avoidance, then Bluetooth RC, looping back to the start. An onboard 16x2 I2C LCD shows which state is currently active, so the cycle is never a guessing game from the driver's seat.",
         },
         {
           heading: 'Two ways to follow a line',
-          body: "The line-following array uses five IR sensors on the underside, and the robot implements two independent correction strategies against that same array — one keyed off the three middle sensors, the other off the two outer sensors plus an all-sensors-triggered case. Both are real, working paths through the same hardware rather than one being a leftover from the other.",
+          body: "The line-following array uses five IR sensors on the underside, and the robot implements two independent correction strategies against that same array: one keyed off the three middle sensors, the other off the two outer sensors plus an all-sensors-triggered case. Both are real, working paths through the same hardware rather than one being a leftover from the other.",
         },
       ],
       skillsDemonstrated: [
-        'Multi-mode embedded system design — one Arduino Mega running three distinct control modes through a shared serial-command interface',
-        "Sensor placement reasoning grounded in an actual coverage gap (ultrasonic blind spot at ~45°), not just adding more sensors by default",
-        'Real-time obstacle avoidance with a boxed-in fallback — reverse and continuously re-scan until a path opens, rather than stalling',
+        'Multi-mode embedded system design, with one Arduino Mega running three distinct control modes through a shared serial-command interface',
+        "Sensor placement reasoning grounded in an actual coverage gap (ultrasonic blind spot at ~45 degrees), not just adding more sensors by default",
+        'Real-time obstacle avoidance with a boxed-in fallback: reverse and continuously re-scan until a path opens, rather than stalling',
         'A full 8-direction, 10-speed-level RC protocol over Bluetooth serial, including diagonal moves at reduced inner-wheel speed',
         'On-device status feedback via I2C LCD across every mode, so the current state is always visible without a serial monitor',
         'Two independently implemented line-following strategies running on the same physical sensor array',
@@ -1440,19 +1492,19 @@ export const caseStudies = {
     },
     {
       slug: 'smartnest-home-automation',
-      title: 'SmartNest — Home Automation Dashboard',
+      title: 'SmartNest: Home Automation Dashboard',
       tagline:
-        "A home automation controller with no cloud platform underneath it — the Arduino itself runs the API, and a hand-built dashboard polls it directly.",
+        "A home automation controller with no cloud platform underneath it. The Arduino itself runs the API, and a hand-built dashboard polls it directly.",
       categoryKey: 'robotics',
       summary:
-        "A real, working home automation system built on an Arduino: three sensors (light, temperature/humidity, smoke) feed threshold-based automation across 5 relay outputs, all served through a REST API running directly on the Arduino itself — no separate backend, no third-party IoT platform. A custom web dashboard polls it every 2 seconds with live sensor readouts, manual overrides, and adjustable thresholds.",
+        "A real, working home automation system built on an Arduino. Three sensors (light, temperature and humidity, smoke) feed threshold-based automation across 5 relay outputs, all served through a REST API running directly on the Arduino itself, with no separate backend and no third-party IoT platform. A custom web dashboard polls it every 2 seconds with live sensor readouts, manual overrides, and adjustable thresholds.",
       github: '',
       live: '',
       tech: ['Arduino (WiFiS3)', 'BH1750', 'DHT22', 'MQ-2', '8-Channel Relay Module', 'JavaScript', 'REST API'],
       hasLiveDemo: true,
       demoKey: 'smartnest',
       liveDemoHeading: 'Try the dashboard',
-      liveDemoBlurb: "A live simulation running the same auto-mode rules as the real firmware — sensor values drift on their own, toggles and thresholds really respond.",
+      liveDemoBlurb: "A live simulation running the same auto-mode rules as the real firmware. Sensor values drift on their own, and toggles and thresholds really respond.",
       accentColor: 'sky',
       icon: 'cpu',
       heroMetrics: [
@@ -1461,11 +1513,11 @@ export const caseStudies = {
         { label: 'Poll interval', value: '2s' },
         { label: 'Status', value: 'Built & working' },
       ],
-      architectureBlurb: "No separate backend server or database — the Arduino runs the HTTP API itself, and the browser dashboard is just a client polling it directly.",
+      architectureBlurb: "No separate backend server or database. The Arduino runs the HTTP API itself, and the browser dashboard is just a client polling it directly.",
       architecture: [
         {
           title: 'Sensors',
-          items: ['BH1750 — ambient light (lux)', 'DHT22 — temperature + humidity', 'MQ-2 — smoke/gas, 60s warmup before readings are trusted'],
+          items: ['BH1750: ambient light (lux)', 'DHT22: temperature and humidity', 'MQ-2: smoke and gas, 60s warmup before readings are trusted'],
         },
         {
           title: 'Arduino (WiFiS3)',
@@ -1474,7 +1526,7 @@ export const caseStudies = {
         },
         {
           title: 'Browser dashboard',
-          items: ['Polls /status every 2s', 'Optimistic UI on toggle', 'Threshold sliders → /threshold'],
+          items: ['Polls /status every 2s', 'Optimistic UI on toggle', 'Threshold sliders send to /threshold'],
         },
       ],
       rules: [
@@ -1482,28 +1534,28 @@ export const caseStudies = {
         { device: 'B2', sensor: 'Humidity (DHT22)', condition: 'ON when humidity > threshold', threshold: '80%' },
         { device: 'B3', sensor: 'Temperature (DHT22)', condition: 'ON when temp > threshold', threshold: '30°C' },
         { device: 'B4', sensor: 'Light (BH1750)', condition: 'ON when dark (lux < threshold)', threshold: '50% (raw 500/1000 lux)' },
-        { device: 'Fan', sensor: '—', condition: 'Manual only — auto mode never touches it', threshold: '—' },
+        { device: 'Fan', sensor: 'N/A', condition: 'Manual only, auto mode never touches it', threshold: 'N/A' },
       ],
       narrative: [
         {
           heading: 'The goal',
-          body: "Most consumer smart-home gear routes everything through a manufacturer's cloud app. The goal here was the opposite: a self-contained system where the Arduino itself is the server — sensors feed straight into automation logic and relay control on the same board, with a custom dashboard as a thin client rather than the source of truth.",
+          body: "Most consumer smart-home gear routes everything through a manufacturer's cloud app. The goal here was the opposite: a self-contained system where the Arduino itself is the server. Sensors feed straight into automation logic and relay control on the same board, with a custom dashboard as a thin client rather than the source of truth.",
         },
         {
           heading: 'A real bug: the relay race',
-          body: "Polling every 2 seconds while also letting a person flip a toggle creates an obvious race: if the poll lands right after a user's click but before the Arduino confirms it, the UI would snap back to the old state and look broken. The fix was a pending-command set — when a relay is toggled, its ID gets marked pending and the next poll skips overwriting it until enough time has passed for the Arduino to have actually applied the change. Small detail, but the kind that's the difference between a dashboard that feels reliable and one that flickers.",
+          body: "Polling every 2 seconds while also letting a person flip a toggle creates an obvious race: if the poll lands right after a user's click but before the Arduino confirms it, the UI would snap back to the old state and look broken. The fix was a pending-command set. When a relay is toggled, its ID gets marked pending, and the next poll skips overwriting it until enough time has passed for the Arduino to have actually applied the change. It's a small detail, but the kind that's the difference between a dashboard that feels reliable and one that flickers.",
         },
         {
           heading: 'Respecting what the sensor can\'t do yet',
-          body: "The MQ-2 gas sensor needs roughly 60 seconds after power-on before its readings are trustworthy — a real hardware constraint, not a software choice. Rather than reporting a possibly-garbage smoke value during that window, the firmware tracks a mq2Ready flag and holds smoke readings at zero (and the dashboard shows 'MQ2 Warming') until warmup completes. Ignoring a sensor's real limitations instead of quietly reporting noisy numbers is a small thing that a lot of hobby projects skip.",
+          body: "The MQ-2 gas sensor needs roughly 60 seconds after power-on before its readings are trustworthy, a real hardware constraint, not a software choice. Rather than reporting a possibly-garbage smoke value during that window, the firmware tracks a mq2Ready flag and holds smoke readings at zero (with the dashboard showing 'MQ2 Warming') until warmup completes. Ignoring a sensor's real limitations instead of quietly reporting noisy numbers is a small thing that a lot of hobby projects skip.",
         },
       ],
       skillsDemonstrated: [
         'Running a REST API directly on embedded hardware, with no separate backend server or database in the stack',
         'Diagnosing and fixing a real race condition between a polling UI and user-initiated state changes',
         'Respecting real sensor hardware constraints (MQ-2 warmup) instead of reporting unreliable data during startup',
-        'Per-device automation logic with a deliberate manual-only exception (the fan), not a one-size-fits-all rule',
-        'Full custom dashboard built from scratch (HTML/CSS/JS) rather than wired into a third-party home automation platform',
+        'Per-device automation logic with a deliberate manual-only exception for the fan, not a one-size-fits-all rule',
+        'Full custom dashboard built from scratch with HTML, CSS, and JS, rather than wired into a third-party home automation platform',
       ],
     },
     {
@@ -1513,7 +1565,7 @@ export const caseStudies = {
         'A line-following rover that samples soil moisture with an arm as it drives, reporting over MQTT to a solar-powered base station that pushes everything to a live Blynk dashboard.',
       categoryKey: 'robotics',
       summary:
-        "A university IoT-coursework project split into two deliberately separate halves: a Raspberry Pi-controlled rover that follows a line through an indoor growing space, stopping roughly every 3-5 seconds to lower a servo-actuated arm and take a soil moisture reading, and a solar-powered ESP32 base station with its own temperature, humidity, and light sensors. The rover reports its readings to the base station over MQTT, which then pushes the full picture — soil moisture, temperature, humidity, light — to a Blynk dashboard for real-time monitoring, aimed at keeping indoor farming conditions stable.",
+        "A university IoT-coursework project split into two deliberately separate halves: a Raspberry Pi-controlled rover that follows a line through an indoor growing space, stopping roughly every 3-5 seconds to lower a servo-actuated arm and take a soil moisture reading, and a solar-powered ESP32 base station with its own temperature, humidity, and light sensors. The rover reports its readings to the base station over MQTT, which then pushes the full picture (soil moisture, temperature, humidity, light) to a Blynk dashboard for real-time monitoring, aimed at keeping indoor farming conditions stable.",
       github: '',
       live: '',
       tech: ['Raspberry Pi', 'ESP32', 'MQTT', 'Blynk IoT', 'Servo Motor (MG995)', 'Soil Moisture Sensor', 'Solar Panel', 'IR Sensors'],
@@ -1530,7 +1582,7 @@ export const caseStudies = {
       architecture: [
         {
           title: 'Dynamic part (rover)',
-          items: ['Raspberry Pi controller', 'IR sensors — line following', 'Arm: MG995 servo + soil moisture probe', 'Own battery, independent of the base station'],
+          items: ['Raspberry Pi controller', 'IR sensors for line following', 'Arm: MG995 servo + soil moisture probe', 'Own battery, independent of the base station'],
           arrowLabel: 'MQTT',
         },
         {
@@ -1544,13 +1596,13 @@ export const caseStudies = {
       ],
       screenshots: [
         {
-          heading: 'The rover — top view',
+          heading: 'The rover: top view',
           caption: 'Raspberry Pi at the core with a heatsink for sustained load, IR sensor modules (the blue boards with adjustment potentiometers) mounted low near the front wheels for line following, and the arm extending off to the side.',
           image: '/screenshots/farming-rover/top-view.jpg',
         },
         {
           heading: 'The sampling arm',
-          caption: "A Tower Pro MG995 servo — a real, identifiable hobby servo, not a toy-grade unit — actuates a hand-built arm carrying the soil moisture probe at its tip. In the background, the static base station's test rig is visible: a cooling fan and small solar panel cells wired into a cardboard prototype enclosure.",
+          caption: "A Tower Pro MG995 servo, a real, identifiable hobby servo rather than a toy-grade unit, actuates a hand-built arm carrying the soil moisture probe at its tip. In the background, the static base station's test rig is visible: a cooling fan and small solar panel cells wired into a cardboard prototype enclosure.",
           image: '/screenshots/farming-rover/arm-side-view.jpg',
         },
         {
@@ -1566,23 +1618,23 @@ export const caseStudies = {
         },
         {
           heading: 'Why split into two parts',
-          body: "The rover and the base station are deliberately separate systems, not one robot with everything bolted on. The rover needs to move, so it carries its own battery and only handles driving and soil sampling. The base station never moves, so it can run on solar power and own the sensors that don't need to travel — temperature, humidity, and light — plus the connection to the cloud dashboard. Splitting responsibilities this way meant the moving part could stay simpler and lighter.",
+          body: "The rover and the base station are deliberately separate systems, not one robot with everything bolted on. The rover needs to move, so it carries its own battery and only handles driving and soil sampling. The base station never moves, so it can run on solar power and own the sensors that don't need to travel (temperature, humidity, and light) plus the connection to the cloud dashboard. Splitting responsibilities this way meant the moving part could stay simpler and lighter.",
         },
         {
           heading: 'Sampling on a timer, not a measured distance',
-          body: "The rover doesn't measure exact distance traveled — it follows the line via IR sensors and lowers the arm to take a soil moisture reading on an approximate timer, roughly every 3-5 seconds, rather than a precise per-meter trigger. A real, honest constraint of the hardware available at the time rather than a precision distance-tracking system.",
+          body: "The rover doesn't measure exact distance traveled. It follows the line via IR sensors and lowers the arm to take a soil moisture reading on an approximate timer, roughly every 3-5 seconds, rather than a precise per-meter trigger. It's a real, honest constraint of the hardware available at the time rather than a precision distance-tracking system.",
         },
         {
           heading: 'MQTT to the base station, then out to Blynk',
-          body: "The rover publishes its soil moisture readings to the base station over MQTT — a lightweight publish/subscribe protocol well suited to a battery-powered device that shouldn't be maintaining a heavy connection. The base station combines that with its own temperature, humidity, and light readings and forwards everything to a Blynk dashboard, giving a real-time combined view of both above-ground and soil conditions from one screen.",
+          body: "The rover publishes its soil moisture readings to the base station over MQTT, a lightweight publish and subscribe protocol well suited to a battery-powered device that shouldn't be maintaining a heavy connection. The base station combines that with its own temperature, humidity, and light readings and forwards everything to a Blynk dashboard, giving a real-time combined view of both above-ground and soil conditions from one screen.",
         },
         {
           heading: 'Planned but not built: auto-return to a charging dock',
-          body: "The base station being solar-powered was always meant to go further than just running its own sensors — the plan was for the rover to drive back to the starting point once its round finished and dock there to recharge, turning the base station into a charging station as well as a sensor hub. That part was never implemented, so it's listed here as a future improvement rather than something the current build does.",
+          body: "The base station being solar-powered was always meant to go further than just running its own sensors. The plan was for the rover to drive back to the starting point once its round finished and dock there to recharge, turning the base station into a charging station as well as a sensor hub. That part was never implemented, so it's listed here as a future improvement rather than something the current build does.",
         },
       ],
       skillsDemonstrated: [
-        'Two-tier IoT system design — a mobile sensing node and a fixed base station, each with a controller and power source suited to its own role',
+        'Two-tier IoT system design, with a mobile sensing node and a fixed base station, each with a controller and power source suited to its own role',
         'MQTT-based communication between a battery-powered mobile device and a fixed, solar-powered base station',
         'Cloud dashboard integration (Blynk) combining readings from two physically separate hardware systems into one real-time view',
         'Physical sensor deployment via a servo-actuated arm, extending sensing reach beyond the chassis itself',
@@ -1592,12 +1644,12 @@ export const caseStudies = {
     },
     {
       slug: 'access-vision-entry-system',
-      title: 'Access Vision — Face Recognition Entry System',
+      title: 'Access Vision: Face Recognition Entry System',
       tagline:
-        'Two ultrasonic sensors gate two cameras so face-recognition processing only runs when someone is actually at the gate — deployed and logging real entries/exits at the institute it was built for.',
+        'Two ultrasonic sensors gate two cameras so face-recognition processing only runs when someone is actually at the gate. Deployed and logging real entries and exits at the institute it was built for.',
       categoryKey: 'robotics',
       summary:
-        "A face-recognition entry and exit management system built for a school: an Arduino watches two ultrasonic sensors, one per gate, and only triggers the corresponding camera's recognition pipeline when someone is actually within range — instead of running expensive face-recognition continuously on both feeds. Recognized individuals get logged to a CSV with timestamps; unrecognized faces are marked Unknown and skipped. 536 real entry/exit events have been logged from actual use.",
+        "A face-recognition entry and exit management system built for a school. An Arduino watches two ultrasonic sensors, one per gate, and only triggers the corresponding camera's recognition pipeline when someone is actually within range, instead of running expensive face-recognition continuously on both feeds. Recognized individuals get logged to a CSV with timestamps, and unrecognized faces are marked Unknown and skipped. 536 real entry and exit events have been logged from actual use.",
       github: '',
       live: '',
       tech: ['Python', 'OpenCV', 'face_recognition', 'Arduino', 'Ultrasonic Sensors', 'pandas', 'matplotlib'],
@@ -1610,7 +1662,7 @@ export const caseStudies = {
         { label: 'Ultrasonic sensors', value: '2' },
         { label: 'Status', value: 'Deployed at institute' },
       ],
-      architectureBlurb: "The Arduino only ever says one of three things over serial — Entry, Exit, or Terminate — and everything downstream reacts to that, rather than the laptop polling the sensors itself.",
+      architectureBlurb: "The Arduino only ever says one of three things over serial: Entry, Exit, or Terminate. Everything downstream reacts to that, rather than the laptop polling the sensors itself.",
       architecture: [
         {
           title: 'Entry / exit gates',
@@ -1633,27 +1685,27 @@ export const caseStudies = {
         },
         {
           heading: 'Sensor-gated, not always-on',
-          body: "Both cameras are open for the whole session, but the expensive part — actually running face detection and recognition on a frame — only happens when the Arduino reports someone is within range of the corresponding ultrasonic sensor. The Arduino itself debounces this: once triggered, it holds in a loop re-checking distance until the person moves past 50cm, so a single approach doesn't fire the event repeatedly while someone lingers near the gate.",
+          body: "Both cameras are open for the whole session, but the expensive part, actually running face detection and recognition on a frame, only happens when the Arduino reports someone is within range of the corresponding ultrasonic sensor. The Arduino itself debounces this: once triggered, it holds in a loop re-checking distance until the person moves past 50cm, so a single approach doesn't fire the event repeatedly while someone lingers near the gate.",
         },
         {
           heading: 'An unusual, honest engineering choice',
-          body: "Instead of reading the Arduino's serial output directly in Python (the more conventional route), the system GUI-automates CoolTerm — a serial terminal application — using pywinauto, configuring it to capture incoming serial data straight to a text file that the Python script then polls for new lines. Not the textbook approach, but a real one that worked reliably enough to log hundreds of real events.",
+          body: "Instead of reading the Arduino's serial output directly in Python, the more conventional route, the system GUI-automates CoolTerm, a serial terminal application, using pywinauto. It configures CoolTerm to capture incoming serial data straight to a text file that the Python script then polls for new lines. Not the textbook approach, but a real one that worked reliably enough to log hundreds of real events.",
         },
         {
           heading: 'Matching correctly, not just matching first',
-          body: "Face matching picks the known face with the smallest distance to the detected face, not just the first match above a threshold — a small but real correctness detail that avoids picking an arbitrary match when more than one known face is a plausible candidate. Unrecognized faces are explicitly marked Unknown and never logged, rather than guessed at.",
+          body: "Face matching picks the known face with the smallest distance to the detected face, not just the first match above a threshold. It's a small but real correctness detail that avoids picking an arbitrary match when more than one known face is a plausible candidate. Unrecognized faces are explicitly marked Unknown and never logged, rather than guessed at.",
         },
         {
           heading: 'Real use, not a demo',
-          body: "The system has 536 logged entry/exit events from actual deployment at the institute, each with a name, registration number, batch, faculty, and timestamp pulled from face recognition and appended to a CSV — with a live bar chart of activity per person generated from that same log.",
+          body: "The system has 536 logged entry and exit events from actual deployment at the institute, each with a name, registration number, batch, faculty, and timestamp pulled from face recognition and appended to a CSV, along with a live bar chart of activity per person generated from that same log.",
         },
       ],
       skillsDemonstrated: [
-        'Hardware-gated computer vision — expensive face-recognition processing runs only when a sensor confirms someone is actually present, not continuously on a live feed',
+        'Hardware-gated computer vision, where expensive face-recognition processing runs only when a sensor confirms someone is actually present, not continuously on a live feed',
         'Debounced sensor triggering implemented directly in embedded C++, holding until the subject clears range instead of re-firing on every read',
         'A pragmatic, unconventional serial bridge (GUI-automating a terminal app via pywinauto) that worked reliably in practice',
-        'Correct face-matching logic — selecting the closest match by face distance rather than the first match above a threshold',
-        'Real institutional deployment with 536 logged entry/exit events from actual use, not a synthetic demo',
+        'Correct face-matching logic, selecting the closest match by face distance rather than the first match above a threshold',
+        'Real institutional deployment with 536 logged entry and exit events from actual use, not a synthetic demo',
         'A complete pipeline from physical sensor trigger through recognition to CSV logging and live visualization',
       ],
     },
@@ -1663,10 +1715,10 @@ export const caseStudies = {
       slug: 'ai-file-organizer',
       title: 'Local AI File Organizer',
       tagline:
-        'Points at a messy phone-dump folder and sorts it with offline CLIP scene classification and face clustering — plus a genuine 24-hour undo log for when automated file-moving inevitably needs a safety net.',
+        'Points at a messy phone-dump folder and sorts it using offline CLIP scene classification and face clustering, with a genuine 24-hour undo log for when automated file-moving inevitably needs a safety net.',
       categoryKey: 'tools',
       summary:
-        "A local tool for a real personal problem: phone storage dumped onto a PC, photos/videos/docs/WhatsApp files all mixed together, duplicates everywhere. Three real modes — plain file-type sorting, AI-driven scene/face organization (CLIP + face_recognition, fully offline), and rule-based Desktop/Downloads cleanup — all backed by a copy-first, confirm-before-delete workflow with a real 24-hour undo window.",
+        "A local tool for a real personal problem: phone storage dumped onto a PC, with photos, videos, docs, and WhatsApp files all mixed together and duplicates everywhere. It has three real modes: plain file-type sorting, AI-driven scene and face organization (CLIP and face_recognition, fully offline), and rule-based Desktop and Downloads cleanup, all backed by a copy-first, confirm-before-delete workflow with a real 24-hour undo window.",
       github: '',
       live: '',
       tech: ['Next.js', 'FastAPI', 'SQLite', 'CLIP (transformers)', 'face_recognition', 'DBSCAN', 'Python'],
@@ -1679,7 +1731,7 @@ export const caseStudies = {
         { label: 'Undo window', value: '24 hrs' },
         { label: 'Status', value: 'Built & working' },
       ],
-      architectureBlurb: "Everything runs locally — the backend never makes an outbound call, and nothing about a file's content ever leaves the machine.",
+      architectureBlurb: "Everything runs locally. The backend never makes an outbound call, and nothing about a file's content ever leaves the machine.",
       architecture: [
         {
           title: 'Your messy folder',
@@ -1687,51 +1739,51 @@ export const caseStudies = {
         },
         {
           title: 'Local processing (FastAPI)',
-          items: ['SHA-256 + perceptual hash — duplicates', 'CLIP — scene classification', 'face_recognition + DBSCAN — person clustering'],
+          items: ['SHA-256 and perceptual hash find duplicates', 'CLIP handles scene classification', 'face_recognition and DBSCAN cluster people'],
           arrowLabel: '100% offline',
         },
         {
           title: 'Organized output',
-          items: ['Sorted by year / type / person', 'Copy first, confirm before delete', '24-hour undo log per move'],
+          items: ['Sorted by year, type, or person', 'Copy first, confirm before delete', '24-hour undo log per move'],
         },
       ],
       screenshots: [
         {
           heading: 'Landing page',
-          caption: '"Local-first · No cloud · No tracking" stated up front, with all three modes laid out as equal entry points rather than the AI mode being buried behind the basic sort.',
+          caption: '"Local-first, no cloud, no tracking" stated up front, with all three modes laid out as equal entry points rather than the AI mode being buried behind the basic sort.',
           image: '/screenshots/file-organizer/landing.png',
         },
         {
-          heading: 'Folder Organizer — folder selection',
-          caption: "Step 1 of 2: pick a folder (with quick-path shortcuts for Downloads/Desktop/Documents/Pictures) and set the scan worker count — multithreading control for hashing and copying speed, exposed directly rather than hidden as an internal default. The three processing phases (File-Type Sort, AI Scene Detection, Face Clustering) are shown below as what will actually run, with the AI steps clearly marked optional.",
+          heading: 'Folder Organizer: folder selection',
+          caption: "Step 1 of 2: pick a folder (with quick-path shortcuts for Downloads, Desktop, Documents, and Pictures) and set the scan worker count, a multithreading control for hashing and copying speed, exposed directly rather than hidden as an internal default. The three processing phases (File-Type Sort, AI Scene Detection, Face Clustering) are shown below as what will actually run, with the AI steps clearly marked optional.",
           image: '/screenshots/file-organizer/folder-organizer.png',
         },
       ],
       narrative: [
         {
           heading: 'The problem',
-          body: "Phone storage dumped onto a PC turns into one giant folder — camera photos, screenshots, WhatsApp media, and documents all mixed together, often with the same file saved in two or three places. The goal was a tool that actually fixes that in one pass, sorting by real content (not just file extension) and flagging duplicates, without needing to trust a cloud service with personal photos to do it.",
+          body: "Phone storage dumped onto a PC turns into one giant folder: camera photos, screenshots, WhatsApp media, and documents all mixed together, often with the same file saved in two or three places. The goal was a tool that actually fixes that in one pass, sorting by real content (not just file extension) and flagging duplicates, without needing to trust a cloud service with personal photos to do it.",
         },
         {
           heading: 'What actually got built, versus what was planned',
-          body: "The original plan called for a Tauri-wrapped desktop .exe. What's actually running is a local Next.js frontend talking to a local FastAPI backend, both started together with one script — functionally the same guarantee (100% offline, nothing leaves the machine, no internet required after setup), just not literally a packaged desktop binary. Worth stating plainly rather than describing the app as something it isn't.",
+          body: "The original plan called for a Tauri-wrapped desktop .exe. What's actually running is a local Next.js frontend talking to a local FastAPI backend, both started together with one script. That's functionally the same guarantee (100% offline, nothing leaves the machine, no internet required after setup), just not literally a packaged desktop binary. Worth stating plainly rather than describing the app as something it isn't.",
         },
         {
           heading: 'Moving files is dangerous, so the workflow assumes it will go wrong',
-          body: "Automated file-moving across thousands of real personal files is exactly the kind of operation that shouldn't fail silently or irreversibly. Every move is copy-first, with an explicit confirm step before anything gets deleted from its original location — and every move is logged with a timestamp, so a full undo is available within a real, code-enforced 24-hour window, not just a UI promise.",
+          body: "Automated file-moving across thousands of real personal files is exactly the kind of operation that shouldn't fail silently or irreversibly. Every move is copy-first, with an explicit confirm step before anything gets deleted from its original location, and every move is logged with a timestamp, so a full undo is available within a real, code-enforced 24-hour window, not just a UI promise.",
         },
         {
           heading: 'Degrading gracefully instead of crashing',
-          body: "CLIP and face_recognition are both heavy, optional dependencies. If either isn't installed, the classifier and face-clustering modules fall back to filename/path heuristics instead of throwing an error — the app still organizes files, just with less intelligence, rather than refusing to run at all because one ML package is missing.",
+          body: "CLIP and face_recognition are both heavy, optional dependencies. If either isn't installed, the classifier and face-clustering modules fall back to filename and path heuristics instead of throwing an error. The app still organizes files, just with less intelligence, rather than refusing to run at all because one ML package is missing.",
         },
       ],
       skillsDemonstrated: [
-        'Three genuinely distinct organization modes (plain sort, AI scene/face clustering, rule-based directory cleanup) rather than one generic script wearing different UI',
-        'Offline computer vision: CLIP scene classification and face_recognition + DBSCAN person-clustering with zero cloud calls',
-        'Dual duplicate detection — exact matches via SHA-256, near-duplicates via perceptual hashing',
+        'Three genuinely distinct organization modes (plain sort, AI scene and face clustering, rule-based directory cleanup) rather than one generic script wearing different UI',
+        'Offline computer vision: CLIP scene classification and face_recognition with DBSCAN person-clustering, with zero cloud calls',
+        'Dual duplicate detection: exact matches via SHA-256, near-duplicates via perceptual hashing',
         'Designing irreversible-by-nature operations to be safe by construction: copy-first, explicit confirm, and a real time-boxed undo log',
         'Graceful dependency degradation instead of hard failures when optional ML packages are missing',
-        'Honest scope reporting — the shipped build (local web app) differs from the original plan (packaged Tauri desktop app), and that gap is worth naming, not hiding',
+        'Honest scope reporting: the shipped build (local web app) differs from the original plan (packaged Tauri desktop app), and that gap is worth naming, not hiding',
       ],
     },
   ],
@@ -1740,17 +1792,17 @@ export const caseStudies = {
       slug: 'langgraph-research-agent',
       title: 'Deep-Scrape Research Agent',
       tagline:
-        'One of six agentic AI experiments — a LangGraph agent that decides for itself when to run a real multi-page web research pipeline, upgraded here from a Streamlit prototype into a live demo on this site.',
+        'One of six agentic AI experiments: a LangGraph agent that decides for itself when to run a real multi-page web research pipeline, upgraded here from a Streamlit prototype into a live demo on this site.',
       categoryKey: 'agentic',
       summary:
-        "Part of an ongoing collection of agentic AI experiments — this one specifically picked out and upgraded for the portfolio. A LangGraph agent (GPT-4o-mini) that decides on its own whether a question needs real research or can be answered directly; when it does research, a custom tool searches DuckDuckGo, scrapes the resulting pages, chunks and summarizes each one, then merges everything into a single answer, instead of dropping raw search results into the prompt. Originally a Streamlit prototype — ported here into this site's own backend (sharing the same OPENAI_API_KEY as the rest of the portfolio) with a custom-built chat UI in place of Streamlit's default interface.",
+        "Part of an ongoing collection of agentic AI experiments, this one specifically picked out and upgraded for the portfolio. A LangGraph agent (GPT-4o-mini) decides on its own whether a question needs real research or can be answered directly. When it does research, a custom tool searches DuckDuckGo, scrapes the resulting pages, chunks and summarizes each one, then merges everything into a single answer, instead of dropping raw search results into the prompt. It was originally a Streamlit prototype, ported here into this site's own backend (sharing the same OPENAI_API_KEY as the rest of the portfolio) with a custom-built chat UI in place of Streamlit's default interface.",
       github: '',
       live: '',
       tech: ['LangGraph', 'LangChain', 'OpenAI GPT-4o-mini', 'FastAPI', 'BeautifulSoup', 'DuckDuckGo Search', 'React'],
       hasLiveDemo: true,
       demoKey: 'agenticChat',
       liveDemoHeading: 'Chat with it',
-      liveDemoBlurb: 'A real conversation with the agent, not a scripted demo — ask it something current and watch it decide whether to search.',
+      liveDemoBlurb: 'A real conversation with the agent, not a scripted demo. Ask it something current and watch it decide whether to search.',
       accentColor: 'slate',
       icon: 'workflow',
       heroMetrics: [
@@ -1759,11 +1811,11 @@ export const caseStudies = {
         { label: 'Framework', value: 'LangGraph' },
         { label: 'Status', value: 'Learning project' },
       ],
-      architectureBlurb: "The model itself decides whether a question needs the research tool — there's no keyword-matching or manual routing deciding that for it.",
+      architectureBlurb: "The model itself decides whether a question needs the research tool. There's no keyword-matching or manual routing deciding that for it.",
       architecture: [
         {
           title: 'Agent graph',
-          items: ['LangGraph StateGraph with conditional routing', 'GPT-4o-mini decides when to call the tool', 'MemorySaver — conversation memory per session'],
+          items: ['LangGraph StateGraph with conditional routing', 'GPT-4o-mini decides when to call the tool', 'MemorySaver handles conversation memory per session'],
         },
         {
           title: 'deep_scrape_search tool',
@@ -1778,11 +1830,11 @@ export const caseStudies = {
       narrative: [
         {
           heading: 'Part of a bigger experiment',
-          body: "This sits inside a wider collection of six agentic AI experiments — a web-scraping agent, two resume parsers, a LangChain assistant, a domain-specific assistant, and this LangGraph chatbot. The others are staying as they are for now; this one was picked out specifically to take further, because the underlying agent logic was already solid and just needed a real interface.",
+          body: "This sits inside a wider collection of six agentic AI experiments: a web-scraping agent, two resume parsers, a LangChain assistant, a domain-specific assistant, and this LangGraph chatbot. The others are staying as they are for now. This one was picked out specifically to take further, because the underlying agent logic was already solid and just needed a real interface.",
         },
         {
           heading: 'A model that decides for itself, not a chatbot with a search button bolted on',
-          body: "The system prompt tells the model it CAN call a research tool when a question involves current events or anything uncertain — it isn't triggered by keyword matching or a manual if/else router. Once the tool runs, its result is marked with a completion flag the model is instructed to recognize, so it answers using what it found instead of calling the tool again in a loop.",
+          body: "The system prompt tells the model it can call a research tool when a question involves current events or anything uncertain. It isn't triggered by keyword matching or a manual if/else router. Once the tool runs, its result is marked with a completion flag the model is instructed to recognize, so it answers using what it found instead of calling the tool again in a loop.",
         },
         {
           heading: 'Search results get processed, not just pasted into the prompt',
@@ -1790,16 +1842,16 @@ export const caseStudies = {
         },
         {
           heading: 'From a Streamlit prototype to a real product surface',
-          body: "The agent logic itself — the graph, the tool, the system prompt — is unchanged from the original working prototype. What changed is where it runs: ported into this site's own FastAPI backend so it shares the same OPENAI_API_KEY already configured for the portfolio's other AI features, with a custom React chat UI replacing Streamlit's default interface, and conversation memory scoped per visitor session instead of a single shared instance.",
+          body: "The agent logic itself, the graph, the tool, and the system prompt, is unchanged from the original working prototype. What changed is where it runs. It's ported into this site's own FastAPI backend so it shares the same OPENAI_API_KEY already configured for the portfolio's other AI features, with a custom React chat UI replacing Streamlit's default interface, and conversation memory scoped per visitor session instead of a single shared instance.",
         },
       ],
       skillsDemonstrated: [
-        'Building a genuinely agentic system — the model decides when to invoke a tool via conditional graph routing, not a hardcoded rule',
+        'Building a genuinely agentic system, where the model decides when to invoke a tool via conditional graph routing, not a hardcoded rule',
         'A real multi-stage research pipeline (search, scrape, chunk, summarize, merge) instead of stuffing raw search results into a prompt',
         'Preventing infinite tool-call loops with an explicit completion signal the model is instructed to respect',
         'Per-session conversation memory via a LangGraph checkpointer, so concurrent visitors don\'t share history',
         'Porting a working prototype (Streamlit) into a shared production backend and a custom frontend without altering the underlying agent logic',
-        'Honest framing of exploratory, in-progress work as exactly that — a learning-journey project, not dressed up as a finished product',
+        'Honest framing of exploratory, in-progress work as exactly that: a learning-journey project, not dressed up as a finished product',
       ],
     },
   ],
@@ -1808,17 +1860,17 @@ export const caseStudies = {
       slug: 'clip-multimodal-search',
       title: 'CLIP Multimodal Search Engine',
       tagline:
-        'Search real photos by describing them in plain English — no labels, no tags, no training, just a shared embedding space between images and text.',
+        'Search real photos by describing them in plain English. No labels, no tags, no training, just a shared embedding space between images and text.',
       categoryKey: 'vlm',
       summary:
-        "The first entry in an ongoing series building the actual components behind vision-language models, one piece at a time. This one uses OpenAI's CLIP purely for inference — no training happens here at all. CLIP's two encoders (one for images, one for text) were trained together so that a matching image and caption land close together in the same 512-number space. That's the whole trick: embed a photo collection once, then compare any text query against those vectors with simple cosine similarity to find real matches — including a click-through 'find similar images' mode using the same mechanism on the image side instead of text.",
+        "The first entry in an ongoing series building the actual components behind vision-language models, one piece at a time. This one uses OpenAI's CLIP purely for inference, with no training happening here at all. CLIP's two encoders (one for images, one for text) were trained together so that a matching image and caption land close together in the same 512-number space. That's the whole trick: embed a photo collection once, then compare any text query against those vectors with simple cosine similarity to find real matches, including a click-through 'find similar images' mode using the same mechanism on the image side instead of text.",
       github: '',
       live: '',
       tech: ['CLIP (ViT-B/32)', 'PyTorch', 'Hugging Face Transformers', 'FastAPI', 'React'],
       hasLiveDemo: true,
       demoKey: 'clipSearch',
       liveDemoHeading: 'Search a real photo collection',
-      liveDemoBlurb: 'Type a plain-English description, or click any result to find more images like it — all running on a real embedding search, not keyword matching.',
+      liveDemoBlurb: 'Type a plain-English description, or click any result to find more images like it. All of it runs on a real embedding search, not keyword matching.',
       accentColor: 'stone',
       icon: 'scanEye',
       heroMetrics: [
@@ -1827,11 +1879,11 @@ export const caseStudies = {
         { label: 'Search method', value: 'Cosine similarity' },
         { label: 'Query types', value: 'Text + image' },
       ],
-      architectureBlurb: 'One model, two doors in — an image encoder and a text encoder — trained together so whatever comes out of either one lands in the same space.',
+      architectureBlurb: 'One model, two doors in: an image encoder and a text encoder, trained together so whatever comes out of either one lands in the same space.',
       architecture: [
         {
           title: 'Offline, once',
-          items: ['Every photo run through CLIP\'s image encoder', 'Each becomes a 512-number vector', 'All vectors cached — no re-computation per search'],
+          items: ['Every photo run through CLIP\'s image encoder', 'Each becomes a 512-number vector', 'All vectors cached, so there is no re-computation per search'],
         },
         {
           title: 'CLIP',
@@ -1846,44 +1898,44 @@ export const caseStudies = {
       narrative: [
         {
           heading: 'The problem',
-          body: "Every model elsewhere on this site is trained to do one specific task on one specific kind of data. CLIP is different — it was trained once, on hundreds of millions of real image-caption pairs scraped from the internet, to learn a general-purpose skill: how well does this image match this text? That single skill, reused as-is with zero fine-tuning, is enough to build a real search engine — proving out the first building block of every modern vision-language model, before adding anything that generates new text (that's the next project in this series).",
+          body: "Every model elsewhere on this site is trained to do one specific task on one specific kind of data. CLIP is different. It was trained once, on hundreds of millions of real image-caption pairs scraped from the internet, to learn a general-purpose skill: how well does this image match this text? That single skill, reused as-is with zero fine-tuning, is enough to build a real search engine, proving out the first building block of every modern vision-language model, before adding anything that generates new text (that's the next project in this series).",
         },
         {
           heading: 'Why this needed no training at all',
-          body: "Every other case study on this site involves training something — even a small piece, like a decision threshold or a projector. This one doesn't, deliberately. CLIP's image and text encoders are used frozen, exactly as released. The actual engineering work is the retrieval pipeline around them: embedding a photo collection once, caching those vectors, and comparing new queries against them with cosine similarity — simple vector math, no model involved in that comparison step at all.",
+          body: "Every other case study on this site involves training something, even a small piece, like a decision threshold or a projector. This one doesn't, deliberately. CLIP's image and text encoders are used frozen, exactly as released. The actual engineering work is the retrieval pipeline around them: embedding a photo collection once, caching those vectors, and comparing new queries against them with cosine similarity. It's simple vector math, with no model involved in that comparison step at all.",
         },
         {
           heading: 'Proving it actually understands meaning, not just keywords',
-          body: 'Before wiring this into a live demo, this was validated on a labeled test set (CIFAR-10) where the real answer could be checked directly. Searching "a photo of a dog" returned 5 out of 5 real dog photos. More telling: searching "a vehicle on the road" — a phrase that never appears in the data\'s own labels — still correctly returned cars and trucks, proof CLIP is reasoning about meaning, not matching against known label text.',
+          body: 'Before wiring this into a live demo, this was validated on a labeled test set (CIFAR-10) where the real answer could be checked directly. Searching "a photo of a dog" returned 5 out of 5 real dog photos. More telling, searching "a vehicle on the road," a phrase that never appears in the data\'s own labels, still correctly returned cars and trucks, proof CLIP is reasoning about meaning, not matching against known label text.',
         },
         {
-          heading: 'A genuine, honest limitation — kept in, not hidden',
-          body: 'That same testing surfaced a real failure worth keeping: searching "an animal that flies" returned a mix of birds and airplanes. CLIP doesn\'t reason compositionally the way a person does — "animal" and "flies" aren\'t enforced as a strict combined rule, they\'re loose associations learned from web data, and "flies" turned out to be at least as strongly linked to airplanes as to birds. It\'s a real, documented limitation of how CLIP represents meaning, not a bug in this implementation.',
+          heading: 'A genuine, honest limitation, kept in, not hidden',
+          body: 'That same testing surfaced a real failure worth keeping: searching "an animal that flies" returned a mix of birds and airplanes. CLIP doesn\'t reason compositionally the way a person does. "Animal" and "flies" aren\'t enforced as a strict combined rule, they\'re loose associations learned from web data, and "flies" turned out to be at least as strongly linked to airplanes as to birds. It\'s a real, documented limitation of how CLIP represents meaning, not a bug in this implementation.',
         },
       ],
       skillsDemonstrated: [
-        'Building a genuine multimodal retrieval pipeline — shared embedding space, cosine similarity search, both text-to-image and image-to-image query modes',
+        'Building a genuine multimodal retrieval pipeline: shared embedding space, cosine similarity search, both text-to-image and image-to-image query modes',
         'Correctly using a frozen, pretrained model purely for inference, with zero unnecessary fine-tuning',
         'Validating a model\'s real understanding against ground truth (CIFAR-10) before trusting it in a live demo, including a query phrased outside the dataset\'s own label vocabulary',
         'Documenting a genuine model limitation honestly (the animal/aircraft conflation) instead of only showcasing successful queries',
-        'Full-stack deployment — image embedding cache at server startup, FastAPI endpoints, a custom React UI built specifically for visual search results rather than reusing a generic demo template',
+        'Full-stack deployment: image embedding cache at server startup, FastAPI endpoints, a custom React UI built specifically for visual search results rather than reusing a generic demo template',
       ],
     },
     {
       slug: 'mini-llava-vision-language-model',
       title: 'Mini-LLaVA: A Real Vision-Tower-and-LLM Pipeline',
       tagline:
-        'Upload any photo, get a genuinely generated caption — no candidate list, no hints. The same three-piece pattern real models like LLaVA use, built and trained by hand.',
+        'Upload any photo, get a genuinely generated caption. No candidate list, no hints. The same three-piece pattern real models like LLaVA use, built and trained by hand.',
       categoryKey: 'vlm',
       summary:
-        "The flagship build in this series: an actual vision-language model, not just a pretrained one used for inference. Two large pieces stay completely frozen, exactly as released — CLIP's vision encoder (sees the image) and GPT-2 (writes the caption). The only thing trained from scratch is a small projector — roughly 1.2M parameters — that translates CLIP's 49 patch vectors per image into a form GPT-2 can read as if they were words. This is the same architectural pattern real production VLMs use (LLaVA bolts a vision encoder onto Vicuna the same way), just at a scale that trains on CPU in a reasonable time.",
+        "The flagship build in this series: an actual vision-language model, not just a pretrained one used for inference. Two large pieces stay completely frozen, exactly as released: CLIP's vision encoder (sees the image) and GPT-2 (writes the caption). The only thing trained from scratch is a small projector, roughly 1.2M parameters, that translates CLIP's 49 patch vectors per image into a form GPT-2 can read as if they were words. This is the same architectural pattern real production VLMs use (LLaVA bolts a vision encoder onto Vicuna the same way), just at a scale that trains on CPU in a reasonable time.",
       github: '',
       live: '',
       tech: ['CLIP (ViT-B/32)', 'GPT-2', 'PyTorch', 'Hugging Face Transformers', 'Flickr8k', 'FastAPI', 'React'],
       hasLiveDemo: true,
       demoKey: 'miniLlava',
       liveDemoHeading: 'Try it on a real photo',
-      liveDemoBlurb: 'Upload any image — the model has never seen it, and there\'s no list of options to pick from. It writes a genuinely new caption, one real word at a time.',
+      liveDemoBlurb: 'Upload any image. The model has never seen it, and there\'s no list of options to pick from. It writes a genuinely new caption, one real word at a time.',
       accentColor: 'stone',
       icon: 'captions',
       customArchitecture: 'frozenTrainable',
@@ -1893,41 +1945,41 @@ export const caseStudies = {
         { label: 'Best val loss', value: '2.699 (epoch 4)' },
         { label: 'Vocabulary', value: 'GPT-2, 50,257 tokens' },
       ],
-      architectureBlurb: 'Custom visual above — the point that actually matters here (which pieces are frozen vs. trained) doesn\'t come across in a generic linear flow diagram.',
+      architectureBlurb: 'Custom visual above. The point that actually matters here (which pieces are frozen vs. trained) doesn\'t come across in a generic linear flow diagram.',
       narrative: [
         {
           heading: 'The problem, in simple words',
-          body: "The CLIP search project can compare an image against text you already give it, but it can't write a fresh sentence from nothing — it has no text generator at all, only a text comparator. This project fixes that: build a small pipeline that looks at a photo and actually writes new words describing it, the way real vision-language models like LLaVA, GPT-4V, or Qwen-VL do — take a frozen vision encoder, take a frozen language model, and connect them with one small trained bridge.",
+          body: "The CLIP search project can compare an image against text you already give it, but it can't write a fresh sentence from nothing. It has no text generator at all, only a text comparator. This project fixes that: build a small pipeline that looks at a photo and actually writes new words describing it, the way real vision-language models like LLaVA, GPT-4V, or Qwen-VL do. Take a frozen vision encoder, take a frozen language model, and connect them with one small trained bridge.",
         },
         {
           heading: 'What actually gets trained, and what never changes',
-          body: "CLIP's vision encoder never changes — it processes each image into 49 patch vectors (one per small region of the photo) exactly as it always has. GPT-2 never changes either — it still only ever does one thing, predicting the next word, exactly as it was originally trained to. The only new, trained component is the projector: a small 2-layer network (Linear → GELU → Linear) that learns to translate CLIP's vectors into a shape GPT-2 can process as input. Everything the model 'learns' about connecting vision to language lives entirely in that one small piece.",
+          body: "CLIP's vision encoder never changes. It processes each image into 49 patch vectors (one per small region of the photo) exactly as it always has. GPT-2 never changes either. It still only ever does one thing, predicting the next word, exactly as it was originally trained to. The only new, trained component is the projector: a small 2-layer network (Linear, GELU, Linear) that learns to translate CLIP's vectors into a shape GPT-2 can process as input. Everything the model 'learns' about connecting vision to language lives entirely in that one small piece.",
         },
         {
-          heading: 'How training actually works — teacher forcing',
-          body: "Training never lets GPT-2 freely generate during learning — that would be slow and let early mistakes cascade into everything after them. Instead, the real caption is fed in alongside the image, and GPT-2 predicts every position in parallel: given the image, guess word 1; given the image and the real word 1, guess word 2; and so on. Each guess is a full confidence score across GPT-2's entire 50,257-word vocabulary, compared against the one real correct word — a smooth, differentiable signal that can actually be used to adjust the projector's weights, unlike comparing two finished sentences would be.",
+          heading: 'How training actually works: teacher forcing',
+          body: "Training never lets GPT-2 freely generate during learning, since that would be slow and let early mistakes cascade into everything after them. Instead, the real caption is fed in alongside the image, and GPT-2 predicts every position in parallel: given the image, guess word 1; given the image and the real word 1, guess word 2; and so on. Each guess is a full confidence score across GPT-2's entire 50,257-word vocabulary, compared against the one real correct word. It's a smooth, differentiable signal that can actually be used to adjust the projector's weights, unlike comparing two finished sentences would be.",
         },
         {
           heading: 'A real bug, caught and fixed',
-          body: "The first training run produced captions that never stopped — real words followed by trailing periods running on forever until an arbitrary cutoff. The cause: the training data never included GPT-2's own end-of-caption signal as something to predict, so it never learned when a caption should actually end. Fixing it meant appending that signal to every training caption so the model is explicitly taught where captions stop, not just what they contain — after the fix, every generated caption ends cleanly as a real sentence.",
+          body: "The first training run produced captions that never stopped, with real words followed by trailing periods running on forever until an arbitrary cutoff. The cause: the training data never included GPT-2's own end-of-caption signal as something to predict, so it never learned when a caption should actually end. Fixing it meant appending that signal to every training caption so the model is explicitly taught where captions stop, not just what they contain. After the fix, every generated caption ends cleanly as a real sentence.",
         },
         {
           heading: 'Proving data scale actually mattered, not just theory',
-          body: 'A first pass trained on only 270 image-caption pairs — small enough to prove the pipeline worked, but not enough to be reliable. One specific test photo of a dog swimming got captioned "A child in a swimming pool," a real hallucination. Scaling to the full 6,000-pair training set and rerunning that exact same photo produced "A dog is swimming in a pool" — correct. That\'s not an abstract metric improving, that\'s one specific, previously-wrong prediction becoming right, real evidence that the earlier failure was a data-scale problem rather than an architecture problem.',
+          body: 'A first pass trained on only 270 image-caption pairs, small enough to prove the pipeline worked, but not enough to be reliable. One specific test photo of a dog swimming got captioned "A child in a swimming pool," a real hallucination. Scaling to the full 6,000-pair training set and rerunning that exact same photo produced "A dog is swimming in a pool," which is correct. That\'s not an abstract metric improving, that\'s one specific, previously-wrong prediction becoming right, real evidence that the earlier failure was a data-scale problem rather than an architecture problem.',
         },
         {
           heading: 'Checkpointing catching real overfitting, live',
-          body: 'Across 6 epochs on 6,000 training images, training loss dropped every single epoch (3.037 → 2.196) — but validation loss (on 300 held-out images never trained on) didn\'t follow the same path, improving through epoch 4 (2.699) then getting worse at epochs 5 and 6. Because checkpointing only saves the projector when validation improves, the version actually in use is from epoch 4, not the final epoch — a live, real example of catching the earliest sign of overfitting rather than blindly keeping the last checkpoint.',
+          body: 'Across 6 epochs on 6,000 training images, training loss dropped every single epoch (3.037 to 2.196), but validation loss (on 300 held-out images never trained on) didn\'t follow the same path. It improved through epoch 4 (2.699) then got worse at epochs 5 and 6. Because checkpointing only saves the projector when validation improves, the version actually in use is from epoch 4, not the final epoch. It\'s a live, real example of catching the earliest sign of overfitting rather than blindly keeping the last checkpoint.',
         },
         {
           heading: 'Honest results on genuinely unseen photos',
-          body: 'On the held-out test set, results are strong and mostly accurate, not perfect. Near-exact matches: "Two dogs are playing in the snow" for a real photo of two dogs in snow; "A brown dog is running in the grass" for a photo whose real caption is almost word-for-word identical. Partial misses stay honest too — one photo of a man and woman dancing in costumes came back as "A man in a white shirt and a black shirt is dancing," correctly identifying the action but missing that a second person is a woman, not another man in a shirt. Right category, wrong specific — a realistic, reportable limitation rather than a hidden one.',
+          body: 'On the held-out test set, results are strong and mostly accurate, not perfect. Near-exact matches include "Two dogs are playing in the snow" for a real photo of two dogs in snow, and "A brown dog is running in the grass" for a photo whose real caption is almost word-for-word identical. Partial misses stay honest too. One photo of a man and woman dancing in costumes came back as "A man in a white shirt and a black shirt is dancing," correctly identifying the action but missing that a second person is a woman, not another man in a shirt. Right category, wrong specific: a realistic, reportable limitation rather than a hidden one.',
         },
       ],
       skillsDemonstrated: [
-        'Building an actual vision-tower + projector + LLM pipeline — the same architectural family as real production VLMs like LLaVA, not just calling a pretrained one',
+        'Building an actual vision-tower, projector, and LLM pipeline: the same architectural family as real production VLMs like LLaVA, not just calling a pretrained one',
         'Correctly identifying which components to freeze and which to train, and implementing training that only updates the intended ~1.2M parameters',
-        'Teacher forcing with cross-entropy loss over per-position confidence scores — understanding why free generation isn\'t used during training (no differentiable signal) and why it\'s required at actual inference time',
+        'Teacher forcing with cross-entropy loss over per-position confidence scores, understanding why free generation isn\'t used during training (no differentiable signal) and why it\'s required at actual inference time',
         'Diagnosing and fixing a real training bug (missing end-of-sequence supervision) by tracing generated output back to a gap in the training data, not guessing at the model architecture',
         'Checkpointing on held-out validation loss, catching a real overfitting signal mid-run rather than trusting the final epoch',
         'Diagnosing whether a specific failure was a data-scale problem or an architecture problem, then proving the diagnosis correct by fixing that exact same failing example',

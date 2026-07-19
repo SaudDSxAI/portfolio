@@ -35,7 +35,7 @@ function Field({ label, children }) {
 const selectClass =
   'bg-white text-black border border-black/15 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-primary-600 focus:ring-2 focus:ring-primary-300/40';
 
-export default function HeartLiveDemo() {
+export default function HeartLiveDemo({ theme }) {
   const [form, setForm] = useState(DEFAULTS);
   const [models, setModels] = useState(null);
   const [selectedModel, setSelectedModel] = useState('logistic_regression');
@@ -184,27 +184,30 @@ export default function HeartLiveDemo() {
         {error && <p className="mt-3 text-xs text-red-600">{error}</p>}
       </form>
 
-      <div className="bg-white/70 border border-black/10 rounded-2xl p-6 min-h-[220px] flex items-center justify-center">
-        {!result && <p className="text-sm text-zinc-500 text-center">Set a patient profile and click predict.</p>}
+      <div className="relative bg-gradient-to-b from-white/80 to-warm-100/60 border border-black/10 rounded-2xl p-6 min-h-[220px] flex items-center justify-center shadow-sm">
+        {!result && (
+          <p className="text-sm text-zinc-500 text-center">Set a patient profile and click predict to see a real, live result.</p>
+        )}
         {result && (
           <div className="w-full text-center">
-            <div className="text-[11px] uppercase tracking-wide text-zinc-500 mb-1">{result.model_used}</div>
-            <div className={`text-xs font-bold uppercase tracking-wide mb-1 ${
-              result.prediction_at_threshold === 'Yes' ? 'text-red-600' : 'text-primary-700'
+            <div className="text-[11px] uppercase tracking-wide text-zinc-500 mb-2">{result.model_used}</div>
+            <span className={`inline-block text-xs font-bold uppercase tracking-wide px-3 py-1 rounded-full mb-3 ${
+              result.prediction_at_threshold === 'Yes' ? 'bg-red-100 text-red-700' : 'bg-primary-100 text-primary-800'
             }`}>
               {result.prediction_at_threshold === 'Yes' ? 'Elevated risk' : 'Low risk'}
-            </div>
-            <div className="text-4xl font-heading font-bold text-black">{(result.disease_probability * 100).toFixed(1)}%</div>
-            <div className="text-xs text-zinc-500 mb-4">predicted disease probability</div>
-            <div className="relative h-2 rounded-full bg-black/10 mb-4">
+            </span>
+            <div className="text-5xl font-heading font-bold text-black leading-none">{(result.disease_probability * 100).toFixed(1)}%</div>
+            <div className="text-xs text-zinc-500 mt-1.5 mb-5">predicted disease probability</div>
+            <div className="relative h-3 rounded-full bg-black/10 mb-5">
               <div
-                className="h-full rounded-full bg-gradient-to-r from-primary-400 via-amber-500 to-red-500"
+                className="h-full rounded-full bg-gradient-to-r from-primary-400 via-amber-500 to-red-500 transition-all"
                 style={{ width: `${result.disease_probability * 100}%` }}
               />
-              <div className="absolute -top-1 w-0.5 h-4 bg-black/60" style={{ left: '50%' }} />
+              <div className="absolute -top-1.5 w-1 h-6 rounded-full bg-black/70" style={{ left: '50%' }} title="Decision threshold (0.50)" />
             </div>
-            <p className="text-xs text-zinc-600">
-              Verdict: <strong>{result.prediction_at_threshold === 'Yes' ? 'Likely disease present' : 'Likely no disease'}</strong> (threshold 0.50)
+            <p className="text-sm text-zinc-700">
+              Verdict: <strong className="text-black">{result.prediction_at_threshold === 'Yes' ? 'Likely disease present' : 'Likely no disease'}</strong>
+              <span className="text-zinc-500"> (threshold 0.50)</span>
             </p>
           </div>
         )}

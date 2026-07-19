@@ -35,7 +35,7 @@ function MoviePoster({ movie, small = false }) {
   );
 }
 
-export default function MovieLiveDemo() {
+export default function MovieLiveDemo({ theme }) {
   const [query, setQuery] = useState('');
   const [results, setResults] = useState([]);
   const [picked, setPicked] = useState([]);
@@ -127,7 +127,7 @@ export default function MovieLiveDemo() {
   return (
     <div>
       <p className="text-xs text-zinc-500 mb-4">
-        Search and pick up to 5 movies you like, then get real recommendations — computed from item
+        Search and pick up to 5 movies you like, then get real recommendations, computed from item
         similarity in the trained model's learned "taste space," not a lookup table.
       </p>
 
@@ -188,15 +188,15 @@ export default function MovieLiveDemo() {
       {error && <p className="mt-3 text-xs text-red-600">{error}</p>}
 
       {recommendations && (
-        <div className="mt-6">
+        <div className="mt-6 bg-gradient-to-b from-white/80 to-warm-100/60 border border-black/10 rounded-2xl p-4 shadow-sm">
           <h3 className="text-sm font-heading font-bold text-black mb-3">Recommended for you</h3>
           <div className="grid grid-cols-2 sm:grid-cols-4 md:grid-cols-6 gap-3">
             {recommendations.map((m) => (
-              <div key={m.movieId} className="rounded-xl overflow-hidden border border-black/10">
+              <div key={m.movieId} className="rounded-xl overflow-hidden border border-black/10 bg-white/70 shadow-sm hover:shadow-md transition-shadow">
                 <MoviePoster movie={m} />
-                <div className="p-2 bg-white/70">
+                <div className="p-2">
                   <div className="text-[11px] font-semibold text-black leading-tight line-clamp-2">{m.title}</div>
-                  <div className="text-[10px] text-primary-700 font-medium mt-0.5">{Math.round(m.matchScore * 100)}% match</div>
+                  <div className={`text-[10px] font-semibold mt-0.5 ${theme?.text || 'text-primary-700'}`}>{Math.round(m.matchScore * 100)}% match</div>
                 </div>
               </div>
             ))}

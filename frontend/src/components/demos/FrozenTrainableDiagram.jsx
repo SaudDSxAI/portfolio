@@ -9,7 +9,7 @@ export default function FrozenTrainableDiagram() {
   return (
     <div className="bg-white/70 border border-black/10 rounded-2xl p-6 sm:p-8">
       <p className="text-xs text-zinc-500 mb-6 text-center">
-        Two frozen models, one small trained bridge between them — roughly 1.2M trainable parameters out of ~275M total.
+        Two frozen models, one small trained bridge between them: roughly 1.2M trainable parameters out of ~275M total.
       </p>
 
       <div className="flex flex-col sm:flex-row items-stretch gap-3 sm:gap-2">
@@ -33,7 +33,7 @@ export default function FrozenTrainableDiagram() {
         {/* Projector — trainable */}
         <div className="flex-1 rounded-2xl border-2 border-stone-500 bg-stone-50 p-4 relative shadow-md shadow-stone-500/10">
           <div className="flex items-center gap-1.5 text-stone-700 text-[10px] font-bold uppercase tracking-wide mb-2">
-            <PencilRuler size={12} /> Trainable — the only part that learns
+            <PencilRuler size={12} /> Trainable: the only part that learns
           </div>
           <p className="font-heading font-bold text-sm text-black mb-1">Projector (MLP)</p>
           <p className="text-[11px] text-zinc-600 mb-3">Linear → GELU → Linear, ~1.2M parameters, built from scratch</p>

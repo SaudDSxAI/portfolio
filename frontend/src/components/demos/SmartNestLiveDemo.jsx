@@ -24,7 +24,7 @@ function drift(value, delta, lo, hi) {
   return clamp(value + (Math.random() - 0.5) * delta, lo, hi);
 }
 
-export default function SmartNestLiveDemo() {
+export default function SmartNestLiveDemo({ theme }) {
   const [temp, setTemp] = useState(27);
   const [hum, setHum] = useState(55);
   const [lux, setLux] = useState(420);
@@ -75,12 +75,12 @@ export default function SmartNestLiveDemo() {
   return (
     <div>
       <p className="text-xs text-zinc-500 mb-4">
-        SmartNest runs on a home WiFi network, so this can't connect to the real device — this is a
+        SmartNest runs on a home WiFi network, so this can't connect to the real device. This is a
         client-side simulation running the exact same auto-mode rules as the actual Arduino firmware, with
         sensor values drifting on their own. Toggle Auto off to control devices manually.
       </p>
 
-      <div className="rounded-2xl overflow-hidden border border-black/10 shadow-lg" style={{ background: '#0b0e14' }}>
+      <div className="rounded-2xl overflow-hidden border border-black/10 shadow-xl" style={{ background: '#0b0e14' }}>
         {/* Top bar */}
         <div className="flex items-center justify-between px-5 py-4 border-b border-white/10">
           <div className="flex items-center gap-2">
@@ -106,7 +106,7 @@ export default function SmartNestLiveDemo() {
 
         {smokeAlert && (
           <div className="mx-5 mt-4 flex items-center gap-2 px-3 py-2 rounded-lg bg-red-500/15 border border-red-500/30 text-red-300 text-xs">
-            Smoke level elevated — check environment
+            Smoke level elevated, check environment
           </div>
         )}
 

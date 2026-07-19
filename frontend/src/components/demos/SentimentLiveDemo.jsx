@@ -15,7 +15,7 @@ async function fetchWithTimeout(url, opts = {}, timeoutMs = 20000) {
   }
 }
 
-export default function SentimentLiveDemo() {
+export default function SentimentLiveDemo({ theme }) {
   const [examples, setExamples] = useState([]);
   const [text, setText] = useState('');
   const [result, setResult] = useState(null);
@@ -92,7 +92,7 @@ export default function SentimentLiveDemo() {
   return (
     <div>
       <p className="text-xs text-zinc-500 mb-4">
-        Type a movie review (or pick an example) and the trained LSTM will score it — the raw number is a
+        Type a movie review (or pick an example) and the trained LSTM will score it. The raw number is a
         probability, not just positive/negative, so you can see how confident the model actually is.
       </p>
 
@@ -128,31 +128,32 @@ export default function SentimentLiveDemo() {
       {error && <p className="mt-3 text-xs text-red-600">{error}</p>}
 
       {result && (
-        <div className="mt-6 bg-white/70 border border-black/10 rounded-2xl p-6 text-center">
-          <div className={`text-xs font-bold uppercase tracking-wide mb-2 px-3 py-1 rounded-full inline-block border ${
+        <div className="relative mt-6 bg-gradient-to-b from-white/80 to-warm-100/60 border border-black/10 rounded-2xl p-6 text-center shadow-sm">
+          <span className={`text-xs font-bold uppercase tracking-wide mb-3 px-3 py-1 rounded-full inline-block ${
             result.sentiment === 'positive'
-              ? 'bg-emerald-100 text-emerald-800 border-emerald-300'
-              : 'bg-rose-100 text-rose-800 border-rose-300'
+              ? 'bg-emerald-100 text-emerald-800'
+              : 'bg-rose-100 text-rose-800'
           }`}>
             {result.sentiment}
-          </div>
-          <div className="text-4xl font-heading font-bold text-black mt-2">
+          </span>
+          <div className="text-5xl font-heading font-bold text-black leading-none mt-2">
             {(result.positive_probability * 100).toFixed(1)}%
           </div>
-          <div className="text-xs text-zinc-500 mb-4">predicted probability of positive sentiment</div>
-          <div className="relative h-2 rounded-full bg-black/10 mb-4">
+          <div className="text-xs text-zinc-500 mt-1.5 mb-5">predicted probability of positive sentiment</div>
+          <div className="relative h-3 rounded-full bg-black/10 mb-5">
             <div
               className="h-full rounded-full bg-gradient-to-r from-rose-500 via-zinc-400 to-emerald-500"
               style={{ width: '100%' }}
             />
             <div
-              className="absolute -top-1 w-0.5 h-4 bg-black/70"
+              className="absolute -top-1.5 w-1 h-6 rounded-full bg-black/70"
               style={{ left: `${result.positive_probability * 100}%` }}
+              title="Predicted probability"
             />
           </div>
-          <p className="text-xs text-zinc-600">
-            Confidence: <strong>{(result.confidence * 100).toFixed(1)}%</strong> · Words read:{' '}
-            <strong>{result.word_count}</strong>
+          <p className="text-sm text-zinc-700">
+            Confidence: <strong className="text-black">{(result.confidence * 100).toFixed(1)}%</strong> · Words read:{' '}
+            <strong className="text-black">{result.word_count}</strong>
             {result.truncated && <span className="text-amber-700"> (truncated at 200 words)</span>}
           </p>
         </div>

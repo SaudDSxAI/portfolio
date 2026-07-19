@@ -35,7 +35,7 @@ const selectClass =
 
 const fmt = (n) => n.toLocaleString('en-US', { style: 'currency', currency: 'USD', maximumFractionDigits: 0 });
 
-export default function HouseLiveDemo() {
+export default function HouseLiveDemo({ theme }) {
   const [form, setForm] = useState(DEFAULTS);
   const [neighborhoods, setNeighborhoods] = useState(null);
   const [result, setResult] = useState(null);
@@ -104,7 +104,7 @@ export default function HouseLiveDemo() {
   return (
     <div>
       <p className="text-xs text-zinc-500 mb-4">
-        This model uses 216 features after encoding — far too many for a usable form. These dozen fields are
+        This model uses 216 features after encoding, far too many for a usable form. These dozen fields are
         the ones that actually drive the prediction (per the model's own coefficients); everything else is
         filled from a "typical house" profile (the median/mode across the training data).
       </p>
@@ -175,18 +175,25 @@ export default function HouseLiveDemo() {
           {error && <p className="mt-3 text-xs text-red-600">{error}</p>}
         </form>
 
-        <div className="bg-white/70 border border-black/10 rounded-2xl p-6 min-h-[220px] flex items-center justify-center">
+        <div className="relative bg-gradient-to-b from-white/80 to-warm-100/60 border border-black/10 rounded-2xl p-6 min-h-[220px] flex items-center justify-center shadow-sm">
           {!result && <p className="text-sm text-zinc-500 text-center">Set a profile and estimate the price.</p>}
           {result && (
             <div className="w-full text-center">
-              <div className="text-[11px] uppercase tracking-wide text-zinc-500 mb-1">Lasso Regression</div>
-              <div className="text-4xl font-heading font-bold text-black">{fmt(result.predicted_price)}</div>
-              <div className="text-xs text-zinc-500 mb-4">estimated sale price</div>
-              <p className="text-xs text-zinc-600">
-                Likely range: <strong>{fmt(result.price_range_low)} – {fmt(result.price_range_high)}</strong>
-              </p>
-              <p className="text-[11px] text-zinc-500 mt-1">
-                (± {fmt(result.mae_dollars)}, the model's typical error on unseen houses)
+              <div className="text-[11px] uppercase tracking-wide text-zinc-500 mb-2">Lasso Regression</div>
+              <div className="text-5xl font-heading font-bold text-black leading-none">{fmt(result.predicted_price)}</div>
+              <div className="text-xs text-zinc-500 mt-1.5 mb-6">estimated sale price</div>
+
+              <div className="relative h-2.5 rounded-full bg-black/10 mb-2">
+                <div className="absolute inset-y-0 left-[15%] right-[15%] rounded-full" style={{ background: theme?.chartChosen || '#585b3c' }} />
+                <div className="absolute -top-1 w-1 h-[18px] rounded-full bg-black/80" style={{ left: '50%' }} title="Point estimate" />
+              </div>
+              <div className="flex justify-between text-[11px] text-zinc-500 mb-4">
+                <span>{fmt(result.price_range_low)}</span>
+                <span>{fmt(result.price_range_high)}</span>
+              </div>
+
+              <p className="text-[11px] text-zinc-500">
+                Likely range shown above (± {fmt(result.mae_dollars)}, the model's typical error on unseen houses)
               </p>
             </div>
           )}

@@ -16,7 +16,7 @@ async function fetchWithTimeout(url, opts = {}, timeoutMs = 30000) {
   }
 }
 
-export default function MiniLlavaDemo() {
+export default function MiniLlavaDemo({ theme }) {
   const [ready, setReady] = useState(null);
   const [preview, setPreview] = useState(null);
   const [file, setFile] = useState(null);
@@ -81,7 +81,7 @@ export default function MiniLlavaDemo() {
         <p className="font-semibold mb-1">Live demo isn't available right now.</p>
         <p className="mb-3">
           This calls <code className="bg-black/10 px-1.5 py-0.5 rounded">/api/mini-llava/status</code> on this
-          site's own backend — the trained projector may not be loaded on the server.
+          site's own backend. The trained projector may not be loaded on the server.
         </p>
         <p className="text-xs opacity-75 mb-3">Detail: {unreachableDetail}</p>
         <button
@@ -97,7 +97,7 @@ export default function MiniLlavaDemo() {
   return (
     <div>
       <p className="text-xs text-zinc-500 mb-4">
-        Upload any photo — this runs the real, full pipeline: CLIP sees it, the trained projector translates it,
+        Upload any photo. This runs the real, full pipeline: CLIP sees it, the trained projector translates it,
         GPT-2 writes a genuinely new caption one word at a time. No candidate list, no hints, nothing pre-written.
       </p>
 

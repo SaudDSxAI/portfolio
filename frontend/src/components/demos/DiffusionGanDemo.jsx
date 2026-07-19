@@ -17,7 +17,7 @@ async function fetchWithTimeout(url, opts = {}, timeoutMs = 60000) {
   }
 }
 
-export default function DiffusionGanDemo() {
+export default function DiffusionGanDemo({ theme }) {
   const [ready, setReady] = useState(null);
   const [model, setModel] = useState('ddpm');
   const [image, setImage] = useState(null);
@@ -73,7 +73,7 @@ export default function DiffusionGanDemo() {
         <p className="font-semibold mb-1">Live demo isn't available right now.</p>
         <p className="mb-3">
           This calls <code className="bg-black/10 px-1.5 py-0.5 rounded">/api/diffusion-gan/status</code> on this
-          site's own backend — the trained checkpoints may not be loaded on the server.
+          site's own backend. The trained checkpoints may not be loaded on the server.
         </p>
         <p className="text-xs opacity-75 mb-3">Detail: {unreachableDetail}</p>
         <button
@@ -89,7 +89,7 @@ export default function DiffusionGanDemo() {
   return (
     <div>
       <p className="text-xs text-zinc-500 mb-4">
-        Pick a model and generate brand-new digits from pure random noise — nothing pre-made, no dataset lookup,
+        Pick a model and generate brand-new digits from pure random noise, nothing pre-made, no dataset lookup,
         genuinely fresh output every time. Notice the wait: the DDPM takes noticeably longer since it works
         through 300 denoising steps; the GAN produces its result in a single pass.
       </p>
@@ -98,36 +98,36 @@ export default function DiffusionGanDemo() {
         <button
           onClick={() => { setModel('ddpm'); setImage(null); }}
           className={`flex-1 py-2.5 rounded-xl text-sm font-semibold border-2 transition-colors ${
-            model === 'ddpm' ? 'border-violet-600 bg-violet-100/60 text-violet-800' : 'border-black/10 text-zinc-600'
+            model === 'ddpm' ? (theme?.badge || 'bg-violet-100 text-violet-800 border-violet-300') : 'border-black/10 text-zinc-600'
           }`}
         >
-          Diffusion (DDPM) — ~300 steps
+          Diffusion (DDPM): ~300 steps
         </button>
         <button
           onClick={() => { setModel('gan'); setImage(null); }}
           className={`flex-1 py-2.5 rounded-xl text-sm font-semibold border-2 transition-colors ${
-            model === 'gan' ? 'border-violet-600 bg-violet-100/60 text-violet-800' : 'border-black/10 text-zinc-600'
+            model === 'gan' ? (theme?.badge || 'bg-violet-100 text-violet-800 border-violet-300') : 'border-black/10 text-zinc-600'
           }`}
         >
-          GAN — 1 step
+          GAN: 1 step
         </button>
       </div>
 
       <button
         onClick={runGenerate}
         disabled={loading || ready === false}
-        className="w-full py-2.5 rounded-xl bg-gradient-to-br from-violet-500 to-violet-700 text-white text-sm font-semibold shadow-md hover:shadow-lg transition-all disabled:opacity-60 mb-4"
+        className={`w-full py-2.5 rounded-xl text-white text-sm font-semibold shadow-md hover:shadow-lg transition-all disabled:opacity-60 mb-4 ${theme?.button || 'bg-gradient-to-br from-violet-500 to-violet-700'}`}
       >
         {loading ? (model === 'ddpm' ? 'Denoising, step by step…' : 'Generating…') : `Generate with ${model === 'ddpm' ? 'Diffusion' : 'GAN'}`}
       </button>
 
       {error && <p className="text-xs text-red-600 mb-3">{error}</p>}
 
-      <div className="bg-white/70 border border-black/10 rounded-2xl p-5 min-h-[140px] flex items-center justify-center">
+      <div className="relative bg-gradient-to-b from-white/80 to-warm-100/60 border border-black/10 rounded-2xl p-5 min-h-[140px] flex items-center justify-center shadow-sm">
         {!image && !loading && <p className="text-sm text-zinc-500">Generated digits will appear here.</p>}
         {loading && <p className="text-sm text-zinc-500">Working…</p>}
         {image && !loading && (
-          <img src={`data:image/png;base64,${image}`} alt="generated digits" className="max-w-full rounded-lg" />
+          <img src={`data:image/png;base64,${image}`} alt="generated digits" className="max-w-full rounded-lg shadow-sm" />
         )}
       </div>
     </div>

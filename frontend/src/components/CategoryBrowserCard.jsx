@@ -1,5 +1,4 @@
 import TransitionLink from './ui/TransitionLink';
-import { BarChart, Bar, ResponsiveContainer, Cell } from 'recharts';
 
 // Icons per category key — add one here when a new category is introduced.
 // Falls back to a generic folder icon for anything not listed.
@@ -27,28 +26,8 @@ function CategoryIcon({ categoryKey }) {
   }
 }
 
-// Tiny real chart pulled from the category's flagship case study, so even
-// the category card isn't decorative — it's a preview of real data.
-function MiniHighlight({ study }) {
-  if (!study?.modelComparison) return null;
-  return (
-    <div className="h-12 w-20 opacity-90">
-      <ResponsiveContainer width="100%" height="100%">
-        <BarChart data={study.modelComparison} margin={{ top: 2, right: 2, left: 2, bottom: 2 }}>
-          <Bar dataKey="rocAuc" radius={[3, 3, 0, 0]}>
-            {study.modelComparison.map((d, i) => (
-              <Cell key={i} fill={d.chosen ? '#585b3c' : '#c9cba4'} />
-            ))}
-          </Bar>
-        </BarChart>
-      </ResponsiveContainer>
-    </div>
-  );
-}
-
 export default function CategoryBrowserCard({ categoryKey, meta, studies }) {
   const count = studies.length;
-  const flagship = studies[0];
   const isEmpty = count === 0;
 
   return (
@@ -63,7 +42,6 @@ export default function CategoryBrowserCard({ categoryKey, meta, studies }) {
           <span className="flex items-center justify-center w-12 h-12 rounded-xl bg-gradient-to-br from-primary-500 to-primary-700 text-white shadow-md shadow-primary-700/25">
             <CategoryIcon categoryKey={categoryKey} />
           </span>
-          {!isEmpty && flagship && <MiniHighlight study={flagship} />}
         </div>
 
         <h3 className="font-heading font-bold text-black text-xl mb-1 group-hover:text-primary-800 transition-colors duration-300">

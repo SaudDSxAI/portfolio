@@ -21,7 +21,7 @@ async function fetchWithTimeout(url, opts = {}, timeoutMs = 20000) {
 const fmt = (n) => `$${Math.round(n).toLocaleString()}`;
 const fmtMonth = (dateStr) => new Date(dateStr).toLocaleDateString('en-US', { month: 'short', year: '2-digit' });
 
-export default function SalesLiveDemo() {
+export default function SalesLiveDemo({ theme }) {
   const [data, setData] = useState(null);
   const [error, setError] = useState(null);
   const [apiUnreachable, setApiUnreachable] = useState(false);
@@ -79,12 +79,16 @@ export default function SalesLiveDemo() {
   return (
     <div>
       <p className="text-xs text-zinc-500 mb-4">
-        This isn't a "fill in a form" demo — forecasting predicts what happens next, not a category for a
+        This isn't a "fill in a form" demo. Forecasting predicts what happens next, not a category for a
         single input. The chart below shows 48 months of real sales (solid line) plus a genuine 6-month
         forecast beyond the data the model has ever seen (dashed line, with an uncertainty band).
       </p>
 
-      <div className="bg-white/70 border border-black/10 rounded-2xl p-5 mb-4">
+      <div className="bg-gradient-to-b from-white/80 to-warm-100/60 border border-black/10 rounded-2xl p-5 mb-4 shadow-sm">
+        <div className="flex items-center gap-4 text-[11px] text-zinc-500 mb-2">
+          <span className="flex items-center gap-1.5"><span className="w-3 h-[3px] rounded-full bg-[#41432d] inline-block" /> Actual</span>
+          <span className="flex items-center gap-1.5"><span className="w-3 h-[3px] rounded-full bg-[#b45309] inline-block opacity-70" /> Forecast</span>
+        </div>
         <ResponsiveContainer width="100%" height={340}>
           <ComposedChart data={chartData} margin={{ top: 10, right: 20, left: 0, bottom: 10 }}>
             <CartesianGrid strokeDasharray="3 3" stroke="#e3d8c6" />
@@ -92,7 +96,7 @@ export default function SalesLiveDemo() {
             <YAxis tickFormatter={(v) => `$${(v / 1000).toFixed(0)}k`} tick={{ fontSize: 11, fill: '#585b3c' }} />
             <Tooltip
               labelFormatter={fmtMonth}
-              formatter={(v, name) => [v ? fmt(v) : '—', name === 'actual' ? 'Actual' : name === 'forecast' ? 'Forecast' : name]}
+              formatter={(v, name) => [v ? fmt(v) : 'N/A', name === 'actual' ? 'Actual' : name === 'forecast' ? 'Forecast' : name]}
               contentStyle={{ background: '#fff', border: '1px solid #e3d8c6', borderRadius: 10 }}
             />
             <Area dataKey="upper" stroke="none" fill="#c9cba4" fillOpacity={0.3} />
@@ -105,7 +109,7 @@ export default function SalesLiveDemo() {
 
       <div className="grid grid-cols-3 gap-3">
         {data.forecast.slice(0, 3).map((f) => (
-          <div key={f.date} className="bg-white/70 border border-black/10 rounded-xl p-3 text-center">
+          <div key={f.date} className="bg-white/70 border border-black/10 rounded-xl p-3 text-center shadow-sm">
             <div className="text-[11px] text-zinc-500 uppercase tracking-wide">{fmtMonth(f.date)}</div>
             <div className="text-lg font-heading font-bold text-black">{fmt(f.predicted)}</div>
             <div className="text-[10px] text-zinc-500">{fmt(f.lower)} – {fmt(f.upper)}</div>

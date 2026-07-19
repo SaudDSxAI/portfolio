@@ -1,32 +1,10 @@
 import TransitionLink from './ui/TransitionLink';
-import { BarChart, Bar, ResponsiveContainer, Cell } from 'recharts';
 import TechBadge from './ui/TechBadge';
 import { getTheme, getIcon } from '../lib/projectTheme';
-
-// Small deterministic sparkline-style preview built from the project's own
-// model comparison data — a real chart, not decoration. Uses whichever
-// metric that project actually compared models on (ROC-AUC, PR-AUC, R²,
-// accuracy...), not a hardcoded field that only some projects have.
-function MiniComparisonChart({ data, metricKey, theme }) {
-  return (
-    <div className="h-20 -mx-1">
-      <ResponsiveContainer width="100%" height="100%">
-        <BarChart data={data} margin={{ top: 4, right: 4, left: 4, bottom: 4 }}>
-          <Bar dataKey={metricKey} radius={[4, 4, 0, 0]}>
-            {data.map((d, i) => (
-              <Cell key={i} fill={d.chosen ? theme.chartChosen : theme.chartOther} />
-            ))}
-          </Bar>
-        </BarChart>
-      </ResponsiveContainer>
-    </div>
-  );
-}
 
 export default function CaseStudyCard({ study, categoryKey, index = 0 }) {
   const theme = getTheme(study.accentColor);
   const Icon = getIcon(study.icon);
-  const metricKey = study.comparisonMetricKey || 'rocAuc';
 
   return (
     <TransitionLink
@@ -37,22 +15,15 @@ export default function CaseStudyCard({ study, categoryKey, index = 0 }) {
       <div className={`absolute -inset-[1px] rounded-2xl bg-gradient-to-br from-transparent via-transparent to-transparent ${theme.glowFrom} ${theme.glowVia} ${theme.glowTo} transition-all duration-500 blur-md opacity-60`} />
 
       <div className={`relative bg-warm-100/90 border border-black/10 rounded-2xl overflow-hidden h-full flex flex-col ${theme.hoverBorder} hover:shadow-2xl ${theme.hoverShadow} transition-all duration-500`}>
-        {/* Preview: icon + headline metric + mini chart */}
-        <div className="relative p-5 pb-0 border-b border-black/10">
-          <div className="flex items-start justify-between gap-3 mb-3">
-            <span className={`flex items-center justify-center w-10 h-10 rounded-xl ${theme.iconBg} text-white shadow-md ${theme.iconShadow}`}>
-              <Icon className="w-5 h-5" strokeWidth={2} />
-            </span>
-            <div className="text-right">
-              <div className="text-2xl font-heading font-bold text-black leading-none">
-                {study.heroMetrics[0].value}
-              </div>
-              <div className="text-[11px] text-zinc-600 mt-1">{study.heroMetrics[0].label}</div>
-            </div>
-          </div>
-          {study.modelComparison && (
-            <MiniComparisonChart data={study.modelComparison} metricKey={metricKey} theme={theme} />
-          )}
+        {/* Preview: a small icon badge on a muted background, identifying
+            the project at a glance without a full-bleed saturated color
+            block — the chart that lived here before read as decoration
+            rather than a useful preview, and a full-color banner read as
+            too intense across a grid of many different accent colors. */}
+        <div className="relative flex items-center justify-center h-24 bg-black/[0.03] border-b border-black/5">
+          <span className={`flex items-center justify-center w-12 h-12 rounded-xl ${theme.iconBg} text-white shadow-sm ${theme.iconShadow}`}>
+            <Icon className="w-6 h-6" strokeWidth={1.75} />
+          </span>
         </div>
 
         {/* Body */}

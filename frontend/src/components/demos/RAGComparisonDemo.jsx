@@ -167,7 +167,7 @@ export default function RAGComparisonDemo() {
         <p className="font-semibold mb-1">Live demo isn't available right now.</p>
         <p className="mb-3">
           This calls <code className="bg-black/10 px-1.5 py-0.5 rounded">/api/rag/status</code> on this site's own
-          backend — the corpus or embedding model may not be loaded on the server.
+          backend. The corpus or embedding model may not be loaded on the server.
         </p>
         <p className="text-xs opacity-75 mb-3">Detail: {unreachableDetail}</p>
         <button
@@ -183,7 +183,7 @@ export default function RAGComparisonDemo() {
   return (
     <div>
       <p className="text-xs text-zinc-500 mb-4">
-        Ask one question — all four techniques search and answer live, in parallel, in their own column below.
+        Ask one question. All four techniques search and answer live, in parallel, in their own column below.
       </p>
 
       <div className="flex flex-wrap gap-2 mb-3">

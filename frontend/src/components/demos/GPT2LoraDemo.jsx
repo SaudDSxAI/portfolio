@@ -70,7 +70,7 @@ export default function GPT2LoraDemo() {
         <p className="font-semibold mb-1">Live demo isn't available right now.</p>
         <p className="mb-3">
           This calls <code className="bg-black/10 px-1.5 py-0.5 rounded">/api/gpt2-lora/status</code> on this
-          site's own backend — the LoRA checkpoint may not be loaded on the server.
+          site's own backend. The LoRA checkpoint may not be loaded on the server.
         </p>
         <p className="text-xs opacity-75 mb-3">Detail: {unreachableDetail}</p>
         <button
@@ -86,9 +86,9 @@ export default function GPT2LoraDemo() {
   return (
     <div>
       <p className="text-xs text-zinc-500 mb-4">
-        This runs the actual LoRA adapter (442K trained parameters) live, on top of frozen GPT-2 — type any prompt
+        This runs the actual LoRA adapter (442K trained parameters) live, on top of frozen GPT-2. Type any prompt
         and see how it continues in the Shakespeare style it learned. The full-fine-tune model isn't served live
-        here since its checkpoint (475MB) is too large to deploy alongside this site — its real outputs are shown
+        here since its checkpoint (475MB) is too large to deploy alongside this site. Its real outputs are shown
         as recorded examples further down this page instead.
       </p>
 

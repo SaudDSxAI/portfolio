@@ -23,6 +23,16 @@ import RAGCaseStudyPage from './RAGCaseStudyPage';
 import FrozenTrainableDiagram from '../components/demos/FrozenTrainableDiagram';
 import TrainingCurvesComparison from '../components/demos/TrainingCurvesComparison';
 import FinetuneLoraCurves from '../components/demos/FinetuneLoraCurves';
+import ChurnResults from '../components/results/ChurnResults';
+import HeartResults from '../components/results/HeartResults';
+import FraudResults from '../components/results/FraudResults';
+import HouseResults from '../components/results/HouseResults';
+import SalesResults from '../components/results/SalesResults';
+import MovieResults from '../components/results/MovieResults';
+import SentimentResults from '../components/results/SentimentResults';
+import AnomalyResults from '../components/results/AnomalyResults';
+import CoterResults from '../components/results/CoterResults';
+import HseResults from '../components/results/HseResults';
 import ScrollReveal from '../components/ui/ScrollReveal';
 import { getCaseStudy, categories } from '../data/caseStudies';
 import { getTheme, getIcon } from '../lib/projectTheme';
@@ -72,14 +82,23 @@ const CUSTOM_PAGE_COMPONENTS = {
   ragComparison: RAGCaseStudyPage,
 };
 
-function MetricCard({ label, value }) {
-  return (
-    <div className="bg-warm-100/90 border border-black/10 rounded-2xl p-5 text-center">
-      <div className="text-2xl md:text-3xl font-heading font-bold text-black">{value}</div>
-      <div className="text-xs text-zinc-600 mt-1 uppercase tracking-wide">{label}</div>
-    </div>
-  );
-}
+// Bespoke results sections — each ML case study gets a visualization shaped
+// around its own story (leaderboard, head-to-head tie, funnel, radial rings,
+// seasonal bars, sparsity grid) instead of the generic comparison-chart +
+// confusion-matrix + feature-importance block every project used to share.
+// Set study.customResults to one of these keys to opt in.
+const CUSTOM_RESULTS_COMPONENTS = {
+  churn: ChurnResults,
+  heart: HeartResults,
+  fraud: FraudResults,
+  house: HouseResults,
+  sales: SalesResults,
+  movies: MovieResults,
+  sentiment: SentimentResults,
+  anomaly: AnomalyResults,
+  coter: CoterResults,
+  hse: HseResults,
+};
 
 function ModelComparisonChart({ data, metricKey = 'rocAuc', metricLabel = 'ROC-AUC', theme }) {
   // Zoom the axis into the range that actually contains the data instead of
@@ -411,15 +430,6 @@ export default function CaseStudyDetail() {
           </div>
         </ScrollReveal>
 
-        {/* Hero metrics */}
-        <ScrollReveal delay={100}>
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mb-14">
-            {study.heroMetrics.map((m) => (
-              <MetricCard key={m.label} {...m} />
-            ))}
-          </div>
-        </ScrollReveal>
-
         {/* Build timeline — hardware projects with a real chronological build
             story get this instead of a flat photo gallery. */}
         {study.buildTimeline?.length > 0 && (
@@ -446,11 +456,11 @@ export default function CaseStudyDetail() {
                 <h2 className="text-lg font-heading font-bold text-black">{study.liveDemoHeading || 'Try it live'}</h2>
               </div>
               <p className="text-sm text-zinc-600 mb-4">
-                {study.liveDemoBlurb || 'Build a profile, pick a model, and see the real prediction — not a mockup.'}
+                {study.liveDemoBlurb || 'Build a profile, pick a model, and see the real prediction, not a mockup.'}
               </p>
               {(() => {
                 const DemoComponent = DEMO_COMPONENTS[study.demoKey];
-                return <DemoComponent />;
+                return <DemoComponent theme={theme} />;
               })()}
             </div>
           </ScrollReveal>
@@ -504,7 +514,7 @@ export default function CaseStudyDetail() {
                 <h2 className="text-lg font-heading font-bold text-black">{study.rulesHeading || 'Auto mode, exactly as coded'}</h2>
               </div>
               <p className="text-sm text-zinc-600 mb-6">
-                {study.rulesBlurb || 'What each device does when Auto is on — the fan is deliberately excluded, manual only.'}
+                {study.rulesBlurb || 'What each device does when Auto is on. The fan is deliberately excluded, manual only.'}
               </p>
               <RulesTable rows={study.rules} theme={theme} columns={study.rulesColumns} />
             </div>
@@ -545,41 +555,59 @@ export default function CaseStudyDetail() {
           </ScrollReveal>
         )}
 
-        {/* Charts */}
-        {study.modelComparison && (
+        {/* Results — projects with a bespoke customResults component (see
+            CUSTOM_RESULTS_COMPONENTS above) get a results view designed
+            around their own story instead of the generic
+            comparison-chart/confusion-matrix/feature-importance block below,
+            so not every project reads as the same template with different
+            numbers dropped in. */}
+        {study.customResults && CUSTOM_RESULTS_COMPONENTS[study.customResults] ? (
           <ScrollReveal>
             <div className="bg-warm-100/60 border border-black/10 rounded-2xl p-6 mb-8">
-              <h2 className="text-lg font-heading font-bold text-black mb-1">Model comparison</h2>
-              <p className="text-sm text-zinc-600 mb-4">
-                Benchmarked under identical conditions — the highlighted bar is the model that was chosen, on evidence.
-              </p>
-              <ModelComparisonChart
-                data={study.modelComparison}
-                metricKey={study.comparisonMetricKey || 'rocAuc'}
-                metricLabel={study.comparisonMetricLabel || 'ROC-AUC'}
-                theme={theme}
-              />
+              {(() => {
+                const CustomResults = CUSTOM_RESULTS_COMPONENTS[study.customResults];
+                return <CustomResults study={study} theme={theme} />;
+              })()}
             </div>
           </ScrollReveal>
-        )}
+        ) : (
+          <>
+            {study.modelComparison && (
+              <ScrollReveal>
+                <div className="bg-warm-100/60 border border-black/10 rounded-2xl p-6 mb-8">
+                  <h2 className="text-lg font-heading font-bold text-black mb-1">Model comparison</h2>
+                  <p className="text-sm text-zinc-600 mb-4">
+                    Benchmarked under identical conditions. The highlighted bar is the model that was chosen, on evidence.
+                  </p>
+                  <ModelComparisonChart
+                    data={study.modelComparison}
+                    metricKey={study.comparisonMetricKey || 'rocAuc'}
+                    metricLabel={study.comparisonMetricLabel || 'ROC-AUC'}
+                    theme={theme}
+                  />
+                </div>
+              </ScrollReveal>
+            )}
 
-        {study.confusionMatrix && (
-          <ScrollReveal>
-            <div className="bg-warm-100/60 border border-black/10 rounded-2xl p-6 mb-8">
-              <h2 className="text-lg font-heading font-bold text-black mb-4">Confusion matrix</h2>
-              <ConfusionMatrix cm={study.confusionMatrix} labels={study.confusionMatrixLabels} />
-            </div>
-          </ScrollReveal>
-        )}
+            {study.confusionMatrix && (
+              <ScrollReveal>
+                <div className="bg-warm-100/60 border border-black/10 rounded-2xl p-6 mb-8">
+                  <h2 className="text-lg font-heading font-bold text-black mb-4">Confusion matrix</h2>
+                  <ConfusionMatrix cm={study.confusionMatrix} labels={study.confusionMatrixLabels} />
+                </div>
+              </ScrollReveal>
+            )}
 
-        {study.featureImportance && (
-          <ScrollReveal>
-            <div className="bg-warm-100/60 border border-black/10 rounded-2xl p-6 mb-8">
-              <h2 className="text-lg font-heading font-bold text-black mb-1">What drives the outcome</h2>
-              <p className="text-sm text-zinc-600 mb-4">Model coefficients — positive pushes toward the predicted outcome, negative pushes away.</p>
-              <FeatureImportanceChart data={study.featureImportance} theme={theme} />
-            </div>
-          </ScrollReveal>
+            {study.featureImportance && (
+              <ScrollReveal>
+                <div className="bg-warm-100/60 border border-black/10 rounded-2xl p-6 mb-8">
+                  <h2 className="text-lg font-heading font-bold text-black mb-1">What drives the outcome</h2>
+                  <p className="text-sm text-zinc-600 mb-4">Model coefficients: positive pushes toward the predicted outcome, negative pushes away.</p>
+                  <FeatureImportanceChart data={study.featureImportance} theme={theme} />
+                </div>
+              </ScrollReveal>
+            )}
+          </>
         )}
 
         {/* Tech stack */}

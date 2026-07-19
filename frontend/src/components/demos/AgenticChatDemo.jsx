@@ -28,7 +28,7 @@ const SUGGESTIONS = [
   'Explain what LangGraph is in simple terms.',
 ];
 
-export default function AgenticChatDemo() {
+export default function AgenticChatDemo({ theme }) {
   const [messages, setMessages] = useState([]); // { role: 'user' | 'assistant', content, typing? }
   const [input, setInput] = useState('');
   const [loading, setLoading] = useState(false);
@@ -145,7 +145,7 @@ export default function AgenticChatDemo() {
   return (
     <div>
       <p className="text-xs text-zinc-500 mb-4">
-        Ask it anything, including current events — it decides on its own whether to run a real multi-page
+        Ask it anything, including current events. It decides on its own whether to run a real multi-page
         web search first, or just answer directly.
       </p>
 

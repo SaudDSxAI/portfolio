@@ -24,7 +24,7 @@ const LABEL_STYLES = {
   'False alarm': 'bg-amber-100 text-amber-800 border-amber-300',
 };
 
-export default function FraudLiveDemo() {
+export default function FraudLiveDemo({ theme }) {
   const [examples, setExamples] = useState(null);
   const [selectedIndex, setSelectedIndex] = useState(null);
   const [result, setResult] = useState(null);
@@ -95,7 +95,7 @@ export default function FraudLiveDemo() {
   return (
     <div>
       <p className="text-xs text-zinc-500 mb-4">
-        These 28 features are PCA components anonymized by the card issuer before public release — there's
+        These 28 features are PCA components anonymized by the card issuer before public release. There's
         no honest way to let you type in "realistic" values for them. Instead, pick a real transaction from
         the held-out test set below (including a genuine model failure, not just cherry-picked wins) and see
         exactly what the model predicted.
@@ -140,30 +140,30 @@ export default function FraudLiveDemo() {
             {error && <p className="mt-3 text-xs text-red-600">{error}</p>}
           </div>
 
-          <div className="bg-white/70 border border-black/10 rounded-2xl p-6 min-h-[220px] flex items-center justify-center">
+          <div className="relative bg-gradient-to-b from-white/80 to-warm-100/60 border border-black/10 rounded-2xl p-6 min-h-[220px] flex items-center justify-center shadow-sm">
             {!result && <p className="text-sm text-zinc-500 text-center">Select a transaction and run the model.</p>}
             {result && (
               <div className="w-full text-center">
-                <div className={`text-xs font-bold uppercase tracking-wide mb-2 px-3 py-1 rounded-full inline-block border ${
-                  result.correct ? 'bg-primary-100 text-primary-800 border-primary-300' : 'bg-amber-100 text-amber-800 border-amber-300'
+                <span className={`text-xs font-bold uppercase tracking-wide mb-3 px-3 py-1 rounded-full inline-block ${
+                  result.correct ? 'bg-primary-100 text-primary-800' : 'bg-amber-100 text-amber-800'
                 }`}>
                   {result.correct ? 'Model got this right' : 'Model got this wrong'}
-                </div>
-                <div className="text-4xl font-heading font-bold text-black mt-2">
+                </span>
+                <div className="text-5xl font-heading font-bold text-black leading-none mt-2">
                   {(result.fraud_probability * 100).toFixed(1)}%
                 </div>
-                <div className="text-xs text-zinc-500 mb-4">predicted fraud probability</div>
-                <div className="relative h-2 rounded-full bg-black/10 mb-4">
+                <div className="text-xs text-zinc-500 mt-1.5 mb-5">predicted fraud probability</div>
+                <div className="relative h-3 rounded-full bg-black/10 mb-5">
                   <div
-                    className="h-full rounded-full bg-gradient-to-r from-primary-400 via-amber-500 to-red-500"
+                    className="h-full rounded-full bg-gradient-to-r from-primary-400 via-amber-500 to-red-500 transition-all"
                     style={{ width: `${result.fraud_probability * 100}%` }}
                   />
-                  <div className="absolute -top-1 w-0.5 h-4 bg-black/60" style={{ left: `${result.threshold_used * 100}%` }} />
+                  <div className="absolute -top-1.5 w-1 h-6 rounded-full bg-black/70" style={{ left: `${result.threshold_used * 100}%` }} title="Decision threshold" />
                 </div>
-                <p className="text-xs text-zinc-600">
-                  Model says: <strong>{result.prediction}</strong> · Actually: <strong>{result.true_label === 1 ? 'Fraud' : 'Legitimate'}</strong>
+                <p className="text-sm text-zinc-700">
+                  Model says: <strong className="text-black">{result.prediction}</strong> · Actually: <strong className="text-black">{result.true_label === 1 ? 'Fraud' : 'Legitimate'}</strong>
                 </p>
-                <p className="text-[11px] text-zinc-500 mt-1">Decision threshold: {result.threshold_used.toFixed(3)}</p>
+                <p className="text-[11px] text-zinc-500 mt-1.5">Decision threshold: {result.threshold_used.toFixed(3)}</p>
               </div>
             )}
           </div>

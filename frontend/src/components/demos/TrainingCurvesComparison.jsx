@@ -34,7 +34,7 @@ export default function TrainingCurvesComparison() {
     <div className="grid md:grid-cols-2 gap-6">
       <div className="bg-white/70 border border-black/10 rounded-2xl p-5">
         <p className="text-xs font-bold uppercase tracking-wide text-violet-700 mb-1">Diffusion (DDPM)</p>
-        <p className="text-[11px] text-zinc-500 mb-4">One simple loss, tracks quality reliably — best epoch (6) is visibly the low point.</p>
+        <p className="text-[11px] text-zinc-500 mb-4">One simple loss, tracks quality reliably. Best epoch (6) is visibly the low point.</p>
         <ResponsiveContainer width="100%" height={220}>
           <LineChart data={ddpmData} margin={{ top: 5, right: 10, left: 0, bottom: 0 }}>
             <CartesianGrid strokeDasharray="3 3" stroke="#e5e5e5" />
@@ -50,7 +50,7 @@ export default function TrainingCurvesComparison() {
 
       <div className="bg-white/70 border border-black/10 rounded-2xl p-5">
         <p className="text-xs font-bold uppercase tracking-wide text-violet-700 mb-1">GAN</p>
-        <p className="text-[11px] text-zinc-500 mb-4">Two competing losses — generator loss trends up even as real image quality improved.</p>
+        <p className="text-[11px] text-zinc-500 mb-4">Two competing losses. Generator loss trends up even as real image quality improved.</p>
         <ResponsiveContainer width="100%" height={220}>
           <LineChart data={ganData} margin={{ top: 5, right: 10, left: 0, bottom: 0 }}>
             <CartesianGrid strokeDasharray="3 3" stroke="#e5e5e5" />

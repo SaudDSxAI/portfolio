@@ -17,7 +17,7 @@ async function fetchWithTimeout(url, opts = {}, timeoutMs = 20000) {
 
 const SUGGESTIONS = ['a person smiling', 'outdoors', 'something blue', 'a close-up shot'];
 
-export default function ClipSearchDemo() {
+export default function ClipSearchDemo({ theme }) {
   const [status, setStatus] = useState(null); // { ready, image_count }
   const [query, setQuery] = useState('');
   const [results, setResults] = useState(null);
@@ -93,7 +93,7 @@ export default function ClipSearchDemo() {
         <p className="font-semibold mb-1">Live demo isn't available right now.</p>
         <p className="mb-3">
           This calls <code className="bg-black/10 px-1.5 py-0.5 rounded">/api/clip-search/status</code> on this
-          site's own backend — the image collection may not be loaded on the server.
+          site's own backend. The image collection may not be loaded on the server.
         </p>
         <p className="text-xs opacity-75 mb-3">Detail: {unreachableDetail}</p>
         <button
@@ -109,8 +109,8 @@ export default function ClipSearchDemo() {
   return (
     <div>
       <p className="text-xs text-zinc-500 mb-4">
-        Type a description and CLIP finds matching real photos — no labels, no keyword matching, just a shared
-        image/text understanding. Click any result to find more images like it.
+        Type a description and CLIP finds matching real photos. No labels, no keyword matching, just a shared
+        image and text understanding. Click any result to find more images like it.
       </p>
 
       <form

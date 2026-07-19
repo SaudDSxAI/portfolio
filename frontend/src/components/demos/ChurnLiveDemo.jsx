@@ -52,7 +52,7 @@ function Field({ label, children }) {
 const selectClass =
   'bg-white text-black border border-black/15 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-primary-600 focus:ring-2 focus:ring-primary-300/40';
 
-export default function ChurnLiveDemo() {
+export default function ChurnLiveDemo({ theme }) {
   const [form, setForm] = useState(DEFAULTS);
   const [models, setModels] = useState(null);
   const [selectedModel, setSelectedModel] = useState('logistic_regression');
@@ -239,29 +239,35 @@ export default function ChurnLiveDemo() {
         {error && <p className="mt-3 text-xs text-red-600">{error}</p>}
       </form>
 
-      <div className="bg-white/70 border border-black/10 rounded-2xl p-6 min-h-[220px] flex items-center justify-center">
-        {!result && <p className="text-sm text-zinc-500 text-center">Set a profile and click predict.</p>}
+      <div className="relative bg-gradient-to-b from-white/80 to-warm-100/60 border border-black/10 rounded-2xl p-6 min-h-[220px] flex items-center justify-center shadow-sm overflow-hidden">
+        {!result && (
+          <p className="text-sm text-zinc-500 text-center">Set a profile and click predict to see a real, live result.</p>
+        )}
         {result && (
           <div className="w-full text-center">
-            <div className="text-[11px] uppercase tracking-wide text-zinc-500 mb-1">{result.model_used}</div>
-            <div className={`text-xs font-bold uppercase tracking-wide mb-1 ${
-              derivedRisk === 'Low' ? 'text-primary-700' : derivedRisk === 'Medium' ? 'text-amber-600' : 'text-red-600'
+            <div className="text-[11px] uppercase tracking-wide text-zinc-500 mb-2">{result.model_used}</div>
+            <span className={`inline-block text-xs font-bold uppercase tracking-wide px-3 py-1 rounded-full mb-3 ${
+              derivedRisk === 'Low'
+                ? 'bg-primary-100 text-primary-800'
+                : derivedRisk === 'Medium'
+                ? 'bg-amber-100 text-amber-700'
+                : 'bg-red-100 text-red-700'
             }`}>
               {derivedRisk} risk
-            </div>
-            <div className="text-4xl font-heading font-bold text-black">{(result.churn_probability * 100).toFixed(1)}%</div>
-            <div className="text-xs text-zinc-500 mb-4">predicted churn probability</div>
+            </span>
+            <div className="text-5xl font-heading font-bold text-black leading-none">{(result.churn_probability * 100).toFixed(1)}%</div>
+            <div className="text-xs text-zinc-500 mt-1.5 mb-5">predicted churn probability</div>
 
-            <div className="relative h-2 rounded-full bg-black/10 mb-4">
+            <div className="relative h-3 rounded-full bg-black/10 mb-5 overflow-visible">
               <div
-                className="h-full rounded-full bg-gradient-to-r from-primary-400 via-amber-500 to-red-500"
+                className="h-full rounded-full bg-gradient-to-r from-primary-400 via-amber-500 to-red-500 transition-all"
                 style={{ width: `${result.churn_probability * 100}%` }}
               />
-              <div className="absolute -top-1 w-0.5 h-4 bg-black/60" style={{ left: `${threshold * 100}%` }} />
+              <div className="absolute -top-1.5 w-1 h-6 rounded-full bg-black/70" style={{ left: `${threshold * 100}%` }} title="Decision threshold" />
             </div>
 
-            <p className="text-xs text-zinc-600 mb-4">
-              Verdict: <strong>{derivedPrediction === 'Yes' ? 'Likely to churn' : 'Likely to stay'}</strong>
+            <p className="text-sm text-zinc-700 mb-4">
+              Verdict: <strong className="text-black">{derivedPrediction === 'Yes' ? 'Likely to churn' : 'Likely to stay'}</strong>
             </p>
 
             <div className="text-left pt-4 border-t border-black/10">
@@ -274,7 +280,7 @@ export default function ChurnLiveDemo() {
                 className="w-full accent-primary-600"
               />
               <p className="text-[11px] text-zinc-500 mt-2">
-                Drag to see the precision/recall tradeoff — the probability doesn't change, only the classification.
+                Drag to see the precision/recall tradeoff. The probability doesn't change, only the classification.
               </p>
             </div>
           </div>

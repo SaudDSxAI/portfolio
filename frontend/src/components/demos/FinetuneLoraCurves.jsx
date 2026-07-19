@@ -21,7 +21,7 @@ export default function FinetuneLoraCurves() {
     <div className="grid md:grid-cols-2 gap-6">
       <div className="bg-white/70 border border-black/10 rounded-2xl p-5">
         <p className="text-xs font-bold uppercase tracking-wide text-amber-700 mb-1">Full fine-tune (124M trainable)</p>
-        <p className="text-[11px] text-zinc-500 mb-4">Train loss falls much faster than val loss — the overfitting gap that showed up as a real repetition bug at epoch 4.</p>
+        <p className="text-[11px] text-zinc-500 mb-4">Train loss falls much faster than val loss, the overfitting gap that showed up as a real repetition bug at epoch 4.</p>
         <ResponsiveContainer width="100%" height={220}>
           <LineChart data={fullFinetuneData} margin={{ top: 5, right: 10, left: 0, bottom: 0 }}>
             <CartesianGrid strokeDasharray="3 3" stroke="#e5e5e5" />
@@ -37,7 +37,7 @@ export default function FinetuneLoraCurves() {
 
       <div className="bg-white/70 border border-black/10 rounded-2xl p-5">
         <p className="text-xs font-bold uppercase tracking-wide text-amber-700 mb-1">LoRA (442K trainable, 0.354%)</p>
-        <p className="text-[11px] text-zinc-500 mb-4">Train and val loss stay much closer together, still improving at epoch 4 — no plateau, no overfitting gap.</p>
+        <p className="text-[11px] text-zinc-500 mb-4">Train and val loss stay much closer together, still improving at epoch 4, no plateau, no overfitting gap.</p>
         <ResponsiveContainer width="100%" height={220}>
           <LineChart data={loraData} margin={{ top: 5, right: 10, left: 0, bottom: 0 }}>
             <CartesianGrid strokeDasharray="3 3" stroke="#e5e5e5" />

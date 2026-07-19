@@ -9,7 +9,7 @@ const STATUS_DOT = {
 };
 
 // Distinct from the generic CaseStudyCard's "icon + headline metric + mini
-// bar chart" preview — this project doesn't have a single headline number,
+// bar chart" preview. This project doesn't have a single headline number,
 // it has four techniques with four different real outcomes. The preview
 // leads with that instead: a small verdict strip, not a fake single metric.
 export default function RAGProjectCard({ study, categoryKey, index = 0 }) {
