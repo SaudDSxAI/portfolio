@@ -13,6 +13,15 @@ import MovieLiveDemo from '../components/demos/MovieLiveDemo';
 import SentimentLiveDemo from '../components/demos/SentimentLiveDemo';
 import SmartNestLiveDemo from '../components/demos/SmartNestLiveDemo';
 import AgenticChatDemo from '../components/demos/AgenticChatDemo';
+import AnomalyLiveDemo from '../components/demos/AnomalyLiveDemo';
+import ClipSearchDemo from '../components/demos/ClipSearchDemo';
+import MiniLlavaDemo from '../components/demos/MiniLlavaDemo';
+import DiffusionGanDemo from '../components/demos/DiffusionGanDemo';
+import GPT2LoraDemo from '../components/demos/GPT2LoraDemo';
+import RAGComparisonDemo from '../components/demos/RAGComparisonDemo';
+import FrozenTrainableDiagram from '../components/demos/FrozenTrainableDiagram';
+import TrainingCurvesComparison from '../components/demos/TrainingCurvesComparison';
+import FinetuneLoraCurves from '../components/demos/FinetuneLoraCurves';
 import ScrollReveal from '../components/ui/ScrollReveal';
 import { getCaseStudy, categories } from '../data/caseStudies';
 import { getTheme, getIcon } from '../lib/projectTheme';
@@ -30,6 +39,27 @@ const DEMO_COMPONENTS = {
   sentiment: SentimentLiveDemo,
   smartnest: SmartNestLiveDemo,
   agenticChat: AgenticChatDemo,
+  anomaly: AnomalyLiveDemo,
+  clipSearch: ClipSearchDemo,
+  miniLlava: MiniLlavaDemo,
+  diffusionGan: DiffusionGanDemo,
+  gpt2Lora: GPT2LoraDemo,
+  ragCompare: RAGComparisonDemo,
+};
+
+// A tiny handful of case studies need a genuinely custom architecture visual
+// instead of the generic linear ArchitectureDiagram below — set
+// study.customArchitecture to one of these keys to opt in.
+const CUSTOM_ARCHITECTURE_COMPONENTS = {
+  frozenTrainable: FrozenTrainableDiagram,
+};
+
+// Same opt-in pattern for the charts section — a few projects have a
+// comparison that a generic bar chart can't express (e.g. two full training
+// curves side by side). Set study.customChart to one of these keys.
+const CUSTOM_CHART_COMPONENTS = {
+  trainingCurves: TrainingCurvesComparison,
+  finetuneLoraCurves: FinetuneLoraCurves,
 };
 
 function MetricCard({ label, value }) {
@@ -350,6 +380,19 @@ export default function CaseStudyDetail() {
                 Live demo
               </a>
             )}
+            {study.notebookUrl && (
+              <a
+                href={study.notebookUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex items-center gap-2 px-4 py-2 rounded-xl border-2 border-black/15 text-black text-sm font-semibold hover:border-black/30 transition-colors"
+              >
+                <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M12 6.042A8.967 8.967 0 006 3.75c-1.052 0-2.062.18-3 .512v14.25A8.987 8.987 0 016 18c2.305 0 4.408.867 6 2.292m0-14.25a8.966 8.966 0 016-2.292c1.052 0 2.062.18 3 .512v14.25A8.987 8.987 0 0018 18a8.967 8.967 0 00-6 2.292m0-14.25v14.25" />
+                </svg>
+                View full notebook
+              </a>
+            )}
           </div>
         </ScrollReveal>
 
@@ -399,7 +442,11 @@ export default function CaseStudyDetail() {
         )}
 
         {/* Architecture diagram — replaces prose for projects simple enough
-            that three connected boxes say it faster than paragraphs. */}
+            that three connected boxes say it faster than paragraphs. A
+            handful of projects opt into a fully custom visual instead, via
+            study.customArchitecture, when the generic linear-flow diagram
+            can't communicate what's actually distinctive (e.g. which parts
+            are frozen vs. trained). */}
         {study.architecture?.length > 0 && (
           <ScrollReveal delay={170}>
             <div className="mb-14">
@@ -408,7 +455,14 @@ export default function CaseStudyDetail() {
                 <h2 className="text-lg font-heading font-bold text-black">How it's wired together</h2>
               </div>
               <p className="text-sm text-zinc-600 mb-6">{study.architectureBlurb}</p>
-              <ArchitectureDiagram nodes={study.architecture} theme={theme} />
+              {study.customArchitecture && CUSTOM_ARCHITECTURE_COMPONENTS[study.customArchitecture] ? (
+                (() => {
+                  const CustomArch = CUSTOM_ARCHITECTURE_COMPONENTS[study.customArchitecture];
+                  return <CustomArch />;
+                })()
+              ) : (
+                <ArchitectureDiagram nodes={study.architecture} theme={theme} />
+              )}
             </div>
           </ScrollReveal>
         )}
@@ -454,6 +508,24 @@ export default function CaseStudyDetail() {
                 Real screenshots from the deployed product, not mockups.
               </p>
               <ScreenshotGallery items={study.screenshots} theme={theme} />
+            </div>
+          </ScrollReveal>
+        )}
+
+        {/* Custom chart — for comparisons a generic bar chart can't express,
+            like two full training curves shown side by side. */}
+        {study.customChart && CUSTOM_CHART_COMPONENTS[study.customChart] && (
+          <ScrollReveal>
+            <div className="mb-14">
+              <div className="flex items-center gap-2 mb-1">
+                <Icon className={`w-5 h-5 ${theme.text}`} strokeWidth={2} />
+                <h2 className="text-lg font-heading font-bold text-black">{study.customChartHeading || 'Training curves'}</h2>
+              </div>
+              <p className="text-sm text-zinc-600 mb-6">{study.customChartBlurb}</p>
+              {(() => {
+                const CustomChart = CUSTOM_CHART_COMPONENTS[study.customChart];
+                return <CustomChart />;
+              })()}
             </div>
           </ScrollReveal>
         )}

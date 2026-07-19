@@ -640,6 +640,32 @@ app.include_router(sentiment_router)
 from agentic_chat_model import router as agentic_chat_router
 app.include_router(agentic_chat_router)
 
+# Network anomaly detection demo — second Deep Learning case study, an
+# unsupervised autoencoder trained only on normal traffic (NSL-KDD).
+from anomaly_model import router as anomaly_router
+app.include_router(anomaly_router)
+
+# CLIP-based multimodal search — first VLM & Multimodal AI case study.
+# Pure inference, no training — embeds clip_model_store/images/ at startup.
+from clip_search_model import router as clip_search_router
+app.include_router(clip_search_router)
+
+# Mini-LLaVA — second VLM & Multimodal AI case study. Vision tower (CLIP) and
+# LLM (GPT-2) both frozen; only the projector was trained.
+from mini_llava_model import router as mini_llava_router
+app.include_router(mini_llava_router)
+
+# Diffusion vs GAN — third Deep Learning case study. Both models trained
+# fully from scratch on MNIST, nothing pretrained or frozen in either.
+from diffusion_gan_model import router as diffusion_gan_router
+app.include_router(diffusion_gan_router)
+
+from gpt2_lora_model import router as gpt2_lora_router
+app.include_router(gpt2_lora_router)
+
+from rag_model import router as rag_router
+app.include_router(rag_router)
+
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],

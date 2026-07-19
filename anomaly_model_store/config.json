@@ -1,0 +1,9 @@
+{
+  "input_dim": 122,
+  "threshold": 0.12193338125944116,
+  "categorical_cols": [
+    "protocol_type",
+    "service",
+    "flag"
+  ]
+}

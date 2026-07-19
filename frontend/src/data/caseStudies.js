@@ -34,6 +34,21 @@ export const categories = {
     eyebrow: 'Learning Journey',
     subtitle: 'Ongoing experiments with autonomous agents — not polished products, real hands-on learning.',
   },
+  vlm: {
+    label: 'VLM & Multimodal AI',
+    eyebrow: 'Learning Journey',
+    subtitle: 'Building the actual components behind vision-language models — from shared embedding spaces to a real vision-tower-and-LLM pipeline, trained by hand.',
+  },
+  finetuning: {
+    label: 'Fine-Tuning & PEFT',
+    eyebrow: 'Learning Journey',
+    subtitle: 'Real fine-tuning techniques, built and compared head-to-head — full fine-tuning, LoRA and its variants, adapters, and beyond — with honest, measured tradeoffs instead of secondhand claims.',
+  },
+  rag: {
+    label: 'RAG & Retrieval',
+    eyebrow: 'Learning Journey',
+    subtitle: 'Four retrieval-augmented generation techniques, built from scratch and run live side by side over the same corpus — with the real failures each one hits, not just the wins.',
+  },
 };
 
 export const caseStudies = {
@@ -513,6 +528,299 @@ export const caseStudies = {
         'Reporting a loss against a simpler method honestly instead of hiding or reframing it',
         'CPU-only deep learning practicality: choosing frozen embeddings and a lightweight architecture given real hardware constraints',
         'Full-stack deployment of a PyTorch model behind a FastAPI endpoint with a live React demo',
+      ],
+    },
+    {
+      slug: 'network-anomaly-autoencoder',
+      title: 'Network Anomaly Detector — Unsupervised Autoencoder',
+      tagline:
+        "A PyTorch autoencoder trained on zero labeled attacks — only normal network traffic — that still catches 85% of real intrusions in a held-out test set it's never seen.",
+      categoryKey: 'dl',
+      summary:
+        "An unsupervised deep learning project, deliberately different in kind from every other case study here: instead of learning to classify normal vs. attack traffic from labeled examples, this autoencoder only ever practices reconstructing normal NSL-KDD network connections. On 22,544 held-out test connections (a genuine mix of normal and real intrusion types), it separates the two with a 0.95 ROC-AUC, 92.6% precision, and 85.2% recall — without a single labeled attack ever entering training.",
+      github: '',
+      live: '',
+      tech: ['PyTorch', 'scikit-learn', 'pandas', 'NSL-KDD Dataset', 'FastAPI', 'React'],
+      hasLiveDemo: true,
+      demoKey: 'anomaly',
+      liveDemoHeading: 'Try it live',
+      liveDemoBlurb: 'Real held-out network connections, including two the model actually got wrong — run any of them through the autoencoder.',
+      accentColor: 'gray',
+      icon: 'radar',
+      heroMetrics: [
+        { label: 'ROC-AUC', value: '0.950' },
+        { label: 'Labeled attacks used', value: '0' },
+        { label: 'Test connections', value: '22,544' },
+        { label: 'Recall on real attacks', value: '85.2%' },
+      ],
+      architectureBlurb: "The label only ever does one job in this whole pipeline: filtering which rows are allowed into training. The network itself never sees it.",
+      architecture: [
+        {
+          title: 'Training data',
+          items: ['67,343 NORMAL-only NSL-KDD records', '122 features after one-hot encoding + scaling', 'Every attack-labeled row excluded from training'],
+        },
+        {
+          title: 'Autoencoder',
+          items: ['122 → 64 → 32 → 8 (the bottleneck)', '8 → 32 → 64 → 122 (decoder, mirrored)', 'Learns to compress and rebuild normal traffic only'],
+          arrowLabel: 'reconstruction error',
+        },
+        {
+          title: 'Detection',
+          items: ['Threshold: 95th percentile of normal error', 'High error on a new row → flagged anomaly', '92.6% precision, 85.2% recall on real test attacks'],
+        },
+      ],
+      confusionMatrix: { tn: 8836, fp: 875, fn: 1897, tp: 10936 },
+      confusionMatrixLabels: {
+        tn: 'Correctly passed normal traffic', fp: 'False alarms', fn: 'Missed intrusions', tp: 'Correctly caught intrusions',
+      },
+      finalMetrics: { precision: 0.9259, recall: 0.8522, f1: 0.8875, rocAuc: 0.9502 },
+      narrative: [
+        {
+          heading: 'The problem',
+          body: "Every other model-benchmarking project in this portfolio is supervised — trained on examples explicitly labeled 'this one is fraud,' 'this one churned.' Real intrusion detection often can't work that way: new attack types don't come with labeled training examples, almost by definition. This project deliberately drops the labels during training and asks a different question: can a model learn what normal network traffic looks like well enough that anything unusual — including attack types it's never been shown — stands out on its own?",
+        },
+        {
+          heading: 'What an autoencoder is actually doing here',
+          body: "The network is shaped like an hourglass: an encoder squeezes each 122-number connection record down to just 8 numbers (the bottleneck), and a decoder tries to expand those 8 numbers back into the original 122. Trained only on normal traffic, it gets very good at that specific reconstruction job — normal connections come back out almost unchanged. Traffic patterns it's never seen (attacks) don't compress and rebuild nearly as cleanly, so the reconstruction error itself becomes the anomaly signal, with no attack labels required anywhere in training.",
+        },
+        {
+          heading: 'A genuinely painful environment bug, included honestly',
+          body: 'Midway through training, this exact environment hit a real, multi-layered dependency conflict: PyTorch compiled against NumPy 1.x broke under NumPy 2.x, downgrading NumPy then broke SciPy (which had already moved to requiring NumPy 2.x), and downgrading SciPy then broke scikit-learn for the same reason. Patching each broken import one at a time just kept surfacing the next one underneath it. The actual fix was a full clean rebuild — deleting the virtual environment and reinstalling numpy, scipy, scikit-learn, and torch together in one pinned, compatible command instead of layering fixes onto an already-inconsistent set of packages.',
+        },
+        {
+          heading: 'Setting the threshold without cheating',
+          body: "The cutoff for 'this reconstructs badly enough to be suspicious' was set using only a held-out slice of normal training data (the 95th percentile of its reconstruction error) — never the test set's labels. Picking a threshold by peeking at test labels would inflate the reported numbers in a way that wouldn't hold up on genuinely new data, so the threshold-setting step never sees a single test-set row.",
+        },
+        {
+          heading: 'Real results, including two the model got wrong',
+          body: "On the full 22,544-connection test set — a real mix of normal traffic and several actual NSL-KDD intrusion types — the model reaches a 0.95 ROC-AUC, 92.6% precision, and 85.2% recall. The live demo below includes two deliberately-kept misclassifications from that same test set: a normal UDP connection flagged as suspicious (a false alarm), and — more interesting — an actual attack that reconstructed with almost no error at all, meaning it happened to resemble normal traffic closely enough to slip past undetected. That second case is the honest limit of this approach: an unsupervised model can only flag what looks different from normal, not attacks clever enough to look ordinary.",
+        },
+      ],
+      skillsDemonstrated: [
+        'Unsupervised deep learning — training exclusively on normal data and using reconstruction error as the anomaly signal, with zero labeled attacks used in training',
+        'Correct autoencoder architecture design (a real bottleneck that forces compression, not just a wide network that could trivially copy its input)',
+        'Threshold selection using only held-out normal data, avoiding any test-label leakage into the decision rule',
+        'Diagnosing and fixing a real, cascading dependency conflict (NumPy/SciPy/scikit-learn/PyTorch version mismatches) with a clean environment rebuild rather than patchwork fixes',
+        'Reporting genuine model failures (a false alarm and a missed attack) transparently in the live demo instead of only showcasing wins',
+        'Full-stack deployment of a PyTorch model behind a FastAPI endpoint with a live React demo',
+      ],
+    },
+    {
+      slug: 'diffusion-vs-gan-image-generation',
+      title: 'Diffusion vs. GAN — Two Ways to Generate an Image',
+      tagline:
+        'A DDPM and a DCGAN, both built from scratch and trained on the same 60,000-image MNIST set — including a real, well-documented GAN failure mode where the loss numbers said one thing and the actual images said another.',
+      categoryKey: 'dl',
+      summary:
+        'Two generative models built from scratch on the same task — generating handwritten digits — specifically to compare how they work, not just read about the difference. A DDPM (denoising diffusion) learns to reverse a noising process over 300 steps with a custom U-Net; a DCGAN learns the same distribution through a single generator/discriminator adversarial game. Both were trained on the full 60,000-image MNIST set with real checkpointing, and the comparison surfaced a genuine, documented GAN quirk: the generator\'s loss trended upward across training even as its actual output quality visibly improved.',
+      github: '',
+      live: '',
+      notebookUrl: '/notebooks/diffusion-vs-gan-notebook.html',
+      tech: ['Python', 'PyTorch', 'MNIST Dataset', 'U-Net', 'DCGAN', 'FastAPI', 'React'],
+      hasLiveDemo: true,
+      demoKey: 'diffusionGan',
+      liveDemoHeading: 'Generate digits, live',
+      liveDemoBlurb: 'Pick a model and generate brand-new digits from pure random noise — nothing pre-made, no dataset lookup.',
+      accentColor: 'neutral',
+      icon: 'sparkles',
+      customChart: 'trainingCurves',
+      customChartHeading: 'Training curves — one clean signal, one adversarial tug-of-war',
+      customChartBlurb: 'Same 10 epochs, same 60,000 images, same hardware — the shape of the two loss curves is the whole story.',
+      rulesHeading: 'Diffusion vs. GAN, side by side',
+      rulesBlurb: 'What actually differed in practice, not just in theory.',
+      rulesColumns: [
+        { key: 'aspect', label: 'Aspect', emphasis: true },
+        { key: 'ddpm', label: 'Diffusion (DDPM)' },
+        { key: 'gan', label: 'GAN' },
+      ],
+      rules: [
+        { aspect: 'Training signal', ddpm: 'One loss (MSE on predicted noise), decreases steadily', gan: 'Two competing losses — generator loss actually rose overall' },
+        { aspect: 'Generation speed', ddpm: '~300 sequential denoising steps per image', gan: '1 forward pass — near instant' },
+        { aspect: 'Loss as a quality signal', ddpm: 'Reliable — lower validation loss visibly means better digits', gan: 'Misleading on its own — rising generator loss, yet real images improved epoch 1 to 10' },
+        { aspect: 'Best result on this task', ddpm: '6 of 8 generated digits recognizable', gan: 'Visibly cleaner digits by epoch 10, despite the loss trend' },
+      ],
+      heroMetrics: [
+        { label: 'DDPM parameters', value: '550K' },
+        { label: 'Denoising steps', value: '300' },
+        { label: 'Training images', value: '60,000' },
+        { label: 'DDPM best val loss', value: '0.0271' },
+      ],
+      narrative: [
+        {
+          heading: 'The problem',
+          body: 'Diffusion models and GANs are usually described in comparison to each other in articles and papers, but reading about the tradeoff isn\'t the same as feeling it. This project builds both from scratch — a DDPM and a DCGAN — on the exact same task (generating 28x28 handwritten digits from MNIST) so the differences in training behavior, generation speed, and reliability show up as real, measured numbers instead of secondhand claims.',
+        },
+        {
+          heading: 'Two very different ways to generate an image from nothing',
+          body: 'The DDPM works by learning to undo noise: a forward process gradually destroys a real digit into pure static over 300 steps using a fixed schedule, and a U-Net is trained to predict exactly how much noise was added at each step (a simple MSE loss between predicted and actual noise). At generation time, that process runs in reverse — starting from pure random noise and subtracting the U-Net\'s predicted noise 300 times until a digit emerges. The GAN works completely differently: a generator turns a random 100-number vector directly into a 28x28 image in one forward pass, while a discriminator is simultaneously trained to tell real digits from generated ones — the two networks improve by competing against each other, not by reconstructing anything step by step.',
+        },
+        {
+          heading: 'Scaling the DDPM, with real checkpointing',
+          body: 'The U-Net (550,081 parameters) was first proven out on a 5,000-image subset, producing only 2 of 8 generated digits that were actually recognizable. Scaling to the full 60,000-image MNIST training set and checkpointing on validation loss after every epoch found the best model at epoch 6 (val loss 0.0271) — training was deliberately stopped there once results plateaued rather than running all planned epochs blindly. That full-scale run produced 6 of 8 recognizable digits, a real, measured improvement directly attributable to more training data rather than a lucky sample.',
+        },
+        {
+          heading: 'Training the GAN — and a genuine, honest disconnect',
+          body: 'The DCGAN (Generator: 778,305 parameters, Discriminator: 138,817 parameters) was trained adversarially for 10 epochs on the same 60,000 images. The loss numbers told a discouraging story on their face: generator loss rose from 2.786 to 3.178 across training while discriminator loss stayed low and stable (0.310 to 0.272) — the textbook signature of a discriminator overpowering its generator. But visually inspecting actual generated samples from epoch 1, 5, and 10 showed the opposite: the digits got cleaner and more recognizable as training went on, not worse. This is a real, well-documented GAN quirk, not a bug — adversarial loss values don\'t map onto output quality the way a simple reconstruction loss does, because both networks are moving targets for each other. The only reliable way to judge a GAN here was to actually look at the images, not trust the numbers alone.',
+        },
+        {
+          heading: 'What the comparison actually shows',
+          body: 'On the same task, same data, and same training budget, the DDPM gave a slower but far more legible signal — one number that reliably tracked real quality, at the cost of 300 sequential steps per generated image. The GAN generated instantly but its loss curve was actively misleading without visual verification. Neither result is a verdict that one architecture is simply "better" — it\'s a firsthand demonstration of the actual tradeoff: diffusion trades generation speed for training reliability, and GANs trade training reliability for generation speed. The full, unedited notebook — every cell, every real output, including the loss curves and generated-sample grids referenced above — is linked at the top of this page.',
+        },
+      ],
+      skillsDemonstrated: [
+        'Building a DDPM from scratch: closed-form forward noising process, a custom U-Net noise predictor with timestep conditioning, and the iterative reverse sampling loop',
+        'Building a DCGAN from scratch: adversarial training loop with alternating generator/discriminator updates',
+        'Diagnosing a real GAN training-stability pattern from its loss curves, then correctly resolving it by visual inspection rather than trusting the loss number blindly',
+        'Checkpointing on validation loss to catch the true best epoch, applied consistently across both models',
+        'Scaling a training pipeline from a 5,000-image proof-of-concept to the full 60,000-image dataset with a measured, reported improvement (2/8 to 6/8 recognizable digits)',
+        'Publishing the full, unedited Jupyter notebook (every real output included) alongside the deployed demo for transparency',
+        'Full-stack deployment of two PyTorch generative models behind a shared FastAPI endpoint with a live, on-demand generation demo',
+      ],
+    },
+  ],
+  finetuning: [
+    {
+      slug: 'full-finetune-vs-lora-gpt2',
+      title: 'Full Fine-Tuning vs. LoRA — Teaching GPT-2 to Write Like Shakespeare',
+      tagline:
+        'The exact same fine-tuning task, run two ways: updating all 124 million of GPT-2\'s parameters vs. training a 442,000-parameter LoRA adapter — including a repetition bug that turned out to affect both equally, not the one it was expected to.',
+      categoryKey: 'finetuning',
+      summary:
+        'GPT-2 (124M) fine-tuned on Tiny Shakespeare two different ways on the exact same data split: once updating every parameter directly, once with a from-scratch LoRA implementation that freezes the entire model and trains only small low-rank adapter matrices injected into the attention layers. The comparison is real and complete — trainable parameter counts, training speed, checkpoint size, and final loss all measured directly, plus an honest correction of an initial hypothesis about which method would be more prone to overfitting.',
+      github: '',
+      live: '',
+      notebookUrl: '/notebooks/finetune-lora-notebook.html',
+      tech: ['Python', 'PyTorch', 'GPT-2', 'LoRA (from scratch)', 'Tiny Shakespeare Dataset', 'FastAPI', 'React'],
+      hasLiveDemo: true,
+      demoKey: 'gpt2Lora',
+      liveDemoHeading: 'Generate with the live LoRA adapter',
+      liveDemoBlurb: 'Type any prompt and see GPT-2 continue it through the trained 442K-parameter LoRA adapter, live.',
+      accentColor: 'amber',
+      icon: 'slidersHorizontal',
+      customChart: 'finetuneLoraCurves',
+      customChartHeading: 'Training curves — same task, same 4 epochs, same data split',
+      customChartBlurb: 'Full fine-tuning\'s train loss pulls away from its val loss; LoRA\'s two curves stay much closer together.',
+      rulesHeading: 'Full fine-tuning vs. LoRA, side by side',
+      rulesBlurb: 'Real numbers from the exact same 4-epoch run on the exact same data.',
+      rulesColumns: [
+        { key: 'aspect', label: 'Aspect', emphasis: true },
+        { key: 'full', label: 'Full fine-tune' },
+        { key: 'lora', label: 'LoRA' },
+      ],
+      rules: [
+        { aspect: 'Trainable parameters', full: '124,439,808 (100%)', lora: '442,368 (0.354%)' },
+        { aspect: 'Training speed', full: '~1,837s/epoch (avg)', lora: '~990s/epoch (avg) — ~1.85x faster' },
+        { aspect: 'Checkpoint file size', full: '474.8 MB', lora: '1.70 MB — 279x smaller' },
+        { aspect: 'Best validation loss', full: '3.4087 (epoch 4)', lora: '3.5872 (epoch 4, still improving)' },
+        { aspect: 'Repetition bug at epoch 4', full: 'Present', lora: 'Also present — not method-specific' },
+      ],
+      heroMetrics: [
+        { label: 'Trainable params (LoRA)', value: '442K' },
+        { label: 'vs. full fine-tune', value: '281x fewer' },
+        { label: 'Checkpoint size (LoRA)', value: '1.7 MB' },
+        { label: 'vs. full fine-tune', value: '279x smaller' },
+      ],
+      narrative: [
+        {
+          heading: 'The problem',
+          body: 'Full fine-tuning and LoRA are usually compared in articles by citing someone else\'s benchmark numbers. This project runs both, from scratch, on the exact same task — teaching GPT-2 (124M parameters) to write in Shakespeare\'s style from the Tiny Shakespeare dataset — with the identical train/validation split (same random seed) and the identical number of epochs, so every number in the comparison below came from a fair, controlled pair of real runs, not two different sources measured two different ways.',
+        },
+        {
+          heading: 'Full fine-tuning: touching every one of GPT-2\'s numbers',
+          body: 'The first run left nothing frozen — all 124,439,808 parameters were eligible for updates. Baseline GPT-2 (before any training) responded to "To be, or not to be," by wandering into an unrelated sentence about "the Church of Jesus Christ of Latter-day Saints." After just 1 epoch, that same prompt produced properly formatted Shakespeare-style dialogue, complete with character names like "DUKE VINCENTIO:" and "ROMEO:" — a real, immediate style shift. By epoch 4 (the checkpoint with the best validation loss, 3.4087), the model generalized well to a brand-new prompt it had never seen ("My lord, what shall we do about the king?"), correctly inventing plausible character names like "KING RICHARD II" and "QUEEN MARGARET." But on the original, repeatedly-tested prompt, epoch 4 also produced a genuine failure: a repetition loop ("I\'ll be a gentleman, and I\'ll be a gentleman." repeated twice) — a real, observed degeneracy, not a hidden or cherry-picked result.',
+        },
+        {
+          heading: 'Building LoRA from scratch, not importing it',
+          body: 'Instead of using an existing LoRA library, the adapter mechanism was implemented directly: a custom module wraps a frozen linear layer, adds two small trainable matrices (rank 8), and computes the layer\'s output as the frozen original result plus a small low-rank correction. Attached to the query/value and output-projection matrices (GPT-2\'s "c_attn" and "c_proj" layers, one of HuggingFace\'s own implementation quirks — internally Conv1D, not nn.Linear, requiring a small compatibility fix) across all 12 transformer blocks, this brought total trainable parameters down to 442,368 — 0.354% of the model, a 281x reduction. A zero-initialization sanity check (LoRA\'s second matrix starts at exactly zero) confirmed training genuinely started from identical behavior to the untouched frozen model, before a single gradient step was taken.',
+        },
+        {
+          heading: 'A wrong hypothesis, corrected by the actual data',
+          body: 'The expectation going in was that LoRA\'s far smaller parameter count would act as a natural brake against overfitting, and would therefore avoid the repetition-loop failure seen in the full fine-tune. That turned out to be wrong: the LoRA-trained model produced the exact same kind of repetition loop, on both the original prompt and a fresh one. Looking back at the raw training data explained why — Tiny Shakespeare\'s actual crowd-scene dialogue contains real repeated lines ("Resolved. resolved." and "We know\'t, we know\'t." appear in the source text itself), meaning both models correctly learned that repetition is a genuine part of this style. The actual cause of the degenerate loop was greedy decoding (always picking the single most probable next word, with no mechanism to escape a repeat once it starts) interacting with that learned pattern — a decoding-strategy issue, not something either training method caused or could have prevented on its own. Reporting the wrong initial hypothesis alongside the corrected explanation is more useful than silently only presenting the theory that happened to be right.',
+        },
+        {
+          heading: 'The real, measured tradeoffs',
+          body: 'On identical data and epochs: full fine-tuning reached a lower final validation loss (3.4087 vs. 3.5872), meaning it adapted the model\'s behavior more completely — a genuine advantage of having the whole model\'s capacity available. LoRA trained about 1.85x faster per epoch (990s vs. 1,837s average), because PyTorch skips computing weight-gradients entirely for the 124M frozen parameters, only computing them for the 442K trainable ones — a real compute saving, not just a memory one. And the checkpoint size difference has a genuine practical consequence beyond training: the full fine-tune\'s 474.8MB checkpoint is too large to commit to this site\'s GitHub repository (which has a 100MB per-file limit), so it isn\'t served by the live demo below at all — only LoRA\'s 1.70MB checkpoint is small enough to ship and run live. The full fine-tune\'s real outputs are shown as recorded examples instead, an honest limitation rather than a hidden one.',
+        },
+      ],
+      skillsDemonstrated: [
+        'Full fine-tuning a 124M-parameter transformer end-to-end, with proper train/validation splitting and checkpointing on validation loss',
+        'Implementing LoRA (low-rank adaptation) entirely from scratch as a custom PyTorch module, rather than relying on an existing library, including handling HuggingFace GPT-2\'s Conv1D attention layers',
+        'Designing and verifying a zero-initialization sanity check to confirm a new training method starts from provably identical behavior to the frozen baseline',
+        'Running a genuinely controlled comparison (identical data split, identical epoch count) between two fine-tuning methods rather than citing unverified numbers',
+        'Forming a testable hypothesis about model behavior, then correcting it honestly once real generation output contradicted it, and identifying the actual cause (decoding strategy, not training method)',
+        'Recognizing and working around a real deployment constraint (a 475MB checkpoint exceeding GitHub\'s 100MB file limit) instead of silently dropping the affected demo',
+        'Full-stack deployment of a from-scratch LoRA-adapted PyTorch model behind a FastAPI endpoint with a live, on-demand text generation demo',
+      ],
+    },
+  ],
+  rag: [
+    {
+      slug: 'comparative-rag-techniques',
+      title: 'Comparative RAG — Four Retrieval Techniques, Built From Scratch',
+      tagline:
+        'Naive, Hybrid, HyDE, and Agentic RAG, all built from scratch and run live side by side over the same corpus — including the real failures each one hits, like HyDE hallucinating from a bad guess and Agentic giving a different answer to the same question on different runs.',
+      categoryKey: 'rag',
+      summary:
+        'Four retrieval-augmented generation techniques built entirely from scratch — no LangChain retrieval chains, no prebuilt RAG framework — sharing one corpus (this portfolio\'s 24 project write-ups plus a personal-profile document, 161 chunks total) and one embedding model (all-MiniLM-L6-v2). Naive RAG and Hybrid RAG (BM25 + embeddings, merged with Reciprocal Rank Fusion) were reliable across every test question. HyDE (which embeds an LLM-generated hypothetical answer instead of the raw question) and Agentic RAG (which lets the LLM decide when to search and reformulate) both produced real, honestly-documented failures — not edge cases invented for the demo, but ones that showed up during actual testing.',
+      github: '',
+      live: '',
+      tech: ['Python', 'sentence-transformers', 'rank-bm25', 'OpenAI API', 'FastAPI', 'React', 'asyncio'],
+      hasLiveDemo: true,
+      demoKey: 'ragCompare',
+      liveDemoHeading: 'Ask one question, watch all four techniques answer it',
+      liveDemoBlurb: 'Type a question about my projects or background — it runs through Naive, Hybrid, HyDE, and Agentic RAG at the same time, so you can compare what each one retrieves and answers.',
+      accentColor: 'blue',
+      icon: 'gitCompare',
+      rulesHeading: 'What each technique actually does, and how it held up',
+      rulesBlurb: 'Real results from a 5-question test set run against all four techniques.',
+      rulesColumns: [
+        { key: 'technique', label: 'Technique', emphasis: true },
+        { key: 'approach', label: 'How it retrieves' },
+        { key: 'finding', label: 'Real result' },
+      ],
+      rules: [
+        { technique: 'Naive', approach: 'Embed the question, cosine similarity top-3', finding: '5/5 test questions correct — the reliable baseline' },
+        { technique: 'Hybrid', approach: 'BM25 keyword search + embeddings, merged with Reciprocal Rank Fusion', finding: '5/5 correct, matched Naive\'s reliability' },
+        { technique: 'HyDE', approach: 'LLM writes a hypothetical answer first, embeds that instead of the question', finding: '3/5 correct — both failures traced directly to a wrong hypothetical pulling retrieval off target' },
+        { technique: 'Agentic', approach: 'LLM decides whether to search, can reformulate and search again, then answers', finding: 'Most detailed answers when it worked, but got stuck without answering on list-type questions, and gave a different answer to the same question on different runs' },
+      ],
+      heroMetrics: [
+        { label: 'Corpus chunks', value: '161' },
+        { label: 'Projects + personal', value: '151 + 10' },
+        { label: 'Live techniques', value: '4' },
+        { label: 'Embedding model', value: 'MiniLM-L6-v2' },
+      ],
+      narrative: [
+        {
+          heading: 'The setup: one real corpus, one embedding model, four techniques',
+          body: 'Rather than testing RAG on a toy dataset, the corpus here is this portfolio itself — the full write-ups of all 24 case studies plus a personal-profile document (background, Oval Labs attribution, contact, skills), chunked into 161 pieces and embedded once with all-MiniLM-L6-v2. Every technique below searches the exact same 161 embeddings; the only thing that changes between them is how the search itself works. Generation uses the OpenAI API already configured for this site\'s chat assistant (gpt-5-mini) — the skill being demonstrated here is retrieval engineering, not the LLM itself.',
+        },
+        {
+          heading: 'Naive and Hybrid: the reliable baselines',
+          body: 'Naive RAG embeds the raw question and takes the top-3 chunks by cosine similarity — the simplest possible version of RAG. Hybrid RAG runs that same embedding search alongside a BM25 keyword search, then merges the two rankings with Reciprocal Rank Fusion (each chunk\'s score is 1/(60+rank) summed across both methods, since BM25 and cosine scores live on incompatible scales and can\'t be averaged directly). Across a 5-question test set spanning different projects, both got every question right. Hybrid\'s extra keyword signal didn\'t change the outcome on this corpus, but it didn\'t hurt either — a genuinely boring, reliable result worth reporting as-is rather than dressing up as more interesting than it was.',
+        },
+        {
+          heading: 'HyDE: when the hypothetical answer is wrong',
+          body: 'HyDE asks the LLM to write a plausible-sounding hypothetical answer first, then embeds that instead of the question — the idea being that an answer-shaped piece of text sits closer in embedding space to the real answer chunks than a short question does. It worked well on general ML topics the LLM already knows (a question about GAN loss curves retrieved correctly, even scoring slightly higher than Naive). But on two questions specific to this portfolio\'s actual content, the LLM\'s hypothetical guess was simply wrong: asked what mistake was corrected during the fine-tuning project, it hallucinated an entirely different bug (an "off-by-one label mapping" that never happened) and pulled in content from an unrelated project as a result. Asked which projects deployed to Railway, its hypothetical invented five projects that don\'t exist in this portfolio at all, and the resulting retrieval missed a real one. Both failures are a direct, traceable consequence of the same mechanism that makes HyDE work when it works — the technique lives or dies on whether the LLM\'s guess happens to be right.',
+        },
+        {
+          heading: 'Agentic RAG: richer answers, but genuinely inconsistent',
+          body: 'Agentic RAG gives the LLM a search_corpus tool and lets it decide, turn by turn, whether it has enough information or needs to search again. When it worked, its answers were the most detailed of any technique — pulling in exact figures other variants left out. But on two "which projects..." style questions, it kept reformulating and re-searching without ever generating a final answer, hitting a hard turn limit. Adding an explicit separate judge call (a second LLM call whose only job is answering "is this sufficient, yes or no") fixed the outright failures, but revealed a deeper issue: the same question, run twice, returned two different lists of matching projects. The real cause isn\'t a prompt bug — it\'s that top-k retrieval only ever returns a handful of chunks per search, so a question whose true answer spans more chunks than any single search returns will always be at the mercy of which slice the model happens to land on. No amount of prompt tuning fixes that; it\'s a structural limitation of top-k semantic search for enumerate-style questions, reported here honestly rather than hidden behind a lucky demo run.',
+        },
+        {
+          heading: 'What\'s not in the live demo',
+          body: 'A fifth technique, Re-ranked RAG, was also built and evaluated: retrieve a wide candidate set cheaply with embeddings, then re-score it with a cross-encoder that reads the query and each chunk together for a more accurate relevance judgment. It\'s in the companion notebook, but isn\'t wired into this live demo — the cross-encoder is a second, separate model that needs its own download, and given the added latency and infrastructure cost of a fifth live variant on top of four, it was kept to the notebook for now rather than shipped here.',
+        },
+      ],
+      skillsDemonstrated: [
+        'Building four distinct RAG retrieval strategies from scratch — no prebuilt RAG framework — sharing one corpus and one embedding model for a genuinely controlled comparison',
+        'Implementing Reciprocal Rank Fusion to merge BM25 keyword search and embedding search rankings that live on incompatible scales',
+        'Implementing HyDE (Hypothetical Document Embeddings) and diagnosing, with real examples, exactly how and why it fails when the LLM\'s hypothetical guess is wrong',
+        'Building an agentic retrieval loop with LLM-driven tool calling, then diagnosing a real structural limitation (top-k retrieval on enumerate-style questions) that a better prompt alone couldn\'t fix',
+        'Adding an explicit judge/reflection call to an agentic loop and honestly reporting what it did and didn\'t fix',
+        'Expanding a RAG corpus to include personal-profile content alongside project documentation, with a deliberate prompt-vs-retrieval design decision for static vs. dynamic content',
+        'Diagnosing and resolving a real cross-package dependency conflict chain (NumPy ABI compatibility, transformers version gating) by verifying PyPI metadata directly instead of iterating reactively',
+        'Serving four LLM-backed retrieval techniques concurrently from one FastAPI endpoint using asyncio, keeping wall-clock latency close to the slowest single variant instead of their sum',
       ],
     },
   ],
@@ -1487,6 +1795,139 @@ export const caseStudies = {
         'Per-session conversation memory via a LangGraph checkpointer, so concurrent visitors don\'t share history',
         'Porting a working prototype (Streamlit) into a shared production backend and a custom frontend without altering the underlying agent logic',
         'Honest framing of exploratory, in-progress work as exactly that — a learning-journey project, not dressed up as a finished product',
+      ],
+    },
+  ],
+  vlm: [
+    {
+      slug: 'clip-multimodal-search',
+      title: 'CLIP Multimodal Search Engine',
+      tagline:
+        'Search real photos by describing them in plain English — no labels, no tags, no training, just a shared embedding space between images and text.',
+      categoryKey: 'vlm',
+      summary:
+        "The first entry in an ongoing series building the actual components behind vision-language models, one piece at a time. This one uses OpenAI's CLIP purely for inference — no training happens here at all. CLIP's two encoders (one for images, one for text) were trained together so that a matching image and caption land close together in the same 512-number space. That's the whole trick: embed a photo collection once, then compare any text query against those vectors with simple cosine similarity to find real matches — including a click-through 'find similar images' mode using the same mechanism on the image side instead of text.",
+      github: '',
+      live: '',
+      tech: ['CLIP (ViT-B/32)', 'PyTorch', 'Hugging Face Transformers', 'FastAPI', 'React'],
+      hasLiveDemo: true,
+      demoKey: 'clipSearch',
+      liveDemoHeading: 'Search a real photo collection',
+      liveDemoBlurb: 'Type a plain-English description, or click any result to find more images like it — all running on a real embedding search, not keyword matching.',
+      accentColor: 'stone',
+      icon: 'scanEye',
+      heroMetrics: [
+        { label: 'Training required', value: 'None' },
+        { label: 'Embedding size', value: '512 numbers' },
+        { label: 'Search method', value: 'Cosine similarity' },
+        { label: 'Query types', value: 'Text + image' },
+      ],
+      architectureBlurb: 'One model, two doors in — an image encoder and a text encoder — trained together so whatever comes out of either one lands in the same space.',
+      architecture: [
+        {
+          title: 'Offline, once',
+          items: ['Every photo run through CLIP\'s image encoder', 'Each becomes a 512-number vector', 'All vectors cached — no re-computation per search'],
+        },
+        {
+          title: 'CLIP',
+          items: ['Image encoder: Vision Transformer (ViT-B/32)', 'Text encoder: standard Transformer', 'Shared 512-dimension embedding space'],
+          arrowLabel: 'same space',
+        },
+        {
+          title: 'At search time',
+          items: ['Query (text or image) embedded the same way', 'Compared against all cached vectors', 'Closest matches returned, ranked by similarity'],
+        },
+      ],
+      narrative: [
+        {
+          heading: 'The problem',
+          body: "Every model elsewhere on this site is trained to do one specific task on one specific kind of data. CLIP is different — it was trained once, on hundreds of millions of real image-caption pairs scraped from the internet, to learn a general-purpose skill: how well does this image match this text? That single skill, reused as-is with zero fine-tuning, is enough to build a real search engine — proving out the first building block of every modern vision-language model, before adding anything that generates new text (that's the next project in this series).",
+        },
+        {
+          heading: 'Why this needed no training at all',
+          body: "Every other case study on this site involves training something — even a small piece, like a decision threshold or a projector. This one doesn't, deliberately. CLIP's image and text encoders are used frozen, exactly as released. The actual engineering work is the retrieval pipeline around them: embedding a photo collection once, caching those vectors, and comparing new queries against them with cosine similarity — simple vector math, no model involved in that comparison step at all.",
+        },
+        {
+          heading: 'Proving it actually understands meaning, not just keywords',
+          body: 'Before wiring this into a live demo, this was validated on a labeled test set (CIFAR-10) where the real answer could be checked directly. Searching "a photo of a dog" returned 5 out of 5 real dog photos. More telling: searching "a vehicle on the road" — a phrase that never appears in the data\'s own labels — still correctly returned cars and trucks, proof CLIP is reasoning about meaning, not matching against known label text.',
+        },
+        {
+          heading: 'A genuine, honest limitation — kept in, not hidden',
+          body: 'That same testing surfaced a real failure worth keeping: searching "an animal that flies" returned a mix of birds and airplanes. CLIP doesn\'t reason compositionally the way a person does — "animal" and "flies" aren\'t enforced as a strict combined rule, they\'re loose associations learned from web data, and "flies" turned out to be at least as strongly linked to airplanes as to birds. It\'s a real, documented limitation of how CLIP represents meaning, not a bug in this implementation.',
+        },
+      ],
+      skillsDemonstrated: [
+        'Building a genuine multimodal retrieval pipeline — shared embedding space, cosine similarity search, both text-to-image and image-to-image query modes',
+        'Correctly using a frozen, pretrained model purely for inference, with zero unnecessary fine-tuning',
+        'Validating a model\'s real understanding against ground truth (CIFAR-10) before trusting it in a live demo, including a query phrased outside the dataset\'s own label vocabulary',
+        'Documenting a genuine model limitation honestly (the animal/aircraft conflation) instead of only showcasing successful queries',
+        'Full-stack deployment — image embedding cache at server startup, FastAPI endpoints, a custom React UI built specifically for visual search results rather than reusing a generic demo template',
+      ],
+    },
+    {
+      slug: 'mini-llava-vision-language-model',
+      title: 'Mini-LLaVA: A Real Vision-Tower-and-LLM Pipeline',
+      tagline:
+        'Upload any photo, get a genuinely generated caption — no candidate list, no hints. The same three-piece pattern real models like LLaVA use, built and trained by hand.',
+      categoryKey: 'vlm',
+      summary:
+        "The flagship build in this series: an actual vision-language model, not just a pretrained one used for inference. Two large pieces stay completely frozen, exactly as released — CLIP's vision encoder (sees the image) and GPT-2 (writes the caption). The only thing trained from scratch is a small projector — roughly 1.2M parameters — that translates CLIP's 49 patch vectors per image into a form GPT-2 can read as if they were words. This is the same architectural pattern real production VLMs use (LLaVA bolts a vision encoder onto Vicuna the same way), just at a scale that trains on CPU in a reasonable time.",
+      github: '',
+      live: '',
+      tech: ['CLIP (ViT-B/32)', 'GPT-2', 'PyTorch', 'Hugging Face Transformers', 'Flickr8k', 'FastAPI', 'React'],
+      hasLiveDemo: true,
+      demoKey: 'miniLlava',
+      liveDemoHeading: 'Try it on a real photo',
+      liveDemoBlurb: 'Upload any image — the model has never seen it, and there\'s no list of options to pick from. It writes a genuinely new caption, one real word at a time.',
+      accentColor: 'stone',
+      icon: 'captions',
+      customArchitecture: 'frozenTrainable',
+      heroMetrics: [
+        { label: 'Trainable parameters', value: '~1.2M of ~275M' },
+        { label: 'Training pairs used', value: '6,000 image-caption' },
+        { label: 'Best val loss', value: '2.699 (epoch 4)' },
+        { label: 'Vocabulary', value: 'GPT-2, 50,257 tokens' },
+      ],
+      architectureBlurb: 'Custom visual above — the point that actually matters here (which pieces are frozen vs. trained) doesn\'t come across in a generic linear flow diagram.',
+      narrative: [
+        {
+          heading: 'The problem, in simple words',
+          body: "The CLIP search project can compare an image against text you already give it, but it can't write a fresh sentence from nothing — it has no text generator at all, only a text comparator. This project fixes that: build a small pipeline that looks at a photo and actually writes new words describing it, the way real vision-language models like LLaVA, GPT-4V, or Qwen-VL do — take a frozen vision encoder, take a frozen language model, and connect them with one small trained bridge.",
+        },
+        {
+          heading: 'What actually gets trained, and what never changes',
+          body: "CLIP's vision encoder never changes — it processes each image into 49 patch vectors (one per small region of the photo) exactly as it always has. GPT-2 never changes either — it still only ever does one thing, predicting the next word, exactly as it was originally trained to. The only new, trained component is the projector: a small 2-layer network (Linear → GELU → Linear) that learns to translate CLIP's vectors into a shape GPT-2 can process as input. Everything the model 'learns' about connecting vision to language lives entirely in that one small piece.",
+        },
+        {
+          heading: 'How training actually works — teacher forcing',
+          body: "Training never lets GPT-2 freely generate during learning — that would be slow and let early mistakes cascade into everything after them. Instead, the real caption is fed in alongside the image, and GPT-2 predicts every position in parallel: given the image, guess word 1; given the image and the real word 1, guess word 2; and so on. Each guess is a full confidence score across GPT-2's entire 50,257-word vocabulary, compared against the one real correct word — a smooth, differentiable signal that can actually be used to adjust the projector's weights, unlike comparing two finished sentences would be.",
+        },
+        {
+          heading: 'A real bug, caught and fixed',
+          body: "The first training run produced captions that never stopped — real words followed by trailing periods running on forever until an arbitrary cutoff. The cause: the training data never included GPT-2's own end-of-caption signal as something to predict, so it never learned when a caption should actually end. Fixing it meant appending that signal to every training caption so the model is explicitly taught where captions stop, not just what they contain — after the fix, every generated caption ends cleanly as a real sentence.",
+        },
+        {
+          heading: 'Proving data scale actually mattered, not just theory',
+          body: 'A first pass trained on only 270 image-caption pairs — small enough to prove the pipeline worked, but not enough to be reliable. One specific test photo of a dog swimming got captioned "A child in a swimming pool," a real hallucination. Scaling to the full 6,000-pair training set and rerunning that exact same photo produced "A dog is swimming in a pool" — correct. That\'s not an abstract metric improving, that\'s one specific, previously-wrong prediction becoming right, real evidence that the earlier failure was a data-scale problem rather than an architecture problem.',
+        },
+        {
+          heading: 'Checkpointing catching real overfitting, live',
+          body: 'Across 6 epochs on 6,000 training images, training loss dropped every single epoch (3.037 → 2.196) — but validation loss (on 300 held-out images never trained on) didn\'t follow the same path, improving through epoch 4 (2.699) then getting worse at epochs 5 and 6. Because checkpointing only saves the projector when validation improves, the version actually in use is from epoch 4, not the final epoch — a live, real example of catching the earliest sign of overfitting rather than blindly keeping the last checkpoint.',
+        },
+        {
+          heading: 'Honest results on genuinely unseen photos',
+          body: 'On the held-out test set, results are strong and mostly accurate, not perfect. Near-exact matches: "Two dogs are playing in the snow" for a real photo of two dogs in snow; "A brown dog is running in the grass" for a photo whose real caption is almost word-for-word identical. Partial misses stay honest too — one photo of a man and woman dancing in costumes came back as "A man in a white shirt and a black shirt is dancing," correctly identifying the action but missing that a second person is a woman, not another man in a shirt. Right category, wrong specific — a realistic, reportable limitation rather than a hidden one.',
+        },
+      ],
+      skillsDemonstrated: [
+        'Building an actual vision-tower + projector + LLM pipeline — the same architectural family as real production VLMs like LLaVA, not just calling a pretrained one',
+        'Correctly identifying which components to freeze and which to train, and implementing training that only updates the intended ~1.2M parameters',
+        'Teacher forcing with cross-entropy loss over per-position confidence scores — understanding why free generation isn\'t used during training (no differentiable signal) and why it\'s required at actual inference time',
+        'Diagnosing and fixing a real training bug (missing end-of-sequence supervision) by tracing generated output back to a gap in the training data, not guessing at the model architecture',
+        'Checkpointing on held-out validation loss, catching a real overfitting signal mid-run rather than trusting the final epoch',
+        'Diagnosing whether a specific failure was a data-scale problem or an architecture problem, then proving the diagnosis correct by fixing that exact same failing example',
+        'Honest reporting of real, partial misses on the final model rather than only showcasing the cleanest results',
+        'Full-stack deployment of a from-scratch-trained component behind a FastAPI image-upload endpoint and a custom generation-in-progress UI',
       ],
     },
   ],

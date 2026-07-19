@@ -1,7 +1,7 @@
 import {
   Users, HeartPulse, ShieldAlert, Home, TrendingUp, Clapperboard, FolderKanban,
   MessageSquareText, Briefcase, Bike, Send, Bot, Cpu, FolderTree, Gamepad2, Sprout, ScanFace,
-  ScanSearch, Workflow, HardHat,
+  ScanSearch, Workflow, HardHat, Radar, ScanEye, Captions, Sparkles, SlidersHorizontal, GitCompare,
 } from 'lucide-react';
 
 // Per-project visual identity — icon + accent color, so each ML case study
@@ -31,6 +31,12 @@ export const PROJECT_ICONS = {
   scanSearch: ScanSearch,
   workflow: Workflow,
   hardHat: HardHat,
+  radar: Radar,
+  scanEye: ScanEye,
+  captions: Captions,
+  sparkles: Sparkles,
+  slidersHorizontal: SlidersHorizontal,
+  gitCompare: GitCompare,
 };
 
 // Fallback icon for any case study that doesn't set one.
@@ -321,6 +327,51 @@ const THEMES = {
     chartChosen: '#3f3f46',
     chartOther: '#d4d4d8',
     onDark: 'text-zinc-300',
+  },
+  gray: {
+    iconBg: 'bg-gradient-to-br from-gray-500 to-gray-700',
+    iconShadow: 'shadow-gray-700/30',
+    badge: 'bg-gray-100 text-gray-800 border-gray-300',
+    hoverBorder: 'hover:border-gray-500/50',
+    hoverShadow: 'hover:shadow-gray-500/20',
+    glowFrom: 'group-hover:from-gray-400/40',
+    glowVia: 'group-hover:via-gray-500/30',
+    glowTo: 'group-hover:to-gray-700/40',
+    text: 'text-gray-700',
+    button: 'bg-gradient-to-br from-gray-500 to-gray-700 shadow-gray-500/25',
+    chartChosen: '#374151',
+    chartOther: '#d1d5db',
+    onDark: 'text-gray-300',
+  },
+  stone: {
+    iconBg: 'bg-gradient-to-br from-stone-500 to-stone-700',
+    iconShadow: 'shadow-stone-700/30',
+    badge: 'bg-stone-100 text-stone-800 border-stone-300',
+    hoverBorder: 'hover:border-stone-500/50',
+    hoverShadow: 'hover:shadow-stone-500/20',
+    glowFrom: 'group-hover:from-stone-400/40',
+    glowVia: 'group-hover:via-stone-500/30',
+    glowTo: 'group-hover:to-stone-700/40',
+    text: 'text-stone-700',
+    button: 'bg-gradient-to-br from-stone-500 to-stone-700 shadow-stone-500/25',
+    chartChosen: '#57534e',
+    chartOther: '#d6d3d1',
+    onDark: 'text-stone-300',
+  },
+  neutral: {
+    iconBg: 'bg-gradient-to-br from-neutral-500 to-neutral-700',
+    iconShadow: 'shadow-neutral-700/30',
+    badge: 'bg-neutral-100 text-neutral-800 border-neutral-300',
+    hoverBorder: 'hover:border-neutral-500/50',
+    hoverShadow: 'hover:shadow-neutral-500/20',
+    glowFrom: 'group-hover:from-neutral-400/40',
+    glowVia: 'group-hover:via-neutral-500/30',
+    glowTo: 'group-hover:to-neutral-700/40',
+    text: 'text-neutral-700',
+    button: 'bg-gradient-to-br from-neutral-500 to-neutral-700 shadow-neutral-500/25',
+    chartChosen: '#404040',
+    chartOther: '#d4d4d4',
+    onDark: 'text-neutral-300',
   },
 };
 

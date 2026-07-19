@@ -1,0 +1,41 @@
+{
+  "train_size": 6000,
+  "val_size": 300,
+  "epochs_trained": 6,
+  "best_epoch": 4,
+  "best_val_loss": 2.699,
+  "train_loss_by_epoch": [
+    3.037,
+    2.732,
+    2.577,
+    2.449,
+    2.326,
+    2.196
+  ],
+  "val_loss_by_epoch": [
+    2.904,
+    2.749,
+    2.739,
+    2.699,
+    2.722,
+    2.743
+  ],
+  "example_generations": [
+    {
+      "generated": "Two dogs are playing in the snow .",
+      "real": "The dogs are in the snow in front of a fence ."
+    },
+    {
+      "generated": "A dog is swimming in a pool .",
+      "real": "a brown and white dog swimming towards some in the pool"
+    },
+    {
+      "generated": "A man in a white shirt and a black shirt is dancing .",
+      "real": "A man and a woman in festive costumes dancing ."
+    },
+    {
+      "generated": "A brown dog is running in the grass .",
+      "real": "A brown dog running"
+    }
+  ]
+}
