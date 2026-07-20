@@ -2,6 +2,7 @@ import {
   Users, HeartPulse, ShieldAlert, Home, TrendingUp, Clapperboard, FolderKanban,
   MessageSquareText, Briefcase, Bike, Send, Bot, Cpu, FolderTree, Gamepad2, Sprout, ScanFace,
   ScanSearch, Workflow, HardHat, Radar, ScanEye, Captions, Sparkles, SlidersHorizontal, GitCompare,
+  UserCheck,
 } from 'lucide-react';
 
 // Per-project visual identity — icon + accent color, so each ML case study
@@ -37,6 +38,7 @@ export const PROJECT_ICONS = {
   sparkles: Sparkles,
   slidersHorizontal: SlidersHorizontal,
   gitCompare: GitCompare,
+  userCheck: UserCheck,
 };
 
 // Fallback icon for any case study that doesn't set one.

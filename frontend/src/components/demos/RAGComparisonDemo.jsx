@@ -3,9 +3,9 @@ import { useEffect, useRef, useState } from 'react';
 const API_BASE = (import.meta.env.VITE_API_URL || '') + '/api/rag';
 
 const SUGGESTIONS = [
-  "What did the GAN's loss numbers get wrong about output quality?",
-  'How did the LoRA checkpoint size compare to the full fine-tune?',
-  "What's Saud's educational background?",
+  "When Saud compared a GAN and a diffusion model, what did the GAN's loss numbers get wrong about output quality?",
+  'When Saud fine-tuned GPT-2 with LoRA, how did the checkpoint size compare to the full fine-tune?',
+  'What did Saud study, and where?',
 ];
 
 const VARIANTS = [
@@ -198,7 +198,8 @@ export default function RAGComparisonDemo() {
   return (
     <div>
       <p className="text-xs text-zinc-500 mb-4">
-        Ask one question. All five techniques search and answer live, in parallel, in their own row below.
+        Ask about Saud or one of his projects, like you're asking him directly. All five techniques search and
+        answer live, in parallel, in their own row below.
       </p>
 
       <div className="flex flex-wrap gap-2 mb-3">

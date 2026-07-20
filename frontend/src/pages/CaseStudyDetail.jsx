@@ -20,6 +20,7 @@ import DiffusionGanDemo from '../components/demos/DiffusionGanDemo';
 import GPT2LoraDemo from '../components/demos/GPT2LoraDemo';
 import RAGComparisonDemo from '../components/demos/RAGComparisonDemo';
 import OpenAssistantDemo from '../components/demos/OpenAssistantDemo';
+import AttendanceUIPreview from '../components/demos/AttendanceUIPreview';
 import RAGCaseStudyPage from './RAGCaseStudyPage';
 import FrozenTrainableDiagram from '../components/demos/FrozenTrainableDiagram';
 import PortfolioAssistantFlow from '../components/demos/PortfolioAssistantFlow';
@@ -59,6 +60,7 @@ const DEMO_COMPONENTS = {
   gpt2Lora: GPT2LoraDemo,
   ragCompare: RAGComparisonDemo,
   openAssistant: OpenAssistantDemo,
+  attendanceUIPreview: AttendanceUIPreview,
 };
 
 // A tiny handful of case studies need a genuinely custom architecture visual

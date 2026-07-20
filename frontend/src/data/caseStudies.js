@@ -1711,6 +1711,76 @@ export const caseStudies = {
         'A complete pipeline from physical sensor trigger through recognition to CSV logging and live visualization',
       ],
     },
+    {
+      slug: 'face-recognition-attendance-system',
+      title: 'AI Attendance System: Real-Time Face Recognition',
+      tagline:
+        'A classroom-facing webcam marks attendance the moment it recognizes a face, streamed live to a dashboard over WebSocket, with the actual scope built honestly compared against a more ambitious original plan.',
+      categoryKey: 'robotics',
+      summary:
+        'A real-time attendance system: a webcam feed runs through YOLOv8n-face for detection and ArcFace (via DeepFace) for a 512-number face embedding, matched against enrolled students by cosine similarity, with results streamed to a React dashboard over WebSocket as they happen. The original plan called for YOLO26, PostgreSQL, and a Celery/Redis task queue; what actually got built runs on YOLOv8n-face and SQLite with no task queue at all, a real scope difference worth stating plainly rather than describing the plan as if it were the build.',
+      github: '',
+      live: '',
+      tech: ['YOLOv8n-face', 'DeepFace (ArcFace)', 'FastAPI', 'WebSocket', 'SQLite', 'React', 'Zustand'],
+      hasLiveDemo: true,
+      demoKey: 'attendanceUIPreview',
+      liveDemoHeading: 'The real dashboard, rebuilt faithfully',
+      liveDemoBlurb: "No screenshots exist for this one, and it needs a real webcam plus a local ML backend, so it can never run as an actual live demo on this deployed site. This is rebuilt from the project's real component code instead, same dark theme, same copy, same states.",
+      accentColor: 'violet',
+      icon: 'userCheck',
+      heroMetrics: [
+        { label: 'Detection model', value: 'YOLOv8n-face' },
+        { label: 'Embedding', value: 'ArcFace, 512-d' },
+        { label: 'Match threshold', value: '0.40 cosine' },
+        { label: 'AI runs every', value: '6th frame @ 15fps' },
+      ],
+      architectureBlurb: "Detection finds a face, embedding describes it as 512 numbers, matching compares those numbers against every enrolled student, streamed live over WebSocket.",
+      architecture: [
+        {
+          title: 'Detection + embedding',
+          items: ['YOLOv8n-face finds face bounding boxes in each sampled frame', 'Crop with 35% padding, CLAHE contrast correction for lighting', 'ArcFace (via DeepFace) converts the crop to a 512-number, unit-normalized vector'],
+        },
+        {
+          title: 'Matching',
+          items: ['Cosine similarity against every enrolled student\'s stored vector', 'Best match above 0.40 -> known, with a confidence score', 'Below threshold -> logged as Unknown, never guessed at'],
+          arrowLabel: 'every 6th frame',
+        },
+        {
+          title: 'Logging + live dashboard',
+          items: ['Entry vs. exit decided by time of day, not a manual toggle', '30-minute cooldown prevents re-marking the same person repeatedly', 'Frame + detections pushed to React over WebSocket as they happen'],
+        },
+      ],
+      narrative: [
+        {
+          heading: 'The problem',
+          body: "Manual attendance wastes real class time and is easy to game (marking a friend present who isn't there). The goal was a system that watches the door with a webcam, recognizes each person automatically, and logs the moment they arrive, without anyone stopping to check in.",
+        },
+        {
+          heading: 'Why every 6th frame, not every frame',
+          body: "The video stream runs at 15 FPS for a smooth picture, but the actual detection-plus-recognition pipeline takes roughly 300ms per frame on a regular CPU, too slow to run on every single frame without the video turning choppy. Running the full AI pipeline every 6th frame, while still streaming all 15 frames per second, keeps the video smooth while the AI works in the background at a pace it can actually sustain, a real, deliberate tradeoff, not an oversight.",
+        },
+        {
+          heading: 'What was planned versus what actually got built',
+          body: "The original plan called for YOLO26, PostgreSQL, a Celery and Redis task queue for async AI jobs, and shadcn/ui components. What's actually running is YOLOv8n-face (a real, working, more modest choice), SQLite in a single ams.db file, and no task queue at all, the WebSocket loop handles inference synchronously in a background thread instead. That's a real scope difference from the original design doc, and it's worth naming directly rather than describing the plan as if it were what got shipped.",
+        },
+        {
+          heading: "Built and complete, but not yet exercised with real people",
+          body: "The pipeline itself, detection, embedding, matching, streaming, logging, is real, working code. But as of now, the database holds exactly one row: the seeded admin account. Zero students are enrolled, zero attendance events have been logged. That's a genuinely different situation from this portfolio's other computer-vision projects, which have measured accuracy numbers from real training runs or real deployment logs (Access Vision's 536 real logged events, for instance). This one is a complete, working system that simply hasn't been run end-to-end with real people yet, and that's a meaningfully different, more honest claim than saying it's \"working\" without qualifying what that actually means here.",
+        },
+        {
+          heading: 'A few things worth naming plainly',
+          body: "The admin account ships with a seeded default password and the backend runs with DEBUG=True, both fine for a local university project, both real things that would need fixing before this ever ran on real institute infrastructure. Separately, the project's own beginner guide states a 0.45 match threshold, but the actual running config file sets it to 0.40, a small but real discrepancy between the documentation and the code that was worth catching rather than repeating the doc's number without checking.",
+        },
+      ],
+      skillsDemonstrated: [
+        'Real-time face detection and recognition over a WebSocket video stream, with AI inference throttled to every 6th frame to keep video smooth on CPU-only hardware',
+        'A full embedding-and-matching pipeline: YOLOv8n-face detection, ArcFace 512-dimensional embeddings via DeepFace, cosine similarity matching against a stored enrollment database',
+        'Real business logic beyond the AI: entry/exit classification by time of day, and a cooldown window to prevent duplicate attendance marks from the same person',
+        'Honest scope reporting: naming the real gap between an ambitious original plan (YOLO26, PostgreSQL, Celery/Redis) and the more modest stack that actually got built and runs',
+        'Catching and reporting a real discrepancy between a project\'s own documentation (a stated 0.45 threshold) and its actual running configuration (0.40)',
+        'Rebuilding a faithful, code-accurate UI recreation for a project with no available screenshots, instead of either skipping it or fabricating generic mockup art',
+      ],
+    },
   ],
   tools: [
     {
