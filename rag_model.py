@@ -1,19 +1,24 @@
 """
 Comparative RAG — fifth Deep Learning / AI Engineering case study.
 
-Serves four RAG techniques live (Naive, Hybrid, HyDE, Agentic), all built
-from scratch, all sharing the same corpus: this portfolio's 24 project
-write-ups plus Saud's personal profile (background, Oval Labs attribution,
-contact, skills), chunked and embedded with all-MiniLM-L6-v2.
+Serves five RAG techniques live (Naive, Hybrid, Re-ranked, HyDE, Agentic),
+all built from scratch, all sharing the same corpus: this portfolio's 24
+project write-ups plus Saud's personal profile (background, Oval Labs
+attribution, contact, skills), chunked and embedded with all-MiniLM-L6-v2.
 
 Each technique streams its own answer over Server-Sent Events, independently,
-so a visitor watching the live demo sees all four generating in parallel in
+so a visitor watching the live demo sees all five generating in parallel in
 real time instead of submitting a query and waiting for a single finished
 response.
 
-Re-ranked RAG (cross-encoder re-scoring) was built and evaluated in the
-companion notebook but isn't served live here — see the notebook for that
-comparison and the real reasons it was left out of the live demo.
+Re-ranked RAG retrieves a wider candidate set (top-15) with plain embedding
+search, then re-scores each (query, chunk) pair directly with a cross-encoder
+(cross-encoder/ms-marco-MiniLM-L-6-v2) before taking the top-3. Notebook
+testing found it matched or improved on Naive/Hybrid every time, and that the
+cross-encoder's raw score is itself a useful signal: negative scores reliably
+flagged retrievals that genuinely weren't relevant, which is used here to
+answer honestly ("couldn't find reliable information") instead of forcing an
+answer out of weak matches.
 
 Generation uses the same OpenAI API already configured for chat_assistant.py
 (gpt-5-mini) — the technique being demonstrated is retrieval engineering,
@@ -32,16 +37,18 @@ from fastapi import APIRouter, HTTPException
 from fastapi.responses import StreamingResponse
 from openai import AsyncOpenAI, OpenAI
 from rank_bm25 import BM25Okapi
-from sentence_transformers import SentenceTransformer
+from sentence_transformers import CrossEncoder, SentenceTransformer
 
 load_dotenv()
 
 CORPUS_PATH = Path(__file__).resolve().parent / "rag_model_store" / "rag_corpus.pkl"
+RERANK_LOW_CONFIDENCE_THRESHOLD = 0.0  # cross-encoder scores below this = probably not relevant
 
 router = APIRouter(prefix="/api/rag", tags=["rag"])
 
 READY = False
 embed_model = None
+cross_encoder = None
 bm25 = None
 chunks = []
 chunk_sources = []
@@ -57,6 +64,7 @@ try:
     chunk_embeddings = corpus["chunk_embeddings"]
 
     embed_model = SentenceTransformer("all-MiniLM-L6-v2")
+    cross_encoder = CrossEncoder("cross-encoder/ms-marco-MiniLM-L-6-v2")
     bm25 = BM25Okapi([c.lower().split() for c in chunks])
 
     api_key = os.getenv("OPENAI_API_KEY")
@@ -144,6 +152,22 @@ def _retrieve_hybrid(query, k=3, rrf_k=60):
     return top_idx, scores
 
 
+def _retrieve_reranked(query, wide_k=15, k=3):
+    q_emb = embed_model.encode(query)
+    emb_scores = np.array([_cosine_sim(q_emb, c) for c in chunk_embeddings])
+    wide_idx = list(np.argsort(emb_scores)[::-1][:wide_k])
+
+    pairs = [[query, chunks[i]] for i in wide_idx]
+    ce_scores = cross_encoder.predict(pairs)
+
+    reranked = sorted(zip(wide_idx, ce_scores), key=lambda x: x[1], reverse=True)[:k]
+    top_idx = [i for i, _ in reranked]
+    scores = np.zeros(len(chunks))
+    for i, s in reranked:
+        scores[i] = s
+    return top_idx, scores
+
+
 AGENTIC_TOOL = [{
     "type": "function",
     "function": {
@@ -174,6 +198,27 @@ async def _stream_naive_gen(query):
 async def _stream_hybrid_gen(query):
     idx, scores = await asyncio.to_thread(_retrieve_hybrid, query)
     yield _sse("retrieved", {"hits": _format_hits(idx, scores)})
+    async for event in _stream_answer(_answer_prompt(query, idx)):
+        yield event
+    yield _sse("done", {})
+
+
+async def _stream_reranked_gen(query):
+    idx, scores = await asyncio.to_thread(_retrieve_reranked, query)
+    top_score = float(scores[idx[0]]) if idx else -999
+    low_confidence = top_score < RERANK_LOW_CONFIDENCE_THRESHOLD
+
+    yield _sse("retrieved", {"hits": _format_hits(idx, scores), "low_confidence": low_confidence})
+
+    if low_confidence:
+        # The cross-encoder's own score is a genuine confidence signal (verified
+        # in notebook testing: negative scores reliably meant "not relevant") —
+        # answer honestly instead of forcing a response out of weak matches.
+        for word in "I couldn't find reliably relevant information for this in the corpus. ".split(" "):
+            yield _sse("token", {"text": word + " "})
+        yield _sse("done", {})
+        return
+
     async for event in _stream_answer(_answer_prompt(query, idx)):
         yield event
     yield _sse("done", {})
@@ -263,6 +308,7 @@ async def _stream_agentic_gen(query, max_turns=4):
 STREAM_GENERATORS = {
     "naive": _stream_naive_gen,
     "hybrid": _stream_hybrid_gen,
+    "reranked": _stream_reranked_gen,
     "hyde": _stream_hyde_gen,
     "agentic": _stream_agentic_gen,
 }

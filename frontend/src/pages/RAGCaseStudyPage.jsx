@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { CheckCircle2, TriangleAlert, Shuffle } from 'lucide-react';
 import BackButton from '../components/ui/BackButton';
 import TechBadge from '../components/ui/TechBadge';
 import ScrollReveal from '../components/ui/ScrollReveal';
@@ -6,24 +7,27 @@ import RAGComparisonDemo from '../components/demos/RAGComparisonDemo';
 import { getTheme, getIcon } from '../lib/projectTheme';
 
 const STATUS_STYLES = {
-  reliable: { dot: 'bg-emerald-500', text: 'text-emerald-700', bg: 'bg-emerald-50 border-emerald-300/50' },
-  fragile: { dot: 'bg-amber-500', text: 'text-amber-700', bg: 'bg-amber-50 border-amber-300/50' },
-  inconsistent: { dot: 'bg-rose-500', text: 'text-rose-700', bg: 'bg-rose-50 border-rose-300/50' },
+  reliable: { icon: CheckCircle2, text: 'text-emerald-700', bg: 'bg-emerald-50', border: 'border-emerald-200', pill: 'bg-emerald-100/80' },
+  fragile: { icon: TriangleAlert, text: 'text-amber-700', bg: 'bg-amber-50', border: 'border-amber-200', pill: 'bg-amber-100/80' },
+  inconsistent: { icon: Shuffle, text: 'text-rose-700', bg: 'bg-rose-50', border: 'border-rose-200', pill: 'bg-rose-100/80' },
 };
 
 function VerdictCard({ v }) {
   const s = STATUS_STYLES[v.status] || STATUS_STYLES.reliable;
+  const StatusIcon = s.icon;
   return (
-    <div className={`rounded-2xl border p-4 ${s.bg}`}>
-      <div className="flex items-center justify-between mb-1.5">
-        <h3 className="font-heading font-bold text-black text-sm">{v.label}</h3>
-        <span className={`flex items-center gap-1.5 text-[11px] font-semibold ${s.text}`}>
-          <span className={`w-1.5 h-1.5 rounded-full ${s.dot}`} />
+    <div
+      className={`group rounded-2xl border ${s.border} ${s.bg} p-4 flex flex-col gap-2 h-full transition-all duration-300 hover:-translate-y-1 hover:shadow-lg`}
+    >
+      <div className="flex flex-col gap-1.5">
+        <h3 className="font-heading font-bold text-black text-sm leading-tight">{v.label}</h3>
+        <span className={`inline-flex items-center gap-1 w-fit text-[10px] font-bold uppercase tracking-wide ${s.text} ${s.pill} px-2 py-0.5 rounded-full`}>
+          <StatusIcon className="w-3 h-3" strokeWidth={2.5} />
           {v.statusLabel}
         </span>
       </div>
-      <p className="text-[11px] text-zinc-500 mb-2 leading-snug">{v.approach}</p>
-      <p className="text-xs text-zinc-700 leading-relaxed">{v.finding}</p>
+      <p className="text-[11px] text-zinc-500 leading-snug">{v.approach}</p>
+      <p className="text-xs text-zinc-700 leading-relaxed flex-1">{v.finding}</p>
     </div>
   );
 }
@@ -113,8 +117,8 @@ export default function RAGCaseStudyPage({ study, categoryMeta }) {
         <ScrollReveal delay={120}>
           <div className="mb-10">
             <h2 className="text-lg font-heading font-bold text-black mb-1">The verdict, per technique</h2>
-            <p className="text-sm text-zinc-600 mb-4">From a 5-question test set run against all four, honestly.</p>
-            <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-3">
+            <p className="text-sm text-zinc-600 mb-4">From a 5-question test set run against all five, honestly.</p>
+            <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-3">
               {study.verdicts.map((v) => <VerdictCard key={v.key} v={v} />)}
             </div>
           </div>

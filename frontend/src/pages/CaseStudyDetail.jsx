@@ -19,8 +19,10 @@ import MiniLlavaDemo from '../components/demos/MiniLlavaDemo';
 import DiffusionGanDemo from '../components/demos/DiffusionGanDemo';
 import GPT2LoraDemo from '../components/demos/GPT2LoraDemo';
 import RAGComparisonDemo from '../components/demos/RAGComparisonDemo';
+import OpenAssistantDemo from '../components/demos/OpenAssistantDemo';
 import RAGCaseStudyPage from './RAGCaseStudyPage';
 import FrozenTrainableDiagram from '../components/demos/FrozenTrainableDiagram';
+import PortfolioAssistantFlow from '../components/demos/PortfolioAssistantFlow';
 import TrainingCurvesComparison from '../components/demos/TrainingCurvesComparison';
 import FinetuneLoraCurves from '../components/demos/FinetuneLoraCurves';
 import ChurnResults from '../components/results/ChurnResults';
@@ -56,6 +58,7 @@ const DEMO_COMPONENTS = {
   diffusionGan: DiffusionGanDemo,
   gpt2Lora: GPT2LoraDemo,
   ragCompare: RAGComparisonDemo,
+  openAssistant: OpenAssistantDemo,
 };
 
 // A tiny handful of case studies need a genuinely custom architecture visual
@@ -63,6 +66,7 @@ const DEMO_COMPONENTS = {
 // study.customArchitecture to one of these keys to opt in.
 const CUSTOM_ARCHITECTURE_COMPONENTS = {
   frozenTrainable: FrozenTrainableDiagram,
+  portfolioAssistantFlow: PortfolioAssistantFlow,
 };
 
 // Same opt-in pattern for the charts section — a few projects have a

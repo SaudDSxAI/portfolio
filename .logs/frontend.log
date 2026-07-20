@@ -1509,3 +1509,588 @@ AggregateError [ECONNREFUSED]:
 9:06:49 PM [vite] hmr update /src/components/demos/SentimentLiveDemo.jsx, /src/index.css
 9:06:59 PM [vite] hmr update /src/components/demos/TrainingCurvesComparison.jsx, /src/index.css
 9:07:03 PM [vite] hmr update /src/components/demos/TrainingCurvesComparison.jsx, /src/index.css
+11:40:01 PM [vite] http proxy error: /api/gpt2-lora/status
+AggregateError [ECONNREFUSED]: 
+    at internalConnectMultiple (node:net:1134:18)
+    at afterConnectMultiple (node:net:1715:7)
+11:40:11 PM [vite] http proxy error: /api/gpt2-lora/status
+AggregateError [ECONNREFUSED]: 
+    at internalConnectMultiple (node:net:1134:18)
+    at afterConnectMultiple (node:net:1715:7)
+12:11:22 AM [vite] http proxy error: /api/churn/models
+AggregateError [ECONNREFUSED]: 
+    at internalConnectMultiple (node:net:1134:18)
+    at afterConnectMultiple (node:net:1715:7)
+12:11:22 AM [vite] http proxy error: /api/churn/models
+AggregateError [ECONNREFUSED]: 
+    at internalConnectMultiple (node:net:1134:18)
+    at afterConnectMultiple (node:net:1715:7)
+12:11:48 AM [vite] http proxy error: /api/churn/models
+AggregateError [ECONNREFUSED]: 
+    at internalConnectMultiple (node:net:1134:18)
+    at afterConnectMultiple (node:net:1715:7)
+6:07:50 AM [vite] http proxy error: /api/churn/models
+AggregateError [ECONNREFUSED]: 
+    at internalConnectMultiple (node:net:1134:18)
+    at afterConnectMultiple (node:net:1715:7)
+6:08:18 AM [vite] http proxy error: /api/churn/models
+AggregateError [ECONNREFUSED]: 
+    at internalConnectMultiple (node:net:1134:18)
+    at afterConnectMultiple (node:net:1715:7)
+6:09:34 AM [vite] http proxy error: /api/churn/models
+AggregateError [ECONNREFUSED]: 
+    at internalConnectMultiple (node:net:1134:18)
+    at afterConnectMultiple (node:net:1715:7)
+6:15:24 AM [vite] http proxy error: /api/churn/models
+AggregateError [ECONNREFUSED]: 
+    at internalConnectMultiple (node:net:1134:18)
+    at afterConnectMultiple (node:net:1715:7)
+6:15:28 AM [vite] http proxy error: /api/churn/models
+AggregateError [ECONNREFUSED]: 
+    at internalConnectMultiple (node:net:1134:18)
+    at afterConnectMultiple (node:net:1715:7)
+6:17:05 AM [vite] http proxy error: /api/churn/models
+AggregateError [ECONNREFUSED]: 
+    at internalConnectMultiple (node:net:1134:18)
+    at afterConnectMultiple (node:net:1715:7)
+6:18:14 AM [vite] http proxy error: /api/churn/models
+AggregateError [ECONNREFUSED]: 
+    at internalConnectMultiple (node:net:1134:18)
+    at afterConnectMultiple (node:net:1715:7)
+6:18:40 AM [vite] http proxy error: /api/churn/models
+AggregateError [ECONNREFUSED]: 
+    at internalConnectMultiple (node:net:1134:18)
+    at afterConnectMultiple (node:net:1715:7)
+6:19:00 AM [vite] http proxy error: /api/churn/models
+AggregateError [ECONNREFUSED]: 
+    at internalConnectMultiple (node:net:1134:18)
+    at afterConnectMultiple (node:net:1715:7)
+6:20:50 AM [vite] http proxy error: /api/churn/models
+AggregateError [ECONNREFUSED]: 
+    at internalConnectMultiple (node:net:1134:18)
+    at afterConnectMultiple (node:net:1715:7)
+6:20:53 AM [vite] http proxy error: /api/churn/models
+AggregateError [ECONNREFUSED]: 
+    at internalConnectMultiple (node:net:1134:18)
+    at afterConnectMultiple (node:net:1715:7)
+6:20:59 AM [vite] http proxy error: /api/churn/models
+AggregateError [ECONNREFUSED]: 
+    at internalConnectMultiple (node:net:1134:18)
+    at afterConnectMultiple (node:net:1715:7)
+6:21:04 AM [vite] http proxy error: /api/churn/models
+AggregateError [ECONNREFUSED]: 
+    at internalConnectMultiple (node:net:1134:18)
+    at afterConnectMultiple (node:net:1715:7)
+6:21:04 AM [vite] http proxy error: /api/churn/models
+AggregateError [ECONNREFUSED]: 
+    at internalConnectMultiple (node:net:1134:18)
+    at afterConnectMultiple (node:net:1715:7)
+6:21:09 AM [vite] http proxy error: /api/churn/models
+AggregateError [ECONNREFUSED]: 
+    at internalConnectMultiple (node:net:1134:18)
+    at afterConnectMultiple (node:net:1715:7)
+6:21:09 AM [vite] http proxy error: /api/churn/models
+AggregateError [ECONNREFUSED]: 
+    at internalConnectMultiple (node:net:1134:18)
+    at afterConnectMultiple (node:net:1715:7)
+6:21:15 AM [vite] http proxy error: /api/churn/models
+AggregateError [ECONNREFUSED]: 
+    at internalConnectMultiple (node:net:1134:18)
+    at afterConnectMultiple (node:net:1715:7)
+6:21:20 AM [vite] http proxy error: /api/churn/models
+AggregateError [ECONNREFUSED]: 
+    at internalConnectMultiple (node:net:1134:18)
+    at afterConnectMultiple (node:net:1715:7)
+6:21:20 AM [vite] http proxy error: /api/churn/models
+AggregateError [ECONNREFUSED]: 
+    at internalConnectMultiple (node:net:1134:18)
+    at afterConnectMultiple (node:net:1715:7)
+6:21:25 AM [vite] http proxy error: /api/churn/models
+AggregateError [ECONNREFUSED]: 
+    at internalConnectMultiple (node:net:1134:18)
+    at afterConnectMultiple (node:net:1715:7)
+6:21:26 AM [vite] http proxy error: /api/churn/models
+AggregateError [ECONNREFUSED]: 
+    at internalConnectMultiple (node:net:1134:18)
+    at afterConnectMultiple (node:net:1715:7)
+6:21:31 AM [vite] http proxy error: /api/churn/models
+AggregateError [ECONNREFUSED]: 
+    at internalConnectMultiple (node:net:1134:18)
+    at afterConnectMultiple (node:net:1715:7)
+6:21:42 AM [vite] http proxy error: /api/churn/models
+AggregateError [ECONNREFUSED]: 
+    at internalConnectMultiple (node:net:1134:18)
+    at afterConnectMultiple (node:net:1715:7)
+6:21:47 AM [vite] http proxy error: /api/churn/models
+AggregateError [ECONNREFUSED]: 
+    at internalConnectMultiple (node:net:1134:18)
+    at afterConnectMultiple (node:net:1715:7)
+6:21:47 AM [vite] http proxy error: /api/churn/models
+AggregateError [ECONNREFUSED]: 
+    at internalConnectMultiple (node:net:1134:18)
+    at afterConnectMultiple (node:net:1715:7)
+6:21:52 AM [vite] http proxy error: /api/churn/models
+AggregateError [ECONNREFUSED]: 
+    at internalConnectMultiple (node:net:1134:18)
+    at afterConnectMultiple (node:net:1715:7)
+6:21:53 AM [vite] http proxy error: /api/churn/models
+AggregateError [ECONNREFUSED]: 
+    at internalConnectMultiple (node:net:1134:18)
+    at afterConnectMultiple (node:net:1715:7)
+6:21:57 AM [vite] http proxy error: /api/churn/models
+AggregateError [ECONNREFUSED]: 
+    at internalConnectMultiple (node:net:1134:18)
+    at afterConnectMultiple (node:net:1715:7)
+6:21:58 AM [vite] http proxy error: /api/churn/models
+AggregateError [ECONNREFUSED]: 
+    at internalConnectMultiple (node:net:1134:18)
+    at afterConnectMultiple (node:net:1715:7)
+6:22:03 AM [vite] http proxy error: /api/churn/models
+AggregateError [ECONNREFUSED]: 
+    at internalConnectMultiple (node:net:1134:18)
+    at afterConnectMultiple (node:net:1715:7)
+6:22:08 AM [vite] http proxy error: /api/churn/models
+AggregateError [ECONNREFUSED]: 
+    at internalConnectMultiple (node:net:1134:18)
+    at afterConnectMultiple (node:net:1715:7)
+6:22:09 AM [vite] http proxy error: /api/churn/models
+AggregateError [ECONNREFUSED]: 
+    at internalConnectMultiple (node:net:1134:18)
+    at afterConnectMultiple (node:net:1715:7)
+6:22:13 AM [vite] http proxy error: /api/churn/models
+AggregateError [ECONNREFUSED]: 
+    at internalConnectMultiple (node:net:1134:18)
+    at afterConnectMultiple (node:net:1715:7)
+6:22:14 AM [vite] http proxy error: /api/churn/models
+AggregateError [ECONNREFUSED]: 
+    at internalConnectMultiple (node:net:1134:18)
+    at afterConnectMultiple (node:net:1715:7)
+6:22:19 AM [vite] http proxy error: /api/churn/models
+AggregateError [ECONNREFUSED]: 
+    at internalConnectMultiple (node:net:1134:18)
+    at afterConnectMultiple (node:net:1715:7)
+6:22:19 AM [vite] http proxy error: /api/churn/models
+AggregateError [ECONNREFUSED]: 
+    at internalConnectMultiple (node:net:1134:18)
+    at afterConnectMultiple (node:net:1715:7)
+6:22:25 AM [vite] http proxy error: /api/churn/models
+AggregateError [ECONNREFUSED]: 
+    at internalConnectMultiple (node:net:1134:18)
+    at afterConnectMultiple (node:net:1715:7)
+6:22:30 AM [vite] http proxy error: /api/churn/models
+AggregateError [ECONNREFUSED]: 
+    at internalConnectMultiple (node:net:1134:18)
+    at afterConnectMultiple (node:net:1715:7)
+6:22:30 AM [vite] http proxy error: /api/churn/models
+AggregateError [ECONNREFUSED]: 
+    at internalConnectMultiple (node:net:1134:18)
+    at afterConnectMultiple (node:net:1715:7)
+6:22:35 AM [vite] http proxy error: /api/churn/models
+AggregateError [ECONNREFUSED]: 
+    at internalConnectMultiple (node:net:1134:18)
+    at afterConnectMultiple (node:net:1715:7)
+6:22:35 AM [vite] http proxy error: /api/churn/models
+AggregateError [ECONNREFUSED]: 
+    at internalConnectMultiple (node:net:1134:18)
+    at afterConnectMultiple (node:net:1715:7)
+6:22:40 AM [vite] http proxy error: /api/churn/models
+AggregateError [ECONNREFUSED]: 
+    at internalConnectMultiple (node:net:1134:18)
+    at afterConnectMultiple (node:net:1715:7)
+6:22:41 AM [vite] http proxy error: /api/churn/models
+AggregateError [ECONNREFUSED]: 
+    at internalConnectMultiple (node:net:1134:18)
+    at afterConnectMultiple (node:net:1715:7)
+6:22:46 AM [vite] http proxy error: /api/churn/models
+AggregateError [ECONNREFUSED]: 
+    at internalConnectMultiple (node:net:1134:18)
+    at afterConnectMultiple (node:net:1715:7)
+6:22:51 AM [vite] http proxy error: /api/churn/models
+AggregateError [ECONNREFUSED]: 
+    at internalConnectMultiple (node:net:1134:18)
+    at afterConnectMultiple (node:net:1715:7)
+6:22:52 AM [vite] http proxy error: /api/churn/models
+AggregateError [ECONNREFUSED]: 
+    at internalConnectMultiple (node:net:1134:18)
+    at afterConnectMultiple (node:net:1715:7)
+6:22:56 AM [vite] http proxy error: /api/churn/models
+AggregateError [ECONNREFUSED]: 
+    at internalConnectMultiple (node:net:1134:18)
+    at afterConnectMultiple (node:net:1715:7)
+6:22:57 AM [vite] http proxy error: /api/churn/models
+AggregateError [ECONNREFUSED]: 
+    at internalConnectMultiple (node:net:1134:18)
+    at afterConnectMultiple (node:net:1715:7)
+6:23:02 AM [vite] http proxy error: /api/churn/models
+AggregateError [ECONNREFUSED]: 
+    at internalConnectMultiple (node:net:1134:18)
+    at afterConnectMultiple (node:net:1715:7)
+6:23:02 AM [vite] http proxy error: /api/churn/models
+AggregateError [ECONNREFUSED]: 
+    at internalConnectMultiple (node:net:1134:18)
+    at afterConnectMultiple (node:net:1715:7)
+6:23:07 AM [vite] http proxy error: /api/churn/models
+AggregateError [ECONNREFUSED]: 
+    at internalConnectMultiple (node:net:1134:18)
+    at afterConnectMultiple (node:net:1715:7)
+6:23:08 AM [vite] http proxy error: /api/churn/models
+AggregateError [ECONNREFUSED]: 
+    at internalConnectMultiple (node:net:1134:18)
+    at afterConnectMultiple (node:net:1715:7)
+6:23:13 AM [vite] http proxy error: /api/churn/models
+AggregateError [ECONNREFUSED]: 
+    at internalConnectMultiple (node:net:1134:18)
+    at afterConnectMultiple (node:net:1715:7)
+6:23:13 AM [vite] http proxy error: /api/churn/models
+AggregateError [ECONNREFUSED]: 
+    at internalConnectMultiple (node:net:1134:18)
+    at afterConnectMultiple (node:net:1715:7)
+6:23:19 AM [vite] http proxy error: /api/churn/models
+AggregateError [ECONNREFUSED]: 
+    at internalConnectMultiple (node:net:1134:18)
+    at afterConnectMultiple (node:net:1715:7)
+6:23:20 AM [vite] http proxy error: /api/churn/models
+AggregateError [ECONNREFUSED]: 
+    at internalConnectMultiple (node:net:1134:18)
+    at afterConnectMultiple (node:net:1715:7)
+6:23:25 AM [vite] http proxy error: /api/churn/models
+AggregateError [ECONNREFUSED]: 
+    at internalConnectMultiple (node:net:1134:18)
+    at afterConnectMultiple (node:net:1715:7)
+6:23:45 AM [vite] http proxy error: /api/churn/models
+AggregateError [ECONNREFUSED]: 
+    at internalConnectMultiple (node:net:1134:18)
+    at afterConnectMultiple (node:net:1715:7)
+6:26:03 AM [vite] http proxy error: /api/churn/models
+AggregateError [ECONNREFUSED]: 
+    at internalConnectMultiple (node:net:1134:18)
+    at afterConnectMultiple (node:net:1715:7)
+6:26:24 AM [vite] http proxy error: /api/churn/models
+AggregateError [ECONNREFUSED]: 
+    at internalConnectMultiple (node:net:1134:18)
+    at afterConnectMultiple (node:net:1715:7)
+6:26:34 AM [vite] http proxy error: /api/churn/models
+AggregateError [ECONNREFUSED]: 
+    at internalConnectMultiple (node:net:1134:18)
+    at afterConnectMultiple (node:net:1715:7)
+6:26:54 AM [vite] http proxy error: /api/churn/models
+AggregateError [ECONNREFUSED]: 
+    at internalConnectMultiple (node:net:1134:18)
+    at afterConnectMultiple (node:net:1715:7)
+6:28:56 AM [vite] http proxy error: /api/churn/models
+AggregateError [ECONNREFUSED]: 
+    at internalConnectMultiple (node:net:1134:18)
+    at afterConnectMultiple (node:net:1715:7)
+6:29:16 AM [vite] http proxy error: /api/churn/models
+AggregateError [ECONNREFUSED]: 
+    at internalConnectMultiple (node:net:1134:18)
+    at afterConnectMultiple (node:net:1715:7)
+6:32:03 AM [vite] http proxy error: /api/churn/models
+AggregateError [ECONNREFUSED]: 
+    at internalConnectMultiple (node:net:1134:18)
+    at afterConnectMultiple (node:net:1715:7)
+6:32:06 AM [vite] http proxy error: /api/churn/models
+AggregateError [ECONNREFUSED]: 
+    at internalConnectMultiple (node:net:1134:18)
+    at afterConnectMultiple (node:net:1715:7)
+6:41:17 AM [vite] http proxy error: /api/churn/models
+AggregateError [ECONNREFUSED]: 
+    at internalConnectMultiple (node:net:1134:18)
+    at afterConnectMultiple (node:net:1715:7)
+6:41:23 AM [vite] http proxy error: /api/churn/models
+AggregateError [ECONNREFUSED]: 
+    at internalConnectMultiple (node:net:1134:18)
+    at afterConnectMultiple (node:net:1715:7)
+6:41:24 AM [vite] http proxy error: /api/churn/models
+AggregateError [ECONNREFUSED]: 
+    at internalConnectMultiple (node:net:1134:18)
+    at afterConnectMultiple (node:net:1715:7)
+6:41:28 AM [vite] http proxy error: /api/churn/models
+AggregateError [ECONNREFUSED]: 
+    at internalConnectMultiple (node:net:1134:18)
+    at afterConnectMultiple (node:net:1715:7)
+6:41:29 AM [vite] http proxy error: /api/churn/models
+AggregateError [ECONNREFUSED]: 
+    at internalConnectMultiple (node:net:1134:18)
+    at afterConnectMultiple (node:net:1715:7)
+6:41:49 AM [vite] http proxy error: /api/churn/models
+AggregateError [ECONNREFUSED]: 
+    at internalConnectMultiple (node:net:1134:18)
+    at afterConnectMultiple (node:net:1715:7)
+6:46:10 AM [vite] http proxy error: /api/churn/models
+AggregateError [ECONNREFUSED]: 
+    at internalConnectMultiple (node:net:1134:18)
+    at afterConnectMultiple (node:net:1715:7)
+6:46:30 AM [vite] http proxy error: /api/churn/models
+AggregateError [ECONNREFUSED]: 
+    at internalConnectMultiple (node:net:1134:18)
+    at afterConnectMultiple (node:net:1715:7)
+7:03:24 AM [vite] http proxy error: /api/churn/models
+AggregateError [ECONNREFUSED]: 
+    at internalConnectMultiple (node:net:1134:18)
+    at afterConnectMultiple (node:net:1715:7)
+7:03:27 AM [vite] http proxy error: /api/churn/models
+AggregateError [ECONNREFUSED]: 
+    at internalConnectMultiple (node:net:1134:18)
+    at afterConnectMultiple (node:net:1715:7)
+7:03:28 AM [vite] http proxy error: /api/churn/models
+AggregateError [ECONNREFUSED]: 
+    at internalConnectMultiple (node:net:1134:18)
+    at afterConnectMultiple (node:net:1715:7)
+7:03:33 AM [vite] http proxy error: /api/churn/models
+AggregateError [ECONNREFUSED]: 
+    at internalConnectMultiple (node:net:1134:18)
+    at afterConnectMultiple (node:net:1715:7)
+7:03:38 AM [vite] http proxy error: /api/churn/models
+AggregateError [ECONNREFUSED]: 
+    at internalConnectMultiple (node:net:1134:18)
+    at afterConnectMultiple (node:net:1715:7)
+7:03:38 AM [vite] http proxy error: /api/churn/models
+AggregateError [ECONNREFUSED]: 
+    at internalConnectMultiple (node:net:1134:18)
+    at afterConnectMultiple (node:net:1715:7)
+7:03:44 AM [vite] http proxy error: /api/churn/models
+AggregateError [ECONNREFUSED]: 
+    at internalConnectMultiple (node:net:1134:18)
+    at afterConnectMultiple (node:net:1715:7)
+7:03:44 AM [vite] http proxy error: /api/churn/models
+AggregateError [ECONNREFUSED]: 
+    at internalConnectMultiple (node:net:1134:18)
+    at afterConnectMultiple (node:net:1715:7)
+7:03:50 AM [vite] http proxy error: /api/churn/models
+AggregateError [ECONNREFUSED]: 
+    at internalConnectMultiple (node:net:1134:18)
+    at afterConnectMultiple (node:net:1715:7)
+7:03:55 AM [vite] http proxy error: /api/churn/models
+AggregateError [ECONNREFUSED]: 
+    at internalConnectMultiple (node:net:1134:18)
+    at afterConnectMultiple (node:net:1715:7)
+7:03:55 AM [vite] http proxy error: /api/churn/models
+AggregateError [ECONNREFUSED]: 
+    at internalConnectMultiple (node:net:1134:18)
+    at afterConnectMultiple (node:net:1715:7)
+7:04:16 AM [vite] http proxy error: /api/churn/models
+AggregateError [ECONNREFUSED]: 
+    at internalConnectMultiple (node:net:1134:18)
+    at afterConnectMultiple (node:net:1715:7)
+7:19:29 AM [vite] http proxy error: /api/churn/models
+AggregateError [ECONNREFUSED]: 
+    at internalConnectMultiple (node:net:1134:18)
+    at afterConnectMultiple (node:net:1715:7)
+7:19:31 AM [vite] http proxy error: /api/churn/models
+AggregateError [ECONNREFUSED]: 
+    at internalConnectMultiple (node:net:1134:18)
+    at afterConnectMultiple (node:net:1715:7)
+7:19:59 AM [vite] http proxy error: /api/churn/models
+AggregateError [ECONNREFUSED]: 
+    at internalConnectMultiple (node:net:1134:18)
+    at afterConnectMultiple (node:net:1715:7)
+7:20:19 AM [vite] http proxy error: /api/churn/models
+AggregateError [ECONNREFUSED]: 
+    at internalConnectMultiple (node:net:1134:18)
+    at afterConnectMultiple (node:net:1715:7)
+7:24:23 AM [vite] http proxy error: /api/churn/models
+AggregateError [ECONNREFUSED]: 
+    at internalConnectMultiple (node:net:1134:18)
+    at afterConnectMultiple (node:net:1715:7)
+7:24:46 AM [vite] http proxy error: /api/churn/models
+AggregateError [ECONNREFUSED]: 
+    at internalConnectMultiple (node:net:1134:18)
+    at afterConnectMultiple (node:net:1715:7)
+7:27:02 AM [vite] http proxy error: /api/churn/models
+AggregateError [ECONNREFUSED]: 
+    at internalConnectMultiple (node:net:1134:18)
+    at afterConnectMultiple (node:net:1715:7)
+7:27:03 AM [vite] http proxy error: /api/churn/models
+AggregateError [ECONNREFUSED]: 
+    at internalConnectMultiple (node:net:1134:18)
+    at afterConnectMultiple (node:net:1715:7)
+7:27:04 AM [vite] http proxy error: /api/churn/models
+AggregateError [ECONNREFUSED]: 
+    at internalConnectMultiple (node:net:1134:18)
+    at afterConnectMultiple (node:net:1715:7)
+7:27:25 AM [vite] http proxy error: /api/churn/models
+AggregateError [ECONNREFUSED]: 
+    at internalConnectMultiple (node:net:1134:18)
+    at afterConnectMultiple (node:net:1715:7)
+7:28:57 AM [vite] http proxy error: /api/churn/models
+AggregateError [ECONNREFUSED]: 
+    at internalConnectMultiple (node:net:1134:18)
+    at afterConnectMultiple (node:net:1715:7)
+7:29:01 AM [vite] http proxy error: /api/churn/models
+AggregateError [ECONNREFUSED]: 
+    at internalConnectMultiple (node:net:1134:18)
+    at afterConnectMultiple (node:net:1715:7)
+7:29:05 AM [vite] http proxy error: /api/churn/models
+AggregateError [ECONNREFUSED]: 
+    at internalConnectMultiple (node:net:1134:18)
+    at afterConnectMultiple (node:net:1715:7)
+12:15:35 PM [vite] hmr update /src/components/demos/AgenticChatDemo.jsx, /src/index.css
+12:18:21 PM [vite] hmr update /src/index.css, /src/pages/CategoryPage.jsx, /src/pages/CaseStudyDetail.jsx, /src/components/Projects.jsx
+12:19:22 PM [vite] http proxy error: /api/churn/models
+AggregateError [ECONNREFUSED]: 
+    at internalConnectMultiple (node:net:1134:18)
+    at afterConnectMultiple (node:net:1715:7)
+12:19:27 PM [vite] http proxy error: /api/agentic-chat/status
+AggregateError [ECONNREFUSED]: 
+    at internalConnectMultiple (node:net:1134:18)
+    at afterConnectMultiple (node:net:1715:7)
+12:19:32 PM [vite] http proxy error: /api/agentic-chat/message
+AggregateError [ECONNREFUSED]: 
+    at internalConnectMultiple (node:net:1134:18)
+    at afterConnectMultiple (node:net:1715:7)
+12:19:37 PM [vite] http proxy error: /api/agentic-chat/status
+AggregateError [ECONNREFUSED]: 
+    at internalConnectMultiple (node:net:1134:18)
+    at afterConnectMultiple (node:net:1715:7)
+12:19:42 PM [vite] http proxy error: /api/churn/models
+AggregateError [ECONNREFUSED]: 
+    at internalConnectMultiple (node:net:1134:18)
+    at afterConnectMultiple (node:net:1715:7)
+12:20:01 PM [vite] http proxy error: /api/agentic-chat/status
+AggregateError [ECONNREFUSED]: 
+    at internalConnectMultiple (node:net:1134:18)
+    at afterConnectMultiple (node:net:1715:7)
+12:20:11 PM [vite] http proxy error: /api/agentic-chat/status
+AggregateError [ECONNREFUSED]: 
+    at internalConnectMultiple (node:net:1134:18)
+    at afterConnectMultiple (node:net:1715:7)
+3:09:26 PM [vite] http proxy error: /api/churn/models
+AggregateError [ECONNREFUSED]: 
+    at internalConnectMultiple (node:net:1134:18)
+    at afterConnectMultiple (node:net:1715:7)
+3:09:46 PM [vite] http proxy error: /api/churn/models
+AggregateError [ECONNREFUSED]: 
+    at internalConnectMultiple (node:net:1134:18)
+    at afterConnectMultiple (node:net:1715:7)
+7:52:15 PM [vite] hmr update /src/components/demos/RAGComparisonDemo.jsx, /src/index.css
+7:52:21 PM [vite] hmr update /src/components/demos/RAGComparisonDemo.jsx, /src/index.css
+7:52:26 PM [vite] hmr update /src/components/demos/RAGComparisonDemo.jsx, /src/index.css
+7:52:45 PM [vite] hmr update /src/components/demos/RAGComparisonDemo.jsx, /src/index.css
+7:52:50 PM [vite] hmr update /src/components/demos/RAGComparisonDemo.jsx, /src/index.css
+7:52:55 PM [vite] hmr update /src/components/demos/RAGComparisonDemo.jsx, /src/index.css
+7:53:13 PM [vite] hmr update /src/components/RAGProjectCard.jsx, /src/index.css
+7:53:19 PM [vite] hmr update /src/components/RAGProjectCard.jsx, /src/index.css
+7:53:45 PM [vite] hmr update /src/index.css, /src/pages/CategoryPage.jsx, /src/pages/CaseStudyDetail.jsx, /src/components/Projects.jsx
+7:53:58 PM [vite] hmr update /src/index.css, /src/pages/CategoryPage.jsx, /src/pages/CaseStudyDetail.jsx, /src/components/Projects.jsx
+7:54:13 PM [vite] hmr update /src/index.css, /src/pages/CategoryPage.jsx, /src/pages/CaseStudyDetail.jsx, /src/components/Projects.jsx
+7:54:36 PM [vite] hmr update /src/pages/RAGCaseStudyPage.jsx, /src/index.css
+7:56:50 PM [vite] http proxy error: /api/rag/status
+AggregateError [ECONNREFUSED]: 
+    at internalConnectMultiple (node:net:1134:18)
+    at afterConnectMultiple (node:net:1715:7)
+7:56:53 PM [vite] http proxy error: /api/rag/stream/naive
+AggregateError [ECONNREFUSED]: 
+    at internalConnectMultiple (node:net:1134:18)
+    at afterConnectMultiple (node:net:1715:7)
+7:56:53 PM [vite] http proxy error: /api/rag/stream/agentic
+AggregateError [ECONNREFUSED]: 
+    at internalConnectMultiple (node:net:1134:18)
+    at afterConnectMultiple (node:net:1715:7)
+7:56:53 PM [vite] http proxy error: /api/rag/stream/hyde
+AggregateError [ECONNREFUSED]: 
+    at internalConnectMultiple (node:net:1134:18)
+    at afterConnectMultiple (node:net:1715:7)
+7:56:53 PM [vite] http proxy error: /api/rag/stream/reranked
+AggregateError [ECONNREFUSED]: 
+    at internalConnectMultiple (node:net:1134:18)
+    at afterConnectMultiple (node:net:1715:7)
+7:56:53 PM [vite] http proxy error: /api/rag/stream/hybrid
+AggregateError [ECONNREFUSED]: 
+    at internalConnectMultiple (node:net:1134:18)
+    at afterConnectMultiple (node:net:1715:7)
+7:56:53 PM [vite] http proxy error: /api/rag/stream/naive
+AggregateError [ECONNREFUSED]: 
+    at internalConnectMultiple (node:net:1134:18)
+    at afterConnectMultiple (node:net:1715:7)
+7:56:53 PM [vite] http proxy error: /api/rag/stream/agentic
+AggregateError [ECONNREFUSED]: 
+    at internalConnectMultiple (node:net:1134:18)
+    at afterConnectMultiple (node:net:1715:7)
+7:56:53 PM [vite] http proxy error: /api/rag/stream/hyde
+AggregateError [ECONNREFUSED]: 
+    at internalConnectMultiple (node:net:1134:18)
+    at afterConnectMultiple (node:net:1715:7)
+7:56:53 PM [vite] http proxy error: /api/rag/stream/reranked
+AggregateError [ECONNREFUSED]: 
+    at internalConnectMultiple (node:net:1134:18)
+    at afterConnectMultiple (node:net:1715:7)
+7:56:53 PM [vite] http proxy error: /api/rag/stream/hybrid
+AggregateError [ECONNREFUSED]: 
+    at internalConnectMultiple (node:net:1134:18)
+    at afterConnectMultiple (node:net:1715:7)
+7:56:54 PM [vite] http proxy error: /api/rag/stream/hybrid
+AggregateError [ECONNREFUSED]: 
+    at internalConnectMultiple (node:net:1134:18)
+    at afterConnectMultiple (node:net:1715:7)
+7:56:54 PM [vite] http proxy error: /api/rag/stream/naive
+AggregateError [ECONNREFUSED]: 
+    at internalConnectMultiple (node:net:1134:18)
+    at afterConnectMultiple (node:net:1715:7)
+7:56:54 PM [vite] http proxy error: /api/rag/stream/agentic
+AggregateError [ECONNREFUSED]: 
+    at internalConnectMultiple (node:net:1134:18)
+    at afterConnectMultiple (node:net:1715:7)
+7:56:54 PM [vite] http proxy error: /api/rag/stream/hyde
+AggregateError [ECONNREFUSED]: 
+    at internalConnectMultiple (node:net:1134:18)
+    at afterConnectMultiple (node:net:1715:7)
+7:56:54 PM [vite] http proxy error: /api/rag/stream/reranked
+AggregateError [ECONNREFUSED]: 
+    at internalConnectMultiple (node:net:1134:18)
+    at afterConnectMultiple (node:net:1715:7)
+7:56:54 PM [vite] http proxy error: /api/rag/stream/hybrid
+AggregateError [ECONNREFUSED]: 
+    at internalConnectMultiple (node:net:1134:18)
+    at afterConnectMultiple (node:net:1715:7)
+7:56:54 PM [vite] http proxy error: /api/rag/stream/naive
+AggregateError [ECONNREFUSED]: 
+    at internalConnectMultiple (node:net:1134:18)
+    at afterConnectMultiple (node:net:1715:7)
+7:56:54 PM [vite] http proxy error: /api/rag/stream/agentic
+AggregateError [ECONNREFUSED]: 
+    at internalConnectMultiple (node:net:1134:18)
+    at afterConnectMultiple (node:net:1715:7)
+7:56:54 PM [vite] http proxy error: /api/rag/stream/hyde
+AggregateError [ECONNREFUSED]: 
+    at internalConnectMultiple (node:net:1134:18)
+    at afterConnectMultiple (node:net:1715:7)
+7:56:54 PM [vite] http proxy error: /api/rag/stream/reranked
+AggregateError [ECONNREFUSED]: 
+    at internalConnectMultiple (node:net:1134:18)
+    at afterConnectMultiple (node:net:1715:7)
+7:57:16 PM [vite] http proxy error: /api/rag/status
+AggregateError [ECONNREFUSED]: 
+    at internalConnectMultiple (node:net:1134:18)
+    at afterConnectMultiple (node:net:1715:7)
+7:59:59 PM [vite] hmr update /src/pages/RAGCaseStudyPage.jsx, /src/index.css
+8:00:04 PM [vite] hmr update /src/pages/RAGCaseStudyPage.jsx, /src/index.css
+8:00:52 PM [vite] http proxy error: /api/rag/status
+AggregateError [ECONNREFUSED]: 
+    at internalConnectMultiple (node:net:1134:18)
+    at afterConnectMultiple (node:net:1715:7)
+8:01:12 PM [vite] http proxy error: /api/rag/status
+AggregateError [ECONNREFUSED]: 
+    at internalConnectMultiple (node:net:1134:18)
+    at afterConnectMultiple (node:net:1715:7)
+8:01:21 PM [vite] http proxy error: /api/rag/status
+AggregateError [ECONNREFUSED]: 
+    at internalConnectMultiple (node:net:1134:18)
+    at afterConnectMultiple (node:net:1715:7)
+8:01:41 PM [vite] http proxy error: /api/rag/status
+AggregateError [ECONNREFUSED]: 
+    at internalConnectMultiple (node:net:1134:18)
+    at afterConnectMultiple (node:net:1715:7)
+8:02:24 PM [vite] hmr update /src/pages/RAGCaseStudyPage.jsx, /src/index.css
+8:02:29 PM [vite] hmr update /src/pages/RAGCaseStudyPage.jsx, /src/index.css
+8:02:40 PM [vite] hmr update /src/index.css, /src/pages/CategoryPage.jsx, /src/pages/CaseStudyDetail.jsx, /src/components/Projects.jsx
+8:14:04 PM [vite] hmr update /src/pages/CaseStudyDetail.jsx, /src/index.css
+8:14:09 PM [vite] hmr update /src/pages/CaseStudyDetail.jsx, /src/index.css
+8:15:48 PM [vite] hmr update /src/index.css, /src/pages/CategoryPage.jsx, /src/pages/CaseStudyDetail.jsx, /src/components/Projects.jsx
+8:17:26 PM [vite] http proxy error: /health
+AggregateError [ECONNREFUSED]: 
+    at internalConnectMultiple (node:net:1134:18)
+    at afterConnectMultiple (node:net:1715:7)
+8:19:08 PM [vite] hmr update /src/pages/CaseStudyDetail.jsx, /src/index.css
+8:19:16 PM [vite] hmr update /src/pages/CaseStudyDetail.jsx, /src/index.css
+8:19:26 PM [vite] hmr update /src/index.css, /src/pages/CategoryPage.jsx, /src/pages/CaseStudyDetail.jsx, /src/components/Projects.jsx

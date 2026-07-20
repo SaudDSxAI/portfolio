@@ -11,18 +11,20 @@ const SUGGESTIONS = [
 const VARIANTS = [
   { key: 'naive', label: 'Naive', note: 'Embed the question, cosine top-3.' },
   { key: 'hybrid', label: 'Hybrid', note: 'BM25 + embeddings, merged with RRF.' },
+  { key: 'reranked', label: 'Re-ranked', note: 'Top-15 by embeddings, cross-encoder re-scores each pair.' },
   { key: 'hyde', label: 'HyDE', note: 'Embeds a hypothetical answer, not the question.' },
   { key: 'agentic', label: 'Agentic', note: 'LLM decides whether to search again.' },
 ];
 
-// One column = one independent live SSE stream. Each column owns its own
-// fetch + ReadableStream reader, so all four genuinely run concurrently —
-// this isn't four requests dressed up to look parallel, each one really is
+// One row = one independent live SSE stream. Each row owns its own
+// fetch + ReadableStream reader, so all five genuinely run concurrently —
+// this isn't five requests dressed up to look parallel, each one really is
 // its own in-flight connection updating its own state as bytes arrive.
-function StreamColumn({ variant, label, note, query }) {
+function StreamRow({ variant, label, note, query }) {
   const [status, setStatus] = useState('Connecting…');
   const [hypothetical, setHypothetical] = useState(null);
   const [hits, setHits] = useState(null);
+  const [lowConfidence, setLowConfidence] = useState(false);
   const [answer, setAnswer] = useState('');
   const [done, setDone] = useState(false);
   const [error, setError] = useState(null);
@@ -66,7 +68,11 @@ function StreamColumn({ variant, label, note, query }) {
 
             if (evt.type === 'status') setStatus(evt.text);
             else if (evt.type === 'hypothetical') { setHypothetical(evt.text); setStatus('Retrieving…'); }
-            else if (evt.type === 'retrieved') { setHits(evt.hits); setStatus('Generating…'); }
+            else if (evt.type === 'retrieved') {
+              setHits(evt.hits);
+              setLowConfidence(!!evt.low_confidence);
+              setStatus(evt.low_confidence ? 'Low relevance detected…' : 'Generating…');
+            }
             else if (evt.type === 'token') setAnswer((prev) => prev + evt.text);
             else if (evt.type === 'done') setDone(true);
           }
@@ -82,49 +88,58 @@ function StreamColumn({ variant, label, note, query }) {
   }, []);
 
   return (
-    <div className="bg-white/70 border border-black/10 rounded-2xl p-4 flex flex-col gap-2.5 min-h-[280px]">
-      <div>
+    <div className="bg-white/70 border border-black/10 rounded-2xl p-4 flex flex-col sm:flex-row gap-3 sm:gap-4">
+      {/* Left: fixed-width label sidebar, so each technique reads as a labeled row instead of a repeated card */}
+      <div className="sm:w-40 sm:shrink-0 flex sm:flex-col sm:justify-start items-start gap-1">
         <h3 className="text-sm font-heading font-bold text-black">{label}</h3>
-        <p className="text-[11px] text-zinc-500">{note}</p>
+        <p className="text-[11px] text-zinc-500 sm:leading-snug">{note}</p>
+        {!done && !error && (
+          <div className="flex items-center gap-1.5 text-[11px] text-blue-700 sm:mt-1">
+            <span className="w-1.5 h-1.5 rounded-full bg-blue-500 animate-pulse shrink-0" />
+            {status}
+          </div>
+        )}
       </div>
 
-      {!done && !error && (
-        <div className="flex items-center gap-1.5 text-xs text-blue-700">
-          <span className="w-1.5 h-1.5 rounded-full bg-blue-500 animate-pulse" />
-          {status}
-        </div>
-      )}
+      {/* Right: the actual streamed content, using the full remaining row width */}
+      <div className="flex-1 min-w-0 flex flex-col gap-2">
+        {hypothetical && (
+          <details className="text-[11px] bg-warm-100/70 border border-black/10 rounded-lg p-2">
+            <summary className="cursor-pointer font-semibold text-zinc-600">Hypothetical answer (retrieval only)</summary>
+            <p className="mt-1.5 text-zinc-600 leading-relaxed">{hypothetical}</p>
+          </details>
+        )}
 
-      {hypothetical && (
-        <details className="text-[11px] bg-warm-100/70 border border-black/10 rounded-lg p-2">
-          <summary className="cursor-pointer font-semibold text-zinc-600">Hypothetical answer (retrieval only)</summary>
-          <p className="mt-1.5 text-zinc-600 leading-relaxed">{hypothetical}</p>
-        </details>
-      )}
+        {lowConfidence && (
+          <p className="text-[11px] font-medium text-amber-700 bg-amber-50 border border-amber-200 rounded-lg px-2 py-1">
+            Cross-encoder score was negative — flagged as not genuinely relevant rather than forcing an answer.
+          </p>
+        )}
 
-      {error && <p className="text-xs text-red-600">{error}</p>}
+        {error && <p className="text-xs text-red-600">{error}</p>}
 
-      <p className="text-sm text-zinc-800 leading-relaxed whitespace-pre-wrap flex-1">
-        {answer}
-        {!done && !error && <span className="inline-block w-1.5 h-3.5 bg-blue-500 ml-0.5 animate-pulse align-middle" />}
-      </p>
+        <p className="text-sm text-zinc-800 leading-relaxed whitespace-pre-wrap">
+          {answer}
+          {!done && !error && <span className="inline-block w-1.5 h-3.5 bg-blue-500 ml-0.5 animate-pulse align-middle" />}
+        </p>
 
-      {hits?.length > 0 && (
-        <details className="text-[11px]">
-          <summary className="cursor-pointer font-semibold text-zinc-500">Retrieved chunks ({hits.length})</summary>
-          <div className="mt-1.5 space-y-1.5">
-            {hits.map((h, i) => (
-              <div key={i} className="bg-warm-100/60 border border-black/10 rounded-lg p-2">
-                <div className="flex justify-between text-zinc-500 mb-0.5">
-                  <span className="font-semibold">{h.title}</span>
-                  <span>score={h.score}</span>
+        {hits?.length > 0 && (
+          <details className="text-[11px]">
+            <summary className="cursor-pointer font-semibold text-zinc-500">Retrieved chunks ({hits.length})</summary>
+            <div className="mt-1.5 grid sm:grid-cols-2 gap-1.5">
+              {hits.map((h, i) => (
+                <div key={i} className="bg-warm-100/60 border border-black/10 rounded-lg p-2">
+                  <div className="flex justify-between text-zinc-500 mb-0.5">
+                    <span className="font-semibold">{h.title}</span>
+                    <span>score={h.score}</span>
+                  </div>
+                  <p className="text-zinc-600 leading-relaxed">{h.text}…</p>
                 </div>
-                <p className="text-zinc-600 leading-relaxed">{h.text}…</p>
-              </div>
-            ))}
-          </div>
-        </details>
-      )}
+              ))}
+            </div>
+          </details>
+        )}
+      </div>
     </div>
   );
 }
@@ -183,7 +198,7 @@ export default function RAGComparisonDemo() {
   return (
     <div>
       <p className="text-xs text-zinc-500 mb-4">
-        Ask one question. All four techniques search and answer live, in parallel, in their own column below.
+        Ask one question. All five techniques search and answer live, in parallel, in their own row below.
       </p>
 
       <div className="flex flex-wrap gap-2 mb-3">
@@ -218,9 +233,9 @@ export default function RAGComparisonDemo() {
       </div>
 
       {activeQuery && (
-        <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-3" key={runId}>
+        <div className="flex flex-col gap-3" key={runId}>
           {VARIANTS.map((v) => (
-            <StreamColumn key={v.key} variant={v.key} label={v.label} note={v.note} query={activeQuery} />
+            <StreamRow key={v.key} variant={v.key} label={v.label} note={v.note} query={activeQuery} />
           ))}
         </div>
       )}

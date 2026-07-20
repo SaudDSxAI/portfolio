@@ -10,7 +10,7 @@ const STATUS_DOT = {
 
 // Distinct from the generic CaseStudyCard's "icon + headline metric + mini
 // bar chart" preview. This project doesn't have a single headline number,
-// it has four techniques with four different real outcomes. The preview
+// it has five techniques with five different real outcomes. The preview
 // leads with that instead: a small verdict strip, not a fake single metric.
 export default function RAGProjectCard({ study, categoryKey, index = 0 }) {
   const theme = getTheme(study.accentColor);
@@ -31,9 +31,9 @@ export default function RAGProjectCard({ study, categoryKey, index = 0 }) {
             <span className={`flex items-center justify-center w-10 h-10 rounded-xl ${theme.iconBg} text-white shadow-md ${theme.iconShadow}`}>
               <Icon className="w-5 h-5" strokeWidth={2} />
             </span>
-            <span className="text-[11px] text-zinc-500 font-medium">4 techniques, live</span>
+            <span className="text-[11px] text-zinc-500 font-medium">5 techniques, live</span>
           </div>
-          <div className="grid grid-cols-4 gap-1.5">
+          <div className="grid grid-cols-5 gap-1.5">
             {study.verdicts.map((v) => (
               <div key={v.key} className="flex flex-col items-center gap-1">
                 <span className={`w-2 h-2 rounded-full ${STATUS_DOT[v.status]}`} />
