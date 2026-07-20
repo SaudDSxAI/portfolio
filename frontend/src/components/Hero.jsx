@@ -51,7 +51,7 @@ export default function Hero() {
  return (
  <section
  id="hero"
- className="relative h-dvh flex items-center justify-center overflow-hidden px-6"
+ className="relative min-h-dvh flex items-center justify-center overflow-x-hidden px-5 sm:px-6 py-16 md:py-0"
  >
 
  <div className="relative z-10 max-w-5xl w-full mx-auto">

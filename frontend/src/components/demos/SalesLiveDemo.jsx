@@ -107,7 +107,7 @@ export default function SalesLiveDemo({ theme }) {
         </ResponsiveContainer>
       </div>
 
-      <div className="grid grid-cols-3 gap-3">
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
         {data.forecast.slice(0, 3).map((f) => (
           <div key={f.date} className="bg-white/70 border border-black/10 rounded-xl p-3 text-center shadow-sm">
             <div className="text-[11px] text-zinc-500 uppercase tracking-wide">{fmtMonth(f.date)}</div>

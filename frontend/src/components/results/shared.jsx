@@ -350,7 +350,7 @@ export function HeadToHead({ left, right, ribbon, theme }) {
           {ribbon}
         </div>
       )}
-      <div className="grid grid-cols-2 gap-4">
+      <div className="grid sm:grid-cols-2 gap-4">
         {[left, right].map((side, i) => (
           <div key={i} className={`rounded-2xl p-5 border ${side.chosen ? 'border-black/20 bg-white/70' : 'border-black/10 bg-white/30'}`}>
             <div className="flex items-center justify-between mb-4">

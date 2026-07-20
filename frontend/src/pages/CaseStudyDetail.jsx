@@ -144,6 +144,9 @@ function ModelComparisonChart({ data, metricKey = 'rocAuc', metricLabel = 'ROC-A
 }
 
 function FeatureImportanceChart({ data, theme }) {
+  // Long feature labels get a narrower column on phones so the bars keep
+  // enough room to stay readable.
+  const labelWidth = typeof window !== 'undefined' && window.innerWidth < 640 ? 110 : 170;
   return (
     <ResponsiveContainer width="100%" height={320}>
       <BarChart
@@ -153,7 +156,7 @@ function FeatureImportanceChart({ data, theme }) {
       >
         <CartesianGrid strokeDasharray="3 3" stroke="#e3d8c6" />
         <XAxis type="number" tick={{ fontSize: 11, fill: '#585b3c' }} />
-        <YAxis dataKey="feature" type="category" width={170} tick={{ fontSize: 11, fill: '#41432d' }} />
+        <YAxis dataKey="feature" type="category" width={labelWidth} tick={{ fontSize: 11, fill: '#41432d' }} />
         <Tooltip formatter={(v) => v.toFixed(3)} contentStyle={{ background: '#fff', border: '1px solid #e3d8c6', borderRadius: 10 }} />
         <Bar dataKey="coefficient" radius={[0, 6, 6, 0]}>
           {data.map((d, i) => (
@@ -322,7 +325,7 @@ const DEFAULT_RULE_COLUMNS = [
 function RulesTable({ rows, theme, columns = DEFAULT_RULE_COLUMNS }) {
   return (
     <div className="overflow-x-auto rounded-2xl border border-black/10">
-      <table className="w-full text-sm">
+      <table className="w-full min-w-[540px] text-sm">
         <thead>
           <tr className="bg-warm-100/80 border-b border-black/10">
             {columns.map((c) => (
@@ -388,12 +391,12 @@ export default function CaseStudyDetail() {
               {meta?.label} Case Study
             </div>
           </div>
-          <h1 className="text-4xl md:text-5xl font-heading font-bold text-black mb-4 tracking-tight leading-[1.05]">
+          <h1 className="text-3xl sm:text-4xl md:text-5xl font-heading font-bold text-black mb-4 tracking-tight leading-[1.05]">
             {study.title}
           </h1>
           <p className="text-lg text-zinc-700 leading-relaxed mb-6 max-w-3xl">{study.tagline}</p>
 
-          <div className="flex items-center gap-4 mb-10">
+          <div className="flex flex-wrap items-center gap-3 mb-10">
             {study.github && (
               <a
                 href={study.github}

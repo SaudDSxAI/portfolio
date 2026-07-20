@@ -13,7 +13,7 @@ export default function About() {
  subtitle="AI Engineer & Co-Founder at Oval Labs building production-grade LLM applications and agentic systems."
  />
 
- <div className="grid md:grid-cols-5 gap-12 items-center">
+ <div className="grid md:grid-cols-5 gap-8 md:gap-12 items-center">
  {/* Photo */}
  <ScrollReveal className="md:col-span-2 flex justify-center">
  <div className="relative group">
@@ -26,7 +26,7 @@ export default function About() {
  height="320"
  loading="lazy"
  decoding="async"
- className="w-64 h-72 md:w-72 md:h-80 object-cover object-top rounded-2xl ring-2 ring-black shadow-2xl"
+ className="w-52 h-60 sm:w-64 sm:h-72 md:w-72 md:h-80 object-cover object-top rounded-2xl ring-2 ring-black shadow-2xl"
  />
  {/* Overlay gradient */}
  <div className="absolute inset-0 bg-gradient-to-t from-black/25 via-transparent to-transparent rounded-2xl" />

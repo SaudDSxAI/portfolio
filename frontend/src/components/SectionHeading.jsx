@@ -14,11 +14,11 @@ export default function SectionHeading({ title, subtitle, eyebrow, align = 'cent
  {eyebrow}
  </p>
  )}
- <h2 className="text-4xl md:text-5xl lg:text-6xl font-heading font-bold text-black mb-4 tracking-tight leading-[1.05]">
+ <h2 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-heading font-bold text-black mb-4 tracking-tight leading-[1.05]">
  {title}
  </h2>
  {subtitle && (
- <p className="text-lg text-zinc-600 max-w-2xl mx-auto leading-relaxed">
+ <p className="text-base sm:text-lg text-zinc-600 max-w-2xl mx-auto leading-relaxed">
  {subtitle}
  </p>
  )}
