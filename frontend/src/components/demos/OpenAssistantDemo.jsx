@@ -29,7 +29,7 @@ export default function OpenAssistantDemo() {
 
       <button
         onClick={openWidget}
-        className="px-5 py-3 rounded-xl bg-gradient-to-br from-indigo-500 to-indigo-700 text-white text-sm font-semibold shadow-md hover:shadow-lg transition-all"
+        className="shrink-0 px-5 py-3 rounded-xl bg-gradient-to-br from-indigo-500 to-indigo-700 text-white text-sm font-semibold shadow-md hover:shadow-lg transition-all"
       >
         Open the assistant
       </button>

@@ -65,7 +65,7 @@ export default function RAGCaseStudyPage({ study, categoryMeta }) {
   const [openKey, setOpenKey] = useState(study.techniqueDeepDives?.[0]?.key || null);
 
   return (
-    <article className="relative py-28 px-6">
+    <article className="relative py-24 sm:py-28 px-4 sm:px-6">
       <BackButton to="/rag" label={`Back to ${categoryMeta?.label || 'projects'}`} />
       <div className="max-w-4xl mx-auto">
 
@@ -79,7 +79,7 @@ export default function RAGCaseStudyPage({ study, categoryMeta }) {
               {categoryMeta?.label}
             </div>
           </div>
-          <h1 className="text-3xl md:text-4xl font-heading font-bold text-black mb-3 tracking-tight leading-[1.1] max-w-2xl">
+          <h1 className="text-2xl sm:text-3xl md:text-4xl font-heading font-bold text-black mb-3 tracking-tight leading-[1.1] max-w-2xl">
             {study.title}
           </h1>
           <p className="text-base text-zinc-700 leading-relaxed mb-5 max-w-2xl">{study.tagline}</p>
@@ -106,7 +106,7 @@ export default function RAGCaseStudyPage({ study, categoryMeta }) {
         {/* The demo IS the case study — leads immediately, not buried after
             hero metrics and architecture diagrams like every other project. */}
         <ScrollReveal delay={80}>
-          <div className={`rounded-3xl border-2 ${theme.hoverBorder} bg-gradient-to-br from-blue-50/50 to-transparent p-5 md:p-7 mb-10`}>
+          <div className={`rounded-3xl border-2 ${theme.hoverBorder} bg-gradient-to-br from-blue-50/50 to-transparent p-3 sm:p-5 md:p-7 mb-10`}>
             <h2 className="text-lg font-heading font-bold text-black mb-1">{study.liveDemoHeading}</h2>
             <p className="text-sm text-zinc-600 mb-5">{study.liveDemoBlurb}</p>
             <RAGComparisonDemo />
@@ -130,7 +130,7 @@ export default function RAGCaseStudyPage({ study, categoryMeta }) {
           <div className="mb-12">
             <h2 className="text-lg font-heading font-bold text-black mb-1">The full story</h2>
             <p className="text-sm text-zinc-600 mb-2">Click a section to expand it.</p>
-            <div className="bg-white/50 border border-black/10 rounded-2xl px-5">
+            <div className="bg-white/50 border border-black/10 rounded-2xl px-4 sm:px-5">
               {study.techniqueDeepDives.map((item) => (
                 <DeepDiveRow
                   key={item.key}

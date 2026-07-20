@@ -28,7 +28,7 @@ export default function CategoryPage() {
   }
 
   return (
-    <section className="relative py-32 px-6 min-h-screen">
+    <section className="relative py-24 sm:py-32 px-4 sm:px-6 min-h-screen">
       <BackButton to="/projects" label="Back to Projects" />
       <div className="max-w-6xl mx-auto">
         <SectionHeading eyebrow={meta.eyebrow} title={meta.label} subtitle={meta.subtitle} align="left" />

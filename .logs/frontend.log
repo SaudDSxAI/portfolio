@@ -2197,3 +2197,92 @@ AggregateError [ECONNREFUSED]:
 AggregateError [ECONNREFUSED]: 
     at internalConnectMultiple (node:net:1134:18)
     at afterConnectMultiple (node:net:1715:7)
+1:36:39 AM [vite] http proxy error: /api/rag/stream/naive
+AggregateError [ECONNREFUSED]: 
+    at internalConnectMultiple (node:net:1134:18)
+    at afterConnectMultiple (node:net:1715:7)
+1:36:39 AM [vite] http proxy error: /api/rag/stream/agentic
+AggregateError [ECONNREFUSED]: 
+    at internalConnectMultiple (node:net:1134:18)
+    at afterConnectMultiple (node:net:1715:7)
+1:36:39 AM [vite] http proxy error: /api/rag/stream/hyde
+AggregateError [ECONNREFUSED]: 
+    at internalConnectMultiple (node:net:1134:18)
+    at afterConnectMultiple (node:net:1715:7)
+1:36:39 AM [vite] http proxy error: /api/rag/stream/reranked
+AggregateError [ECONNREFUSED]: 
+    at internalConnectMultiple (node:net:1134:18)
+    at afterConnectMultiple (node:net:1715:7)
+1:36:39 AM [vite] http proxy error: /api/rag/stream/hybrid
+AggregateError [ECONNREFUSED]: 
+    at internalConnectMultiple (node:net:1134:18)
+    at afterConnectMultiple (node:net:1715:7)
+1:36:39 AM [vite] http proxy error: /api/rag/stream/hybrid
+AggregateError [ECONNREFUSED]: 
+    at internalConnectMultiple (node:net:1134:18)
+    at afterConnectMultiple (node:net:1715:7)
+1:36:39 AM [vite] http proxy error: /api/rag/stream/naive
+AggregateError [ECONNREFUSED]: 
+    at internalConnectMultiple (node:net:1134:18)
+    at afterConnectMultiple (node:net:1715:7)
+1:36:39 AM [vite] http proxy error: /api/rag/stream/agentic
+AggregateError [ECONNREFUSED]: 
+    at internalConnectMultiple (node:net:1134:18)
+    at afterConnectMultiple (node:net:1715:7)
+1:36:39 AM [vite] http proxy error: /api/rag/stream/hyde
+AggregateError [ECONNREFUSED]: 
+    at internalConnectMultiple (node:net:1134:18)
+    at afterConnectMultiple (node:net:1715:7)
+1:36:39 AM [vite] http proxy error: /api/rag/stream/reranked
+AggregateError [ECONNREFUSED]: 
+    at internalConnectMultiple (node:net:1134:18)
+    at afterConnectMultiple (node:net:1715:7)
+1:36:54 AM [vite] http proxy error: /api/rag/status
+AggregateError [ECONNREFUSED]: 
+    at internalConnectMultiple (node:net:1134:18)
+    at afterConnectMultiple (node:net:1715:7)
+2:21:03 AM [vite] http proxy error: /api/rag/status
+AggregateError [ECONNREFUSED]: 
+    at internalConnectMultiple (node:net:1134:18)
+    at afterConnectMultiple (node:net:1715:7)
+2:39:28 AM [vite] http proxy error: /api/rag/status
+AggregateError [ECONNREFUSED]: 
+    at internalConnectMultiple (node:net:1134:18)
+    at afterConnectMultiple (node:net:1715:7)
+2:44:52 AM [vite] hmr update /src/index.css
+2:44:59 AM [vite] hmr update /src/components/demos/RAGComparisonDemo.jsx, /src/index.css
+2:45:02 AM [vite] hmr update /src/components/demos/RAGComparisonDemo.jsx, /src/index.css
+2:45:03 AM [vite] hmr update /src/pages/RAGCaseStudyPage.jsx, /src/index.css
+2:45:06 AM [vite] hmr update /src/pages/RAGCaseStudyPage.jsx, /src/index.css
+2:45:08 AM [vite] hmr update /src/pages/RAGCaseStudyPage.jsx, /src/index.css
+2:45:10 AM [vite] hmr update /src/pages/RAGCaseStudyPage.jsx, /src/index.css
+2:45:25 AM [vite] hmr update /src/components/demos/ClipSearchDemo.jsx, /src/index.css
+2:45:25 AM [vite] hmr update /src/components/demos/AgenticChatDemo.jsx, /src/index.css
+2:45:25 AM [vite] hmr update /src/components/demos/GPT2LoraDemo.jsx, /src/index.css
+2:45:25 AM [vite] hmr update /src/components/demos/AgenticChatDemo.jsx, /src/index.css
+2:45:25 AM [vite] hmr update /src/components/demos/ClipSearchDemo.jsx, /src/index.css
+2:45:25 AM [vite] hmr update /src/components/demos/OpenAssistantDemo.jsx, /src/index.css
+2:45:25 AM [vite] http proxy error: /api/rag/status
+AggregateError [ECONNREFUSED]: 
+    at internalConnectMultiple (node:net:1134:18)
+    at afterConnectMultiple (node:net:1715:7)
+2:45:25 AM [vite] hmr update /src/components/demos/ChurnLiveDemo.jsx, /src/index.css
+2:45:25 AM [vite] hmr update /src/components/demos/SentimentLiveDemo.jsx, /src/index.css
+2:45:25 AM [vite] hmr update /src/components/demos/HeartLiveDemo.jsx, /src/index.css
+2:45:25 AM [vite] hmr update /src/components/demos/HouseLiveDemo.jsx, /src/index.css
+2:45:25 AM [vite] hmr update /src/components/demos/FraudLiveDemo.jsx, /src/index.css
+2:45:25 AM [vite] hmr update /src/components/demos/AnomalyLiveDemo.jsx, /src/index.css
+2:45:33 AM [vite] hmr update /src/components/demos/ChurnLiveDemo.jsx, /src/index.css
+2:45:33 AM [vite] hmr update /src/components/demos/HeartLiveDemo.jsx, /src/index.css
+2:45:43 AM [vite] hmr update /src/components/demos/GPT2LoraDemo.jsx, /src/index.css
+2:45:48 AM [vite] http proxy error: /api/rag/status
+AggregateError [ECONNREFUSED]: 
+    at internalConnectMultiple (node:net:1134:18)
+    at afterConnectMultiple (node:net:1715:7)
+2:45:52 AM [vite] hmr update /src/pages/CaseStudyDetail.jsx, /src/index.css
+2:45:54 AM [vite] hmr update /src/pages/CaseStudyDetail.jsx, /src/index.css
+2:45:56 AM [vite] hmr update /src/pages/CaseStudyDetail.jsx, /src/index.css
+2:45:58 AM [vite] hmr update /src/pages/CaseStudyDetail.jsx, /src/index.css
+2:46:00 AM [vite] hmr update /src/components/SectionHeading.jsx, /src/index.css
+2:46:02 AM [vite] hmr update /src/components/SectionHeading.jsx, /src/index.css
+2:46:03 AM [vite] hmr update /src/pages/CategoryPage.jsx, /src/index.css

@@ -13,6 +13,12 @@
     @apply bg-warm-50 text-black font-sans;
   }
 
+  /* Hard guard against horizontal scroll on small screens — any element
+     that still overflows gets clipped instead of widening the page. */
+  html, body {
+    overflow-x: clip;
+  }
+
   h1, h2, h3, h4, h5, h6 {
     @apply font-heading;
   }

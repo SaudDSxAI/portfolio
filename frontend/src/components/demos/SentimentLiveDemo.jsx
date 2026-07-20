@@ -136,7 +136,7 @@ export default function SentimentLiveDemo({ theme }) {
           }`}>
             {result.sentiment}
           </span>
-          <div className="text-5xl font-heading font-bold text-black leading-none mt-2">
+          <div className="text-3xl sm:text-5xl font-heading font-bold text-black leading-none break-words mt-2">
             {(result.positive_probability * 100).toFixed(1)}%
           </div>
           <div className="text-xs text-zinc-500 mt-1.5 mb-5">predicted probability of positive sentiment</div>

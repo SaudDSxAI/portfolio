@@ -4,7 +4,7 @@ export default function SectionHeading({ title, subtitle, eyebrow, align = 'cent
  const isCenter = align === 'center';
  return (
  <ScrollReveal>
- <div className={`mb-16 ${isCenter ? 'text-center' : ''}`}>
+ <div className={`mb-10 sm:mb-16 ${isCenter ? 'text-center' : ''}`}>
  {eyebrow && (
  <p
  className={`text-[11px] font-semibold uppercase tracking-[0.25em] text-primary-700 mb-3 ${
@@ -14,7 +14,7 @@ export default function SectionHeading({ title, subtitle, eyebrow, align = 'cent
  {eyebrow}
  </p>
  )}
- <h2 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-heading font-bold text-black mb-4 tracking-tight leading-[1.05]">
+ <h2 className="text-2xl sm:text-4xl md:text-5xl lg:text-6xl font-heading font-bold text-black mb-4 tracking-tight leading-[1.1]">
  {title}
  </h2>
  {subtitle && (

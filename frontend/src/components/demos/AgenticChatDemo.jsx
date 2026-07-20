@@ -182,12 +182,12 @@ function ChatPanel() {
           onChange={(e) => setInput(e.target.value)}
           placeholder="Type your question here…"
           disabled={loading}
-          className="flex-1 px-4 py-3 rounded-xl border border-black/15 bg-white text-black text-sm focus:outline-none focus:border-slate-600 focus:ring-2 focus:ring-slate-300/40 disabled:opacity-60"
+          className="flex-1 min-w-0 px-4 py-3 rounded-xl border border-black/15 bg-white text-black text-sm focus:outline-none focus:border-slate-600 focus:ring-2 focus:ring-slate-300/40 disabled:opacity-60"
         />
         <button
           type="submit"
           disabled={loading || !input.trim()}
-          className="px-5 py-3 rounded-xl bg-gradient-to-br from-slate-600 to-slate-800 text-white text-sm font-semibold shadow-md hover:shadow-lg transition-all disabled:opacity-50"
+          className="shrink-0 px-5 py-3 rounded-xl bg-gradient-to-br from-slate-600 to-slate-800 text-white text-sm font-semibold shadow-md hover:shadow-lg transition-all disabled:opacity-50"
         >
           Send
         </button>
@@ -310,12 +310,12 @@ function ResearchPanel() {
           onChange={(e) => setQuery(e.target.value)}
           placeholder="What do you want researched?"
           disabled={running}
-          className="flex-1 px-4 py-3 rounded-xl border border-black/15 bg-white text-black text-sm focus:outline-none focus:border-slate-600 focus:ring-2 focus:ring-slate-300/40 disabled:opacity-60"
+          className="flex-1 min-w-0 px-4 py-3 rounded-xl border border-black/15 bg-white text-black text-sm focus:outline-none focus:border-slate-600 focus:ring-2 focus:ring-slate-300/40 disabled:opacity-60"
         />
         <button
           type="submit"
           disabled={running || !query.trim()}
-          className="px-5 py-3 rounded-xl bg-gradient-to-br from-slate-600 to-slate-800 text-white text-sm font-semibold shadow-md hover:shadow-lg transition-all disabled:opacity-50"
+          className="shrink-0 px-5 py-3 rounded-xl bg-gradient-to-br from-slate-600 to-slate-800 text-white text-sm font-semibold shadow-md hover:shadow-lg transition-all disabled:opacity-50"
         >
           {running ? 'Researching…' : 'Deep Research'}
         </button>

@@ -112,12 +112,12 @@ export default function GPT2LoraDemo() {
           onKeyDown={(e) => e.key === 'Enter' && runGenerate()}
           placeholder="Type a prompt…"
           maxLength={200}
-          className="flex-1 px-4 py-2.5 rounded-xl border border-black/10 bg-white/70 text-sm focus:outline-none focus:ring-2 focus:ring-amber-500/40"
+          className="flex-1 min-w-0 px-4 py-2.5 rounded-xl border border-black/10 bg-white/70 text-sm focus:outline-none focus:ring-2 focus:ring-amber-500/40"
         />
         <button
           onClick={() => runGenerate()}
           disabled={loading || !prompt.trim()}
-          className="px-4 py-2.5 rounded-xl bg-gradient-to-br from-amber-500 to-amber-700 text-white text-sm font-semibold shadow-md hover:shadow-lg transition-all disabled:opacity-60"
+          className="shrink-0 px-4 py-2.5 rounded-xl bg-gradient-to-br from-amber-500 to-amber-700 text-white text-sm font-semibold shadow-md hover:shadow-lg transition-all disabled:opacity-60"
         >
           {loading ? 'Generating…' : 'Generate'}
         </button>

@@ -180,7 +180,7 @@ export default function HouseLiveDemo({ theme }) {
           {result && (
             <div className="w-full text-center">
               <div className="text-[11px] uppercase tracking-wide text-zinc-500 mb-2">Lasso Regression</div>
-              <div className="text-5xl font-heading font-bold text-black leading-none">{fmt(result.predicted_price)}</div>
+              <div className="text-3xl sm:text-5xl font-heading font-bold text-black leading-none break-words">{fmt(result.predicted_price)}</div>
               <div className="text-xs text-zinc-500 mt-1.5 mb-6">estimated sale price</div>
 
               <div className="relative h-2.5 rounded-full bg-black/10 mb-2">

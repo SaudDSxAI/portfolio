@@ -153,7 +153,7 @@ export default function ChurnLiveDemo({ theme }) {
           </div>
         )}
 
-        <div className="grid grid-cols-2 gap-3 max-h-[420px] overflow-y-auto pr-1">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 max-h-[420px] overflow-y-auto pr-1">
           <Field label="Gender">
             <select className={selectClass} value={form.gender} onChange={(e) => update('gender', e.target.value)}>
               <option>Female</option><option>Male</option>
@@ -255,7 +255,7 @@ export default function ChurnLiveDemo({ theme }) {
             }`}>
               {derivedRisk} risk
             </span>
-            <div className="text-5xl font-heading font-bold text-black leading-none">{(result.churn_probability * 100).toFixed(1)}%</div>
+            <div className="text-3xl sm:text-5xl font-heading font-bold text-black leading-none break-words">{(result.churn_probability * 100).toFixed(1)}%</div>
             <div className="text-xs text-zinc-500 mt-1.5 mb-5">predicted churn probability</div>
 
             <div className="relative h-3 rounded-full bg-black/10 mb-5 overflow-visible">

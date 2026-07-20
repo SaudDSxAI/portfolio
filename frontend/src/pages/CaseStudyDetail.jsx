@@ -377,7 +377,7 @@ export default function CaseStudyDetail() {
   const Icon = getIcon(study.icon);
 
   return (
-    <article className="relative py-28 px-6">
+    <article className="relative py-24 sm:py-28 px-4 sm:px-6">
       <BackButton to={`/${category}`} label={`Back to ${meta?.label || 'projects'}`} />
       <div className="max-w-4xl mx-auto">
 
@@ -391,10 +391,10 @@ export default function CaseStudyDetail() {
               {meta?.label} Case Study
             </div>
           </div>
-          <h1 className="text-3xl sm:text-4xl md:text-5xl font-heading font-bold text-black mb-4 tracking-tight leading-[1.05]">
+          <h1 className="text-2xl sm:text-4xl md:text-5xl font-heading font-bold text-black mb-4 tracking-tight leading-[1.1]">
             {study.title}
           </h1>
-          <p className="text-lg text-zinc-700 leading-relaxed mb-6 max-w-3xl">{study.tagline}</p>
+          <p className="text-base sm:text-lg text-zinc-700 leading-relaxed mb-6 max-w-3xl">{study.tagline}</p>
 
           <div className="flex flex-wrap items-center gap-3 mb-10">
             {study.github && (
@@ -572,7 +572,7 @@ export default function CaseStudyDetail() {
             numbers dropped in. */}
         {study.customResults && CUSTOM_RESULTS_COMPONENTS[study.customResults] ? (
           <ScrollReveal>
-            <div className="bg-warm-100/60 border border-black/10 rounded-2xl p-6 mb-8">
+            <div className="bg-warm-100/60 border border-black/10 rounded-2xl p-4 sm:p-6 mb-8">
               {(() => {
                 const CustomResults = CUSTOM_RESULTS_COMPONENTS[study.customResults];
                 return <CustomResults study={study} theme={theme} />;
@@ -583,7 +583,7 @@ export default function CaseStudyDetail() {
           <>
             {study.modelComparison && (
               <ScrollReveal>
-                <div className="bg-warm-100/60 border border-black/10 rounded-2xl p-6 mb-8">
+                <div className="bg-warm-100/60 border border-black/10 rounded-2xl p-4 sm:p-6 mb-8">
                   <h2 className="text-lg font-heading font-bold text-black mb-1">Model comparison</h2>
                   <p className="text-sm text-zinc-600 mb-4">
                     Benchmarked under identical conditions. The highlighted bar is the model that was chosen, on evidence.
@@ -600,7 +600,7 @@ export default function CaseStudyDetail() {
 
             {study.confusionMatrix && (
               <ScrollReveal>
-                <div className="bg-warm-100/60 border border-black/10 rounded-2xl p-6 mb-8">
+                <div className="bg-warm-100/60 border border-black/10 rounded-2xl p-4 sm:p-6 mb-8">
                   <h2 className="text-lg font-heading font-bold text-black mb-4">Confusion matrix</h2>
                   <ConfusionMatrix cm={study.confusionMatrix} labels={study.confusionMatrixLabels} />
                 </div>
@@ -609,7 +609,7 @@ export default function CaseStudyDetail() {
 
             {study.featureImportance && (
               <ScrollReveal>
-                <div className="bg-warm-100/60 border border-black/10 rounded-2xl p-6 mb-8">
+                <div className="bg-warm-100/60 border border-black/10 rounded-2xl p-4 sm:p-6 mb-8">
                   <h2 className="text-lg font-heading font-bold text-black mb-1">What drives the outcome</h2>
                   <p className="text-sm text-zinc-600 mb-4">Model coefficients: positive pushes toward the predicted outcome, negative pushes away.</p>
                   <FeatureImportanceChart data={study.featureImportance} theme={theme} />

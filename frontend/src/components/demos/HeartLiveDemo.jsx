@@ -117,7 +117,7 @@ export default function HeartLiveDemo({ theme }) {
           </div>
         )}
 
-        <div className="grid grid-cols-2 gap-3 max-h-[420px] overflow-y-auto pr-1">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 max-h-[420px] overflow-y-auto pr-1">
           <Field label={`Age: ${form.age}`}>
             <input type="range" min="20" max="90" value={form.age} onChange={(e) => update('age', Number(e.target.value))} className="accent-primary-600" />
           </Field>
@@ -196,7 +196,7 @@ export default function HeartLiveDemo({ theme }) {
             }`}>
               {result.prediction_at_threshold === 'Yes' ? 'Elevated risk' : 'Low risk'}
             </span>
-            <div className="text-5xl font-heading font-bold text-black leading-none">{(result.disease_probability * 100).toFixed(1)}%</div>
+            <div className="text-3xl sm:text-5xl font-heading font-bold text-black leading-none break-words">{(result.disease_probability * 100).toFixed(1)}%</div>
             <div className="text-xs text-zinc-500 mt-1.5 mb-5">predicted disease probability</div>
             <div className="relative h-3 rounded-full bg-black/10 mb-5">
               <div

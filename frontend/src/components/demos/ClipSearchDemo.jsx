@@ -126,12 +126,12 @@ export default function ClipSearchDemo({ theme }) {
           onChange={(e) => setQuery(e.target.value)}
           placeholder="Describe what you're looking for…"
           disabled={loading || !status?.ready}
-          className="flex-1 px-4 py-3 rounded-xl border border-black/15 bg-white text-black text-sm focus:outline-none focus:border-stone-600 focus:ring-2 focus:ring-stone-300/40 disabled:opacity-60"
+          className="flex-1 min-w-0 px-4 py-3 rounded-xl border border-black/15 bg-white text-black text-sm focus:outline-none focus:border-stone-600 focus:ring-2 focus:ring-stone-300/40 disabled:opacity-60"
         />
         <button
           type="submit"
           disabled={loading || !query.trim() || !status?.ready}
-          className="px-5 py-3 rounded-xl bg-gradient-to-br from-stone-500 to-stone-700 text-white text-sm font-semibold shadow-md hover:shadow-lg transition-all disabled:opacity-50"
+          className="shrink-0 px-5 py-3 rounded-xl bg-gradient-to-br from-stone-500 to-stone-700 text-white text-sm font-semibold shadow-md hover:shadow-lg transition-all disabled:opacity-50"
         >
           Search
         </button>

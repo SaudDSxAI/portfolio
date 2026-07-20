@@ -129,9 +129,9 @@ function StreamRow({ variant, label, note, query }) {
             <div className="mt-1.5 grid sm:grid-cols-2 gap-1.5">
               {hits.map((h, i) => (
                 <div key={i} className="bg-warm-100/60 border border-black/10 rounded-lg p-2">
-                  <div className="flex justify-between text-zinc-500 mb-0.5">
-                    <span className="font-semibold">{h.title}</span>
-                    <span>score={h.score}</span>
+                  <div className="flex justify-between gap-2 text-zinc-500 mb-0.5">
+                    <span className="font-semibold truncate min-w-0">{h.title}</span>
+                    <span className="shrink-0">score={h.score}</span>
                   </div>
                   <p className="text-zinc-600 leading-relaxed">{h.text}…</p>
                 </div>
@@ -222,12 +222,12 @@ export default function RAGComparisonDemo() {
           onKeyDown={(e) => e.key === 'Enter' && submit()}
           placeholder="Ask a question…"
           maxLength={300}
-          className="flex-1 px-4 py-2.5 rounded-xl border border-black/10 bg-white/70 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500/40"
+          className="flex-1 min-w-0 px-4 py-2.5 rounded-xl border border-black/10 bg-white/70 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500/40"
         />
         <button
           onClick={() => submit()}
           disabled={!input.trim()}
-          className="px-4 py-2.5 rounded-xl bg-gradient-to-br from-blue-500 to-blue-700 text-white text-sm font-semibold shadow-md hover:shadow-lg transition-all disabled:opacity-60"
+          className="shrink-0 px-4 py-2.5 rounded-xl bg-gradient-to-br from-blue-500 to-blue-700 text-white text-sm font-semibold shadow-md hover:shadow-lg transition-all disabled:opacity-60"
         >
           Compare
         </button>
