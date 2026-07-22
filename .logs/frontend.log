@@ -2346,3 +2346,45 @@ AggregateError [ECONNREFUSED]:
 12:08:40 PM [vite] hmr update /src/components/ChatWidget.jsx, /src/index.css
 12:08:53 PM [vite] hmr update /src/components/ChatWidget.jsx, /src/index.css
 12:09:17 PM [vite] hmr update /src/components/ChatWidget.jsx, /src/index.css
+12:14:26 PM [vite] http proxy error: /api/rag/status
+AggregateError [ECONNREFUSED]: 
+    at internalConnectMultiple (node:net:1134:18)
+    at afterConnectMultiple (node:net:1715:7)
+12:14:46 PM [vite] http proxy error: /api/rag/status
+AggregateError [ECONNREFUSED]: 
+    at internalConnectMultiple (node:net:1134:18)
+    at afterConnectMultiple (node:net:1715:7)
+12:16:28 PM [vite] hmr update /src/components/Hero.jsx, /src/index.css
+12:16:34 PM [vite] hmr update /src/components/Hero.jsx, /src/index.css
+12:16:49 PM [vite] hmr update /src/components/Hero.jsx, /src/index.css
+12:16:57 PM [vite] hmr update /src/components/Hero.jsx, /src/index.css
+12:17:05 PM [vite] hmr update /src/components/Hero.jsx, /src/index.css
+12:17:12 PM [vite] hmr update /src/components/Hero.jsx, /src/index.css
+12:17:20 PM [vite] hmr update /src/components/Hero.jsx, /src/index.css
+12:25:52 PM [vite] hmr update /src/App.jsx, /src/index.css
+12:26:03 PM [vite] hmr update /src/components/ChatWidget.jsx, /src/index.css
+12:27:26 PM [vite] http proxy error: /health
+AggregateError [ECONNREFUSED]: 
+    at internalConnectMultiple (node:net:1134:18)
+    at afterConnectMultiple (node:net:1715:7)
+12:27:31 PM [vite] hmr update /src/components/Hero.jsx, /src/index.css
+12:27:53 PM [vite] hmr update /src/components/Hero.jsx, /src/index.css
+12:28:06 PM [vite] hmr update /src/components/Hero.jsx, /src/index.css
+12:28:22 PM [vite] http proxy error: /health
+AggregateError [ECONNREFUSED]: 
+    at internalConnectMultiple (node:net:1134:18)
+    at afterConnectMultiple (node:net:1715:7)
+12:32:21 PM [vite] http proxy error: /health
+AggregateError [ECONNREFUSED]: 
+    at internalConnectMultiple (node:net:1134:18)
+    at afterConnectMultiple (node:net:1715:7)
+12:40:06 PM [vite] hmr update /src/components/Contact.jsx, /src/index.css
+12:40:22 PM [vite] hmr update /src/components/Contact.jsx, /src/index.css
+12:40:29 PM [vite] hmr update /src/components/Contact.jsx, /src/index.css
+12:40:38 PM [vite] hmr update /src/App.jsx, /src/index.css
+12:40:51 PM [vite] hmr update /src/components/ChatWidget.jsx, /src/index.css
+12:41:44 PM [vite] http proxy error: /health
+AggregateError [ECONNREFUSED]: 
+    at internalConnectMultiple (node:net:1134:18)
+    at afterConnectMultiple (node:net:1715:7)
+12:41:49 PM [vite] hmr update /src/components/Hero.jsx, /src/index.css

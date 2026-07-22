@@ -49,7 +49,7 @@ const socialLinks = [
 
 export default function Contact() {
  return (
- <section id="contact" className="relative min-h-screen py-24 px-6 overflow-hidden">
+ <section id="contact" className="relative min-h-screen py-24 px-4 sm:px-6 overflow-hidden">
  {/* Subtle background accent, matching the rest of the site */}
  <div className="absolute inset-0 bg-gradient-to-b from-transparent via-warm-100/70 to-transparent pointer-events-none" />
 
@@ -67,14 +67,18 @@ export default function Contact() {
  <ScrollReveal key={item.label} delay={index * 100}>
  <a
  href={item.href}
- className="group relative flex items-center gap-4 p-6 bg-warm-100/90 border border-black/10 rounded-2xl hover:border-primary-500/30 hover:shadow-xl hover:shadow-primary-500/10 hover:-translate-y-1 transition-all duration-300 h-full"
+ className="group relative flex items-center gap-3 sm:gap-4 p-4 sm:p-6 bg-warm-100/90 border border-black/10 rounded-2xl hover:border-primary-500/30 hover:shadow-xl hover:shadow-primary-500/10 hover:-translate-y-1 transition-all duration-300 h-full"
  >
- <div className="w-14 h-14 shrink-0 bg-gradient-to-br from-primary-500 to-primary-700 rounded-2xl flex items-center justify-center text-white shadow-md shadow-primary-700/25 group-hover:scale-110 transition-transform duration-300">
+ <div className="w-11 h-11 sm:w-14 sm:h-14 shrink-0 bg-gradient-to-br from-primary-500 to-primary-700 rounded-2xl flex items-center justify-center text-white shadow-md shadow-primary-700/25 group-hover:scale-110 transition-transform duration-300">
  {item.icon}
  </div>
- <div className="text-left min-w-0">
+ {/* flex-1 alongside min-w-0 — min-w-0 alone lets this shrink, but
+ flex-1 gives it a definite basis to truncate against instead of
+ relying on content-based auto sizing, which is what makes
+ text-overflow:ellipsis behave inconsistently across browsers. */}
+ <div className="text-left min-w-0 flex-1">
  <div className="text-xs text-zinc-500 uppercase tracking-wider font-semibold mb-1">{item.label}</div>
- <div className="text-black font-semibold text-lg truncate">{item.value}</div>
+ <div className="text-black font-semibold text-base sm:text-lg truncate">{item.value}</div>
  {item.note && (
  <div className="text-xs text-primary-700 font-medium mt-1">{item.note}</div>
  )}
@@ -95,7 +99,7 @@ export default function Contact() {
  href={link.href}
  target="_blank"
  rel="noopener noreferrer"
- className="group w-14 h-14 bg-warm-100/90 border border-black/10 rounded-2xl flex items-center justify-center text-zinc-700 hover:text-white hover:bg-gradient-to-br hover:from-primary-500 hover:to-primary-700 hover:border-primary-600/40 hover:shadow-lg hover:shadow-primary-500/20 transition-all duration-300 hover:-translate-y-1"
+ className="group w-12 h-12 sm:w-14 sm:h-14 bg-warm-100/90 border border-black/10 rounded-2xl flex items-center justify-center text-zinc-700 hover:text-white hover:bg-gradient-to-br hover:from-primary-500 hover:to-primary-700 hover:border-primary-600/40 hover:shadow-lg hover:shadow-primary-500/20 transition-all duration-300 hover:-translate-y-1"
  title={link.label}
  >
  {link.icon}
