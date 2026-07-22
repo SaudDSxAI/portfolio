@@ -2286,3 +2286,63 @@ AggregateError [ECONNREFUSED]:
 2:46:00 AM [vite] hmr update /src/components/SectionHeading.jsx, /src/index.css
 2:46:02 AM [vite] hmr update /src/components/SectionHeading.jsx, /src/index.css
 2:46:03 AM [vite] hmr update /src/pages/CategoryPage.jsx, /src/index.css
+2:48:16 AM [vite] http proxy error: /api/rag/status
+AggregateError [ECONNREFUSED]: 
+    at internalConnectMultiple (node:net:1134:18)
+    at afterConnectMultiple (node:net:1715:7)
+2:48:36 AM [vite] http proxy error: /api/rag/status
+AggregateError [ECONNREFUSED]: 
+    at internalConnectMultiple (node:net:1134:18)
+    at afterConnectMultiple (node:net:1715:7)
+2:52:26 AM [vite] http proxy error: /api/rag/status
+AggregateError [ECONNREFUSED]: 
+    at internalConnectMultiple (node:net:1134:18)
+    at afterConnectMultiple (node:net:1715:7)
+3:37:59 AM [vite] http proxy error: /api/rag/status
+AggregateError [ECONNREFUSED]: 
+    at internalConnectMultiple (node:net:1134:18)
+    at afterConnectMultiple (node:net:1715:7)
+11:05:22 AM [vite] http proxy error: /api/rag/status
+AggregateError [ECONNREFUSED]: 
+    at internalConnectMultiple (node:net:1134:18)
+    at afterConnectMultiple (node:net:1715:7)
+11:05:48 AM [vite] http proxy error: /api/rag/status
+AggregateError [ECONNREFUSED]: 
+    at internalConnectMultiple (node:net:1134:18)
+    at afterConnectMultiple (node:net:1715:7)
+3:13:08 PM [vite] http proxy error: /api/rag/status
+AggregateError [ECONNREFUSED]: 
+    at internalConnectMultiple (node:net:1134:18)
+    at afterConnectMultiple (node:net:1715:7)
+4:14:10 PM [vite] http proxy error: /api/rag/status
+AggregateError [ECONNREFUSED]: 
+    at internalConnectMultiple (node:net:1134:18)
+    at afterConnectMultiple (node:net:1715:7)
+7:18:24 PM [vite] page reload index.html
+7:18:36 PM [vite] hmr update /src/components/ChatWidget.jsx, /src/index.css
+8:18:15 PM [vite] http proxy error: /api/rag/status
+AggregateError [ECONNREFUSED]: 
+    at internalConnectMultiple (node:net:1134:18)
+    at afterConnectMultiple (node:net:1715:7)
+9:19:18 PM [vite] http proxy error: /api/rag/status
+AggregateError [ECONNREFUSED]: 
+    at internalConnectMultiple (node:net:1134:18)
+    at afterConnectMultiple (node:net:1715:7)
+11:02:50 AM [vite] http proxy error: /api/rag/status
+AggregateError [ECONNREFUSED]: 
+    at internalConnectMultiple (node:net:1134:18)
+    at afterConnectMultiple (node:net:1715:7)
+11:03:15 AM [vite] http proxy error: /api/rag/status
+AggregateError [ECONNREFUSED]: 
+    at internalConnectMultiple (node:net:1134:18)
+    at afterConnectMultiple (node:net:1715:7)
+12:06:27 PM [vite] hmr update /src/components/ChatWidget.jsx, /src/index.css
+12:06:55 PM [vite] hmr update /src/components/ChatWidget.jsx, /src/index.css
+12:07:02 PM [vite] hmr update /src/components/ChatWidget.jsx, /src/index.css
+12:07:22 PM [vite] hmr update /src/components/ChatWidget.jsx, /src/index.css
+12:07:32 PM [vite] hmr update /src/components/ChatWidget.jsx, /src/index.css
+12:07:55 PM [vite] hmr update /src/components/ChatWidget.jsx, /src/index.css
+12:08:06 PM [vite] hmr update /src/components/ChatWidget.jsx, /src/index.css
+12:08:40 PM [vite] hmr update /src/components/ChatWidget.jsx, /src/index.css
+12:08:53 PM [vite] hmr update /src/components/ChatWidget.jsx, /src/index.css
+12:09:17 PM [vite] hmr update /src/components/ChatWidget.jsx, /src/index.css

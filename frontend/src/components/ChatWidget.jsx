@@ -135,10 +135,18 @@ export default function ChatWidget({ initialOpen = false } = {}) {
  // but flips to false the moment the user manually scrolls away from the
  // bottom (e.g. to reread something while a reply is still streaming in) —
  // otherwise every streamed chunk would yank them back down. Flips back to
- // true once they scroll back near the bottom themselves, or send a new
- // message (at which point they clearly want to follow the conversation
- // again).
+ // true once they scroll back near the bottom themselves, sends a new
+ // message, or taps the "jump to latest" button — matching how ChatGPT lets
+ // you freely scroll up mid-generation without being dragged back down.
  const stickToBottomRef = useRef(true);
+ // Mirrors stickToBottomRef in React state purely so the "jump to latest"
+ // button can react to it — the ref stays the source of truth read inside
+ // scroll/stream callbacks (state would be stale there).
+ const [isStuckToBottom, setIsStuckToBottom] = useState(true);
+ const setSticky = useCallback((value) => {
+ stickToBottomRef.current = value;
+ setIsStuckToBottom(value);
+ }, []);
 
  // Track the visual viewport so the mobile chat follows the part of the
  // screen that remains visible above the soft keyboard.
@@ -153,26 +161,40 @@ export default function ChatWidget({ initialOpen = false } = {}) {
  useEffect(() => {
  if (typeof window === 'undefined') return;
  const vv = window.visualViewport;
- const update = () => {
+ // iOS/Android fire a burst of resize/scroll events while the keyboard is
+ // animating open or closed (not just one at the end). Committing a React
+ // state update — and therefore a re-render of the fixed, height-bound
+ // panel — on every single one of those events is what made the keyboard
+ // handling feel janky and, on some Android WebViews, could interrupt the
+ // input's focus mid-animation. Coalescing to one update per animation
+ // frame keeps the panel following the keyboard smoothly instead.
+ let rafId = null;
+ const commit = () => {
+ rafId = null;
  setViewport({
  height: vv ? vv.height : window.innerHeight,
  offsetTop: vv ? vv.offsetTop : 0,
  width: vv ? vv.width : window.innerWidth,
  });
  };
- update();
+ const schedule = () => {
+ if (rafId != null) return;
+ rafId = requestAnimationFrame(commit);
+ };
+ commit();
  if (vv) {
- vv.addEventListener('resize', update);
- vv.addEventListener('scroll', update);
+ vv.addEventListener('resize', schedule);
+ vv.addEventListener('scroll', schedule);
  } else {
- window.addEventListener('resize', update);
+ window.addEventListener('resize', schedule);
  }
  return () => {
+ if (rafId != null) cancelAnimationFrame(rafId);
  if (vv) {
- vv.removeEventListener('resize', update);
- vv.removeEventListener('scroll', update);
+ vv.removeEventListener('resize', schedule);
+ vv.removeEventListener('scroll', schedule);
  } else {
- window.removeEventListener('resize', update);
+ window.removeEventListener('resize', schedule);
  }
  };
  }, []);
@@ -207,18 +229,40 @@ export default function ChatWidget({ initialOpen = false } = {}) {
  }
  }, []);
 
+ const isNearBottom = useCallback(() => {
+ const el = chatContainerRef.current;
+ if (!el) return true;
+ const distanceFromBottom = el.scrollHeight - el.scrollTop - el.clientHeight;
+ return distanceFromBottom < 80;
+ }, []);
+
  // Near the bottom = "stick" (auto-scroll keeps following new content).
  // Scrolled away = the user is deliberately reading something earlier;
  // leave them alone until they scroll back down themselves.
  const handleMessagesScroll = useCallback(() => {
- const el = chatContainerRef.current;
- if (!el) return;
- const distanceFromBottom = el.scrollHeight - el.scrollTop - el.clientHeight;
- stickToBottomRef.current = distanceFromBottom < 80;
- }, []);
+ setSticky(isNearBottom());
+ }, [isNearBottom, setSticky]);
+
+ // Fires the instant a touch/drag/wheel gesture starts on the message
+ // list — don't wait for the browser's `scroll` event. On iOS that event
+ // is throttled hard enough during an active swipe that, with a reply
+ // streaming in, several tokens can land (each one snapping the view back
+ // to the bottom) before `scroll` ever fires once. That's what made
+ // scrolling up mid-generation feel like it kept getting yanked back down.
+ // Reacting on gesture-start instead makes it stop instantly, every time.
+ const handleUserScrollIntent = useCallback(() => {
+ setSticky(false);
+ }, [setSticky]);
 
  useEffect(() => {
- if (stickToBottomRef.current) scrollToBottom();
+ if (!stickToBottomRef.current) return;
+ // Coalesce to one scroll per frame — a fast stream can otherwise call
+ // this dozens of times a second, each restarting a 'smooth' animation
+ // that visibly fights anything else touching the scroll position.
+ const id = requestAnimationFrame(() => {
+ if (stickToBottomRef.current) scrollToBottom('auto');
+ });
+ return () => cancelAnimationFrame(id);
  }, [messages, scrollToBottom, isStreaming]);
 
  // When the visual viewport changes (keyboard open/close), pin the latest
@@ -232,7 +276,7 @@ export default function ChatWidget({ initialOpen = false } = {}) {
  useEffect(() => {
  if (isOpen) {
  setHasNewMessage(false);
- stickToBottomRef.current = true;
+ setSticky(true);
  checkHealth();
  requestAnimationFrame(() => {
  inputRef.current?.focus({ preventScroll: true });
@@ -302,7 +346,7 @@ export default function ChatWidget({ initialOpen = false } = {}) {
  setShowSuggestions(false);
  // Sending a message means the user wants to follow the conversation
  // again — resume auto-scroll even if they'd scrolled away earlier.
- stickToBottomRef.current = true;
+ setSticky(true);
  const userMessage = {
  id: Date.now(),
  content: text,
@@ -411,7 +455,13 @@ export default function ChatWidget({ initialOpen = false } = {}) {
  } finally {
  setIsLoading(false);
  setIsStreaming(false);
+ // Only reclaim focus if the user is still following along at the
+ // bottom. If they scrolled up mid-generation to reread something, this
+ // would otherwise yank the keyboard back open the moment the reply
+ // finishes — exactly the "closes/reopens on its own" feeling to avoid.
+ if (stickToBottomRef.current) {
  requestAnimationFrame(() => inputRef.current?.focus({ preventScroll: true }));
+ }
  }
  };
 
@@ -471,15 +521,19 @@ export default function ChatWidget({ initialOpen = false } = {}) {
 
  {/* ===== Chat Panel ===== */}
  <div
- className={`fixed z-[60] transition-all duration-300 ease-out ${
+ className={`fixed z-[60] transition-[opacity,transform] duration-300 ease-out ${
  isOpen
  ? 'opacity-100 scale-100 pointer-events-auto'
  : 'opacity-0 scale-95 pointer-events-none'
  } bottom-24 right-6 w-[380px] h-[560px] max-sm:left-0 max-sm:right-0 max-sm:top-0 max-sm:bottom-auto max-sm:w-full max-sm:rounded-none max-sm:origin-bottom`}
  style={
  // On mobile, lock the panel to the visual viewport height so it
- // shrinks WITH the soft keyboard. No translate — the panel always
- // sits flush at top:0; the input sits at the bottom of this height.
+ // shrinks WITH the soft keyboard — the panel always sits flush at
+ // top:0; the input sits at the bottom of this height. Deliberately
+ // excluded from the transition above (see className): this has to
+ // track the real keyboard 1:1, not ease in 300ms behind it, which is
+ // what made the input feel misaligned from the keyboard while it
+ // animated open.
  isOpen && isMobileChat
  ? { height: `${viewport.height}px` }
  : undefined
@@ -516,11 +570,13 @@ export default function ChatWidget({ initialOpen = false } = {}) {
  </div>
  </div>
 
- <div className="flex-1 min-h-0 flex flex-col">
+ <div className="flex-1 min-h-0 flex flex-col relative">
  {/* Messages */}
  <div
  ref={chatContainerRef}
  onScroll={handleMessagesScroll}
+ onTouchStart={handleUserScrollIntent}
+ onWheel={handleUserScrollIntent}
  className="flex-1 min-h-0 overflow-y-auto overscroll-contain px-3 py-4 space-y-0"
  style={{
  scrollbarWidth: 'none',
@@ -554,6 +610,24 @@ export default function ChatWidget({ initialOpen = false } = {}) {
  </>
  )}
  </div>
+
+ {/* Jump to latest — appears the moment you scroll away from the
+ bottom (including mid-generation), so following a reply is a
+ deliberate choice rather than something forced on you. */}
+ {isConnected && !isStuckToBottom && messages.length > 0 && (
+ <button
+ onClick={() => {
+ setSticky(true);
+ scrollToBottom('smooth');
+ }}
+ className="absolute bottom-3 left-1/2 -translate-x-1/2 flex items-center gap-1.5 px-3.5 py-2 rounded-full bg-dark-800/95 hover:bg-dark-700 border border-white/10 text-zinc-200 text-xs font-semibold shadow-lg shadow-black/30 backdrop-blur-sm transition-all animate-fade-in z-10"
+ >
+ <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" strokeWidth={2.5} stroke="currentColor">
+ <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 8.25 12 15.75 4.5 8.25" />
+ </svg>
+ {isStreaming ? 'New reply' : 'Jump to latest'}
+ </button>
+ )}
 
  {/* Input */}
  <div className="shrink-0 px-3 pt-3 pb-[calc(env(safe-area-inset-bottom)+0.75rem)] bg-dark-800/80 border-t border-white/5">
