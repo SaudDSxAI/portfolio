@@ -2388,3 +2388,8 @@ AggregateError [ECONNREFUSED]:
     at internalConnectMultiple (node:net:1134:18)
     at afterConnectMultiple (node:net:1715:7)
 12:41:49 PM [vite] hmr update /src/components/Hero.jsx, /src/index.css
+12:44:48 PM [vite] http proxy error: /health
+AggregateError [ECONNREFUSED]: 
+    at internalConnectMultiple (node:net:1134:18)
+    at afterConnectMultiple (node:net:1715:7)
+1:41:23 PM [vite] hmr update /src/index.css, /src/components/Skills.jsx
