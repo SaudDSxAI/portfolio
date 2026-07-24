@@ -158,11 +158,21 @@ export default function ChatWidget({ initialOpen = false } = {}) {
 
  const isMobileChat = viewport.width <= 640;
 
- // How much of the screen the soft keyboard is currently covering. iOS
- // keeps `window.innerHeight` fixed while the keyboard is open (only
- // `visualViewport.height` shrinks), and the `interactive-widget=
- // overlays-content` viewport meta tag makes Chrome/Android behave the
- // same way — so this difference is a reliable keyboard height on both.
+ // How much extra bottom padding the content needs so the input clears the
+ // keyboard. This is intentionally self-zeroing across platforms:
+ //
+ // • Android/Chrome uses `interactive-widget=resizes-content` (see the
+ // viewport meta in index.html), so when the keyboard opens the whole
+ // layout viewport shrinks — `window.innerHeight` AND
+ // `visualViewport.height` both drop together, this difference is ~0, and
+ // the fixed `inset-0` panel already sits above the keyboard on its own.
+ // No padding is added (which is what removes the mid-screen gap bug).
+ //
+ // • iOS Safari ignores `interactive-widget`: the keyboard overlays the
+ // page, `window.innerHeight` stays full while `visualViewport.height`
+ // shrinks. Here the panel stays full-height behind the keyboard, so this
+ // difference (= the keyboard's height) is applied as padding to lift the
+ // input above it.
  const keyboardInset =
  isMobileChat && typeof window !== 'undefined'
  ? Math.max(0, window.innerHeight - viewport.height)
@@ -538,22 +548,22 @@ export default function ChatWidget({ initialOpen = false } = {}) {
  </button>
 
  {/* ===== Chat Panel =====
- On mobile, this box is *always* a plain, unmoving `inset-0` — its
- position and size never change once open, keyboard or not. That's
- deliberate: the old approach resized this box's height to track the
- keyboard, which assumed the browser keeps a `position:fixed;top:0`
- element anchored exactly where you'd expect while the keyboard opens.
- That assumption doesn't hold consistently (Android in particular, and
- iOS's own focus-scroll behavior), which is what let the keyboard end
- up covering the input. Now the box never moves; only the padding on
- the content *inside* it changes (see keyboardInset below), which is a
- pure layout effect that can't drift out of position. */}
+ On mobile this is a full-screen `inset-0` box. It relies on the
+ `interactive-widget=resizes-content` viewport meta (index.html), so on
+ Android the browser shrinks the layout viewport when the keyboard opens
+ and this fixed box automatically fills only the space *above* the
+ keyboard — no JS height math, no drift, no double-counting (the earlier
+ mid-screen gap came from resizing the box AND padding it, subtracting
+ the keyboard twice). On iOS, which ignores that meta, the box stays
+ full-height behind the keyboard and `keyboardInset` (below) pads the
+ inner content instead. Either way the input lands right on the
+ keyboard. */}
  <div
  className={`fixed z-[60] transition-[opacity,transform] duration-300 ease-out ${
  isOpen
  ? 'opacity-100 scale-100 pointer-events-auto'
  : 'opacity-0 scale-95 pointer-events-none'
- } bottom-24 right-6 w-[380px] h-[560px] max-sm:inset-0 max-sm:w-full max-sm:rounded-none max-sm:origin-bottom`}
+ } bottom-24 right-6 w-[380px] h-[560px] max-sm:inset-0 max-sm:w-full max-sm:h-auto max-sm:rounded-none max-sm:origin-bottom`}
  >
  <div
  className="w-full h-full bg-dark-900/95 border border-white/10 rounded-2xl max-sm:rounded-none shadow-2xl shadow-black/40 flex flex-col overflow-hidden max-sm:border-0"
