@@ -13,9 +13,14 @@ export const categories = ['All', 'Production AI', 'LLM/RAG', 'ML/Deep Learning'
 // Every category below is grounded in what's actually built and shown in the
 // case studies (see caseStudies.js) — not an aspirational tech-stack list.
 // When a new case study ships with a genuinely new technology, add it here.
+//
+// `tier` drives the T-shaped layout on the Skills page:
+//   'bar'  — broad, supporting/complementary knowledge (the horizontal bar)
+//   'stem' — deep, primary specialization (the vertical stem)
 export const skills = [
   {
     category: 'Full-Stack Production Systems',
+    tier: 'bar',
     icon: '',
     items: [
       'Next.js & React',
@@ -30,6 +35,7 @@ export const skills = [
   },
   {
     category: 'Agentic AI & LLM Orchestration',
+    tier: 'stem',
     icon: '',
     items: [
       'LangChain & LangGraph',
@@ -42,6 +48,7 @@ export const skills = [
   },
   {
     category: 'RAG & Retrieval Engineering',
+    tier: 'stem',
     icon: '',
     items: [
       'Hybrid Search (BM25 + Embeddings)',
@@ -54,6 +61,7 @@ export const skills = [
   },
   {
     category: 'Machine Learning & Forecasting',
+    tier: 'stem',
     icon: '',
     items: [
       'scikit-learn & XGBoost',
@@ -66,6 +74,7 @@ export const skills = [
   },
   {
     category: 'Deep Learning & Generative Models',
+    tier: 'stem',
     icon: '',
     items: [
       'PyTorch',
@@ -78,6 +87,7 @@ export const skills = [
   },
   {
     category: 'Computer Vision & Multimodal AI',
+    tier: 'stem',
     icon: '',
     items: [
       'CLIP (Vision-Language Embeddings)',
@@ -90,6 +100,7 @@ export const skills = [
   },
   {
     category: 'Robotics, IoT & Embedded Systems',
+    tier: 'bar',
     icon: '',
     items: [
       'Arduino (Mega, WiFiS3) & ESP32',
@@ -102,6 +113,7 @@ export const skills = [
   },
   {
     category: 'Data Engineering & Visualization',
+    tier: 'bar',
     icon: '',
     items: [
       'pandas, NumPy & SciPy',

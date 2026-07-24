@@ -158,6 +158,16 @@ export default function ChatWidget({ initialOpen = false } = {}) {
 
  const isMobileChat = viewport.width <= 640;
 
+ // How much of the screen the soft keyboard is currently covering. iOS
+ // keeps `window.innerHeight` fixed while the keyboard is open (only
+ // `visualViewport.height` shrinks), and the `interactive-widget=
+ // overlays-content` viewport meta tag makes Chrome/Android behave the
+ // same way — so this difference is a reliable keyboard height on both.
+ const keyboardInset =
+ isMobileChat && typeof window !== 'undefined'
+ ? Math.max(0, window.innerHeight - viewport.height)
+ : 0;
+
  useEffect(() => {
  if (typeof window === 'undefined') return;
  const vv = window.visualViewport;
@@ -199,16 +209,24 @@ export default function ChatWidget({ initialOpen = false } = {}) {
  };
  }, []);
 
- // Light scroll lock on mobile while chat is open. We deliberately avoid
+ // Scroll lock on mobile while chat is open. We deliberately avoid
  // `position: fixed` on body — that pattern breaks input focus on iOS when
- // combined with the visual viewport adjustments below.
+ // combined with the visual viewport adjustments below. `touch-action:
+ // none` is added alongside `overflow: hidden` because iOS Safari doesn't
+ // reliably honor overflow:hidden alone when a focused input tries to
+ // scroll itself into view — without this, the background can still shift
+ // during the keyboard's open animation, which is what made the whole
+ // layout feel unstable.
  useEffect(() => {
  if (typeof document === 'undefined') return;
  if (isOpen && isMobileChat) {
- const previous = document.body.style.overflow;
+ const previousOverflow = document.body.style.overflow;
+ const previousTouchAction = document.body.style.touchAction;
  document.body.style.overflow = 'hidden';
+ document.body.style.touchAction = 'none';
  return () => {
- document.body.style.overflow = previous;
+ document.body.style.overflow = previousOverflow;
+ document.body.style.touchAction = previousTouchAction;
  };
  }
  }, [isOpen, isMobileChat]);
@@ -519,27 +537,28 @@ export default function ChatWidget({ initialOpen = false } = {}) {
  )}
  </button>
 
- {/* ===== Chat Panel ===== */}
+ {/* ===== Chat Panel =====
+ On mobile, this box is *always* a plain, unmoving `inset-0` — its
+ position and size never change once open, keyboard or not. That's
+ deliberate: the old approach resized this box's height to track the
+ keyboard, which assumed the browser keeps a `position:fixed;top:0`
+ element anchored exactly where you'd expect while the keyboard opens.
+ That assumption doesn't hold consistently (Android in particular, and
+ iOS's own focus-scroll behavior), which is what let the keyboard end
+ up covering the input. Now the box never moves; only the padding on
+ the content *inside* it changes (see keyboardInset below), which is a
+ pure layout effect that can't drift out of position. */}
  <div
  className={`fixed z-[60] transition-[opacity,transform] duration-300 ease-out ${
  isOpen
  ? 'opacity-100 scale-100 pointer-events-auto'
  : 'opacity-0 scale-95 pointer-events-none'
- } bottom-24 right-6 w-[380px] h-[560px] max-sm:left-0 max-sm:right-0 max-sm:top-0 max-sm:bottom-auto max-sm:w-full max-sm:rounded-none max-sm:origin-bottom`}
- style={
- // On mobile, lock the panel to the visual viewport height so it
- // shrinks WITH the soft keyboard — the panel always sits flush at
- // top:0; the input sits at the bottom of this height. Deliberately
- // excluded from the transition above (see className): this has to
- // track the real keyboard 1:1, not ease in 300ms behind it, which is
- // what made the input feel misaligned from the keyboard while it
- // animated open.
- isOpen && isMobileChat
- ? { height: `${viewport.height}px` }
- : undefined
- }
+ } bottom-24 right-6 w-[380px] h-[560px] max-sm:inset-0 max-sm:w-full max-sm:rounded-none max-sm:origin-bottom`}
  >
- <div className="w-full h-full bg-dark-900/95 border border-white/10 rounded-2xl max-sm:rounded-none shadow-2xl shadow-black/40 flex flex-col overflow-hidden max-sm:border-0">
+ <div
+ className="w-full h-full bg-dark-900/95 border border-white/10 rounded-2xl max-sm:rounded-none shadow-2xl shadow-black/40 flex flex-col overflow-hidden max-sm:border-0"
+ style={isMobileChat ? { paddingBottom: keyboardInset } : undefined}
+ >
  {/* Header */}
  <div className="flex items-center justify-between gap-3 px-4 py-3 bg-dark-800/90 border-b border-white/5 shrink-0 max-sm:pt-[calc(env(safe-area-inset-top)+0.75rem)]">
  <div className="flex items-center gap-2 min-w-0">
