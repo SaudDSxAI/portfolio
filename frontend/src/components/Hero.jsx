@@ -51,11 +51,11 @@ export default function Hero() {
  return (
  <section
  id="hero"
- className="relative h-dvh overflow-hidden flex items-center justify-center px-4 sm:px-6 pt-4 pb-20 md:pt-0 md:pb-0 md:h-auto md:min-h-dvh md:overflow-visible"
+ className="relative h-[100svh] overflow-hidden flex items-center justify-center px-4 sm:px-6 pt-4 pb-20 md:pt-0 md:pb-0 md:h-auto md:min-h-screen md:overflow-visible"
  >
 
  <div className="relative z-10 max-w-5xl w-full mx-auto">
- <div className="grid md:grid-cols-5 gap-[clamp(0.5rem,2vh,1rem)] md:gap-10 items-start">
+ <div className="grid md:grid-cols-5 gap-[clamp(0.5rem,2svh,1rem)] md:gap-10 items-start">
 
  {/* Photo — sized as a fraction of viewport height below md, so it
  scales continuously with however tall the screen actually is
@@ -69,7 +69,7 @@ export default function Hero() {
  height="260"
  loading="eager"
  decoding="async"
- className="w-[clamp(4.5rem,15vh,7rem)] h-[clamp(5.25rem,17.5vh,8.25rem)] md:w-56 md:h-64 object-cover object-top rounded-2xl ring-2 ring-black shadow-2xl"
+ className="w-[clamp(4.5rem,15svh,7rem)] h-[clamp(5.25rem,17.5svh,8.25rem)] md:w-56 md:h-64 object-cover object-top rounded-2xl ring-2 ring-black shadow-2xl"
  />
  <div className="absolute inset-0 bg-gradient-to-t from-black/20 via-transparent to-transparent rounded-2xl" />
  </div>
@@ -78,7 +78,7 @@ export default function Hero() {
  {/* Text */}
  <div className="md:col-span-3 text-center md:text-left">
  {/* Name */}
- <h1 className="text-[clamp(1.375rem,5.5vh,2.25rem)] md:text-5xl lg:text-6xl font-heading font-bold tracking-tight mb-[clamp(0.25rem,1vh,0.5rem)] md:mb-2 animate-slide-up leading-[1.1]">
+ <h1 className="text-[clamp(1.375rem,5.5svh,2.25rem)] md:text-5xl lg:text-6xl font-heading font-bold tracking-tight mb-[clamp(0.25rem,1svh,0.5rem)] md:mb-2 animate-slide-up leading-[1.1]">
  <span className="text-black">Saud </span>
  <span className="bg-gradient-to-br from-primary-500 via-primary-600 to-primary-800 bg-clip-text text-transparent">
  Ahmad
@@ -86,11 +86,11 @@ export default function Hero() {
  </h1>
 
  {/* Animated Role */}
- <div className="h-[clamp(1.1rem,4.5vh,1.75rem)] md:h-7 mb-[clamp(0.25rem,1vh,0.5rem)] md:mb-3 animate-fade-in" style={{ animationDelay: '150ms' }}>
- <p className="text-[clamp(0.7rem,3vh,0.95rem)] md:text-lg text-zinc-700 font-light">
+ <div className="h-[clamp(1.1rem,4.5svh,1.75rem)] md:h-7 mb-[clamp(0.25rem,1svh,0.5rem)] md:mb-3 animate-fade-in" style={{ animationDelay: '150ms' }}>
+ <p className="text-[clamp(0.7rem,3svh,0.95rem)] md:text-lg text-zinc-700 font-light">
  <span className="text-zinc-500 mr-1.5">I'm a</span>
  <span className="text-black font-medium">{displayText}</span>
- <span className="inline-block w-0.5 h-[clamp(0.65rem,2.5vh,0.875rem)] md:h-4 bg-primary-500 ml-1 animate-pulse" />
+ <span className="inline-block w-0.5 h-[clamp(0.65rem,2.5svh,0.875rem)] md:h-4 bg-primary-500 ml-1 animate-pulse" />
  </p>
  </div>
 
@@ -98,7 +98,7 @@ export default function Hero() {
  shrinks fluidly with viewport height on mobile/tablet instead of
  being swapped for shorter text. */}
  <p
- className="text-[clamp(0.7rem,2.6vh,0.95rem)] md:text-lg text-zinc-800 leading-snug md:leading-relaxed mb-[clamp(0.375rem,1.5vh,0.75rem)] md:mb-4 max-w-xl mx-auto md:mx-0 animate-fade-in"
+ className="text-[clamp(0.7rem,2.6svh,0.95rem)] md:text-lg text-zinc-800 leading-snug md:leading-relaxed mb-[clamp(0.375rem,1.5svh,0.75rem)] md:mb-4 max-w-xl mx-auto md:mx-0 animate-fade-in"
  style={{ animationDelay: '300ms' }}
  >
  I'm an <span className="text-primary-600 font-semibold">AI/ML Engineer</span> and
@@ -117,10 +117,10 @@ export default function Hero() {
  {/* Oval Labs link */}
  <button
  onClick={() => setShowOvalLabs(true)}
- className="inline-flex items-center gap-1.5 mb-[clamp(0.375rem,1.5vh,0.75rem)] md:mb-5 px-[clamp(0.5rem,2vh,0.875rem)] py-[clamp(0.2rem,1vh,0.375rem)] md:px-3.5 md:py-1.5 text-[clamp(0.6rem,2.2vh,0.875rem)] md:text-sm font-semibold text-primary-800 bg-primary-200/50 hover:bg-primary-200/80 border border-primary-400/30 hover:border-primary-500/40 rounded-full transition-all duration-300 animate-fade-in"
+ className="inline-flex items-center gap-1.5 mb-[clamp(0.375rem,1.5svh,0.75rem)] md:mb-5 px-[clamp(0.5rem,2svh,0.875rem)] py-[clamp(0.2rem,1svh,0.375rem)] md:px-3.5 md:py-1.5 text-[clamp(0.6rem,2.2svh,0.875rem)] md:text-sm font-semibold text-primary-800 bg-primary-200/50 hover:bg-primary-200/80 border border-primary-400/30 hover:border-primary-500/40 rounded-full transition-all duration-300 animate-fade-in"
  style={{ animationDelay: '350ms' }}
  >
- <svg className="w-[clamp(0.6rem,2.2vh,0.875rem)] h-[clamp(0.6rem,2.2vh,0.875rem)] md:w-3.5 md:h-3.5" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor">
+ <svg className="w-[clamp(0.6rem,2.2svh,0.875rem)] h-[clamp(0.6rem,2.2svh,0.875rem)] md:w-3.5 md:h-3.5" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor">
  <path strokeLinecap="round" strokeLinejoin="round" d="M11.25 11.25l.041-.02a.75.75 0 011.063.852l-.708 2.836a.75.75 0 001.063.853l.041-.021M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-9-3.75h.008v.008H12V8.25z" />
  </svg>
  What is Oval Labs?
@@ -128,14 +128,14 @@ export default function Hero() {
 
  {/* Quick jump — opens each as its own animated page, not a scroll */}
  <div
- className="flex items-center justify-center md:justify-start gap-[clamp(0.25rem,1vh,0.5rem)] flex-wrap animate-fade-in"
+ className="flex items-center justify-center md:justify-start gap-[clamp(0.25rem,1svh,0.5rem)] flex-wrap animate-fade-in"
  style={{ animationDelay: '450ms' }}
  >
  {quickLinks.map((link) => (
  <button
  key={link.path}
  onClick={() => navigate(link.path)}
- className="group relative px-[clamp(0.5rem,2vh,1rem)] py-[clamp(0.25rem,1.2vh,0.5rem)] md:px-4 md:py-2 text-[clamp(0.55rem,2vh,0.75rem)] md:text-xs font-bold uppercase tracking-wider text-primary-800 bg-primary-200/50 hover:bg-primary-500 hover:text-white border border-primary-400/40 hover:border-primary-600 rounded-full shadow-sm hover:shadow-lg hover:shadow-primary-500/30 animate-glow transition-all duration-300 hover:-translate-y-0.5 active:scale-95 flex items-center gap-1.5"
+ className="group relative px-[clamp(0.5rem,2svh,1rem)] py-[clamp(0.25rem,1.2svh,0.5rem)] md:px-4 md:py-2 text-[clamp(0.55rem,2svh,0.75rem)] md:text-xs font-bold uppercase tracking-wider text-primary-800 bg-primary-200/50 hover:bg-primary-500 hover:text-white border border-primary-400/40 hover:border-primary-600 rounded-full shadow-sm hover:shadow-lg hover:shadow-primary-500/30 animate-glow transition-all duration-300 hover:-translate-y-0.5 active:scale-95 flex items-center gap-1.5"
  >
  <span className="relative flex w-1.5 h-1.5">
  <span className="absolute inline-flex h-full w-full rounded-full bg-primary-500 group-hover:bg-white opacity-75 animate-ping" />
@@ -151,18 +151,18 @@ export default function Hero() {
 
  {/* Quick info — same fluid treatment, not hidden */}
  <div
- className="mt-[clamp(0.25rem,1vh,0.75rem)] flex flex-wrap justify-center md:justify-start gap-x-4 gap-y-1 text-[clamp(0.6rem,2.2vh,0.875rem)] md:text-sm text-zinc-700 animate-fade-in"
+ className="mt-[clamp(0.25rem,1svh,0.75rem)] flex flex-wrap justify-center md:justify-start gap-x-4 gap-y-1 text-[clamp(0.6rem,2.2svh,0.875rem)] md:text-sm text-zinc-700 animate-fade-in"
  style={{ animationDelay: '550ms' }}
  >
  <span className="flex items-center gap-1.5">
- <svg className="w-[clamp(0.7rem,2.2vh,1rem)] h-[clamp(0.7rem,2.2vh,1rem)] text-primary-500" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor">
+ <svg className="w-[clamp(0.7rem,2.2svh,1rem)] h-[clamp(0.7rem,2.2svh,1rem)] text-primary-500" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor">
  <path strokeLinecap="round" strokeLinejoin="round" d="M15 10.5a3 3 0 11-6 0 3 3 0 016 0z" />
  <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 1115 0z" />
  </svg>
  Swat, Pakistan
  </span>
  <span className="flex items-center gap-1.5">
- <svg className="w-[clamp(0.7rem,2.2vh,1rem)] h-[clamp(0.7rem,2.2vh,1rem)] text-primary-500" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor">
+ <svg className="w-[clamp(0.7rem,2.2svh,1rem)] h-[clamp(0.7rem,2.2svh,1rem)] text-primary-500" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor">
  <path strokeLinecap="round" strokeLinejoin="round" d="M4.26 10.147a60.436 60.436 0 00-.491 6.347A48.627 48.627 0 0112 20.904a48.627 48.627 0 018.232-4.41 60.46 60.46 0 00-.491-6.347m-15.482 0a50.57 50.57 0 00-2.658-.813A59.905 59.905 0 0112 3.493a59.902 59.902 0 0110.399 5.84c-.896.248-1.783.52-2.658.814m-15.482 0A50.697 50.697 0 0112 13.489a50.702 50.702 0 017.74-3.342" />
  </svg>
  BSc Data Science — GIK Institute

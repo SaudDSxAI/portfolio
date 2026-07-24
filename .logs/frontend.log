@@ -2413,3 +2413,5 @@ AggregateError [ECONNREFUSED]:
 6:39:37 PM [vite] hmr update /src/components/ChatWidget.jsx, /src/index.css
 6:40:49 PM [vite] hmr update /src/components/ChatWidget.jsx, /src/index.css
 6:42:24 PM [vite] hmr update /src/components/ChatWidget.jsx, /src/index.css
+9:10:10 PM [vite] hmr update /src/components/Hero.jsx, /src/index.css
+9:10:16 PM [vite] hmr update /src/components/Hero.jsx, /src/index.css
