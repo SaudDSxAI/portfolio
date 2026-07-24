@@ -47,6 +47,7 @@ RERANK_LOW_CONFIDENCE_THRESHOLD = 0.0  # cross-encoder scores below this = proba
 router = APIRouter(prefix="/api/rag", tags=["rag"])
 
 READY = False
+LOAD_ATTEMPTED = False
 embed_model = None
 cross_encoder = None
 bm25 = None
@@ -56,26 +57,46 @@ chunk_embeddings = None
 openai_client = None
 openai_async_client = None
 
-try:
-    with open(CORPUS_PATH, "rb") as f:
-        corpus = pickle.load(f)
-    chunks = corpus["chunks"]
-    chunk_sources = corpus["chunk_sources"]
-    chunk_embeddings = corpus["chunk_embeddings"]
 
-    embed_model = SentenceTransformer("all-MiniLM-L6-v2")
-    cross_encoder = CrossEncoder("cross-encoder/ms-marco-MiniLM-L-6-v2")
-    bm25 = BM25Okapi([c.lower().split() for c in chunks])
+def _ensure_loaded():
+    """
+    Loads the corpus + models on first real use instead of at container
+    startup. This backend serves several routers that each load their own
+    transformer models (CLIP, GPT-2, this one's embed model + cross-encoder);
+    loading all of them eagerly at import time meant the container had to
+    hold every model in memory before it could even answer a healthcheck,
+    which was pushing total startup memory past Railway's limit and getting
+    the process OOM-killed with no traceback. Loading lazily, on this
+    router's first real request, means startup is cheap and each model's
+    memory cost is only paid if a visitor actually uses that demo.
+    """
+    global READY, LOAD_ATTEMPTED, embed_model, cross_encoder, bm25
+    global chunks, chunk_sources, chunk_embeddings, openai_client, openai_async_client
 
-    api_key = os.getenv("OPENAI_API_KEY")
-    if not api_key:
-        raise ValueError("Missing OPENAI_API_KEY")
-    openai_client = OpenAI(api_key=api_key)
-    openai_async_client = AsyncOpenAI(api_key=api_key)
+    if LOAD_ATTEMPTED:
+        return
+    LOAD_ATTEMPTED = True
 
-    READY = True
-except Exception as e:
-    print(f"rag: failed to initialize ({e}) — live demo will report unavailable")
+    try:
+        with open(CORPUS_PATH, "rb") as f:
+            corpus = pickle.load(f)
+        chunks = corpus["chunks"]
+        chunk_sources = corpus["chunk_sources"]
+        chunk_embeddings = corpus["chunk_embeddings"]
+
+        embed_model = SentenceTransformer("all-MiniLM-L6-v2")
+        cross_encoder = CrossEncoder("cross-encoder/ms-marco-MiniLM-L-6-v2")
+        bm25 = BM25Okapi([c.lower().split() for c in chunks])
+
+        api_key = os.getenv("OPENAI_API_KEY")
+        if not api_key:
+            raise ValueError("Missing OPENAI_API_KEY")
+        openai_client = OpenAI(api_key=api_key)
+        openai_async_client = AsyncOpenAI(api_key=api_key)
+
+        READY = True
+    except Exception as e:
+        print(f"rag: failed to initialize ({e}) — live demo will report unavailable")
 
 
 # ================= SHARED HELPERS =================
@@ -317,11 +338,13 @@ STREAM_GENERATORS = {
 # ================= ROUTES =================
 @router.get("/status")
 def get_status():
+    _ensure_loaded()
     return {"ready": READY, "chunks": len(chunks)}
 
 
 @router.post("/stream/{variant}")
 async def stream_variant(variant: str, payload: dict):
+    _ensure_loaded()
     if not READY:
         raise HTTPException(status_code=503, detail="RAG corpus/model not ready")
     if variant not in STREAM_GENERATORS:

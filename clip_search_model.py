@@ -52,28 +52,49 @@ def _embed_images(paths, batch_size=8):
     return torch.cat(all_embeds, dim=0) if all_embeds else None
 
 
-try:
-    model = CLIPModel.from_pretrained("openai/clip-vit-base-patch32")
-    processor = CLIPProcessor.from_pretrained("openai/clip-vit-base-patch32")
-    model.eval()
+LOAD_ATTEMPTED = False
+
+
+def _ensure_loaded():
+    """
+    Loaded lazily, on first real request, not at container startup — same
+    reasoning as the other model-serving routers in this backend (see
+    rag_model.py's _ensure_loaded for the full explanation). This one goes
+    a step further: it also checks for real images FIRST, before loading the
+    ~600MB CLIP model at all, since there's currently nothing in
+    clip_model_store/images/ for it to search over. No point holding a full
+    CLIP model in memory for a feature that has no content to serve yet.
+    """
+    global READY, LOAD_ATTEMPTED, model, processor, image_paths, image_embeddings
+
+    if LOAD_ATTEMPTED:
+        return
+    LOAD_ATTEMPTED = True
 
     image_paths = _load_images()
-    if image_paths:
+    if not image_paths:
+        print("clip_search: no images found in clip_model_store/images/ — search disabled until images are added")
+        return
+
+    try:
+        model = CLIPModel.from_pretrained("openai/clip-vit-base-patch32")
+        processor = CLIPProcessor.from_pretrained("openai/clip-vit-base-patch32")
+        model.eval()
         image_embeddings = _embed_images(image_paths)
         READY = True
-    else:
-        print("clip_search: no images found in clip_model_store/images/ — search disabled until images are added")
-except Exception as e:
-    print(f"clip_search: failed to load CLIP ({e}) — search demo will report unavailable")
+    except Exception as e:
+        print(f"clip_search: failed to load CLIP ({e}) — search demo will report unavailable")
 
 
 @router.get("/status")
 def get_status():
+    _ensure_loaded()
     return {"ready": READY, "image_count": len(image_paths)}
 
 
 @router.get("/images")
 def list_images():
+    _ensure_loaded()
     if not READY:
         raise HTTPException(status_code=503, detail="CLIP search not ready (no images loaded)")
     return [{"id": i, "filename": p.name} for i, p in enumerate(image_paths)]
@@ -81,6 +102,7 @@ def list_images():
 
 @router.get("/image/{image_id}")
 def get_image(image_id: int):
+    _ensure_loaded()
     if not READY or image_id < 0 or image_id >= len(image_paths):
         raise HTTPException(status_code=404, detail="Image not found")
     return FileResponse(image_paths[image_id])
@@ -88,6 +110,7 @@ def get_image(image_id: int):
 
 @router.post("/text-search")
 def text_search(payload: dict):
+    _ensure_loaded()
     if not READY:
         raise HTTPException(status_code=503, detail="CLIP search not ready (no images loaded)")
     query = (payload.get("query") or "").strip()
@@ -114,6 +137,7 @@ def text_search(payload: dict):
 
 @router.post("/image-search")
 def image_search(payload: dict):
+    _ensure_loaded()
     if not READY:
         raise HTTPException(status_code=503, detail="CLIP search not ready (no images loaded)")
     image_id = payload.get("image_id")

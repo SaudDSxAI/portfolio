@@ -67,26 +67,46 @@ def _load_metrics():
     return {}
 
 
-try:
-    clip_model = CLIPModel.from_pretrained("openai/clip-vit-base-patch32")
-    clip_processor = CLIPProcessor.from_pretrained("openai/clip-vit-base-patch32")
-    clip_model.eval()
+LOAD_ATTEMPTED = False
 
-    gpt2 = GPT2LMHeadModel.from_pretrained("gpt2")
-    tokenizer = GPT2Tokenizer.from_pretrained("gpt2")
-    tokenizer.pad_token = tokenizer.eos_token
-    gpt2.eval()
 
-    projector = Projector()
-    if PROJECTOR_PATH.exists():
+def _ensure_loaded():
+    """
+    Loaded lazily on first real request instead of at container startup —
+    see rag_model.py's _ensure_loaded for the full reasoning. This router in
+    particular used to load a full separate CLIP model AND a full separate
+    GPT-2 at import time, on top of the other routers doing the same thing
+    with their own copies — real, avoidable memory duplication that was
+    contributing to the container getting OOM-killed before it could even
+    answer a healthcheck.
+    """
+    global READY, LOAD_ATTEMPTED, clip_model, clip_processor, gpt2, tokenizer, projector, metrics
+
+    if LOAD_ATTEMPTED:
+        return
+    LOAD_ATTEMPTED = True
+
+    if not PROJECTOR_PATH.exists():
+        print("mini_llava: no trained projector found at mini_llava_model_store/projector.pt — demo disabled until it's added")
+        return
+
+    try:
+        clip_model = CLIPModel.from_pretrained("openai/clip-vit-base-patch32")
+        clip_processor = CLIPProcessor.from_pretrained("openai/clip-vit-base-patch32")
+        clip_model.eval()
+
+        gpt2 = GPT2LMHeadModel.from_pretrained("gpt2")
+        tokenizer = GPT2Tokenizer.from_pretrained("gpt2")
+        tokenizer.pad_token = tokenizer.eos_token
+        gpt2.eval()
+
+        projector = Projector()
         projector.load_state_dict(torch.load(PROJECTOR_PATH, map_location="cpu"))
         projector.eval()
         metrics = _load_metrics()
         READY = True
-    else:
-        print("mini_llava: no trained projector found at mini_llava_model_store/projector.pt — demo disabled until it's added")
-except Exception as e:
-    print(f"mini_llava: failed to load models ({e}) — caption demo will report unavailable")
+    except Exception as e:
+        print(f"mini_llava: failed to load models ({e}) — caption demo will report unavailable")
 
 
 def _get_patch_embeddings(pil_image):
@@ -116,11 +136,13 @@ def _generate_caption(pil_image, max_new_tokens=25):
 
 @router.get("/status")
 def get_status():
+    _ensure_loaded()
     return {"ready": READY}
 
 
 @router.get("/metrics")
 def get_metrics():
+    _ensure_loaded()
     if not READY:
         raise HTTPException(status_code=503, detail="Mini-LLaVA not ready (no trained projector loaded)")
     return metrics
@@ -128,6 +150,7 @@ def get_metrics():
 
 @router.post("/caption")
 async def caption_image(file: UploadFile = File(...)):
+    _ensure_loaded()
     if not READY:
         raise HTTPException(status_code=503, detail="Mini-LLaVA not ready (no trained projector loaded)")
     try:

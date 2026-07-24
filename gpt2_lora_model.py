@@ -54,21 +54,38 @@ class LoRALinear(nn.Module):
         return original_output + lora_correction
 
 
-try:
-    tokenizer = GPT2Tokenizer.from_pretrained("gpt2")
-    tokenizer.pad_token = tokenizer.eos_token
+LOAD_ATTEMPTED = False
 
-    model = GPT2LMHeadModel.from_pretrained("gpt2")
-    for block in model.transformer.h:
-        block.attn.c_attn = LoRALinear(block.attn.c_attn, rank=8, alpha=16)
-        block.attn.c_proj = LoRALinear(block.attn.c_proj, rank=8, alpha=16)
 
-    lora_state = torch.load(LORA_PATH, map_location="cpu")
-    model.load_state_dict(lora_state, strict=False)
-    model.eval()
-    READY = True
-except Exception as e:
-    print(f"gpt2_lora: failed to load model ({e}) — live demo will report unavailable")
+def _ensure_loaded():
+    """
+    Loaded lazily on first real request instead of at container startup —
+    see rag_model.py's _ensure_loaded for the full reasoning. This router
+    loads its own separate GPT-2 (on top of mini_llava_model.py doing the
+    same), which was part of the real, avoidable memory duplication behind
+    the container getting OOM-killed before it could answer a healthcheck.
+    """
+    global READY, LOAD_ATTEMPTED, tokenizer, model
+
+    if LOAD_ATTEMPTED:
+        return
+    LOAD_ATTEMPTED = True
+
+    try:
+        tokenizer = GPT2Tokenizer.from_pretrained("gpt2")
+        tokenizer.pad_token = tokenizer.eos_token
+
+        model = GPT2LMHeadModel.from_pretrained("gpt2")
+        for block in model.transformer.h:
+            block.attn.c_attn = LoRALinear(block.attn.c_attn, rank=8, alpha=16)
+            block.attn.c_proj = LoRALinear(block.attn.c_proj, rank=8, alpha=16)
+
+        lora_state = torch.load(LORA_PATH, map_location="cpu")
+        model.load_state_dict(lora_state, strict=False)
+        model.eval()
+        READY = True
+    except Exception as e:
+        print(f"gpt2_lora: failed to load model ({e}) — live demo will report unavailable")
 
 
 @torch.no_grad()
@@ -85,11 +102,13 @@ def _generate(prompt: str, max_new_tokens: int = 40) -> str:
 
 @router.get("/status")
 def get_status():
+    _ensure_loaded()
     return {"ready": READY}
 
 
 @router.post("/generate")
 def generate(payload: dict):
+    _ensure_loaded()
     if not READY:
         raise HTTPException(status_code=503, detail="Model not ready (checkpoint not loaded)")
     prompt = (payload.get("prompt") or "").strip()
