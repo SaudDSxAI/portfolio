@@ -2415,3 +2415,156 @@ AggregateError [ECONNREFUSED]:
 6:42:24 PM [vite] hmr update /src/components/ChatWidget.jsx, /src/index.css
 9:10:10 PM [vite] hmr update /src/components/Hero.jsx, /src/index.css
 9:10:16 PM [vite] hmr update /src/components/Hero.jsx, /src/index.css
+12:04:38 PM [vite] hmr update /src/index.css, /src/pages/CategoryPage.jsx, /src/pages/CaseStudyDetail.jsx, /src/components/Projects.jsx
+12:08:49 PM [vite] hmr update /src/index.css, /src/pages/CategoryPage.jsx, /src/pages/CaseStudyDetail.jsx, /src/components/Projects.jsx
+12:10:34 PM [vite] http proxy error: /api/rag/status
+AggregateError [ECONNREFUSED]: 
+    at internalConnectMultiple (node:net:1134:18)
+    at afterConnectMultiple (node:net:1715:7)
+12:10:54 PM [vite] http proxy error: /api/rag/status
+AggregateError [ECONNREFUSED]: 
+    at internalConnectMultiple (node:net:1134:18)
+    at afterConnectMultiple (node:net:1715:7)
+12:18:48 PM [vite] hmr update /src/components/CaseStudyCard.jsx, /src/index.css
+12:18:53 PM [vite] hmr update /src/components/CaseStudyCard.jsx, /src/index.css
+12:19:13 PM [vite] hmr update /src/components/RAGProjectCard.jsx, /src/index.css
+12:21:31 PM [vite] http proxy error: /api/rag/status
+AggregateError [ECONNREFUSED]: 
+    at internalConnectMultiple (node:net:1134:18)
+    at afterConnectMultiple (node:net:1715:7)
+12:21:51 PM [vite] http proxy error: /api/rag/status
+AggregateError [ECONNREFUSED]: 
+    at internalConnectMultiple (node:net:1134:18)
+    at afterConnectMultiple (node:net:1715:7)
+12:25:59 PM [vite] http proxy error: /api/churn/models
+AggregateError [ECONNREFUSED]: 
+    at internalConnectMultiple (node:net:1134:18)
+    at afterConnectMultiple (node:net:1715:7)
+12:26:19 PM [vite] http proxy error: /api/churn/models
+AggregateError [ECONNREFUSED]: 
+    at internalConnectMultiple (node:net:1134:18)
+    at afterConnectMultiple (node:net:1715:7)
+12:32:57 PM [vite] hmr update /src/components/Skills.jsx, /src/index.css
+12:35:07 PM [vite] hmr update /src/index.css, /src/pages/CategoryPage.jsx, /src/pages/CaseStudyDetail.jsx, /src/components/Projects.jsx
+12:40:30 PM [vite] hmr update /src/index.css, /src/pages/CategoryPage.jsx, /src/pages/CaseStudyDetail.jsx, /src/components/Projects.jsx
+12:40:34 PM [vite] hmr update /src/index.css, /src/pages/CategoryPage.jsx, /src/pages/CaseStudyDetail.jsx, /src/components/Projects.jsx
+12:40:37 PM [vite] hmr update /src/index.css, /src/pages/CategoryPage.jsx, /src/pages/CaseStudyDetail.jsx, /src/components/Projects.jsx
+12:40:41 PM [vite] hmr update /src/index.css, /src/pages/CategoryPage.jsx, /src/pages/CaseStudyDetail.jsx, /src/components/Projects.jsx
+12:40:45 PM [vite] hmr update /src/index.css, /src/pages/CategoryPage.jsx, /src/pages/CaseStudyDetail.jsx, /src/components/Projects.jsx
+12:40:48 PM [vite] hmr update /src/index.css, /src/pages/CategoryPage.jsx, /src/pages/CaseStudyDetail.jsx, /src/components/Projects.jsx
+12:40:53 PM [vite] hmr update /src/index.css, /src/pages/CategoryPage.jsx, /src/pages/CaseStudyDetail.jsx, /src/components/Projects.jsx
+12:42:27 PM [vite] http proxy error: /api/churn/models
+AggregateError [ECONNREFUSED]: 
+    at internalConnectMultiple (node:net:1134:18)
+    at afterConnectMultiple (node:net:1715:7)
+12:42:47 PM [vite] http proxy error: /api/churn/models
+AggregateError [ECONNREFUSED]: 
+    at internalConnectMultiple (node:net:1134:18)
+    at afterConnectMultiple (node:net:1715:7)
+12:44:04 PM [vite] page reload src/components/ProjectCard.jsx
+12:44:11 PM [vite] hmr update /src/pages/CaseStudyDetail.jsx, /src/index.css
+12:44:30 PM [vite] http proxy error: /api/churn/models
+AggregateError [ECONNREFUSED]: 
+    at internalConnectMultiple (node:net:1134:18)
+    at afterConnectMultiple (node:net:1715:7)
+12:44:50 PM [vite] http proxy error: /api/churn/models
+AggregateError [ECONNREFUSED]: 
+    at internalConnectMultiple (node:net:1134:18)
+    at afterConnectMultiple (node:net:1715:7)
+12:54:06 PM [vite] page reload public/notebooks/churn-notebook.html
+12:54:06 PM [vite] page reload public/notebooks/churn-notebook.html
+12:54:06 PM [vite] page reload public/notebooks/heart-disease-notebook.html
+12:54:06 PM [vite] page reload public/notebooks/heart-disease-notebook.html
+12:54:06 PM [vite] page reload public/notebooks/churn-notebook.html
+12:54:06 PM [vite] page reload public/notebooks/credit-fraud-notebook.html
+12:54:06 PM [vite] page reload public/notebooks/credit-fraud-notebook.html
+12:54:06 PM [vite] page reload public/notebooks/heart-disease-notebook.html
+12:54:07 PM [vite] page reload public/notebooks/house-price-notebook.html
+12:54:07 PM [vite] page reload public/notebooks/house-price-notebook.html
+12:54:07 PM [vite] page reload public/notebooks/credit-fraud-notebook.html
+12:54:07 PM [vite] page reload public/notebooks/sales-forecasting-notebook.html
+12:54:07 PM [vite] page reload public/notebooks/sales-forecasting-notebook.html
+12:54:07 PM [vite] page reload public/notebooks/house-price-notebook.html
+12:54:07 PM [vite] page reload public/notebooks/movie-recommender-notebook.html
+12:54:07 PM [vite] page reload public/notebooks/movie-recommender-notebook.html
+12:54:07 PM [vite] page reload public/notebooks/sales-forecasting-notebook.html
+12:54:07 PM [vite] page reload public/notebooks/sentiment-notebook.html
+12:54:07 PM [vite] page reload public/notebooks/sentiment-notebook.html
+12:54:07 PM [vite] page reload public/notebooks/movie-recommender-notebook.html
+12:54:07 PM [vite] page reload public/notebooks/anomaly-detection-notebook.html
+12:54:07 PM [vite] page reload public/notebooks/anomaly-detection-notebook.html
+12:54:07 PM [vite] page reload public/notebooks/sentiment-notebook.html
+12:54:07 PM [vite] page reload public/notebooks/anomaly-detection-notebook.html
+12:54:19 PM [vite] hmr update /src/index.css, /src/pages/CategoryPage.jsx, /src/pages/CaseStudyDetail.jsx, /src/components/Projects.jsx
+12:54:26 PM [vite] hmr update /src/index.css, /src/pages/CategoryPage.jsx, /src/pages/CaseStudyDetail.jsx, /src/components/Projects.jsx
+12:54:31 PM [vite] hmr update /src/index.css, /src/pages/CategoryPage.jsx, /src/pages/CaseStudyDetail.jsx, /src/components/Projects.jsx
+12:54:36 PM [vite] hmr update /src/index.css, /src/pages/CategoryPage.jsx, /src/pages/CaseStudyDetail.jsx, /src/components/Projects.jsx
+12:54:41 PM [vite] hmr update /src/index.css, /src/pages/CategoryPage.jsx, /src/pages/CaseStudyDetail.jsx, /src/components/Projects.jsx
+12:54:45 PM [vite] hmr update /src/index.css, /src/pages/CategoryPage.jsx, /src/pages/CaseStudyDetail.jsx, /src/components/Projects.jsx
+12:54:51 PM [vite] hmr update /src/index.css, /src/pages/CategoryPage.jsx, /src/pages/CaseStudyDetail.jsx, /src/components/Projects.jsx
+12:54:57 PM [vite] hmr update /src/index.css, /src/pages/CategoryPage.jsx, /src/pages/CaseStudyDetail.jsx, /src/components/Projects.jsx
+12:56:06 PM [vite] page reload public/notebooks/comparative-rag-notebook.html
+12:56:06 PM [vite] page reload public/notebooks/comparative-rag-notebook.html
+12:56:06 PM [vite] page reload public/notebooks/contextual-compression-notebook.html
+12:56:06 PM [vite] page reload public/notebooks/contextual-compression-notebook.html
+12:56:06 PM [vite] page reload public/notebooks/comparative-rag-notebook.html
+12:56:06 PM [vite] page reload public/notebooks/deep-scrape-agent-notebook.html
+12:56:06 PM [vite] page reload public/notebooks/deep-scrape-agent-notebook.html
+12:56:06 PM [vite] page reload public/notebooks/contextual-compression-notebook.html
+12:56:06 PM [vite] page reload public/notebooks/deep-scrape-agent-notebook.html
+12:56:15 PM [vite] hmr update /src/index.css, /src/pages/CategoryPage.jsx, /src/pages/CaseStudyDetail.jsx, /src/components/Projects.jsx
+12:56:20 PM [vite] hmr update /src/index.css, /src/pages/CategoryPage.jsx, /src/pages/CaseStudyDetail.jsx, /src/components/Projects.jsx
+12:56:24 PM [vite] hmr update /src/index.css, /src/pages/CategoryPage.jsx, /src/pages/CaseStudyDetail.jsx, /src/components/Projects.jsx
+12:56:30 PM [vite] hmr update /src/index.css, /src/pages/CategoryPage.jsx, /src/pages/CaseStudyDetail.jsx, /src/components/Projects.jsx
+1:04:16 PM [vite] http proxy error: /api/churn/models
+AggregateError [ECONNREFUSED]: 
+    at internalConnectMultiple (node:net:1134:18)
+    at afterConnectMultiple (node:net:1715:7)
+1:04:36 PM [vite] http proxy error: /api/churn/models
+AggregateError [ECONNREFUSED]: 
+    at internalConnectMultiple (node:net:1134:18)
+    at afterConnectMultiple (node:net:1715:7)
+1:04:40 PM [vite] http proxy error: /api/heart/models
+AggregateError [ECONNREFUSED]: 
+    at internalConnectMultiple (node:net:1134:18)
+    at afterConnectMultiple (node:net:1715:7)
+1:05:00 PM [vite] http proxy error: /api/heart/models
+AggregateError [ECONNREFUSED]: 
+    at internalConnectMultiple (node:net:1134:18)
+    at afterConnectMultiple (node:net:1715:7)
+1:06:00 PM [vite] http proxy error: /api/fraud/examples
+AggregateError [ECONNREFUSED]: 
+    at internalConnectMultiple (node:net:1134:18)
+    at afterConnectMultiple (node:net:1715:7)
+1:06:15 PM [vite] http proxy error: /api/movies/search
+AggregateError [ECONNREFUSED]: 
+    at internalConnectMultiple (node:net:1134:18)
+    at afterConnectMultiple (node:net:1715:7)
+1:06:15 PM [vite] http proxy error: /api/movies/search?q=
+AggregateError [ECONNREFUSED]: 
+    at internalConnectMultiple (node:net:1134:18)
+    at afterConnectMultiple (node:net:1715:7)
+1:06:20 PM [vite] http proxy error: /api/fraud/examples
+AggregateError [ECONNREFUSED]: 
+    at internalConnectMultiple (node:net:1134:18)
+    at afterConnectMultiple (node:net:1715:7)
+1:06:34 PM [vite] http proxy error: /api/agentic-chat/status
+AggregateError [ECONNREFUSED]: 
+    at internalConnectMultiple (node:net:1134:18)
+    at afterConnectMultiple (node:net:1715:7)
+1:06:35 PM [vite] http proxy error: /api/movies/search
+AggregateError [ECONNREFUSED]: 
+    at internalConnectMultiple (node:net:1134:18)
+    at afterConnectMultiple (node:net:1715:7)
+1:06:44 PM [vite] http proxy error: /api/agentic-chat/status
+AggregateError [ECONNREFUSED]: 
+    at internalConnectMultiple (node:net:1134:18)
+    at afterConnectMultiple (node:net:1715:7)
+1:13:42 PM [vite] http proxy error: /api/sales/forecast
+AggregateError [ECONNREFUSED]: 
+    at internalConnectMultiple (node:net:1134:18)
+    at afterConnectMultiple (node:net:1715:7)
+1:14:02 PM [vite] http proxy error: /api/sales/forecast
+AggregateError [ECONNREFUSED]: 
+    at internalConnectMultiple (node:net:1134:18)
+    at afterConnectMultiple (node:net:1715:7)

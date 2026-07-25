@@ -1,5 +1,4 @@
 import TransitionLink from './ui/TransitionLink';
-import TechBadge from './ui/TechBadge';
 import { getTheme, getIcon } from '../lib/projectTheme';
 
 export default function CaseStudyCard({ study, categoryKey, index = 0 }) {
@@ -26,30 +25,15 @@ export default function CaseStudyCard({ study, categoryKey, index = 0 }) {
           </span>
         </div>
 
-        {/* Body */}
+        {/* Body — kept deliberately minimal: just the title and a short
+            description. No tech badges, category label, or CTA row; the
+            whole card is already a link, so extra chrome here only adds
+            noise. */}
         <div className="p-5 flex-1 flex flex-col">
-          <div className={`text-[11px] font-semibold ${theme.text} uppercase tracking-[0.2em] mb-2`}>
-            {study.categoryKey.toUpperCase()} Case Study
-          </div>
           <h3 className="font-heading font-bold text-black text-lg mb-2 group-hover:text-black transition-colors duration-300">
             {study.title}
           </h3>
-          <p className="text-sm text-zinc-700 leading-relaxed mb-4 flex-1">{study.tagline}</p>
-
-          {study.tech?.length > 0 && (
-            <div className="flex flex-wrap gap-1.5 mb-4">
-              {study.tech.slice(0, 4).map((t) => (
-                <TechBadge key={t} name={t} />
-              ))}
-            </div>
-          )}
-
-          <div className={`flex items-center gap-1.5 text-sm font-semibold ${theme.text} pt-3 border-t border-black/10`}>
-            View full case study
-            <svg className="w-4 h-4 group-hover:translate-x-1 transition-transform" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" d="M17.25 8.25 21 12m0 0-3.75 3.75M21 12H3" />
-            </svg>
-          </div>
+          <p className="text-sm text-zinc-700 leading-relaxed flex-1">{study.tagline}</p>
         </div>
       </div>
     </TransitionLink>

@@ -82,24 +82,41 @@ export default function Skills() {
  subtitle="Broad, working knowledge across the stack — and deep specialization in AI, ML, and LLM systems"
  />
 
- {/* Breadth — the bar of the T. Deliberately understated: plain label,
- unaccented cards, so it reads as context rather than the headline. */}
+ {/* The actual T: one continuous bordered frame, not two independently
+ boxed groups. A 3-column grid — shoulder / stem-width / shoulder — lets
+ the bar frame span all three columns while the stem frame occupies only
+ the center column beneath it, so the outline is unbroken: wide box on
+ top, narrow box below, joined by two short closing lines ("shoulders")
+ exactly where the bar's bottom edge steps in to meet the stem's width.
+ Both the middle column and the stem frame use the same
+ `min(42rem,100%)` track, so their widths always match exactly at any
+ screen size — on narrow phones the shoulders collapse to 0 and it
+ simply reads as two stacked boxes, which is the right fallback there. */}
+ <div className="grid grid-cols-[1fr_min(42rem,100%)_1fr]">
+ {/* Bar frame — top of the T, full width */}
+ <div className="col-span-3 rounded-t-3xl border-2 border-b-0 border-black/15 bg-white/40 backdrop-blur-[2px] p-6 md:p-8">
  <div className="mb-6 md:mb-8 text-center">
  <span className="text-[11px] font-semibold uppercase tracking-[0.25em] text-zinc-500">
  Breadth — Supporting Skills
  </span>
  </div>
- <div className="grid sm:grid-cols-2 md:grid-cols-3 gap-6 mb-16 md:mb-20">
+ <div className="grid sm:grid-cols-2 md:grid-cols-3 gap-6">
  {barSkills.map((group, i) => (
  <SkillCard key={group.category} group={group} delay={i * 100} />
  ))}
  </div>
+ </div>
 
- {/* Depth — the stem of the T: AI engineering, the actual specialization.
- Narrower and centered so it reads as a column descending from the
- bar above, with a bolder badge and accent-colored cards (emphasized)
- so it's unmistakably the focal point of the page, not a fourth
- category tacked onto the row above. */}
+ {/* Shoulders — close the notch where the bar steps in to the stem's
+ width. Empty middle cell leaves that span open, connecting straight
+ down into the stem frame below. */}
+ <div className="border-b-2 border-black/15" aria-hidden="true" />
+ <div aria-hidden="true" />
+ <div className="border-b-2 border-black/15" aria-hidden="true" />
+
+ {/* Stem frame — the vertical stroke of the T, centered beneath the bar
+ and narrower than it, so the silhouette is unmistakable. */}
+ <div className="col-start-2 rounded-b-3xl border-2 border-t-0 border-black/15 bg-white/40 backdrop-blur-[2px] p-6 md:p-8">
  <div className="mb-8 md:mb-10 flex justify-center">
  <span className="inline-flex items-center gap-2 px-5 py-2 rounded-full bg-primary-500/15 border border-primary-500/30 text-primary-800 text-xs font-bold uppercase tracking-[0.2em] shadow-sm shadow-primary-500/10">
  <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor">
@@ -108,10 +125,12 @@ export default function Skills() {
  Depth — AI Engineering Specialization
  </span>
  </div>
- <div className="grid gap-6 md:max-w-2xl md:mx-auto">
+ <div className="grid gap-6">
  {stemSkills.map((group, i) => (
  <SkillCard key={group.category} group={group} delay={(barSkills.length + i) * 100} emphasized />
  ))}
+ </div>
+ </div>
  </div>
  </div>
  </section>
