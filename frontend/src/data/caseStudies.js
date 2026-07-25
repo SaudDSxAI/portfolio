@@ -790,6 +790,11 @@ export const caseStudies = {
       icon: 'gitCompare',
       customPage: 'ragComparison',
       customCard: 'ragComparison',
+      accuracyChartData: [
+        { name: 'Naive', correctPct: 100 },
+        { name: 'Hybrid', correctPct: 100 },
+        { name: 'HyDE', correctPct: 60 },
+      ],
       corpusStats: [
         { label: 'Corpus chunks', value: '161' },
         { label: 'Projects + personal', value: '151 + 10' },
@@ -862,11 +867,16 @@ export const caseStudies = {
       hasLiveDemo: false,
       accentColor: 'violet',
       icon: 'sparkles',
+      customResults: 'compressionRag',
       heroMetrics: [
         { label: 'Avg. token reduction', value: '23.8%' },
         { label: 'Faithfulness (after)', value: '98.8/100' },
         { label: 'Relevance (after)', value: '100/100' },
         { label: 'Questions tested', value: '24' },
+      ],
+      faithfulnessChartData: [
+        { metric: 'Faithfulness', before: 97.7, after: 98.8 },
+        { metric: 'Relevance', before: 100, after: 100 },
       ],
       rulesHeading: 'Before vs. after, on real questions',
       rulesBlurb: 'Same retrieved passages, same question, same generation model. Only the context handed to the LLM changes.',
@@ -943,11 +953,17 @@ export const caseStudies = {
       hasLiveDemo: false,
       accentColor: 'indigo',
       icon: 'workflow',
+      customResults: 'citationRoutingRag',
       heroMetrics: [
         { label: 'Routing accuracy (after fix)', value: '19/20' },
         { label: 'Routing accuracy (before fix)', value: '18/20' },
         { label: 'False refusals fixed', value: '2' },
         { label: 'Questions tested', value: '20' },
+      ],
+      routingByCategory: [
+        { category: 'Retrieval', total: 10, before: 8, after: 10 },
+        { category: 'Small talk', total: 5, before: 5, after: 5 },
+        { category: 'Out of scope', total: 5, before: 5, after: 4 },
       ],
       rulesHeading: 'Routing decisions, before and after fixing the router',
       rulesBlurb: 'Same 20 real questions, same classifier structure — the only difference is whether the router knew Saud\'s actual project list.',

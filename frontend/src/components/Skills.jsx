@@ -76,7 +76,7 @@ export default function Skills() {
  <TShapeBackground />
 
  <BackButton to="/" label="Back home" />
- <div className="relative max-w-6xl mx-auto">
+ <div className="cv-auto relative max-w-6xl mx-auto">
  <SectionHeading
  title="Skills & Expertise"
  subtitle="Broad, working knowledge across the stack — and deep specialization in AI, ML, and LLM systems"
@@ -92,15 +92,21 @@ export default function Skills() {
  `min(42rem,100%)` track, so their widths always match exactly at any
  screen size — on narrow phones the shoulders collapse to 0 and it
  simply reads as two stacked boxes, which is the right fallback there. */}
- <div className="grid grid-cols-[1fr_min(42rem,100%)_1fr]">
- {/* Bar frame — top of the T, full width */}
- <div className="col-span-3 rounded-t-3xl border-2 border-b-0 border-black/15 bg-white/40 backdrop-blur-[2px] p-6 md:p-8">
- <div className="mb-6 md:mb-8 text-center">
+ {/* `min(30rem,90%)` — capping at 90% rather than 100% means the stem
+ track never fully swallows the container width, so even on the
+ narrowest phones there's still a visible shoulder step on each side
+ instead of the T degrading into two plain stacked boxes. */}
+ <div className="grid grid-cols-[1fr_min(30rem,90%)_1fr]">
+ {/* Bar frame — top of the T, full width. Tighter padding/gap than
+ before so the horizontal stroke reads as lean rather than a thick
+ slab. */}
+ <div className="col-span-3 rounded-t-2xl border-2 border-b-0 border-primary-600/60 bg-white/70 backdrop-blur-[2px] shadow-lg shadow-primary-900/5 p-5 md:p-6">
+ <div className="mb-5 md:mb-6 text-center">
  <span className="text-[11px] font-semibold uppercase tracking-[0.25em] text-zinc-500">
  Breadth — Supporting Skills
  </span>
  </div>
- <div className="grid sm:grid-cols-2 md:grid-cols-3 gap-6">
+ <div className="grid sm:grid-cols-2 md:grid-cols-3 gap-5">
  {barSkills.map((group, i) => (
  <SkillCard key={group.category} group={group} delay={i * 100} />
  ))}
@@ -110,14 +116,15 @@ export default function Skills() {
  {/* Shoulders — close the notch where the bar steps in to the stem's
  width. Empty middle cell leaves that span open, connecting straight
  down into the stem frame below. */}
- <div className="border-b-2 border-black/15" aria-hidden="true" />
+ <div className="border-b-2 border-primary-600/60" aria-hidden="true" />
  <div aria-hidden="true" />
- <div className="border-b-2 border-black/15" aria-hidden="true" />
+ <div className="border-b-2 border-primary-600/60" aria-hidden="true" />
 
- {/* Stem frame — the vertical stroke of the T, centered beneath the bar
- and narrower than it, so the silhouette is unmistakable. */}
- <div className="col-start-2 rounded-b-3xl border-2 border-t-0 border-black/15 bg-white/40 backdrop-blur-[2px] p-6 md:p-8">
- <div className="mb-8 md:mb-10 flex justify-center">
+ {/* Stem frame — the vertical stroke of the T, narrowed (30rem instead
+ of 42rem) so it reads as a slim column beneath the bar rather than
+ an equally-wide block. */}
+ <div className="col-start-2 rounded-b-2xl border-2 border-t-0 border-primary-600/60 bg-white/70 backdrop-blur-[2px] shadow-lg shadow-primary-900/5 p-5 md:p-6">
+ <div className="mb-6 md:mb-8 flex justify-center">
  <span className="inline-flex items-center gap-2 px-5 py-2 rounded-full bg-primary-500/15 border border-primary-500/30 text-primary-800 text-xs font-bold uppercase tracking-[0.2em] shadow-sm shadow-primary-500/10">
  <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor">
  <path strokeLinecap="round" strokeLinejoin="round" d="M12 3v2.25m6.364.386-1.591 1.591M21 12h-2.25m-.386 6.364-1.591-1.591M12 18.75V21m-6.364-2.386 1.591-1.591M3 12h2.25m.386-6.364 1.591 1.591M12 8.25a3.75 3.75 0 100 7.5 3.75 3.75 0 000-7.5z" />
@@ -125,7 +132,7 @@ export default function Skills() {
  Depth — AI Engineering Specialization
  </span>
  </div>
- <div className="grid gap-6">
+ <div className="grid gap-5">
  {stemSkills.map((group, i) => (
  <SkillCard key={group.category} group={group} delay={(barSkills.length + i) * 100} emphasized />
  ))}

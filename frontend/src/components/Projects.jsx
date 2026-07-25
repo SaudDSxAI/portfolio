@@ -15,7 +15,7 @@ export default function Projects() {
   return (
     <section id="projects" className="relative min-h-screen py-20 px-6">
       <BackButton to="/" label="Back home" />
-      <div className="relative max-w-6xl mx-auto">
+      <div className="cv-auto relative max-w-6xl mx-auto">
         <SectionHeading
           eyebrow="Selected Work"
           title="Projects"

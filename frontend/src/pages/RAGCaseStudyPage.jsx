@@ -4,6 +4,7 @@ import BackButton from '../components/ui/BackButton';
 import TechBadge from '../components/ui/TechBadge';
 import ScrollReveal from '../components/ui/ScrollReveal';
 import RAGComparisonDemo from '../components/demos/RAGComparisonDemo';
+import { RankLeaderboard } from '../components/results/shared';
 import { getTheme, getIcon } from '../lib/projectTheme';
 
 const STATUS_STYLES = {
@@ -123,6 +124,24 @@ export default function RAGCaseStudyPage({ study, categoryMeta }) {
             </div>
           </div>
         </ScrollReveal>
+
+        {/* Real accuracy chart — only for the three techniques with an
+            explicit, directly-stated fraction on the 5-question test set.
+            Re-ranked and Agentic don't reduce to a single comparable score
+            (see their verdict cards above), so they're deliberately left
+            out here rather than assigned a number that wasn't actually
+            measured this way. */}
+        {study.accuracyChartData?.length > 0 && (
+          <ScrollReveal delay={140}>
+            <div className="mb-10">
+              <h2 className="text-lg font-heading font-bold text-black mb-1">Correct answers on the 5-question test set</h2>
+              <p className="text-sm text-zinc-600 mb-4">
+                Only shown for techniques with a single, directly comparable score. Re-ranked and Agentic are qualitative — see the verdict cards above.
+              </p>
+              <RankLeaderboard data={study.accuracyChartData} metricKey="correctPct" metricLabel="Correct out of 5 questions" theme={theme} />
+            </div>
+          </ScrollReveal>
+        )}
 
         {/* Deep dives — accordion, not a linear scroll of identical heading
             blocks. Click into whichever technique's story you want. */}

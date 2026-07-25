@@ -2568,3 +2568,60 @@ AggregateError [ECONNREFUSED]:
 AggregateError [ECONNREFUSED]: 
     at internalConnectMultiple (node:net:1134:18)
     at afterConnectMultiple (node:net:1715:7)
+1:20:00 PM [vite] page reload public/notebooks/comparative-rag-notebook.html
+1:20:00 PM [vite] page reload public/notebooks/comparative-rag-notebook.html
+1:20:00 PM [vite] page reload public/notebooks/deep-scrape-agent-notebook.html
+1:20:00 PM [vite] page reload public/notebooks/deep-scrape-agent-notebook.html
+2:48:51 PM [vite] http proxy error: /api/sales/forecast
+AggregateError [ECONNREFUSED]: 
+    at internalConnectMultiple (node:net:1134:18)
+    at afterConnectMultiple (node:net:1715:7)
+3:19:13 PM [vite] http proxy error: /api/sales/forecast
+AggregateError [ECONNREFUSED]: 
+    at internalConnectMultiple (node:net:1134:18)
+    at afterConnectMultiple (node:net:1715:7)
+7:54:38 PM [vite] http proxy error: /api/rag/status
+AggregateError [ECONNREFUSED]: 
+    at internalConnectMultiple (node:net:1134:18)
+    at afterConnectMultiple (node:net:1715:7)
+7:54:58 PM [vite] http proxy error: /api/rag/status
+AggregateError [ECONNREFUSED]: 
+    at internalConnectMultiple (node:net:1134:18)
+    at afterConnectMultiple (node:net:1715:7)
+8:05:49 PM [vite] hmr update /src/components/Skills.jsx, /src/index.css
+8:05:51 PM [vite] hmr update /src/components/Skills.jsx, /src/index.css
+8:05:53 PM [vite] hmr update /src/components/Skills.jsx, /src/index.css
+8:07:37 PM [vite] hmr update /src/components/Skills.jsx, /src/index.css
+8:07:47 PM [vite] hmr update /src/components/Skills.jsx, /src/index.css
+8:09:53 PM [vite] hmr update /src/components/Skills.jsx, /src/index.css
+8:12:17 PM [vite] http proxy error: /health
+AggregateError [ECONNREFUSED]: 
+    at internalConnectMultiple (node:net:1134:18)
+    at afterConnectMultiple (node:net:1715:7)
+8:12:48 PM [vite] hmr update /src/index.css
+8:12:51 PM [vite] hmr update /src/components/Projects.jsx, /src/index.css
+8:12:55 PM [vite] hmr update /src/components/Contact.jsx, /src/index.css
+8:13:02 PM [vite] hmr update /src/components/Skills.jsx, /src/index.css
+8:14:45 PM [vite] http proxy error: /api/churn/models
+AggregateError [ECONNREFUSED]: 
+    at internalConnectMultiple (node:net:1134:18)
+    at afterConnectMultiple (node:net:1715:7)
+8:15:05 PM [vite] http proxy error: /api/churn/models
+AggregateError [ECONNREFUSED]: 
+    at internalConnectMultiple (node:net:1134:18)
+    at afterConnectMultiple (node:net:1715:7)
+8:15:07 PM [vite] http proxy error: /api/rag/status
+AggregateError [ECONNREFUSED]: 
+    at internalConnectMultiple (node:net:1134:18)
+    at afterConnectMultiple (node:net:1715:7)
+8:15:27 PM [vite] http proxy error: /api/rag/status
+AggregateError [ECONNREFUSED]: 
+    at internalConnectMultiple (node:net:1134:18)
+    at afterConnectMultiple (node:net:1715:7)
+8:18:57 PM [vite] hmr update /src/index.css, /src/pages/CategoryPage.jsx, /src/pages/CaseStudyDetail.jsx, /src/components/Projects.jsx
+8:19:04 PM [vite] hmr update /src/index.css, /src/pages/CategoryPage.jsx, /src/pages/CaseStudyDetail.jsx, /src/components/Projects.jsx
+8:19:11 PM [vite] hmr update /src/index.css, /src/pages/CategoryPage.jsx, /src/pages/CaseStudyDetail.jsx, /src/components/Projects.jsx
+8:19:41 PM [vite] hmr update /src/pages/CaseStudyDetail.jsx, /src/index.css
+8:19:50 PM [vite] hmr update /src/pages/CaseStudyDetail.jsx, /src/index.css
+8:19:56 PM [vite] hmr update /src/pages/RAGCaseStudyPage.jsx, /src/index.css
+8:20:04 PM [vite] hmr update /src/pages/RAGCaseStudyPage.jsx, /src/index.css

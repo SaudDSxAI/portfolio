@@ -56,12 +56,20 @@ section {
   scroll-margin-top: 4rem;
 }
 
-/* Performance: skip rendering off-screen sections until they enter the
+/* Performance: skip rendering off-screen content until it enters the
    viewport. `contain-intrinsic-size` reserves the right amount of layout
-   space so the scrollbar doesn't jump. No visual change. */
-#projects,
-#skills,
-#contact {
+   space so the scrollbar doesn't jump. No visual change.
+
+   IMPORTANT: this is a class applied to each page's inner content wrapper,
+   not the outer `<section id="projects/skills/contact">` itself.
+   `content-visibility: auto` implies `contain: layout style paint`, which
+   creates a new containing block for `position: fixed` descendants — so a
+   fixed BackButton rendered *inside* one of those sections would stop being
+   fixed to the viewport and instead be pinned to the section's box,
+   scrolling away with the rest of the page. Keeping BackButton as a sibling
+   of this wrapper (still inside the section, but outside the contained
+   subtree) avoids that entirely. */
+.cv-auto {
   content-visibility: auto;
   contain-intrinsic-size: 1px 800px;
 }

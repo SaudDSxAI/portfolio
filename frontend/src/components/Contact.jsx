@@ -54,7 +54,7 @@ export default function Contact() {
  <div className="absolute inset-0 bg-gradient-to-b from-transparent via-warm-100/70 to-transparent pointer-events-none" />
 
  <BackButton to="/" label="Back home" />
- <div className="relative max-w-4xl mx-auto text-center">
+ <div className="cv-auto relative max-w-4xl mx-auto text-center">
  <SectionHeading
  eyebrow="Get In Touch"
  title="Let's Build Something Together"
