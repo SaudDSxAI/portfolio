@@ -73,49 +73,56 @@ export default function Projects() {
           // shows in the ScrubPreviewPanel above, not an overlay glued to
           // the tile, so edge-column tiles never get clipped and the
           // preview is never hidden under the finger that triggered it.
-          <div
-            ref={gridRef}
-            {...handlers}
-            className="touch-none grid gap-2 flex-1 min-h-0"
-            style={{
-              gridTemplateColumns: `repeat(${cols}, minmax(0, 1fr))`,
-              gridTemplateRows: `repeat(${rows}, minmax(0, 1fr))`,
-            }}
-          >
-            {categoryKeys.map((key, i) => {
-              const meta = categories[key];
-              const isActive = activeIndex === i;
-              return (
-                <button
-                  key={key}
-                  type="button"
-                  data-scrub-index={i}
-                  onClick={() => navigate(`/${key}`)}
-                  // Scaling from an edge/corner-biased origin (instead of
-                  // the default center) makes the tile grow inward, so it
-                  // never reaches past the grid's outer boundary and clip
-                  // against the section's overflow-hidden — the ring is
-                  // inset (not a box-shadow reaching outward) for the same
-                  // reason.
-                  className={`rounded-xl border flex flex-col items-center justify-center gap-1 p-2 transition-all duration-150 ${getTileOriginClass(
-                    i,
-                    cols,
-                    rows
-                  )} ${
-                    isActive
-                      ? 'scale-[1.06] z-10 border-primary-500 bg-warm-100 ring-2 ring-inset ring-primary-400/60'
-                      : 'border-black/10 bg-warm-100/80'
-                  }`}
-                >
-                  <span className="flex items-center justify-center w-8 h-8 rounded-lg bg-gradient-to-br from-primary-500 to-primary-700 text-white">
-                    <CategoryIcon categoryKey={key} />
-                  </span>
-                  <span className="text-[10px] font-semibold text-black leading-tight text-center line-clamp-2">
-                    {meta.label}
-                  </span>
-                </button>
-              );
-            })}
+          // The padding lives on this outer flex-1 box, not the measured
+          // grid itself — measuring after padding is applied means the
+          // grid's cells are sized for the space actually left over, so the
+          // last row/edge cards sit inset from the screen edges instead of
+          // touching them.
+          <div className="flex-1 min-h-0 p-2">
+            <div
+              ref={gridRef}
+              {...handlers}
+              className="touch-none grid gap-2 h-full w-full"
+              style={{
+                gridTemplateColumns: `repeat(${cols}, minmax(0, 1fr))`,
+                gridTemplateRows: `repeat(${rows}, minmax(0, 1fr))`,
+              }}
+            >
+              {categoryKeys.map((key, i) => {
+                const meta = categories[key];
+                const isActive = activeIndex === i;
+                return (
+                  <button
+                    key={key}
+                    type="button"
+                    data-scrub-index={i}
+                    onClick={() => navigate(`/${key}`)}
+                    // Scaling from an edge/corner-biased origin (instead of
+                    // the default center) makes the tile grow inward, so it
+                    // never reaches past the grid's outer boundary and clip
+                    // against the section's overflow-hidden — the ring is
+                    // inset (not a box-shadow reaching outward) for the same
+                    // reason.
+                    className={`rounded-xl border flex flex-col items-center justify-center gap-1 p-2 transition-all duration-150 ${getTileOriginClass(
+                      i,
+                      cols,
+                      rows
+                    )} ${
+                      isActive
+                        ? 'scale-[1.06] z-10 border-primary-500 bg-warm-100 ring-2 ring-inset ring-primary-400/60'
+                        : 'border-black/10 bg-warm-100/80'
+                    }`}
+                  >
+                    <span className="flex items-center justify-center w-8 h-8 rounded-lg bg-gradient-to-br from-primary-500 to-primary-700 text-white">
+                      <CategoryIcon categoryKey={key} />
+                    </span>
+                    <span className="text-[10px] font-semibold text-black leading-tight text-center line-clamp-2">
+                      {meta.label}
+                    </span>
+                  </button>
+                );
+              })}
+            </div>
           </div>
         ) : (
           <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">

@@ -3,10 +3,8 @@ import BackButton from './ui/BackButton';
 import SectionHeading from './SectionHeading';
 import ScrollReveal from './ui/ScrollReveal';
 import TShapeBackground from './ui/TShapeBackground';
-import ScrubPreviewPanel from './ui/ScrubPreviewPanel';
 import { useIsMobile } from '../lib/useIsMobile';
 import { useScrubActivate } from '../lib/useScrubActivate';
-import { useTShapeCellSize } from '../lib/useTShapeCellSize';
 import { getTileOriginClass } from '../lib/useSquareGridDims';
 import { skills } from '../data/projects';
 
@@ -79,6 +77,86 @@ function CategoryGlyph({ group, className = '' }) {
  );
 }
 
+// Short label for the small T tiles. The full category name ("Deep Learning
+// & Generative Models") can't fit legibly in a tile that's a third of the
+// screen wide without either shrinking to an unreadable size or wrapping to
+// four cramped lines, so the tile shows an abbreviated form and the detail
+// panel carries the full name plus every skill in it. Dropping everything
+// after " & " and then capping at two words handles every current category
+// ("Agentic AI", "RAG", "Machine Learning", "Full-Stack Production") without
+// a hand-maintained lookup table that would silently go stale on a rename.
+function shortLabel(category) {
+ return category.split(' & ')[0].split(' ').slice(0, 2).join(' ');
+}
+
+// The contents of one category's detail card. Every skill is rendered as
+// its own chip with no line-clamp and no fixed height, so nothing is ever
+// truncated or hidden the way a single clamped joined-together string was.
+function SkillDetailBody({ group }) {
+ const emphasized = group.tier === 'stem';
+ return (
+ <div>
+ <div className="flex items-center gap-2 mb-2">
+ <span
+ className={`flex items-center justify-center w-7 h-7 rounded-lg text-white flex-shrink-0 ${
+ emphasized ? 'bg-gradient-to-br from-primary-500 to-primary-700' : 'bg-black'
+ }`}
+ >
+ <CategoryGlyph group={group} className="w-4 h-4" />
+ </span>
+ <p className="text-[13px] font-bold text-black leading-tight">{group.category}</p>
+ </div>
+ <div className="flex flex-wrap gap-1">
+ {group.items.map((skill) => (
+ <span
+ key={skill}
+ className={`px-1.5 py-0.5 text-[9px] font-medium rounded ${
+ emphasized
+ ? 'bg-primary-200/50 text-primary-900 border border-primary-400/30'
+ : 'bg-warm-50 text-zinc-700 border border-black/10'
+ }`}
+ >
+ {skill}
+ </span>
+ ))}
+ </div>
+ </div>
+ );
+}
+
+/**
+ * Detail panel for the mobile T. Deliberately NOT the shared
+ * ScrubPreviewPanel used by Projects/CategoryPage: that one shows a
+ * one-line tagline inside a fixed-height box with a line-clamp, which is
+ * exactly what was cutting skills off here.
+ *
+ * Every category is rendered, all stacked into the *same* grid cell
+ * (`gridArea: '1/1'`), with only the active one visible. That does two
+ * things at once: the panel's height is always the height of the tallest
+ * category, so it never resizes as you drag across cards and the T below
+ * never jumps — and because each category is laid out at full size rather
+ * than clamped into a fixed box, no skill is ever clipped regardless of how
+ * many items a category has.
+ */
+function SkillDetailPanel({ groups, activeIndex }) {
+ return (
+ <div className="flex-shrink-0 mb-2 grid rounded-2xl border-2 border-primary-600/40 bg-warm-100/90 px-3 py-2.5">
+ {groups.map((group, i) => (
+ <div
+ key={group.category}
+ style={{ gridArea: '1 / 1' }}
+ className={`transition-opacity duration-200 ${
+ i === activeIndex ? 'opacity-100' : 'opacity-0 pointer-events-none'
+ }`}
+ aria-hidden={i !== activeIndex}
+ >
+ <SkillDetailBody group={group} />
+ </div>
+ ))}
+ </div>
+ );
+}
+
 export default function Skills() {
  // Broad, complementary knowledge (the bar) vs. deep primary specialization
  // (the stem) — see the `tier` field in data/projects.js. Laying the bar
@@ -94,31 +172,31 @@ export default function Skills() {
  // On mobile there's nothing to navigate to — a category isn't a link, it's
  // just detail to reveal — so a real drag-release *or* a plain tap both
  // just pin that category's detail in the preview panel, where it stays
- // until another card is touched.
- const [pinnedIndex, setPinnedIndex] = useState(null);
+ // until another card is touched. Starting pinned to the first category
+ // (instead of null) means the panel always has something real in it from
+ // the first paint, rather than only an idle hint until you touch a card.
+ const [pinnedIndex, setPinnedIndex] = useState(0);
  const { activeIndex, handlers } = useScrubActivate((idx) => setPinnedIndex(idx));
  const displayIndex = activeIndex ?? pinnedIndex;
- const activeCategory = displayIndex != null ? allSkills[displayIndex] : null;
 
- const stemCols = Math.max(1, Math.min(barSkills.length - 1 || 1, stemSkills.length));
+ const barCols = barSkills.length;
+ // The stem is ONE column wide on purpose. A 2-column stem under a
+ // 3-column bar is 2/3 as wide as the bar, which reads as two stacked
+ // blocks rather than a letter — the stroke has to be visibly thin next to
+ // the bar for the silhouette to actually say "T". One column means the
+ // stem is exactly 1/3 of the bar's width and several rows tall, which is
+ // the proportion of a real T. (Only widens to 2 columns if the stem list
+ // ever grows long enough that a single column would squash the rows flat.)
+ const stemCols = stemSkills.length > 7 ? 2 : 1;
  const stemRows = Math.ceil(stemSkills.length / stemCols);
- const { ref: tRef, cellSize } = useTShapeCellSize({
- barCols: barSkills.length,
- stemCols,
- stemRows,
- gap: 8,
- });
-
- const activePreview = activeCategory
- ? {
- icon: <CategoryGlyph group={activeCategory} className="w-5 h-5" />,
- iconBg: activeCategory.tier === 'stem'
- ? 'bg-gradient-to-br from-primary-500 to-primary-700'
- : 'bg-black',
- title: activeCategory.category,
- description: activeCategory.items.join(' • '),
- }
- : null;
+ // The stem block's width as a percentage of the whole T's width. Because
+ // it's exactly stemCols/barCols, every card comes out the same width in
+ // both the bar row and the stem column automatically, with no JS
+ // measurement (an earlier version measured pixels via ResizeObserver and
+ // left large unexplained gaps around a too-small shape — plain CSS grid
+ // tracks stretching to fill the container can't drift out of sync with
+ // what's actually rendered).
+ const stemWidthPct = (stemCols / barCols) * 100;
 
  return (
  <section
@@ -145,24 +223,34 @@ export default function Skills() {
  />
  )}
 
- {isMobile && <ScrubPreviewPanel active={activePreview} />}
+ {isMobile && <SkillDetailPanel groups={allSkills} activeIndex={displayIndex} />}
 
  {isMobile ? (
- // The T here isn't a bordered frame around full skill-list cards —
- // it's built directly from small per-category heading cards: a
- // wide row of `bar` (breadth) categories on top, a narrower,
- // centered block of `stem` (AI-specialization) categories below.
- // useTShapeCellSize measures the available box and picks one
- // square cell size that makes both the row and the block fit
- // together with no scrolling, so the T is always fully visible.
+ // The T is built from small per-category heading cards — a wide row
+ // of `bar` (breadth) categories on top, a narrower, centered block
+ // of `stem` (AI-specialization) categories below — wrapped in a real
+ // bordered frame (bar frame + two short "shoulder" lines + stem
+ // frame, borders matching so the seam reads as one continuous
+ // outline) so the T shape is unmistakable at a glance. Everything
+ // here is plain CSS grid tracks (fr/%) stretching to fill the
+ // measured flex-1 box exactly — no JS pixel measurement — which
+ // guarantees it always fits with no scrolling and never leaves
+ // unexplained empty space around a too-small shape. The stem
+ // column's width is set to exactly stemCols/barCols percent of the
+ // bar's width, which works out to make every card the same size in
+ // both the row and the block, automatically.
+ <div className="flex-1 min-h-0 p-3">
  <div
- ref={tRef}
  {...handlers}
- className="touch-none flex-1 min-h-0 flex flex-col items-center justify-center gap-2"
+ className="touch-none grid h-full w-full"
+ style={{
+ gridTemplateColumns: `1fr ${stemWidthPct}% 1fr`,
+ gridTemplateRows: `1fr auto ${stemRows}fr`,
+ }}
  >
  <div
- className="grid gap-2"
- style={{ gridTemplateColumns: `repeat(${barSkills.length}, ${cellSize}px)` }}
+ className="col-span-3 rounded-t-2xl border-2 border-b-0 border-primary-600 bg-white/85 p-2 grid gap-2"
+ style={{ gridTemplateColumns: `repeat(${barCols}, 1fr)` }}
  >
  {barSkills.map((group, i) => {
  const isActive = displayIndex === i;
@@ -172,32 +260,41 @@ export default function Skills() {
  type="button"
  data-scrub-index={i}
  onClick={() => setPinnedIndex(i)}
- style={{ width: cellSize, height: cellSize }}
- className={`rounded-xl border flex flex-col items-center justify-center gap-1 p-1.5 transition-all duration-150 ${getTileOriginClass(
+ className={`rounded-lg border flex flex-col items-center justify-center gap-0.5 p-1 overflow-hidden transition-all duration-150 ${getTileOriginClass(
  i,
- barSkills.length,
+ barCols,
  1
  )} ${
  isActive
- ? 'scale-[1.08] z-10 border-black bg-warm-100 ring-2 ring-inset ring-black/40'
+ ? 'scale-[1.04] z-10 border-black bg-warm-100 ring-2 ring-inset ring-black/40'
  : 'border-black/10 bg-warm-100/80'
  }`}
  >
- <CategoryGlyph group={group} className="w-4 h-4 text-black" />
- <span className="text-[8px] font-semibold text-black leading-[1.1] text-center line-clamp-2">
- {group.category}
+ <CategoryGlyph group={group} className="w-3.5 h-3.5 shrink-0 text-black" />
+ <span className="text-[9px] font-semibold text-black leading-[1.15] text-center break-words">
+ {shortLabel(group.category)}
  </span>
  </button>
  );
  })}
  </div>
 
+ {/* Shoulders — the step where the bar's full width narrows down
+ to the stem's width, closed off with short border segments so
+ the frame reads as one unbroken outline instead of two boxes. */}
+ <div className="border-b-2 border-primary-600" aria-hidden="true" />
+ <div aria-hidden="true" />
+ <div className="border-b-2 border-primary-600" aria-hidden="true" />
+
  <div
- className="grid gap-2"
- style={{ gridTemplateColumns: `repeat(${stemCols}, ${cellSize}px)` }}
+ className="col-start-2 rounded-b-2xl border-2 border-t-0 border-primary-600 bg-white/85 p-2 grid gap-2"
+ style={{
+ gridTemplateColumns: `repeat(${stemCols}, 1fr)`,
+ gridTemplateRows: `repeat(${stemRows}, 1fr)`,
+ }}
  >
  {stemSkills.map((group, i) => {
- const globalIndex = barSkills.length + i;
+ const globalIndex = barCols + i;
  const isActive = displayIndex === globalIndex;
  return (
  <button
@@ -205,24 +302,24 @@ export default function Skills() {
  type="button"
  data-scrub-index={globalIndex}
  onClick={() => setPinnedIndex(globalIndex)}
- style={{ width: cellSize, height: cellSize }}
- className={`rounded-xl border-2 flex flex-col items-center justify-center gap-1 p-1.5 transition-all duration-150 ${getTileOriginClass(
+ className={`rounded-lg border-2 flex flex-col items-center justify-center gap-0.5 p-1 overflow-hidden transition-all duration-150 ${getTileOriginClass(
  i,
  stemCols,
  stemRows
  )} ${
  isActive
- ? 'scale-[1.08] z-10 border-primary-500 bg-warm-100 ring-2 ring-inset ring-primary-400/60'
+ ? 'scale-[1.04] z-10 border-primary-500 bg-warm-100 ring-2 ring-inset ring-primary-400/60'
  : 'border-primary-400/40 bg-warm-100/90'
  }`}
  >
- <CategoryGlyph group={group} className="w-4 h-4 text-primary-700" />
- <span className="text-[8px] font-semibold text-primary-800 leading-[1.1] text-center line-clamp-2">
- {group.category}
+ <CategoryGlyph group={group} className="w-3.5 h-3.5 shrink-0 text-primary-700" />
+ <span className="text-[9px] font-semibold text-primary-800 leading-[1.15] text-center break-words">
+ {shortLabel(group.category)}
  </span>
  </button>
  );
  })}
+ </div>
  </div>
  </div>
  ) : (

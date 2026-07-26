@@ -2645,3 +2645,37 @@ AggregateError [ECONNREFUSED]:
 10:54:47 PM [vite] hmr update /src/components/Skills.jsx, /src/index.css
 10:54:55 PM [vite] hmr update /src/components/Skills.jsx, /src/index.css
 10:55:00 PM [vite] hmr update /src/components/Skills.jsx, /src/index.css
+11:12:42 PM [vite] hmr update /src/components/ui/ScrubPreviewPanel.jsx, /src/index.css
+11:13:22 PM [vite] page reload src/lib/useTShapeCellSize.js
+11:13:31 PM [vite] hmr update /src/components/Skills.jsx, /src/index.css
+11:13:58 PM [vite] hmr update /src/components/Skills.jsx, /src/index.css
+11:19:00 PM [vite] hmr update /src/components/Projects.jsx, /src/index.css
+11:19:22 PM [vite] hmr update /src/pages/CategoryPage.jsx, /src/index.css
+11:19:35 PM [vite] hmr update /src/components/ui/ScrubPreviewPanel.jsx, /src/index.css
+11:19:39 PM [vite] hmr update /src/components/ui/ScrubPreviewPanel.jsx, /src/index.css
+11:20:30 PM [vite] hmr update /src/components/Skills.jsx, /src/index.css
+11:20:45 PM [vite] hmr update /src/components/Skills.jsx, /src/index.css
+11:21:10 PM [vite] hmr update /src/components/Skills.jsx, /src/index.css
+11:26:28 PM [vite] http proxy error: /health
+AggregateError [ECONNREFUSED]: 
+    at internalConnectMultiple (node:net:1134:18)
+    at afterConnectMultiple (node:net:1715:7)
+11:26:53 PM [vite] http proxy error: /health
+AggregateError [ECONNREFUSED]: 
+    at internalConnectMultiple (node:net:1134:18)
+    at afterConnectMultiple (node:net:1715:7)
+11:26:58 PM [vite] hmr update /src/components/Skills.jsx, /src/index.css
+11:27:13 PM [vite] hmr update /src/components/Skills.jsx, /src/index.css
+11:27:18 PM [vite] hmr update /src/components/Skills.jsx, /src/index.css
+11:27:24 PM [vite] hmr update /src/components/Skills.jsx, /src/index.css
+11:27:45 PM [vite] hmr update /src/components/Skills.jsx, /src/index.css
+11:27:59 PM [vite] hmr update /src/components/Skills.jsx, /src/index.css
+11:28:29 PM [vite] hmr update /src/components/Skills.jsx, /src/index.css
+11:28:37 PM [vite] hmr update /src/components/Skills.jsx, /src/index.css
+11:28:44 PM [vite] hmr update /src/components/Skills.jsx, /src/index.css
+11:29:15 PM [vite] hmr update /src/components/Skills.jsx, /src/index.css
+11:29:22 PM [vite] hmr update /src/components/Skills.jsx, /src/index.css
+11:29:59 PM [vite] hmr update /src/components/Skills.jsx, /src/index.css
+11:30:05 PM [vite] hmr update /src/components/Skills.jsx, /src/index.css
+11:30:17 PM [vite] hmr update /src/components/Skills.jsx, /src/index.css
+11:30:45 PM [vite] hmr update /src/components/Skills.jsx, /src/index.css
