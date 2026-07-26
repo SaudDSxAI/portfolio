@@ -2625,3 +2625,12 @@ AggregateError [ECONNREFUSED]:
 8:19:50 PM [vite] hmr update /src/pages/CaseStudyDetail.jsx, /src/index.css
 8:19:56 PM [vite] hmr update /src/pages/RAGCaseStudyPage.jsx, /src/index.css
 8:20:04 PM [vite] hmr update /src/pages/RAGCaseStudyPage.jsx, /src/index.css
+12:21:57 AM [vite] page reload public/notebooks/msmarco-rag-scale-notebook.html
+12:21:57 AM [vite] page reload public/notebooks/msmarco-rag-scale-notebook.html
+12:22:55 AM [vite] hmr update /src/index.css, /src/pages/CategoryPage.jsx, /src/pages/CaseStudyDetail.jsx, /src/components/Projects.jsx
+12:23:17 AM [vite] hmr update /src/pages/CaseStudyDetail.jsx, /src/index.css
+12:23:22 AM [vite] hmr update /src/pages/CaseStudyDetail.jsx, /src/index.css
+7:02:30 PM [vite] hmr update /src/components/CategoryBrowserCard.jsx, /src/index.css
+7:02:51 PM [vite] hmr update /src/components/Projects.jsx, /src/index.css
+7:03:36 PM [vite] hmr update /src/components/Projects.jsx, /src/index.css
+7:04:05 PM [vite] hmr update /src/pages/CategoryPage.jsx, /src/index.css

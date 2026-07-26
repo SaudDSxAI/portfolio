@@ -4,11 +4,17 @@ import SectionHeading from '../components/SectionHeading';
 import CaseStudyCard from '../components/CaseStudyCard';
 import RAGProjectCard from '../components/RAGProjectCard';
 import ScrollReveal from '../components/ui/ScrollReveal';
+import { getTheme, getIcon } from '../lib/projectTheme';
+import { useTransitionNavigate } from '../lib/useTransitionNavigate';
+import { useIsMobile } from '../lib/useIsMobile';
+import { useScrubActivate, computeGridDims } from '../lib/useScrubActivate';
 import { caseStudies, categories } from '../data/caseStudies';
 
 // A few projects don't fit the generic "icon + headline metric + mini
 // chart" card — set study.customCard to one of these keys to opt in to a
-// bespoke card layout instead.
+// bespoke card layout instead. (Desktop only — the mobile compact grid
+// below renders every study identically for a consistent, predictable
+// scrub-preview interaction.)
 const CUSTOM_CARD_COMPONENTS = {
   ragComparison: RAGProjectCard,
 };
@@ -17,6 +23,13 @@ export default function CategoryPage() {
   const { category } = useParams();
   const meta = categories[category];
   const studies = caseStudies[category] || [];
+  const navigate = useTransitionNavigate();
+  const isMobile = useIsMobile();
+  const { activeIndex, handlers } = useScrubActivate((idx) => {
+    const study = studies[idx];
+    if (study) navigate(`/${category}/${study.slug}`);
+  });
+  const { cols, rows } = computeGridDims(studies.length);
 
   if (!meta) {
     return (
@@ -28,22 +41,99 @@ export default function CategoryPage() {
   }
 
   return (
-    <section className="relative py-24 sm:py-32 px-4 sm:px-6 min-h-screen">
+    <section
+      className={`relative px-4 sm:px-6 ${
+        studies.length > 0
+          ? 'max-sm:h-[100svh] max-sm:overflow-hidden max-sm:flex max-sm:flex-col max-sm:py-0 sm:py-24 sm:min-h-screen'
+          : 'py-24 sm:py-32 min-h-screen'
+      }`}
+    >
       <BackButton to="/projects" label="Back to Projects" />
-      <div className="max-w-6xl mx-auto">
-        <SectionHeading eyebrow={meta.eyebrow} title={meta.label} subtitle={meta.subtitle} align="left" />
+      <div className="max-w-6xl mx-auto w-full max-sm:flex max-sm:flex-col max-sm:flex-1 max-sm:min-h-0">
+        {isMobile && studies.length > 0 ? (
+          // Compact heading — mirrors the Projects page: full SectionHeading
+          // is too tall to still leave room for every project card on a
+          // zero-scroll phone screen.
+          <div className="pt-14 pb-3 text-left flex-shrink-0">
+            {meta.eyebrow && (
+              <p className="text-[10px] font-semibold uppercase tracking-[0.25em] text-primary-700 mb-1">
+                {meta.eyebrow}
+              </p>
+            )}
+            <h2 className="text-xl font-heading font-bold text-black">{meta.label}</h2>
+          </div>
+        ) : (
+          <SectionHeading eyebrow={meta.eyebrow} title={meta.label} subtitle={meta.subtitle} align="left" />
+        )}
 
         {studies.length > 0 ? (
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {studies.map((study, i) => {
-              const Card = CUSTOM_CARD_COMPONENTS[study.customCard] || CaseStudyCard;
-              return (
-                <ScrollReveal key={study.slug} delay={i * 80}>
-                  <Card study={study} categoryKey={category} index={i} />
-                </ScrollReveal>
-              );
-            })}
-          </div>
+          isMobile ? (
+            // Compact, zero-scroll mobile grid — every project card in this
+            // category fits on one screen no matter how many there are.
+            // Same finger-drag-to-preview interaction as the Projects page:
+            // whichever tile is under the finger pops up and reveals its
+            // description; release on a tile to open it.
+            <div
+              {...handlers}
+              className="touch-none grid gap-2 flex-1 min-h-0"
+              style={{
+                gridTemplateColumns: `repeat(${cols}, minmax(0, 1fr))`,
+                gridTemplateRows: `repeat(${rows}, minmax(0, 1fr))`,
+              }}
+            >
+              {studies.map((study, i) => {
+                const theme = getTheme(study.accentColor);
+                const Icon = getIcon(study.icon);
+                const isActive = activeIndex === i;
+                return (
+                  <button
+                    key={study.slug}
+                    type="button"
+                    data-scrub-index={i}
+                    onClick={() => navigate(`/${category}/${study.slug}`)}
+                    className="relative rounded-xl"
+                  >
+                    {/* Base tile — icon + short title only */}
+                    <div className="h-full w-full rounded-xl border border-black/10 bg-warm-100/80 flex flex-col items-center justify-center gap-1 p-2">
+                      <span className={`flex items-center justify-center w-8 h-8 rounded-lg ${theme.iconBg} text-white`}>
+                        <Icon className="w-4 h-4" strokeWidth={1.75} />
+                      </span>
+                      <span className="text-[10px] font-semibold text-black leading-tight text-center line-clamp-2">
+                        {study.title}
+                      </span>
+                    </div>
+
+                    {/* Enlarged preview — revealed while the finger rests on
+                        this tile (or on hover, for mouse/trackpad users) */}
+                    <div
+                      className={`absolute inset-[-15%] z-30 rounded-2xl ${theme.iconBg} text-white shadow-2xl flex flex-col items-center justify-center gap-1.5 p-3 text-center transition-all duration-200 ease-out ${
+                        isActive ? 'opacity-100 scale-100' : 'opacity-0 scale-90 pointer-events-none'
+                      }`}
+                    >
+                      <span className="flex items-center justify-center w-10 h-10 rounded-xl bg-white/15">
+                        <Icon className="w-5 h-5" strokeWidth={1.75} />
+                      </span>
+                      <span className="text-xs font-bold leading-tight">{study.title}</span>
+                      <span className="text-[10px] text-white/80 leading-snug line-clamp-3">
+                        {study.tagline}
+                      </span>
+                    </div>
+                  </button>
+                );
+              })}
+            </div>
+          ) : (
+            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {studies.map((study, i) => {
+                const Card = CUSTOM_CARD_COMPONENTS[study.customCard] || CaseStudyCard;
+                return (
+                  <ScrollReveal key={study.slug} delay={i * 80}>
+                    <Card study={study} categoryKey={category} index={i} />
+                  </ScrollReveal>
+                );
+              })}
+            </div>
+          )
         ) : (
           <div className="flex flex-col items-center py-24 text-center">
             <svg className="w-12 h-12 mb-4 opacity-30" fill="none" viewBox="0 0 24 24" stroke="currentColor">

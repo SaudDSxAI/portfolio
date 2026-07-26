@@ -1021,6 +1021,68 @@ export const caseStudies = {
         'Running a before/after re-test on the same question set to verify a fix quantitatively, and reporting the new tradeoff the fix introduced instead of only reporting the improvement',
       ],
     },
+    {
+      slug: 'rag-at-scale-msmarco',
+      title: 'RAG at Scale: Five Techniques on 300K Real Passages',
+      tagline:
+        'The same Dense, BM25, Hybrid, Re-ranked, and HyDE techniques from the original RAG comparison, this time run on a real 300,000-passage subset of MS MARCO and scored against 6,980 real questions with official ground truth, instead of a personal 161-chunk corpus and 5 hand-checked questions.',
+      categoryKey: 'rag',
+      summary:
+        'A real-scale retrieval benchmark: MS MARCO\'s passage corpus (8.84M passages) subsampled to 300,000, guaranteeing every one of the 7,433 real gold-relevant passages for the 6,980 official dev questions stays included. All five retrieval techniques from the original RAG comparison were re-run at this scale and scored with recall@1/5/10 and MRR@10 against real, pre-existing ground truth (not self-authored test questions). Re-ranking won decisively (95.6% recall@10) but took 17 hours on CPU versus 37 seconds for plain dense search, and HyDE underperformed plain dense search a second time, on a completely different corpus, confirming it as a genuinely fragile technique rather than a one-off result.',
+      github: '',
+      live: '',
+      notebookUrl: '/notebooks/msmarco-rag-scale-notebook.html',
+      tech: ['Python', 'MS MARCO Passage Ranking Dataset (via BEIR)', 'Hugging Face Datasets', 'sentence-transformers', 'FAISS', 'rank-bm25', 'cross-encoder', 'OpenAI API'],
+      hasLiveDemo: false,
+      accentColor: 'orange',
+      icon: 'radar',
+      customResults: 'msmarcoRag',
+      heroMetrics: [
+        { label: 'Best recall@10', value: '95.6% (Reranked)' },
+        { label: 'Real dev questions', value: '6,980' },
+        { label: 'Passage corpus', value: '300,000' },
+        { label: 'Techniques compared', value: '5' },
+      ],
+      techniqueResults: [
+        { name: 'Dense', recall1: 63.9, recall5: 87.2, recall10: 92.0, mrr10: 73.9 },
+        { name: 'BM25', recall1: 34.2, recall5: 53.1, recall10: 59.5, mrr10: 42.3 },
+        { name: 'Hybrid', recall1: 56.1, recall5: 85.0, recall10: 90.8, mrr10: 67.9 },
+        { name: 'Reranked', recall1: 74.1, recall5: 92.8, recall10: 95.6, mrr10: 82.2, chosen: true },
+        { name: 'HyDE', recall1: 58.9, recall5: 84.1, recall10: 89.5, mrr10: 69.6 },
+      ],
+      runtimeData: [
+        { name: 'Hybrid', minutes: 0.05, display: '~instant (reuses Dense + BM25)' },
+        { name: 'Dense', minutes: 0.62, display: '37 sec' },
+        { name: 'BM25', minutes: 63.2, display: '1h 3m' },
+        { name: 'HyDE', minutes: 178.8, display: '2h 59m' },
+        { name: 'Reranked', minutes: 1022.7, display: '17h 3m' },
+      ],
+      narrative: [
+        {
+          heading: 'The problem',
+          body: 'The original RAG comparison ran five retrieval techniques on this portfolio\'s own 161-chunk corpus, scored against 5 questions checked by hand. That proves the techniques work, but not how they behave at real scale, or against ground truth someone else defined. This project re-runs the exact same five techniques on MS MARCO, a real 8.84-million-passage benchmark corpus with 6,980 official dev questions, each already paired with human-annotated correct passages, so the scoring isn\'t self-graded.',
+        },
+        {
+          heading: 'Building a corpus that stays honest at 300,000 passages',
+          body: 'Embedding all 8.84 million passages wasn\'t practical on this hardware, so the corpus was subsampled to 300,000. The subsampling had one hard constraint: every one of the 7,433 real gold-relevant passages for the 6,980 dev questions had to survive the cut, verified as 7,433/7,433 before moving on. Without that guarantee, a random subsample could silently make questions unanswerable by construction, and recall numbers would be measuring the subsample, not the technique.',
+        },
+        {
+          heading: 'The results, and a consistent HyDE finding',
+          body: 'Re-ranking (dense retrieval\'s top 50 candidates, re-scored by a cross-encoder) won clearly on every metric: 74.1% recall@1, 95.6% recall@10, MRR@10 of 0.822, ahead of plain dense search\'s 63.9% / 92.0% / 0.739. HyDE, which embeds an LLM-generated hypothetical answer instead of the raw question, actually scored below plain dense search (58.9% / 89.5% / 0.696), the same fragile pattern seen in the original 161-chunk comparison, now confirmed on a completely different corpus and question set rather than dismissed as a fluke of a small test.',
+        },
+        {
+          heading: 'The real cost of the winning technique',
+          body: 'Re-ranking\'s accuracy came at real, measured cost: 17 hours 3 minutes on CPU, single-threaded, for the full 6,980-question run, versus 37 seconds for plain dense search on the same hardware. That runtime gap is worth stating plainly rather than only reporting the accuracy win: re-ranking makes sense when quality matters more than latency, and is a poor fit for anything needing a fast response. A separate, genuine bug surfaced during this run too: embedding the dev questions intermittently hung indefinitely with near-zero CPU usage, a known PyTorch CPU-threading deadlock inside Jupyter on this hardware, fixed by forcing single-threaded execution (torch.set_num_threads(1)) rather than assuming the process was simply slow.',
+        },
+      ],
+      skillsDemonstrated: [
+        'Subsampling a multi-million-row corpus down to a workable size while formally guaranteeing every ground-truth-relevant document survives the cut, and verifying that guarantee before proceeding',
+        'Evaluating retrieval against real, pre-existing ground truth (official MS MARCO qrels) rather than self-authored test questions, for a genuinely independent accuracy check',
+        'Running the identical five-technique comparison across two very different corpora (161 hand-written chunks vs. 300K real passages) to confirm which findings hold up and which were scale- or corpus-specific',
+        'Measuring and reporting real wall-clock cost per technique (37 seconds to 17 hours) as a first-class result alongside accuracy, not an afterthought',
+        'Diagnosing a genuine PyTorch CPU-threading deadlock (a process hanging at 0% CPU, not just running slowly) and fixing it with single-threaded execution rather than assuming a lengthy computation was the cause',
+      ],
+    },
   ],
   production: [
     {

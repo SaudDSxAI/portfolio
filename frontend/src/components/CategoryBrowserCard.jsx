@@ -2,7 +2,7 @@ import TransitionLink from './ui/TransitionLink';
 
 // Icons per category key — add one here when a new category is introduced.
 // Falls back to a generic folder icon for anything not listed.
-function CategoryIcon({ categoryKey }) {
+export function CategoryIcon({ categoryKey }) {
   const common = 'w-6 h-6';
   switch (categoryKey) {
     case 'ml':
