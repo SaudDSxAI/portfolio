@@ -1,7 +1,13 @@
+import { useState } from 'react';
 import BackButton from './ui/BackButton';
 import SectionHeading from './SectionHeading';
 import ScrollReveal from './ui/ScrollReveal';
 import TShapeBackground from './ui/TShapeBackground';
+import ScrubPreviewPanel from './ui/ScrubPreviewPanel';
+import { useIsMobile } from '../lib/useIsMobile';
+import { useScrubActivate } from '../lib/useScrubActivate';
+import { useTShapeCellSize } from '../lib/useTShapeCellSize';
+import { getTileOriginClass } from '../lib/useSquareGridDims';
 import { skills } from '../data/projects';
 
 // A single skill-category card. `emphasized` is set for stem (AI
@@ -60,6 +66,19 @@ function SkillCard({ group, delay, emphasized = false }) {
  );
 }
 
+// Compact icon used for the mobile T's heading cards and its preview panel
+// — the same checkmark fallback SkillCard uses when a category has no
+// custom icon set.
+function CategoryGlyph({ group, className = '' }) {
+ return group.icon ? (
+ <span className={className}>{group.icon}</span>
+ ) : (
+ <svg className={className} fill="none" viewBox="0 0 24 24" stroke="currentColor">
+ <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+ </svg>
+ );
+}
+
 export default function Skills() {
  // Broad, complementary knowledge (the bar) vs. deep primary specialization
  // (the stem) — see the `tier` field in data/projects.js. Laying the bar
@@ -68,34 +87,145 @@ export default function Skills() {
  // reinforces what the layout is already doing.
  const barSkills = skills.filter((s) => s.tier === 'bar');
  const stemSkills = skills.filter((s) => s.tier === 'stem');
+ const allSkills = [...barSkills, ...stemSkills];
+
+ const isMobile = useIsMobile();
+
+ // On mobile there's nothing to navigate to — a category isn't a link, it's
+ // just detail to reveal — so a real drag-release *or* a plain tap both
+ // just pin that category's detail in the preview panel, where it stays
+ // until another card is touched.
+ const [pinnedIndex, setPinnedIndex] = useState(null);
+ const { activeIndex, handlers } = useScrubActivate((idx) => setPinnedIndex(idx));
+ const displayIndex = activeIndex ?? pinnedIndex;
+ const activeCategory = displayIndex != null ? allSkills[displayIndex] : null;
+
+ const stemCols = Math.max(1, Math.min(barSkills.length - 1 || 1, stemSkills.length));
+ const stemRows = Math.ceil(stemSkills.length / stemCols);
+ const { ref: tRef, cellSize } = useTShapeCellSize({
+ barCols: barSkills.length,
+ stemCols,
+ stemRows,
+ gap: 8,
+ });
+
+ const activePreview = activeCategory
+ ? {
+ icon: <CategoryGlyph group={activeCategory} className="w-5 h-5" />,
+ iconBg: activeCategory.tier === 'stem'
+ ? 'bg-gradient-to-br from-primary-500 to-primary-700'
+ : 'bg-black',
+ title: activeCategory.category,
+ description: activeCategory.items.join(' • '),
+ }
+ : null;
 
  return (
- <section id="skills" className="relative min-h-screen py-20 px-6 overflow-hidden">
+ <section
+ id="skills"
+ className="relative overflow-hidden px-6 sm:min-h-screen sm:py-20 max-sm:h-[100svh] max-sm:flex max-sm:flex-col max-sm:py-0"
+ >
  {/* Background accent */}
  <div className="absolute inset-0 bg-gradient-to-b from-transparent via-warm-100/70 to-transparent pointer-events-none" />
- <TShapeBackground />
+ {!isMobile && <TShapeBackground />}
 
  <BackButton to="/" label="Back home" />
- <div className="cv-auto relative max-w-6xl mx-auto">
+ <div className="cv-auto relative max-w-6xl mx-auto w-full max-sm:flex max-sm:flex-col max-sm:flex-1 max-sm:min-h-0">
+ {isMobile ? (
+ <div className="pt-14 pb-2 text-center flex-shrink-0">
+ <p className="text-[10px] font-semibold uppercase tracking-[0.25em] text-primary-700 mb-1">
+ T-Shaped Expertise
+ </p>
+ <h2 className="text-xl font-heading font-bold text-black">Skills & Expertise</h2>
+ </div>
+ ) : (
  <SectionHeading
  title="Skills & Expertise"
  subtitle="Broad, working knowledge across the stack — and deep specialization in AI, ML, and LLM systems"
  />
+ )}
 
- {/* The actual T: one continuous bordered frame, not two independently
- boxed groups. A 3-column grid — shoulder / stem-width / shoulder — lets
- the bar frame span all three columns while the stem frame occupies only
- the center column beneath it, so the outline is unbroken: wide box on
- top, narrow box below, joined by two short closing lines ("shoulders")
- exactly where the bar's bottom edge steps in to meet the stem's width.
- Both the middle column and the stem frame use the same
- `min(42rem,100%)` track, so their widths always match exactly at any
- screen size — on narrow phones the shoulders collapse to 0 and it
- simply reads as two stacked boxes, which is the right fallback there. */}
- {/* `min(30rem,90%)` — capping at 90% rather than 100% means the stem
- track never fully swallows the container width, so even on the
- narrowest phones there's still a visible shoulder step on each side
- instead of the T degrading into two plain stacked boxes. */}
+ {isMobile && <ScrubPreviewPanel active={activePreview} />}
+
+ {isMobile ? (
+ // The T here isn't a bordered frame around full skill-list cards —
+ // it's built directly from small per-category heading cards: a
+ // wide row of `bar` (breadth) categories on top, a narrower,
+ // centered block of `stem` (AI-specialization) categories below.
+ // useTShapeCellSize measures the available box and picks one
+ // square cell size that makes both the row and the block fit
+ // together with no scrolling, so the T is always fully visible.
+ <div
+ ref={tRef}
+ {...handlers}
+ className="touch-none flex-1 min-h-0 flex flex-col items-center justify-center gap-2"
+ >
+ <div
+ className="grid gap-2"
+ style={{ gridTemplateColumns: `repeat(${barSkills.length}, ${cellSize}px)` }}
+ >
+ {barSkills.map((group, i) => {
+ const isActive = displayIndex === i;
+ return (
+ <button
+ key={group.category}
+ type="button"
+ data-scrub-index={i}
+ onClick={() => setPinnedIndex(i)}
+ style={{ width: cellSize, height: cellSize }}
+ className={`rounded-xl border flex flex-col items-center justify-center gap-1 p-1.5 transition-all duration-150 ${getTileOriginClass(
+ i,
+ barSkills.length,
+ 1
+ )} ${
+ isActive
+ ? 'scale-[1.08] z-10 border-black bg-warm-100 ring-2 ring-inset ring-black/40'
+ : 'border-black/10 bg-warm-100/80'
+ }`}
+ >
+ <CategoryGlyph group={group} className="w-4 h-4 text-black" />
+ <span className="text-[8px] font-semibold text-black leading-[1.1] text-center line-clamp-2">
+ {group.category}
+ </span>
+ </button>
+ );
+ })}
+ </div>
+
+ <div
+ className="grid gap-2"
+ style={{ gridTemplateColumns: `repeat(${stemCols}, ${cellSize}px)` }}
+ >
+ {stemSkills.map((group, i) => {
+ const globalIndex = barSkills.length + i;
+ const isActive = displayIndex === globalIndex;
+ return (
+ <button
+ key={group.category}
+ type="button"
+ data-scrub-index={globalIndex}
+ onClick={() => setPinnedIndex(globalIndex)}
+ style={{ width: cellSize, height: cellSize }}
+ className={`rounded-xl border-2 flex flex-col items-center justify-center gap-1 p-1.5 transition-all duration-150 ${getTileOriginClass(
+ i,
+ stemCols,
+ stemRows
+ )} ${
+ isActive
+ ? 'scale-[1.08] z-10 border-primary-500 bg-warm-100 ring-2 ring-inset ring-primary-400/60'
+ : 'border-primary-400/40 bg-warm-100/90'
+ }`}
+ >
+ <CategoryGlyph group={group} className="w-4 h-4 text-primary-700" />
+ <span className="text-[8px] font-semibold text-primary-800 leading-[1.1] text-center line-clamp-2">
+ {group.category}
+ </span>
+ </button>
+ );
+ })}
+ </div>
+ </div>
+ ) : (
  <div className="grid grid-cols-[1fr_min(30rem,90%)_1fr]">
  {/* Bar frame — top of the T, full width. Tighter padding/gap than
  before so the horizontal stroke reads as lean rather than a thick
@@ -139,6 +269,7 @@ export default function Skills() {
  </div>
  </div>
  </div>
+ )}
  </div>
  </section>
  );

@@ -9,7 +9,7 @@ import { getTheme, getIcon } from '../lib/projectTheme';
 import { useTransitionNavigate } from '../lib/useTransitionNavigate';
 import { useIsMobile } from '../lib/useIsMobile';
 import { useScrubActivate } from '../lib/useScrubActivate';
-import { useSquareGridDims } from '../lib/useSquareGridDims';
+import { useSquareGridDims, getTileOriginClass } from '../lib/useSquareGridDims';
 import { caseStudies, categories } from '../data/caseStudies';
 
 // A few projects don't fit the generic "icon + headline metric + mini
@@ -113,9 +113,17 @@ export default function CategoryPage() {
                     type="button"
                     data-scrub-index={i}
                     onClick={() => navigate(`/${category}/${study.slug}`)}
-                    className={`rounded-xl border flex flex-col items-center justify-center gap-1 p-2 transition-all duration-150 ${
+                    // Inward-biased origin + inset ring, same reasoning as
+                    // the Projects grid: keeps the active tile fully inside
+                    // the section's overflow-hidden boundary even at the
+                    // grid's edges.
+                    className={`rounded-xl border flex flex-col items-center justify-center gap-1 p-2 transition-all duration-150 ${getTileOriginClass(
+                      i,
+                      cols,
+                      rows
+                    )} ${
                       isActive
-                        ? 'scale-[1.06] z-10 border-primary-500 bg-warm-100 shadow-lg shadow-primary-900/15 ring-2 ring-primary-400/50'
+                        ? 'scale-[1.06] z-10 border-primary-500 bg-warm-100 ring-2 ring-inset ring-primary-400/60'
                         : 'border-black/10 bg-warm-100/80'
                     }`}
                   >

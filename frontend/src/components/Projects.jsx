@@ -6,7 +6,7 @@ import ScrubPreviewPanel from './ui/ScrubPreviewPanel';
 import { useTransitionNavigate } from '../lib/useTransitionNavigate';
 import { useIsMobile } from '../lib/useIsMobile';
 import { useScrubActivate } from '../lib/useScrubActivate';
-import { useSquareGridDims } from '../lib/useSquareGridDims';
+import { useSquareGridDims, getTileOriginClass } from '../lib/useSquareGridDims';
 import { categories, caseStudies } from '../data/caseStudies';
 
 // Projects are organized into classes (ML, DL, and more as they're added —
@@ -91,9 +91,19 @@ export default function Projects() {
                   type="button"
                   data-scrub-index={i}
                   onClick={() => navigate(`/${key}`)}
-                  className={`rounded-xl border flex flex-col items-center justify-center gap-1 p-2 transition-all duration-150 ${
+                  // Scaling from an edge/corner-biased origin (instead of
+                  // the default center) makes the tile grow inward, so it
+                  // never reaches past the grid's outer boundary and clip
+                  // against the section's overflow-hidden — the ring is
+                  // inset (not a box-shadow reaching outward) for the same
+                  // reason.
+                  className={`rounded-xl border flex flex-col items-center justify-center gap-1 p-2 transition-all duration-150 ${getTileOriginClass(
+                    i,
+                    cols,
+                    rows
+                  )} ${
                     isActive
-                      ? 'scale-[1.06] z-10 border-primary-500 bg-warm-100 shadow-lg shadow-primary-900/15 ring-2 ring-primary-400/50'
+                      ? 'scale-[1.06] z-10 border-primary-500 bg-warm-100 ring-2 ring-inset ring-primary-400/60'
                       : 'border-black/10 bg-warm-100/80'
                   }`}
                 >

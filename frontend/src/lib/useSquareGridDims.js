@@ -50,3 +50,35 @@ export function useSquareGridDims(n, minCells = 4, maxCols = 4) {
 
   return { ref, cols: dims.cols, rows: dims.rows };
 }
+
+// Tailwind's JIT scanner only picks up class names it finds written out in
+// full somewhere in the source — a template-interpolated `origin-${a}-${b}`
+// would silently produce no CSS. This table exists so every literal class
+// name (`origin-top-left`, `origin-right`, etc.) appears in the file once,
+// while the lookup itself can still be dynamic per tile.
+const ORIGIN_CLASSES = {
+  'top-left': 'origin-top-left',
+  'top-center': 'origin-top',
+  'top-right': 'origin-top-right',
+  'center-left': 'origin-left',
+  'center-center': 'origin-center',
+  'center-right': 'origin-right',
+  'bottom-left': 'origin-bottom-left',
+  'bottom-center': 'origin-bottom',
+  'bottom-right': 'origin-bottom-right',
+};
+
+// A tile that scales up while sitting flush against the edge of a clipped
+// (`overflow-hidden`) container will visibly clip on whichever side is
+// against that edge, even at a modest 5-6% scale — the growth is
+// symmetric around the tile's center by default. Biasing the
+// transform-origin toward whichever edge(s) the tile is touching makes it
+// grow inward instead, so it never reaches past the container boundary no
+// matter how small the gutter is.
+export function getTileOriginClass(index, cols, rows) {
+  const col = index % cols;
+  const row = Math.floor(index / cols);
+  const vert = row === 0 ? 'top' : row === rows - 1 ? 'bottom' : 'center';
+  const horiz = col === 0 ? 'left' : col === cols - 1 ? 'right' : 'center';
+  return ORIGIN_CLASSES[`${vert}-${horiz}`];
+}
