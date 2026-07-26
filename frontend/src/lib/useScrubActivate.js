@@ -82,13 +82,3 @@ export function useScrubActivate(onActivate) {
     handlers: { onTouchStart, onTouchMove, onTouchEnd, onTouchCancel },
   };
 }
-
-// Simple, future-proof column/row split for "fit N tiles on one screen"
-// grids: prefers up to 3 columns (stays legible on a phone), adds rows as
-// needed. Works the same whether there are 1 project or 20.
-export function computeGridDims(n) {
-  const count = Math.max(1, n);
-  const cols = Math.min(3, Math.ceil(Math.sqrt(count)));
-  const rows = Math.ceil(count / cols);
-  return { cols, rows };
-}

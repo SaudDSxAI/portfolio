@@ -2,9 +2,11 @@ import BackButton from './ui/BackButton';
 import SectionHeading from './SectionHeading';
 import CategoryBrowserCard, { CategoryIcon } from './CategoryBrowserCard';
 import ScrollReveal from './ui/ScrollReveal';
+import ScrubPreviewPanel from './ui/ScrubPreviewPanel';
 import { useTransitionNavigate } from '../lib/useTransitionNavigate';
 import { useIsMobile } from '../lib/useIsMobile';
-import { useScrubActivate, computeGridDims } from '../lib/useScrubActivate';
+import { useScrubActivate } from '../lib/useScrubActivate';
+import { useSquareGridDims } from '../lib/useSquareGridDims';
 import { categories, caseStudies } from '../data/caseStudies';
 
 // Projects are organized into classes (ML, DL, and more as they're added —
@@ -17,7 +19,19 @@ export default function Projects() {
   const navigate = useTransitionNavigate();
   const isMobile = useIsMobile();
   const { activeIndex, handlers } = useScrubActivate((idx) => navigate(`/${categoryKeys[idx]}`));
-  const { cols, rows } = computeGridDims(categoryKeys.length);
+  // minCells=4 keeps a small category from stretching one tile across the
+  // whole grid — see useSquareGridDims for why.
+  const { ref: gridRef, cols, rows } = useSquareGridDims(categoryKeys.length, 4);
+
+  const activePreview =
+    activeIndex != null
+      ? {
+          icon: <CategoryIcon categoryKey={categoryKeys[activeIndex]} />,
+          iconBg: 'bg-gradient-to-br from-primary-500 to-primary-700',
+          title: categories[categoryKeys[activeIndex]].label,
+          description: categories[categoryKeys[activeIndex]].subtitle,
+        }
+      : null;
 
   return (
     <section
@@ -31,7 +45,7 @@ export default function Projects() {
           // underline stack is too tall for a zero-scroll phone layout that
           // also has to fit every category card; pt-14 clears the fixed
           // BackButton pinned at top-5.
-          <div className="pt-14 pb-3 text-center flex-shrink-0">
+          <div className="pt-14 pb-2 text-center flex-shrink-0">
             <p className="text-[10px] font-semibold uppercase tracking-[0.25em] text-primary-700 mb-1">
               Selected Work
             </p>
@@ -45,15 +59,22 @@ export default function Projects() {
           />
         )}
 
+        {isMobile && <ScrubPreviewPanel active={activePreview} />}
+
         {isMobile ? (
           // Compact, zero-scroll mobile grid: every category fits on one
-          // screen no matter how many there are (rows/cols computed from
-          // the count, so this scales automatically as classes are added).
-          // Since touch has no hover, dragging a finger across the grid
+          // screen no matter how many there are. useSquareGridDims measures
+          // this container's real pixel box and picks whichever column
+          // count makes the resulting cells closest to square, instead of a
+          // fixed column count that would produce tall rectangles. Since
+          // touch has no hover, dragging a finger across the grid
           // hit-tests which tile is underneath it (useScrubActivate) and
-          // pops that one tile up into an enlarged overlay revealing its
-          // description — release on a tile to open it.
+          // that tile just gets a modest highlight — the actual detail
+          // shows in the ScrubPreviewPanel above, not an overlay glued to
+          // the tile, so edge-column tiles never get clipped and the
+          // preview is never hidden under the finger that triggered it.
           <div
+            ref={gridRef}
             {...handlers}
             className="touch-none grid gap-2 flex-1 min-h-0"
             style={{
@@ -63,7 +84,6 @@ export default function Projects() {
           >
             {categoryKeys.map((key, i) => {
               const meta = categories[key];
-              const count = (caseStudies[key] || []).length;
               const isActive = activeIndex === i;
               return (
                 <button
@@ -71,38 +91,18 @@ export default function Projects() {
                   type="button"
                   data-scrub-index={i}
                   onClick={() => navigate(`/${key}`)}
-                  className="relative rounded-xl"
+                  className={`rounded-xl border flex flex-col items-center justify-center gap-1 p-2 transition-all duration-150 ${
+                    isActive
+                      ? 'scale-[1.06] z-10 border-primary-500 bg-warm-100 shadow-lg shadow-primary-900/15 ring-2 ring-primary-400/50'
+                      : 'border-black/10 bg-warm-100/80'
+                  }`}
                 >
-                  {/* Base tile — icon + short label only */}
-                  <div className="h-full w-full rounded-xl border border-black/10 bg-warm-100/80 flex flex-col items-center justify-center gap-1 p-2">
-                    <span className="flex items-center justify-center w-8 h-8 rounded-lg bg-gradient-to-br from-primary-500 to-primary-700 text-white">
-                      <CategoryIcon categoryKey={key} />
-                    </span>
-                    <span className="text-[10px] font-semibold text-black leading-tight text-center line-clamp-2">
-                      {meta.label}
-                    </span>
-                  </div>
-
-                  {/* Enlarged preview — revealed while the finger rests on
-                      this tile (or on hover, for mouse/trackpad users) */}
-                  <div
-                    className={`absolute inset-[-15%] z-30 rounded-2xl bg-gradient-to-br from-primary-600 to-primary-800 text-white shadow-2xl shadow-primary-900/40 flex flex-col items-center justify-center gap-1.5 p-3 text-center transition-all duration-200 ease-out ${
-                      isActive
-                        ? 'opacity-100 scale-100'
-                        : 'opacity-0 scale-90 pointer-events-none'
-                    }`}
-                  >
-                    <span className="flex items-center justify-center w-10 h-10 rounded-xl bg-white/15">
-                      <CategoryIcon categoryKey={key} />
-                    </span>
-                    <span className="text-xs font-bold leading-tight">{meta.label}</span>
-                    <span className="text-[10px] text-white/80 leading-snug line-clamp-2">
-                      {meta.subtitle}
-                    </span>
-                    <span className="text-[10px] font-semibold text-white/70">
-                      {count === 0 ? 'Coming soon' : `${count} case ${count === 1 ? 'study' : 'studies'}`}
-                    </span>
-                  </div>
+                  <span className="flex items-center justify-center w-8 h-8 rounded-lg bg-gradient-to-br from-primary-500 to-primary-700 text-white">
+                    <CategoryIcon categoryKey={key} />
+                  </span>
+                  <span className="text-[10px] font-semibold text-black leading-tight text-center line-clamp-2">
+                    {meta.label}
+                  </span>
                 </button>
               );
             })}

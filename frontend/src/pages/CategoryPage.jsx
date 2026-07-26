@@ -4,10 +4,12 @@ import SectionHeading from '../components/SectionHeading';
 import CaseStudyCard from '../components/CaseStudyCard';
 import RAGProjectCard from '../components/RAGProjectCard';
 import ScrollReveal from '../components/ui/ScrollReveal';
+import ScrubPreviewPanel from '../components/ui/ScrubPreviewPanel';
 import { getTheme, getIcon } from '../lib/projectTheme';
 import { useTransitionNavigate } from '../lib/useTransitionNavigate';
 import { useIsMobile } from '../lib/useIsMobile';
-import { useScrubActivate, computeGridDims } from '../lib/useScrubActivate';
+import { useScrubActivate } from '../lib/useScrubActivate';
+import { useSquareGridDims } from '../lib/useSquareGridDims';
 import { caseStudies, categories } from '../data/caseStudies';
 
 // A few projects don't fit the generic "icon + headline metric + mini
@@ -29,7 +31,23 @@ export default function CategoryPage() {
     const study = studies[idx];
     if (study) navigate(`/${category}/${study.slug}`);
   });
-  const { cols, rows } = computeGridDims(studies.length);
+  // minCells=4 keeps a category with only 1-2 projects from stretching a
+  // card across the whole grid — it stays sized like a normal grid cell,
+  // just with the rest of the grid empty until more projects are added.
+  const { ref: gridRef, cols, rows } = useSquareGridDims(studies.length, 4);
+
+  const activeStudy = activeIndex != null ? studies[activeIndex] : null;
+  const activePreview = activeStudy
+    ? {
+        icon: (() => {
+          const Icon = getIcon(activeStudy.icon);
+          return <Icon className="w-5 h-5" strokeWidth={1.75} />;
+        })(),
+        iconBg: getTheme(activeStudy.accentColor).iconBg,
+        title: activeStudy.title,
+        description: activeStudy.tagline,
+      }
+    : null;
 
   if (!meta) {
     return (
@@ -54,7 +72,7 @@ export default function CategoryPage() {
           // Compact heading — mirrors the Projects page: full SectionHeading
           // is too tall to still leave room for every project card on a
           // zero-scroll phone screen.
-          <div className="pt-14 pb-3 text-left flex-shrink-0">
+          <div className="pt-14 pb-2 text-left flex-shrink-0">
             {meta.eyebrow && (
               <p className="text-[10px] font-semibold uppercase tracking-[0.25em] text-primary-700 mb-1">
                 {meta.eyebrow}
@@ -66,14 +84,18 @@ export default function CategoryPage() {
           <SectionHeading eyebrow={meta.eyebrow} title={meta.label} subtitle={meta.subtitle} align="left" />
         )}
 
+        {isMobile && studies.length > 0 && <ScrubPreviewPanel active={activePreview} />}
+
         {studies.length > 0 ? (
           isMobile ? (
             // Compact, zero-scroll mobile grid — every project card in this
-            // category fits on one screen no matter how many there are.
-            // Same finger-drag-to-preview interaction as the Projects page:
-            // whichever tile is under the finger pops up and reveals its
-            // description; release on a tile to open it.
+            // category fits on one screen no matter how many there are,
+            // with cells kept close to square (see useSquareGridDims) and
+            // detail shown in the ScrubPreviewPanel above rather than an
+            // overlay glued to the tile, so edge tiles never clip and the
+            // preview is never hidden under the finger.
             <div
+              ref={gridRef}
               {...handlers}
               className="touch-none grid gap-2 flex-1 min-h-0"
               style={{
@@ -91,33 +113,18 @@ export default function CategoryPage() {
                     type="button"
                     data-scrub-index={i}
                     onClick={() => navigate(`/${category}/${study.slug}`)}
-                    className="relative rounded-xl"
+                    className={`rounded-xl border flex flex-col items-center justify-center gap-1 p-2 transition-all duration-150 ${
+                      isActive
+                        ? 'scale-[1.06] z-10 border-primary-500 bg-warm-100 shadow-lg shadow-primary-900/15 ring-2 ring-primary-400/50'
+                        : 'border-black/10 bg-warm-100/80'
+                    }`}
                   >
-                    {/* Base tile — icon + short title only */}
-                    <div className="h-full w-full rounded-xl border border-black/10 bg-warm-100/80 flex flex-col items-center justify-center gap-1 p-2">
-                      <span className={`flex items-center justify-center w-8 h-8 rounded-lg ${theme.iconBg} text-white`}>
-                        <Icon className="w-4 h-4" strokeWidth={1.75} />
-                      </span>
-                      <span className="text-[10px] font-semibold text-black leading-tight text-center line-clamp-2">
-                        {study.title}
-                      </span>
-                    </div>
-
-                    {/* Enlarged preview — revealed while the finger rests on
-                        this tile (or on hover, for mouse/trackpad users) */}
-                    <div
-                      className={`absolute inset-[-15%] z-30 rounded-2xl ${theme.iconBg} text-white shadow-2xl flex flex-col items-center justify-center gap-1.5 p-3 text-center transition-all duration-200 ease-out ${
-                        isActive ? 'opacity-100 scale-100' : 'opacity-0 scale-90 pointer-events-none'
-                      }`}
-                    >
-                      <span className="flex items-center justify-center w-10 h-10 rounded-xl bg-white/15">
-                        <Icon className="w-5 h-5" strokeWidth={1.75} />
-                      </span>
-                      <span className="text-xs font-bold leading-tight">{study.title}</span>
-                      <span className="text-[10px] text-white/80 leading-snug line-clamp-3">
-                        {study.tagline}
-                      </span>
-                    </div>
+                    <span className={`flex items-center justify-center w-8 h-8 rounded-lg ${theme.iconBg} text-white`}>
+                      <Icon className="w-4 h-4" strokeWidth={1.75} />
+                    </span>
+                    <span className="text-[10px] font-semibold text-black leading-tight text-center line-clamp-2">
+                      {study.title}
+                    </span>
                   </button>
                 );
               })}

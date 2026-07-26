@@ -2634,3 +2634,6 @@ AggregateError [ECONNREFUSED]:
 7:02:51 PM [vite] hmr update /src/components/Projects.jsx, /src/index.css
 7:03:36 PM [vite] hmr update /src/components/Projects.jsx, /src/index.css
 7:04:05 PM [vite] hmr update /src/pages/CategoryPage.jsx, /src/index.css
+7:37:34 PM [vite] hmr update /src/components/Projects.jsx, /src/index.css
+7:38:00 PM [vite] hmr update /src/pages/CategoryPage.jsx, /src/index.css
+7:38:09 PM [vite] hmr update /src/index.css, /src/pages/CategoryPage.jsx
