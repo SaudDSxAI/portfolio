@@ -2679,3 +2679,18 @@ AggregateError [ECONNREFUSED]:
 11:30:05 PM [vite] hmr update /src/components/Skills.jsx, /src/index.css
 11:30:17 PM [vite] hmr update /src/components/Skills.jsx, /src/index.css
 11:30:45 PM [vite] hmr update /src/components/Skills.jsx, /src/index.css
+10:22:35 AM [vite] page reload public/notebooks/speech-commands-notebook.html
+10:22:35 AM [vite] page reload public/notebooks/speech-commands-notebook.html
+10:22:35 AM [vite] page reload public/notebooks/speech-commands-notebook.html
+10:23:21 AM [vite] hmr update /src/pages/CaseStudyDetail.jsx, /src/index.css
+10:23:27 AM [vite] hmr update /src/pages/CaseStudyDetail.jsx, /src/index.css
+10:24:14 AM [vite] hmr update /src/index.css, /src/pages/CaseStudyDetail.jsx, /src/components/CaseStudyCard.jsx, /src/pages/RAGCaseStudyPage.jsx, /src/components/RAGProjectCard.jsx, /src/pages/CategoryPage.jsx
+10:24:23 AM [vite] hmr update /src/index.css, /src/pages/CaseStudyDetail.jsx, /src/components/CaseStudyCard.jsx, /src/pages/RAGCaseStudyPage.jsx, /src/components/RAGProjectCard.jsx, /src/pages/CategoryPage.jsx
+10:24:56 AM [vite] hmr update /src/index.css, /src/pages/CategoryPage.jsx, /src/pages/CaseStudyDetail.jsx, /src/components/Projects.jsx
+12:00:55 AM [vite] hmr update /src/App.jsx, /src/index.css
+12:00:59 AM [vite] hmr update /src/App.jsx, /src/index.css
+12:01:04 AM [vite] page reload src/components/Navbar.jsx
+12:01:13 AM [vite] page reload src/components/Navbar.jsx
+12:01:20 AM [vite] page reload src/components/Navbar.jsx
+12:01:25 AM [vite] page reload src/components/Navbar.jsx
+12:04:03 AM [vite] hmr update /src/components/Hero.jsx, /src/index.css

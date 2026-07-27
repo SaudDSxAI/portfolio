@@ -12,6 +12,8 @@ const categoryLinks = [
  { label: 'ML Projects', path: '/ml' },
 ];
 
+const cvLink = { label: 'CV', path: '/cv' };
+
 export default function Navbar() {
  const [scrolled, setScrolled] = useState(false);
  const [active, setActive] = useState('hero');
@@ -87,6 +89,12 @@ export default function Navbar() {
  return (
  <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M21.75 6.75v10.5a2.25 2.25 0 01-2.25 2.25h-15a2.25 2.25 0 01-2.25-2.25V6.75m19.5 0A2.25 2.25 0 0019.5 4.5h-15a2.25 2.25 0 00-2.25 2.25m19.5 0v.243a2.25 2.25 0 01-1.07 1.916l-7.5 4.615a2.25 2.25 0 01-2.36 0L3.32 8.91a2.25 2.25 0 01-1.07-1.916V6.75" />
+ </svg>
+ );
+ case 'CV':
+ return (
+ <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+ <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25m5.231 13.481L15 17.25m-1.519-3.129A15.837 15.837 0 016 20.25m9.481-8.129L15 9.75M6 6.75H4.5a1.125 1.125 0 00-1.125 1.125v13.5c0 .621.504 1.125 1.125 1.125h9.75c.621 0 1.125-.504 1.125-1.125v-1.5" />
  </svg>
  );
  case 'ML Projects':
@@ -176,6 +184,20 @@ export default function Navbar() {
  );
  })}
 
+ <Link
+ to={cvLink.path}
+ className={`relative px-4 py-2 text-sm font-medium transition-colors duration-200 ${
+ location.pathname === cvLink.path ? 'text-primary-900' : 'text-zinc-600 hover:text-black'
+ }`}
+ >
+ {cvLink.label}
+ <span
+ className={`absolute left-4 right-4 -bottom-0.5 h-[2px] rounded-full bg-gradient-to-r from-primary-400 via-primary-600 to-primary-400 origin-left transition-transform duration-300 ${
+ location.pathname === cvLink.path ? 'scale-x-100' : 'scale-x-0'
+ }`}
+ />
+ </Link>
+
  <button
  onClick={() => window.dispatchEvent(new Event('openChat'))}
  className="ml-4 group flex items-center gap-2 px-4 py-2 text-sm font-semibold text-white bg-gradient-to-br from-primary-500 to-primary-700 hover:from-primary-600 hover:to-primary-800 rounded-xl shadow-md shadow-primary-500/25 hover:shadow-lg hover:shadow-primary-500/40 hover:-translate-y-0.5 active:translate-y-0 transition-all duration-300"
@@ -237,6 +259,22 @@ export default function Navbar() {
  </Link>
  );
  })}
+ <Link
+ to={cvLink.path}
+ className={`relative flex flex-col items-center gap-1 px-3 py-2 rounded-xl transition-all duration-300 ${
+ location.pathname === cvLink.path
+ ? 'text-primary-800 bg-primary-300/30'
+ : 'text-zinc-600 hover:text-black'
+ }`}
+ >
+ {getNavIcon(cvLink.label)}
+ <span className="text-[10px] uppercase tracking-widest font-semibold">
+ {cvLink.label}
+ </span>
+ {location.pathname === cvLink.path && (
+ <span className="absolute -top-0.5 left-1/2 -translate-x-1/2 w-1 h-1 rounded-full bg-primary-700" />
+ )}
+ </Link>
  </div>
  </div>
  </>

@@ -39,6 +39,7 @@ import HseResults from '../components/results/HseResults';
 import CompressionResults from '../components/results/CompressionResults';
 import CitationRoutingResults from '../components/results/CitationRoutingResults';
 import MSMarcoRagResults from '../components/results/MSMarcoRagResults';
+import SpeechCommandsResults from '../components/results/SpeechCommandsResults';
 import ScrollReveal from '../components/ui/ScrollReveal';
 import { getCaseStudy, categories } from '../data/caseStudies';
 import { getTheme, getIcon } from '../lib/projectTheme';
@@ -110,6 +111,7 @@ const CUSTOM_RESULTS_COMPONENTS = {
   compressionRag: CompressionResults,
   citationRoutingRag: CitationRoutingResults,
   msmarcoRag: MSMarcoRagResults,
+  speechCommands: SpeechCommandsResults,
 };
 
 function ModelComparisonChart({ data, metricKey = 'rocAuc', metricLabel = 'ROC-AUC', theme }) {

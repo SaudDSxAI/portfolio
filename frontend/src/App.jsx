@@ -5,6 +5,7 @@ import PageTransition from './components/ui/PageTransition';
 import Home from './pages/Home';
 import CategoryPage from './pages/CategoryPage';
 import CaseStudyDetail from './pages/CaseStudyDetail';
+import CVPage from './pages/CVPage';
 
 const Projects = React.lazy(() => import('./components/Projects'));
 const Skills = React.lazy(() => import('./components/Skills'));
@@ -97,6 +98,7 @@ export default function App() {
                 </Suspense>
               }
             />
+            <Route path="/cv" element={<CVPage />} />
             <Route path="/:category" element={<CategoryPage />} />
             <Route path="/:category/:slug" element={<CaseStudyDetail />} />
           </Routes>
