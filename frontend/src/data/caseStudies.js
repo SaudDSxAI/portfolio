@@ -1123,13 +1123,14 @@ export const caseStudies = {
       slug: 'rag-at-scale-msmarco',
       title: 'RAG at Scale: Five Techniques on 300K Real Passages',
       tagline:
-        'The same Dense, BM25, Hybrid, Re-ranked, and HyDE techniques from the original RAG comparison, this time run on a real 300,000-passage subset of MS MARCO and scored against 6,980 real questions with official ground truth, instead of a personal 161-chunk corpus and 5 hand-checked questions.',
+        'Five real retrieval techniques, Dense, BM25, Hybrid, Re-ranked, and HyDE, benchmarked on a 300,000-passage subset of MS MARCO and scored against 6,980 real questions with official, human-annotated ground truth.',
       categoryKey: 'rag',
       summary:
-        'A real-scale retrieval benchmark: MS MARCO\'s passage corpus (8.84M passages) subsampled to 300,000, guaranteeing every one of the 7,433 real gold-relevant passages for the 6,980 official dev questions stays included. All five retrieval techniques from the original RAG comparison were re-run at this scale and scored with recall@1/5/10 and MRR@10 against real, pre-existing ground truth (not self-authored test questions). Re-ranking won decisively (95.6% recall@10) but took 17 hours on CPU versus 37 seconds for plain dense search, and HyDE underperformed plain dense search a second time, on a completely different corpus, confirming it as a genuinely fragile technique rather than a one-off result.',
+        'A real-scale retrieval benchmark: MS MARCO\'s passage corpus (8.84M passages) subsampled to 300,000, guaranteeing every one of the 7,433 real gold-relevant passages for the 6,980 official dev questions stays included. Five retrieval techniques (Dense, BM25, Hybrid, Re-ranked, and HyDE) were run at this scale and scored with recall@1/5/10 and MRR@10 against real, pre-existing ground truth (not self-authored test questions). Re-ranking won decisively (95.6% recall@10) but took 17 hours on CPU versus 37 seconds for plain dense search, and HyDE underperformed plain dense search, a pattern also seen in this portfolio\'s earlier, smaller-scale RAG comparison, confirming it as a genuinely fragile technique rather than a one-off result.',
       github: '',
       live: '',
       notebookUrl: '/notebooks/msmarco-rag-scale-notebook.html',
+      relatedProject: { categoryKey: 'rag', slug: 'comparative-rag-techniques', label: 'See the earlier, smaller-scale comparison' },
       tech: ['Python', 'MS MARCO Passage Ranking Dataset (via BEIR)', 'Hugging Face Datasets', 'sentence-transformers', 'FAISS', 'rank-bm25', 'cross-encoder', 'OpenAI API'],
       hasLiveDemo: false,
       accentColor: 'orange',
@@ -1158,7 +1159,7 @@ export const caseStudies = {
       narrative: [
         {
           heading: 'The problem',
-          body: 'The original RAG comparison ran five retrieval techniques on this portfolio\'s own 161-chunk corpus, scored against 5 questions checked by hand. That proves the techniques work, but not how they behave at real scale, or against ground truth someone else defined. This project re-runs the exact same five techniques on MS MARCO, a real 8.84-million-passage benchmark corpus with 6,980 official dev questions, each already paired with human-annotated correct passages, so the scoring isn\'t self-graded.',
+          body: 'This project benchmarks five real RAG retrieval techniques, Dense, BM25, Hybrid, Re-ranked, and HyDE, against MS MARCO, a real 8.84-million-passage benchmark corpus with 6,980 official dev questions, each already paired with human-annotated correct passages, so the scoring isn\'t self-graded. An earlier project on this portfolio ran the same five techniques on a much smaller, personal 161-chunk corpus, scored against just 5 questions checked by hand (see the link at the top of this page). That earlier version proves the techniques work, but not how they behave at real scale, or against ground truth someone else defined, which is what this project tests instead.',
         },
         {
           heading: 'Building a corpus that stays honest at 300,000 passages',

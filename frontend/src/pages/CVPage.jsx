@@ -7,7 +7,7 @@ export default function CVPage() {
     <div className="relative min-h-screen py-24 sm:py-28 px-4 sm:px-6">
       <BackButton to="/" label="Back home" />
 
-      <div className="max-w-4xl mx-auto">
+      <div className="max-w-6xl mx-auto">
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6">
           <div>
             <h1 className="text-2xl sm:text-3xl font-heading font-bold text-black tracking-tight">
@@ -31,7 +31,12 @@ export default function CVPage() {
         </div>
 
         <div className="rounded-2xl border border-black/10 overflow-hidden shadow-lg shadow-black/5 bg-white">
-          <object data={CV_PATH} type="application/pdf" className="w-full" style={{ height: '80vh' }}>
+          <object
+            data={`${CV_PATH}#toolbar=1&navpanes=0&zoom=page-width`}
+            type="application/pdf"
+            className="w-full"
+            style={{ height: 'calc(100vh - 140px)', minHeight: '900px' }}
+          >
             <div className="flex flex-col items-center justify-center gap-4 py-20 text-center px-6">
               <p className="text-sm text-zinc-600">
                 Your browser can't preview PDFs inline here.

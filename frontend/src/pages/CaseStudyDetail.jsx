@@ -1,4 +1,4 @@
-import { useParams } from 'react-router-dom';
+import { useParams, Link } from 'react-router-dom';
 import BackButton from '../components/ui/BackButton';
 import {
   BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Cell, LabelList,
@@ -430,6 +430,17 @@ export default function CaseStudyDetail() {
                 </svg>
                 View full notebook
               </a>
+            )}
+            {study.relatedProject && (
+              <Link
+                to={`/${study.relatedProject.categoryKey}/${study.relatedProject.slug}`}
+                className="flex items-center gap-2 px-4 py-2 rounded-xl border-2 border-black/15 text-black text-sm font-semibold hover:border-black/30 transition-colors"
+              >
+                <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M13.19 8.688a4.5 4.5 0 011.242 7.244l-4.5 4.5a4.5 4.5 0 01-6.364-6.364l1.757-1.757m13.35-.622l1.757-1.757a4.5 4.5 0 00-6.364-6.364l-4.5 4.5a4.5 4.5 0 001.242 7.244" />
+                </svg>
+                {study.relatedProject.label}
+              </Link>
             )}
           </div>
         </ScrollReveal>
