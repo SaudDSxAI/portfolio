@@ -522,7 +522,11 @@ export default function ChatWidget({ initialOpen = false, initialVoice = false }
  const now = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
  setMessages((prev) => [
  ...prev,
- { id: `v-u-${Date.now()}`, content: transcript, isUser: true, timestamp: now },
+ // No transcript means the clip was never sent for transcription at all
+ // (the session-limit turn skips it on purpose) — there's nothing real
+ // to show as "what you said", so skip that bubble rather than render
+ // an empty one.
+ ...(transcript ? [{ id: `v-u-${Date.now()}`, content: transcript, isUser: true, timestamp: now }] : []),
  { id: `v-a-${Date.now() + 1}`, content: response, isUser: false, timestamp: now },
  ]);
  }, []);

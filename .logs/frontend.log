@@ -555,3 +555,27 @@
 1:19:32 AM [vite] page reload dv14/notebooks/speech-commands-notebook.html
 1:19:32 AM [vite] page reload dv14/notebooks/speech-commands-notebook.html
 1:19:34 AM [vite] page reload dv14/index.html
+1:36:18 AM [vite] hmr update /src/components/ChatWidget.jsx, /src/index.css
+1:36:49 AM [vite] page reload dv15/notebooks/anomaly-detection-notebook.html
+1:36:49 AM [vite] page reload dv15/notebooks/churn-notebook.html
+1:36:49 AM [vite] page reload dv15/notebooks/comparative-rag-notebook.html
+1:36:49 AM [vite] page reload dv15/notebooks/comparative-rag-notebook.html
+1:36:49 AM [vite] page reload dv15/notebooks/contextual-compression-notebook.html
+1:36:49 AM [vite] page reload dv15/notebooks/credit-fraud-notebook.html
+1:36:49 AM [vite] page reload dv15/notebooks/deep-scrape-agent-notebook.html
+1:36:49 AM [vite] page reload dv15/notebooks/diffusion-vs-gan-notebook.html
+1:36:49 AM [vite] page reload dv15/notebooks/credit-fraud-notebook.html
+1:36:49 AM [vite] page reload dv15/notebooks/diffusion-vs-gan-notebook.html
+1:36:49 AM [vite] page reload dv15/notebooks/finetune-lora-notebook.html
+1:36:49 AM [vite] page reload dv15/notebooks/heart-disease-notebook.html
+1:36:49 AM [vite] page reload dv15/notebooks/house-price-notebook.html
+1:36:49 AM [vite] page reload dv15/notebooks/movie-recommender-notebook.html
+1:36:49 AM [vite] page reload dv15/notebooks/heart-disease-notebook.html
+1:36:50 AM [vite] page reload dv15/notebooks/movie-recommender-notebook.html
+1:36:50 AM [vite] page reload dv15/notebooks/msmarco-rag-scale-notebook.html
+1:36:50 AM [vite] page reload dv15/notebooks/msmarco-rag-scale-notebook.html
+1:36:50 AM [vite] page reload dv15/notebooks/sales-forecasting-notebook.html
+1:36:50 AM [vite] page reload dv15/notebooks/sentiment-notebook.html
+1:36:50 AM [vite] page reload dv15/notebooks/speech-commands-notebook.html
+1:36:50 AM [vite] page reload dv15/notebooks/sentiment-notebook.html
+1:36:52 AM [vite] page reload dv15/index.html

@@ -839,6 +839,29 @@ def get_or_create_session(session_id: Optional[str] = None) -> str:
     return new_id
 
 
+# ---- per-session message cap ----
+# Every real turn is at least one paid API call (an LLM completion), and a
+# voice turn is three (STT, LLM, TTS). This assistant has no auth and no
+# other rate limiting, so without a cap a single visitor — or a bot — could
+# run up real cost with no ceiling. The cap resets per browser session
+# (a fresh session_id) rather than per IP, matching how sessions already
+# work here; it isn't meant to survive someone deliberately clearing state,
+# only to stop an ordinary spam loop from being expensive.
+MAX_MESSAGES_PER_SESSION = int(os.getenv("MAX_MESSAGES_PER_SESSION", "15"))
+SESSION_LIMIT_MESSAGE = (
+    "That's the limit I've got set on this for now — email me directly and "
+    "I'll pick it up from there: sauds6446@gmail.com"
+)
+
+
+def session_message_count(history: List) -> int:
+    return sum(1 for m in history if isinstance(m, HumanMessage))
+
+
+def session_limit_reached(history: List) -> bool:
+    return session_message_count(history) >= MAX_MESSAGES_PER_SESSION
+
+
 # Style overlay applied only to spoken turns. The text assistant is allowed
 # to be thorough and use markdown; out loud, that same answer sounds like a
 # brochure being read at you. This layer keeps the underlying knowledge and
@@ -1009,6 +1032,13 @@ async def chat(request: ChatRequest):
     try:
         session_id = get_or_create_session(request.session_id)
         history = sessions[session_id]
+
+        # Checked against history BEFORE this message is added or any API
+        # call is made — a session that's already at the cap costs nothing
+        # more, not even a wasted LLM call.
+        if session_limit_reached(history):
+            return ChatResponse(response=SESSION_LIMIT_MESSAGE, session_id=session_id)
+
         history.append(HumanMessage(content=request.message))
 
         messages = build_messages(history)
@@ -1031,11 +1061,15 @@ async def chat_stream(request: ChatRequest):
     session_id = None
     messages = None
     history = None
+    limit_hit = False
     try:
         session_id = get_or_create_session(request.session_id)
         history = sessions[session_id]
-        history.append(HumanMessage(content=request.message))
-        messages = build_messages(history)
+        if session_limit_reached(history):
+            limit_hit = True
+        else:
+            history.append(HumanMessage(content=request.message))
+            messages = build_messages(history)
     except Exception as e:
         import traceback
         traceback.print_exc()
@@ -1045,6 +1079,13 @@ async def chat_stream(request: ChatRequest):
     def generate():
         if setup_error:
             yield f"data: {json.dumps({'type': 'error', 'error': setup_error})}\n\n"
+            return
+
+        if limit_hit:
+            # No OpenAI call at all — a capped session costs nothing further.
+            yield f"data: {json.dumps({'type': 'session', 'session_id': session_id})}\n\n"
+            yield f"data: {json.dumps({'type': 'content', 'content': SESSION_LIMIT_MESSAGE})}\n\n"
+            yield f"data: {json.dumps({'type': 'done'})}\n\n"
             return
 
         full_response = ""
@@ -1242,6 +1283,21 @@ async def voice_chat(audio: UploadFile = File(...), session_id: Optional[str] = 
         return now
 
     try:
+        # Checked against the session BEFORE the clip is even read, let alone
+        # transcribed — a capped session triggers zero OpenAI calls (no STT,
+        # no LLM, no TTS), which is the entire point of checking this early.
+        sid = get_or_create_session(session_id)
+        history = sessions[sid]
+        if session_limit_reached(history):
+            return {
+                "session_id": sid,
+                "transcript": "",
+                "response": SESSION_LIMIT_MESSAGE,
+                "audio_base64": None,
+                "audio_mime": None,
+                "timings": {},
+            }
+
         audio_bytes = await audio.read()
         if not audio_bytes:
             raise HTTPException(status_code=400, detail="Empty audio upload")
@@ -1257,8 +1313,6 @@ async def voice_chat(audio: UploadFile = File(...), session_id: Optional[str] = 
 
         # Identical path to /chat from here on — same session store, same
         # build_messages/run_chat_completion, same tool-calling loop.
-        sid = get_or_create_session(session_id)
-        history = sessions[sid]
         history.append(HumanMessage(content=user_text))
 
         # voice=True swaps in the spoken-delivery style overlay, and the
@@ -1346,26 +1400,35 @@ async def voice_chat_stream(audio: UploadFile = File(...), session_id: Optional[
     messages = None
     history = None
     stt_ms = 0
+    limit_hit = False
 
-    # Transcription genuinely can't be pipelined — there's nothing to say
-    # until we know what was asked — so it happens up front, before the
-    # response starts streaming.
+    # Session lookup and the limit check happen before anything else,
+    # including reading the uploaded clip — a capped session is turned away
+    # before it can trigger a single OpenAI call (no STT, no LLM, no TTS).
+    # Transcription itself genuinely can't be pipelined with the rest —
+    # there's nothing to say until we know what was asked — so once past
+    # the cap check it happens up front, before the response starts
+    # streaming.
     try:
         if not OPENAI_API_KEY:
             raise RuntimeError("OPENAI_API_KEY is not set on the server")
-        audio_bytes = await audio.read()
-        if not audio_bytes:
-            raise RuntimeError("Empty audio upload")
-        filename = audio.filename or "clip.webm"
-        user_text = _transcribe(filename, audio_bytes, audio.content_type or "audio/webm")
-        stt_ms = int((time.perf_counter() - t0) * 1000)
-        if not user_text:
-            raise RuntimeError("Couldn't make out any speech in that clip")
 
         sid = get_or_create_session(session_id)
         history = sessions[sid]
-        history.append(HumanMessage(content=user_text))
-        messages = build_messages(history, voice=True)
+        if session_limit_reached(history):
+            limit_hit = True
+        else:
+            audio_bytes = await audio.read()
+            if not audio_bytes:
+                raise RuntimeError("Empty audio upload")
+            filename = audio.filename or "clip.webm"
+            user_text = _transcribe(filename, audio_bytes, audio.content_type or "audio/webm")
+            stt_ms = int((time.perf_counter() - t0) * 1000)
+            if not user_text:
+                raise RuntimeError("Couldn't make out any speech in that clip")
+
+            history.append(HumanMessage(content=user_text))
+            messages = build_messages(history, voice=True)
     except Exception as e:
         setup_error = f"{e}"
         print(f"❌ voice_chat_stream setup failed: {type(e).__name__}: {e}")
@@ -1373,6 +1436,12 @@ async def voice_chat_stream(audio: UploadFile = File(...), session_id: Optional[
     def generate():
         if setup_error:
             yield f"data: {json.dumps({'type': 'error', 'error': setup_error})}\n\n"
+            return
+
+        if limit_hit:
+            yield f"data: {json.dumps({'type': 'session', 'session_id': sid})}\n\n"
+            yield f"data: {json.dumps({'type': 'text', 'content': SESSION_LIMIT_MESSAGE})}\n\n"
+            yield f"data: {json.dumps({'type': 'done', 'response': SESSION_LIMIT_MESSAGE, 'stt_ms': 0, 'first_audio_ms': None, 'total_ms': int((time.perf_counter() - t0) * 1000)})}\n\n"
             return
 
         yield f"data: {json.dumps({'type': 'session', 'session_id': sid})}\n\n"
