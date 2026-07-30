@@ -1,4 +1,5 @@
 import { useState, useRef, useEffect, useCallback, memo } from 'react';
+import VoiceMode from './VoiceMode';
 
 const API_URL = import.meta.env.VITE_API_URL || '';
 
@@ -126,6 +127,7 @@ export default function ChatWidget({ initialOpen = false } = {}) {
  const [isConnected, setIsConnected] = useState(false);
  const [showSuggestions, setShowSuggestions] = useState(true);
  const [hasNewMessage, setHasNewMessage] = useState(false);
+ const [voiceOpen, setVoiceOpen] = useState(false);
 
  const messagesEndRef = useRef(null);
  const inputRef = useRef(null);
@@ -337,7 +339,7 @@ export default function ChatWidget({ initialOpen = false } = {}) {
  prev.length === 0
  ? [{
  id: 'welcome',
- content: "Hello! I'm Saud's AI assistant. Ask me about his skills, experience, projects, and more!",
+ content: "Hey, I'm Saud. Ask me anything about my work, my projects, or my background.",
  isUser: false,
  timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
  }]
@@ -502,13 +504,28 @@ export default function ChatWidget({ initialOpen = false } = {}) {
  sendMessage();
  };
 
+ // Voice mode owns the mic, the turn-taking and the playback (see
+ // VoiceMode.jsx). All it hands back is the finished turn, which we append
+ // to this transcript so closing voice mode leaves the conversation intact
+ // and continuable by typing.
+ const handleVoiceTurn = useCallback(({ transcript, response }) => {
+ setShowSuggestions(false);
+ const now = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+ setMessages((prev) => [
+ ...prev,
+ { id: `v-u-${Date.now()}`, content: transcript, isUser: true, timestamp: now },
+ { id: `v-a-${Date.now() + 1}`, content: response, isUser: false, timestamp: now },
+ ]);
+ }, []);
+
+
  const clearChat = async () => {
  if (sessionId) {
  try { await fetch(`${API_URL}/session/${sessionId}`, { method: 'DELETE' }); } catch {}
  }
  setMessages([{
  id: 'welcome',
- content: "Chat cleared! What else would you like to know?",
+ content: "Cleared. What do you want to know?",
  isUser: false,
  timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
  }]);
@@ -675,6 +692,23 @@ export default function ChatWidget({ initialOpen = false } = {}) {
  />
  </div>
  <button
+ type="button"
+ onClick={() => setVoiceOpen(true)}
+ onMouseDown={(e) => e.preventDefault()}
+ disabled={!isConnected || isLoading || isStreaming}
+ title="Talk instead"
+ className={`w-11 h-11 shrink-0 rounded-2xl flex items-center justify-center transition-all ${
+ !isConnected || isLoading || isStreaming
+ ? 'bg-dark-800 text-zinc-600 cursor-not-allowed'
+ : 'bg-dark-800 hover:bg-dark-700 text-zinc-300 border border-white/10 active:scale-95'
+ }`}
+ aria-label="Start voice conversation"
+ >
+ <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" strokeWidth={1.75} stroke="currentColor">
+ <path strokeLinecap="round" strokeLinejoin="round" d="M12 18.75a6 6 0 006-6v-1.5m-6 7.5a6 6 0 01-6-6v-1.5m6 7.5v3.75m-3.75 0h7.5M12 15.75a3 3 0 01-3-3V4.5a3 3 0 116 0v8.25a3 3 0 01-3 3z" />
+ </svg>
+ </button>
+ <button
  type="submit"
  onMouseDown={(e) => e.preventDefault()}
  disabled={!isConnected || isLoading || isStreaming || !input.trim()}
@@ -698,6 +732,15 @@ export default function ChatWidget({ initialOpen = false } = {}) {
  </div>
  </div>
  </div>
+
+ <VoiceMode
+ open={voiceOpen}
+ onClose={() => setVoiceOpen(false)}
+ apiUrl={API_URL}
+ sessionId={sessionId}
+ onSessionId={setSessionId}
+ onTurn={handleVoiceTurn}
+ />
  </>
  );
 }

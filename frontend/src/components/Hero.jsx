@@ -14,6 +14,7 @@ const quickLinks = [
  { path: '/skills', label: 'Skills' },
  { path: '/contact', label: 'Contact' },
  { path: '/cv', label: 'CV' },
+ { path: '/sa-9ad88e8a', label: 'Private' },
 ];
 
 export default function Hero() {

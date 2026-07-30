@@ -1,0 +1,137 @@
+SAUD AHMAD
+AI ENGINEER
+saud6446@gmail.com | +92 346 293 6273 | Swat, Pakistan
+Portfolio: saudassist.up.railway.app | GitHub: github.com/SaudDSxAI | LinkedIn: linkedin.com/in/saud-ahmad1
+
+PROFILE
+
+AI Engineer and co-founder building AI systems that run in real production, not just prototypes. I am currently an AI Engineer at COTER Global and
+co-founder of Oval Labs, an AI automation studio delivering production AI systems for clients in manufacturing, construction, and recruitment. My work
+spans the full range of AI engineering, including LLM integration, RAG, agent orchestration, prompt and context design, and model fine-tuning, backed by
+full stack engineering and cloud deployment.
+
+
+EXPERIENCE
+Oval Labs, Co-Founder and AI Engineer Jan 2026 to Present
+Oval Labs is an AI automation studio that turns manual business workflows into systems that run themselves. The studio designs, builds and maintains
+production software end to end, from architecture and AI design through to live deployment and ongoing support, across recruitment, aftersales,
+manufacturing and sales operations.
+COTER Global, AI Engineer, Contract (Remote)Sep 2025 to Present
+•​Built the hiring pipeline the firm now recruits through, taking it from first requirement to shortlisted candidate without manual handoffs.
+•​Own the platform in production: ongoing support, iteration and reliability across live requisitions.
+
+[PRODUCTS OF OVAL LABS]
+1. Nebula, AI Recruitment Platform
+•​Recruitment automation platform: hiring requirements parsed by AI into structured roles, job posts generated automatically across 4 platforms,
+  chatbot-based CV intake, and automated candidate screening and shortlisting.
+•​Automated WhatsApp and Gmail outreach with AI auto-reply, collecting candidate availability at scale without recruiter follow-up.
+
+2. Centauri, AI Aftersales Platform
+•​Aftersales support platform covering the full ticket lifecycle: AI issue intake that captures customer issues accurately without data entry staff, a customer
+  portal with real-time status tracking and automated approvals, and AI-assisted dispatch that matches the right technician to each job.
+•​Field companion that lets technicians log diagnoses by video, voice or text, with required fields populated automatically from the input.
+•​Natural-language analytics over aftersales data, plus a performance dashboard covering resolution times, team performance and customer satisfaction.
+
+3. ZYP Assembly QC System
+•​Two-gate quality control system: 14-station in-line inspection with operator checklists and verifier sign-off, followed by a separate pre-delivery inspection
+  gate before a bike ships.
+•​Live analytics dashboard surfaced a 33% first-pass PDI clearance rate that paper tracking had never made visible, giving the plant its first quantified defect
+  signal.
+
+4. Cold Outreach Platform
+•​Internal client acquisition system: upload a lead list, AI drafts a personalised cold email per lead, delivered under sending rate limits at up to 150 emails a
+  day.
+•​Automated 3-step follow-up sequence with a different angle at each step, plus reply and bounce detection sorted into a kanban board.
+
+[FREELANCE WORK, 2025]
+TrueSight, AI Deepfake Detection
+•​3-layer detection pipeline: a video deepfake model (face detection over 40 sampled frames with a 2-factor consensus rule), an audio deepfake model
+  with segment-by-segment timeline scoring, and a rule-based forensic metadata scanner. None of the three depends on the others.
+•​Pre-flight quality checks that grade whether an uploaded file is good enough to trust before running full analysis.
+
+HSE Performance Tracker (UAE construction firm)
+•​Multi-tenant safety compliance platform tracking 30 daily HSE fields per worker per project: task briefings, toolbox talks, NCR closures and safety walks.
+•​Entries roll into a live performance score with monthly KPI tracking and project-level access control, so a site lead only sees their assigned projects.
+  Currently tracking 123 workers across roughly 3,000 man-hours.
+
+
+PROJECTS
+Full writeups, code and results for every project are at saudassist.up.railway.app/projects. Section titles below link straight to each collection.
+
+Agentic AI · 2 projects​
+ Two agents that decide for themselves how much work a question deserves. The first picks its own depth: answer immediately, run a single bounded
+search, or launch a full research pass that reads five sources live and streams the findings back. The second runs on my portfolio site, choosing turn by turn
+whether it already knows enough or needs to pull a project's full detail. Both solve the same problem, which is stopping an agent from spending time and
+money on questions that never needed it.
+RAG and Retrieval · 4 projects​
+Four studies of one question: how do you get a language model to answer from your own documents and actually be right? I built five retrieval approaches
+and ran them against identical questions side by side, which showed the most sophisticated method was not the best one and documented where two
+popular techniques broke down. The other three cover what happens next: trimming retrieved text so the context budget stretches further, tying every
+claim back to the passage it came from, and testing how retrieval quality holds up as the document collection grows.
+
+Fine-Tuning and PEFT · 1 project​
+Adapting a language model to a new task without paying for a full retrain. I implemented the lightweight adaptation method by hand rather than importing
+a library, then ran it head to head against a full retrain on the same task, measuring what you actually give up: training time, storage per saved model, and
+final quality.
+
+Vision-Language and Multimodal · 2 projects​
+Getting models to connect images and words. One searches a real photo library from a plain English description with no tagging, no training and no labels,
+relying only on the shared meaning between a picture and a sentence. The other is a small image-captioning system built by hand: a vision model and a
+language model, both frozen, joined by a translation layer trained from scratch so one can speak to the other.
+
+Deep Learning · 4 projects​
+Four builds spanning security, image generation, text and audio. The security project finds intrusions in network traffic with no labelled attacks to learn
+from, reaching 0.95 ROC-AUC across 22,544 connections by learning what normal looks like and flagging what isn't. The generation project builds two
+competing approaches from scratch and surfaces a real quirk in how one reports its own progress. The other two classify sentiment across 50,000 film
+reviews, where a simpler baseline won, and recognise short spoken commands from raw audio.
+
+Machine Learning · 6 projects​
+Six applied problems, each ending in a decision rather than a leaderboard score. Customer churn across 7,032 accounts, where three models were
+benchmarked and the simplest won on the evidence at 0.836 ROC-AUC. Fraud detection across 283,000 card transactions, where the textbook approach
+produced a 95% false alarm rate until the evaluation metric was corrected. House prices to 0.924 R² from 216 engineered features, and sales demand
+forecast six months ahead at 83.3% accuracy. Two are honest negative results: heart disease models that came back statistically tied, and a
+recommendation engine that only narrowly beat a naive baseline. Both are written up that way.
+
+Robotics and IoT · 6 projects​
+Six systems that had to work in the physical world rather than on a laptop. A solar-powered field robot that identifies and removes weeds on its own,
+running vision on-board at 95.6% detection accuracy. A face-recognition entry system deployed at a university campus with 536 logged events, and a
+second that takes attendance from a live video stream. Alongside these, a home automation controller running entirely on its own hardware with no cloud
+service behind it, a rover sampling soil moisture to a dashboard, and a robot combining obstacle avoidance, line following and remote control on one
+chassis.
+
+
+
+TECHNICAL SKILLS
+
+LLMs and RAG: OpenAI, Gemini, Claude APIs. LangChain, LangGraph. RAG pipelines (Naive, Hybrid, Re-ranked, HyDE, Agentic), FAISS,
+sentence-transformers, rank-bm25, cross-encoder re-ranking. Agentic tool-use architectures, SSE streaming.
+
+ML and Deep Learning: PyTorch, Hugging Face Transformers, scikit-learn, XGBoost. LoRA, QLoRA, GPT-2 fine-tuning, CLIP, YOLOv8, ArcFace, LSTM, DCGAN,
+U-Net, diffusion models.
+
+Data: pandas, NumPy, SciPy, SHAP, statsmodels (SARIMA), Prophet, matplotlib. Feature engineering, imbalanced-data handling.
+
+Backend and Frontend: Python, C/C++, FastAPI, Next.js, React, WebSocket. PostgreSQL, SQLite, SQLAlchemy, Redis. JWT auth, role-based access control,
+Tailwind CSS.
+
+Infrastructure: Docker, Railway, Cloudflare R2. Google Sheets, Gmail SMTP/IMAP, WhatsApp (Baileys), LinkedIn and Meta Graph APIs.
+
+Robotics and Embedded: Jetson Orin Nano, Arduino, ESP32, Raspberry Pi. OpenCV, GPS/IMU sensor fusion, MQTT, Bluetooth Serial.
+
+
+
+EDUCATION
+BSc Data Science, GIK Institute of Engineering Sciences and Technology 2021 to 2025
+Coursework: Artificial Intelligence, Data Mining, Natural Language Processing, Big Data Analytics, Data Warehousing and Business Intelligence, Data
+Visualization, Data Structures and Algorithms, Design and Analysis of Algorithms, Operating Systems, Databases, Software Engineering, Parallel Processing,
+Data and Network Security, Internet of Things, Linear Algebra I and II, Differential Equations, Discrete Structures, Inferential Statistics and Applied
+Probability.
+Technical Lead, Team Techno (Robotics)
+Led GIK Institute's robotics team and set technical direction across hardware and software. That team is the foundation behind AgroBot, Access Vision and
+the other robotics builds here.
+
+
+CERTIFICATIONS
+IBM: Machine Learning with Python | IBM: Python for Data Science and AI | IBM: Data Science Methodology | DeepLearning.AI: Generative AI for
+Everyone
+

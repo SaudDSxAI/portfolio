@@ -6,3 +6,6 @@ __pycache__/
 data/.DS_Store
 myenv/
 node_modules/
+frontend/dist_verify*/
+frontend/dist_test_fresh/
+frontend/dv*/

@@ -6,6 +6,7 @@ import Home from './pages/Home';
 import CategoryPage from './pages/CategoryPage';
 import CaseStudyDetail from './pages/CaseStudyDetail';
 import CVPage from './pages/CVPage';
+import PrivatePage from './pages/PrivatePage';
 
 const Projects = React.lazy(() => import('./components/Projects'));
 const Skills = React.lazy(() => import('./components/Skills'));
@@ -99,6 +100,7 @@ export default function App() {
               }
             />
             <Route path="/cv" element={<CVPage />} />
+            <Route path="/sa-9ad88e8a" element={<PrivatePage />} />
             <Route path="/:category" element={<CategoryPage />} />
             <Route path="/:category/:slug" element={<CaseStudyDetail />} />
           </Routes>
