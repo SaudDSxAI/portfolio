@@ -1,52 +1,101 @@
-import { Mic, Ear, Brain, AudioLines, Hand } from 'lucide-react';
+import { Mic, FileAudio, ListTree, BrainCircuit, ScissorsLineDashed, Volume2, ListMusic, Repeat } from 'lucide-react';
 
-// Custom-built for the voice agent. The generic 3-box architecture layout
-// can't show the two things that actually make this project interesting:
-//   1. the turn is a *loop*, not a pipeline with an end, and
-//   2. the speed win comes from overlapping stages, which is a timing
-//      property — you have to draw it against a time axis to see it.
-// Hence the timeline comparison in the middle, which is the real point.
+// A literal data pipeline, not an abstract "listen/think/speak" summary:
+// each box is one real component (named model or API), each arrow is
+// labelled with the actual data type crossing it. This is what "how it's
+// wired together" means technically for this project.
 
-const STAGES = [
-  { icon: Ear, label: 'Listen', detail: 'Mic level watched every frame. Silence for 700ms ends your turn.', tone: 'sky' },
-  { icon: Mic, label: 'Transcribe', detail: 'Speech to text, primed with a list of names it would otherwise mishear.', tone: 'violet' },
-  { icon: Brain, label: 'Think', detail: 'Same agent as the text chat. Can pull the CV or a project write-up first.', tone: 'amber' },
-  { icon: AudioLines, label: 'Speak', detail: 'Each sentence is voiced the moment it exists, not after the full reply.', tone: 'emerald' },
+const PIPELINE = [
+  {
+    icon: Mic,
+    title: 'Microphone',
+    detail: 'MediaRecorder API captures the mic as an audio/webm clip while the AnalyserNode watches loudness to detect when you stop talking.',
+    out: 'audio clip (webm)',
+    tone: 'sky',
+  },
+  {
+    icon: FileAudio,
+    title: 'Speech-to-text',
+    detail: 'gpt-4o-mini-transcribe converts the clip to text (falls back to whisper-1). A vocabulary hint of project and company names reduces mis-transcription.',
+    out: 'transcript (plain text)',
+    tone: 'violet',
+  },
+  {
+    icon: ListTree,
+    title: 'Prompt assembly',
+    detail: 'The transcript is appended to the running conversation history, alongside the system prompt, the project index, and the two available tools.',
+    out: 'messages[] array',
+    tone: 'violet',
+  },
+  {
+    icon: BrainCircuit,
+    title: 'LLM',
+    detail: 'gpt-4o-mini, streamed, temperature 0.7. Can call get_project_details(slug) or get_cv() mid-turn before producing its final answer.',
+    out: 'reply tokens (streamed)',
+    tone: 'amber',
+  },
+  {
+    icon: ScissorsLineDashed,
+    title: 'Sentence detection',
+    detail: 'A regex watches the incoming token stream for a sentence boundary (with a lookahead so "92.68" or "e.g." are not mistaken for one).',
+    out: 'one finished sentence',
+    tone: 'amber',
+  },
+  {
+    icon: Volume2,
+    title: 'Text-to-speech',
+    detail: 'gpt-4o-mini-tts (falls back to tts-1, voice "onyx") synthesizes that sentence alone, before the rest of the reply has finished generating.',
+    out: 'audio (mp3, base64 over SSE)',
+    tone: 'emerald',
+  },
+  {
+    icon: ListMusic,
+    title: 'Playback queue',
+    detail: "The browser holds arriving clips in a queue and plays them back to back, so later sentences are synthesized while earlier ones are still playing.",
+    out: 'reply heard',
+    tone: 'emerald',
+  },
 ];
 
 const TONE = {
-  sky: { box: 'border-sky-300 bg-sky-50', icon: 'text-sky-700', chip: 'bg-sky-600' },
-  violet: { box: 'border-violet-300 bg-violet-50', icon: 'text-violet-700', chip: 'bg-violet-600' },
-  amber: { box: 'border-amber-300 bg-amber-50', icon: 'text-amber-700', chip: 'bg-amber-600' },
-  emerald: { box: 'border-emerald-300 bg-emerald-50', icon: 'text-emerald-700', chip: 'bg-emerald-600' },
+  sky: { box: 'border-sky-300 bg-sky-50', icon: 'text-sky-700' },
+  violet: { box: 'border-violet-300 bg-violet-50', icon: 'text-violet-700' },
+  amber: { box: 'border-amber-300 bg-amber-50', icon: 'text-amber-700' },
+  emerald: { box: 'border-emerald-300 bg-emerald-50', icon: 'text-emerald-700' },
 };
 
-// Widths are proportional to each other, not to measured milliseconds —
-// this shows the *shape* of the overlap, which is the design decision.
-// Real per-stage timings are logged per turn rather than guessed at here.
-const SEQUENTIAL = [
-  { label: 'Transcribe', tone: 'violet', span: 2 },
-  { label: 'Think (whole reply)', tone: 'amber', span: 4 },
-  { label: 'Voice (whole reply)', tone: 'emerald', span: 4 },
-];
+function Arrow({ label }) {
+  return (
+    <div className="flex items-center gap-2 pl-6 py-1">
+      <div className="w-px h-5 bg-black/20" />
+      <span className="text-[10px] font-mono text-zinc-500 bg-black/5 rounded px-1.5 py-0.5">{label}</span>
+    </div>
+  );
+}
 
-// The short emerald blocks are labelled 1/2/3 rather than "Voice sentence 1",
-// because at this width any longer label just truncates into an ellipsis.
-// The legend under the track carries the meaning instead.
+// Bar widths are proportional to each other, not to measured milliseconds —
+// they show the shape of the overlap. Real per-stage timings are logged
+// server-side per turn rather than estimated here.
+const SEQUENTIAL = [
+  { label: 'STT', tone: 'violet', span: 2 },
+  { label: 'LLM (full reply)', tone: 'amber', span: 4 },
+  { label: 'TTS (full reply)', tone: 'emerald', span: 4 },
+];
 const PIPELINED = [
-  { label: 'Transcribe', tone: 'violet', span: 2, offset: 0 },
-  { label: 'Think', tone: 'amber', span: 4, offset: 2 },
+  { label: 'STT', tone: 'violet', span: 2, offset: 0 },
+  { label: 'LLM', tone: 'amber', span: 4, offset: 2 },
   { label: '1', tone: 'emerald', span: 1.4, offset: 3.4 },
   { label: '2', tone: 'emerald', span: 1.4, offset: 4.8 },
   { label: '3', tone: 'emerald', span: 1.4, offset: 6.2 },
 ];
-
 const TOTAL = 10;
 
 function Bar({ label, tone, span, offset = 0 }) {
   return (
     <div
-      className={`absolute h-8 rounded-md ${TONE[tone].chip} flex items-center justify-center overflow-hidden`}
+      className={`absolute h-8 rounded-md flex items-center justify-center overflow-hidden ${
+        tone === 'violet' ? 'bg-violet-600' : tone === 'amber' ? 'bg-amber-600' : 'bg-emerald-600'
+      }`}
       style={{ left: `${(offset / TOTAL) * 100}%`, width: `${(span / TOTAL) * 100}%` }}
       title={label}
     >
@@ -58,50 +107,40 @@ function Bar({ label, tone, span, offset = 0 }) {
 export default function VoiceAgentFlow() {
   return (
     <div className="bg-white/70 border border-black/10 rounded-2xl p-6 sm:p-8">
-      <p className="text-xs text-zinc-500 mb-7 text-center">
-        A conversation loop, not a request and response. Nothing here has a send button.
-      </p>
-
-      {/* ---- the loop ---- */}
-      <div className="grid sm:grid-cols-4 gap-3 mb-4">
-        {STAGES.map((s, i) => {
-          const Icon = s.icon;
+      {/* ---- the pipeline ---- */}
+      <div className="space-y-0 mb-8">
+        {PIPELINE.map((step, i) => {
+          const Icon = step.icon;
           return (
-            <div key={s.label} className={`rounded-2xl border-2 ${TONE[s.tone].box} p-4 relative`}>
-              <div className="flex items-center gap-2 mb-2">
-                <Icon size={16} className={`${TONE[s.tone].icon} shrink-0`} />
-                <p className="font-heading font-bold text-sm text-black">{s.label}</p>
+            <div key={step.title}>
+              <div className={`rounded-2xl border-2 ${TONE[step.tone].box} p-4`}>
+                <div className="flex items-center gap-2 mb-1.5">
+                  <Icon size={16} className={`${TONE[step.tone].icon} shrink-0`} />
+                  <p className="font-heading font-bold text-sm text-black">{step.title}</p>
+                </div>
+                <p className="text-[11.5px] text-zinc-600 leading-relaxed">{step.detail}</p>
               </div>
-              <p className="text-[11.5px] text-zinc-600 leading-relaxed">{s.detail}</p>
-              <span className="absolute -top-2 -left-2 w-5 h-5 rounded-full bg-black text-white text-[10px] font-bold flex items-center justify-center">
-                {i + 1}
-              </span>
+              {i < PIPELINE.length - 1 && <Arrow label={step.out} />}
             </div>
           );
         })}
       </div>
 
       <div className="flex items-center justify-center gap-2 mb-8">
-        <div className="h-px flex-1 bg-black/10" />
+        <Repeat size={13} className="text-zinc-400" />
         <span className="text-[10px] font-bold uppercase tracking-wider text-zinc-500">
-          then straight back to step 1, automatically
+          playback queue empties → microphone reopens automatically → back to step 1
         </span>
-        <div className="h-px flex-1 bg-black/10" />
       </div>
 
-      {/* ---- the timing win ---- */}
-      <p className="text-xs font-bold uppercase tracking-wider text-zinc-600 mb-1 text-center">
-        Why it replies sooner
-      </p>
-      <p className="text-[11px] text-zinc-500 mb-5 text-center max-w-lg mx-auto">
-        Same total work either way. The difference is when you start hearing it.
+      {/* ---- pipelining vs. sequential ---- */}
+      <p className="text-xs font-bold uppercase tracking-wider text-zinc-600 mb-4 text-center">
+        Steps 4–6 overlap instead of running in sequence
       </p>
 
-      <div className="space-y-5 mb-2">
+      <div className="space-y-5">
         <div>
-          <p className="text-[11px] font-semibold text-zinc-700 mb-1.5">
-            One block at a time — you wait for the whole reply
-          </p>
+          <p className="text-[11px] font-semibold text-zinc-700 mb-1.5">Sequential</p>
           <div className="relative h-8 w-full rounded-md bg-black/5">
             {SEQUENTIAL.reduce((acc, b) => {
               const offset = acc.offset;
@@ -110,50 +149,20 @@ export default function VoiceAgentFlow() {
               return acc;
             }, { offset: 0, nodes: [] }).nodes}
           </div>
-          <p className="text-[11px] text-zinc-500 mt-1.5">
-            First sound only after every stage has finished.
-          </p>
         </div>
 
         <div>
           <p className="text-[11px] font-semibold text-zinc-700 mb-1.5">
-            Sentence by sentence — voicing starts while it's still writing
+            Pipelined <span className="font-normal text-zinc-500">(what actually runs)</span>
           </p>
           <div className="relative h-8 w-full rounded-md bg-black/5">
             {PIPELINED.map((b) => <Bar key={b.label} {...b} />)}
           </div>
-          <div className="flex items-center gap-2 mt-2">
-            <span className="w-3 h-3 rounded-sm bg-emerald-600 shrink-0" />
-            <p className="text-[11px] text-zinc-600">
-              <span className="font-semibold text-emerald-700">1, 2, 3</span> are the reply's
-              sentences, each voiced the moment it's written.
-            </p>
-          </div>
-          <p className="text-[11px] text-emerald-700 font-semibold mt-1.5">
-            Sound starts as soon as sentence one exists. The rest are voiced while you're already
-            listening to the earlier ones, so their cost is hidden.
+          <p className="text-[11px] text-zinc-500 mt-1.5">
+            1, 2, 3 = the reply's sentences, each synthesized as soon as it's written.
           </p>
         </div>
       </div>
-
-      {/* ---- barge-in ---- */}
-      <div className="mt-8 rounded-2xl border-2 border-rose-300 bg-rose-50 p-4">
-        <div className="flex items-center gap-2 mb-2">
-          <Hand size={16} className="text-rose-700 shrink-0" />
-          <p className="font-heading font-bold text-sm text-black">Cutting in</p>
-        </div>
-        <p className="text-[11.5px] text-zinc-700 leading-relaxed">
-          The mic keeps being watched <em>while it's talking</em>, so you can interrupt it the way
-          you'd interrupt a person. Doing that has to kill three things at once: the clip playing,
-          every clip queued behind it, and the server still generating more. Miss any one and it
-          keeps talking after you've cut in.
-        </p>
-      </div>
-
-      <p className="text-[11px] text-zinc-400 mt-6 text-center">
-        Voice and typing share one session, so you can start a question out loud and finish it
-        by typing without losing the thread.
-      </p>
     </div>
   );
 }

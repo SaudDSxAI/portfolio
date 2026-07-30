@@ -477,7 +477,11 @@ export default function CaseStudyDetail() {
               </p>
               {(() => {
                 const DemoComponent = DEMO_COMPONENTS[study.demoKey];
-                return <DemoComponent theme={theme} />;
+                // The shared "open the real assistant" demo needs to know
+                // whether this particular project page wants it to jump
+                // straight into voice mode (study.demoOpensVoice, set only
+                // on the voice-agent project) rather than the typed panel.
+                return <DemoComponent theme={theme} openVoice={!!study.demoOpensVoice} />;
               })()}
             </div>
           </ScrollReveal>
@@ -489,7 +493,7 @@ export default function CaseStudyDetail() {
             study.customArchitecture, when the generic linear-flow diagram
             can't communicate what's actually distinctive (e.g. which parts
             are frozen vs. trained). */}
-        {study.architecture?.length > 0 && (
+        {(study.architecture?.length > 0 || study.customArchitecture) && (
           <ScrollReveal delay={170}>
             <div className="mb-14">
               <div className="flex items-center gap-2 mb-1">

@@ -17,15 +17,23 @@ const ChatWidget = React.lazy(() => import('./components/ChatWidget'));
 function DeferredChatWidget() {
   const [shouldLoad, setShouldLoad] = React.useState(false);
   const [initialOpen, setInitialOpen] = React.useState(false);
+  const [initialVoice, setInitialVoice] = React.useState(false);
 
   React.useEffect(() => {
-    const loadChat = (open = false) => {
+    const loadChat = (open = false, voice = false) => {
       if (open) setInitialOpen(true);
+      if (voice) setInitialVoice(true);
       setShouldLoad(true);
     };
 
-    const openHandler = () => loadChat(true);
+    // Before ChatWidget has ever mounted, its own 'openChat'/'openVoiceChat'
+    // listeners don't exist yet — this is the fallback that catches the
+    // very first click and tells the freshly-mounted widget which mode to
+    // open straight into via the initialOpen/initialVoice props.
+    const openHandler = () => loadChat(true, false);
+    const voiceHandler = () => loadChat(false, true);
     window.addEventListener('openChat', openHandler);
+    window.addEventListener('openVoiceChat', voiceHandler);
 
     const idleId =
       'requestIdleCallback' in window
@@ -34,6 +42,7 @@ function DeferredChatWidget() {
 
     return () => {
       window.removeEventListener('openChat', openHandler);
+      window.removeEventListener('openVoiceChat', voiceHandler);
       if ('cancelIdleCallback' in window) {
         window.cancelIdleCallback(idleId);
       } else {
@@ -62,7 +71,7 @@ function DeferredChatWidget() {
 
   return (
     <Suspense fallback={null}>
-      <ChatWidget initialOpen={initialOpen} />
+      <ChatWidget initialOpen={initialOpen} initialVoice={initialVoice} />
     </Suspense>
   );
 }

@@ -1254,3 +1254,23 @@ INFO:     127.0.0.1:54065 - "POST /api/voice/chat/stream?session_id=afbfd6d4-a1f
 ⚠️ gpt-4o-mini-tts unavailable (TypeError: Speech.create() got an unexpected keyword argument 'instructions'); falling back to tts-1
 🎙️ voice stream stt=1019ms first_audio=5694ms total=18127ms
 INFO:     127.0.0.1:54070 - "POST /api/voice/chat/stream?session_id=afbfd6d4-a1f2-4be8-b697-cbce7d6422c9 HTTP/1.1" 200 OK
+⚠️ gpt-4o-mini-tts unavailable (TypeError: Speech.create() got an unexpected keyword argument 'instructions'); falling back to tts-1
+⚠️ gpt-4o-mini-tts unavailable (TypeError: Speech.create() got an unexpected keyword argument 'instructions'); falling back to tts-1
+⚠️ gpt-4o-mini-tts unavailable (TypeError: Speech.create() got an unexpected keyword argument 'instructions'); falling back to tts-1
+⚠️ gpt-4o-mini-tts unavailable (TypeError: Speech.create() got an unexpected keyword argument 'instructions'); falling back to tts-1
+🎙️ voice stream stt=1499ms first_audio=4220ms total=8978ms
+INFO:     127.0.0.1:54537 - "GET /health HTTP/1.1" 200 OK
+INFO:     127.0.0.1:54544 - "GET /health HTTP/1.1" 200 OK
+INFO:     127.0.0.1:54572 - "GET /health HTTP/1.1" 200 OK
+INFO:     127.0.0.1:54574 - "GET /health HTTP/1.1" 200 OK
+INFO:     127.0.0.1:54578 - "GET /health HTTP/1.1" 200 OK
+INFO:     127.0.0.1:54582 - "GET /health HTTP/1.1" 200 OK
+INFO:     127.0.0.1:54603 - "GET /health HTTP/1.1" 200 OK
+INFO:     127.0.0.1:54619 - "GET /health HTTP/1.1" 200 OK
+INFO:     127.0.0.1:54621 - "POST /api/voice/chat/stream HTTP/1.1" 200 OK
+⚠️ gpt-4o-mini-tts unavailable (TypeError: Speech.create() got an unexpected keyword argument 'instructions'); falling back to tts-1
+🎙️ voice stream stt=1872ms first_audio=5772ms total=5777ms
+INFO:     127.0.0.1:54630 - "POST /api/voice/chat/stream?session_id=08205a45-d0b8-4b69-b779-959f0e00968c HTTP/1.1" 200 OK
+⚠️ gpt-4o-mini-tts unavailable (TypeError: Speech.create() got an unexpected keyword argument 'instructions'); falling back to tts-1
+⚠️ gpt-4o-mini-tts unavailable (TypeError: Speech.create() got an unexpected keyword argument 'instructions'); falling back to tts-1
+INFO:     127.0.0.1:54779 - "POST /api/voice/chat/stream HTTP/1.1" 200 OK

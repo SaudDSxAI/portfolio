@@ -117,7 +117,7 @@ const SuggestedQuestions = ({ onSelect, disabled }) => {
 };
 
 // ===== Main Chat Widget =====
-export default function ChatWidget({ initialOpen = false } = {}) {
+export default function ChatWidget({ initialOpen = false, initialVoice = false } = {}) {
  const [isOpen, setIsOpen] = useState(initialOpen);
  const [messages, setMessages] = useState([]);
  const [input, setInput] = useState('');
@@ -127,7 +127,7 @@ export default function ChatWidget({ initialOpen = false } = {}) {
  const [isConnected, setIsConnected] = useState(false);
  const [showSuggestions, setShowSuggestions] = useState(true);
  const [hasNewMessage, setHasNewMessage] = useState(false);
- const [voiceOpen, setVoiceOpen] = useState(false);
+ const [voiceOpen, setVoiceOpen] = useState(initialVoice);
 
  const messagesEndRef = useRef(null);
  const inputRef = useRef(null);
@@ -243,11 +243,20 @@ export default function ChatWidget({ initialOpen = false } = {}) {
  }
  }, [isOpen, isMobileChat]);
 
- // Listen for external open event (from Navbar / Hero / Contact)
+ // Listen for external open events (from Navbar / Hero / Contact / the
+ // voice-agent project's own demo button). 'openChat' opens the normal
+ // typed panel; 'openVoiceChat' skips straight to the voice overlay, which
+ // renders independently of isOpen (see VoiceMode below), so the typed
+ // panel never has to open at all for a voice-first launch.
  useEffect(() => {
- const handler = () => setIsOpen(true);
- window.addEventListener('openChat', handler);
- return () => window.removeEventListener('openChat', handler);
+ const openHandler = () => setIsOpen(true);
+ const voiceHandler = () => setVoiceOpen(true);
+ window.addEventListener('openChat', openHandler);
+ window.addEventListener('openVoiceChat', voiceHandler);
+ return () => {
+ window.removeEventListener('openChat', openHandler);
+ window.removeEventListener('openVoiceChat', voiceHandler);
+ };
  }, []);
 
  const scrollToBottom = useCallback((behavior = 'smooth') => {
