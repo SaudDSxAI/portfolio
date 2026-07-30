@@ -9,3 +9,4 @@ node_modules/
 frontend/dist_verify*/
 frontend/dist_test_fresh/
 frontend/dv*/
+!frontend/dist/

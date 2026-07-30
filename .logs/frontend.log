@@ -318,3 +318,70 @@
 12:26:34 AM [vite] page reload dv7/notebooks/speech-commands-notebook.html
 12:26:34 AM [vite] page reload dv7/notebooks/speech-commands-notebook.html
 12:26:38 AM [vite] page reload dv7/index.html
+12:35:24 AM [vite] hmr update /src/pages/CaseStudyDetail.jsx, /src/index.css
+12:35:35 AM [vite] hmr update /src/pages/CaseStudyDetail.jsx, /src/index.css
+12:36:19 AM [vite] hmr update /src/index.css, /src/pages/CategoryPage.jsx, /src/pages/CaseStudyDetail.jsx, /src/components/Projects.jsx
+12:36:48 AM [vite] page reload dv8/notebooks/anomaly-detection-notebook.html
+12:36:49 AM [vite] page reload dv8/notebooks/anomaly-detection-notebook.html
+12:36:49 AM [vite] page reload dv8/notebooks/churn-notebook.html
+12:36:49 AM [vite] page reload dv8/notebooks/comparative-rag-notebook.html
+12:36:49 AM [vite] page reload dv8/notebooks/churn-notebook.html
+12:36:49 AM [vite] page reload dv8/notebooks/contextual-compression-notebook.html
+12:36:49 AM [vite] page reload dv8/notebooks/comparative-rag-notebook.html
+12:36:49 AM [vite] page reload dv8/notebooks/contextual-compression-notebook.html
+12:36:49 AM [vite] page reload dv8/notebooks/credit-fraud-notebook.html
+12:36:49 AM [vite] page reload dv8/notebooks/credit-fraud-notebook.html
+12:36:49 AM [vite] page reload dv8/notebooks/deep-scrape-agent-notebook.html
+12:36:49 AM [vite] page reload dv8/notebooks/deep-scrape-agent-notebook.html
+12:36:49 AM [vite] page reload dv8/notebooks/diffusion-vs-gan-notebook.html
+12:36:49 AM [vite] page reload dv8/notebooks/finetune-lora-notebook.html
+12:36:49 AM [vite] page reload dv8/notebooks/heart-disease-notebook.html
+12:36:49 AM [vite] page reload dv8/notebooks/diffusion-vs-gan-notebook.html
+12:36:49 AM [vite] page reload dv8/notebooks/heart-disease-notebook.html
+12:36:49 AM [vite] page reload dv8/notebooks/house-price-notebook.html
+12:36:49 AM [vite] page reload dv8/notebooks/house-price-notebook.html
+12:36:49 AM [vite] page reload dv8/notebooks/movie-recommender-notebook.html
+12:36:49 AM [vite] page reload dv8/notebooks/msmarco-rag-scale-notebook.html
+12:36:49 AM [vite] page reload dv8/notebooks/house-price-notebook.html
+12:36:50 AM [vite] page reload dv8/notebooks/sales-forecasting-notebook.html
+12:36:50 AM [vite] page reload dv8/notebooks/msmarco-rag-scale-notebook.html
+12:36:50 AM [vite] page reload dv8/notebooks/sentiment-notebook.html
+12:36:50 AM [vite] page reload dv8/notebooks/sales-forecasting-notebook.html
+12:36:50 AM [vite] page reload dv8/notebooks/sentiment-notebook.html
+12:36:50 AM [vite] page reload dv8/notebooks/speech-commands-notebook.html
+12:36:50 AM [vite] page reload dv8/notebooks/speech-commands-notebook.html
+12:36:53 AM [vite] page reload dv8/index.html
+12:37:31 AM [vite] hmr update /src/components/demos/VoiceAgentFlow.jsx, /src/index.css
+12:37:38 AM [vite] hmr update /src/components/demos/VoiceAgentFlow.jsx, /src/index.css
+12:37:46 AM [vite] hmr update /src/components/demos/VoiceAgentFlow.jsx, /src/index.css
+12:37:53 AM [vite] hmr update /src/components/demos/VoiceAgentFlow.jsx, /src/index.css
+12:38:15 AM [vite] page reload dv9/notebooks/anomaly-detection-notebook.html
+12:38:15 AM [vite] page reload dv9/notebooks/anomaly-detection-notebook.html
+12:38:15 AM [vite] page reload dv9/notebooks/churn-notebook.html
+12:38:15 AM [vite] page reload dv9/notebooks/comparative-rag-notebook.html
+12:38:15 AM [vite] page reload dv9/notebooks/churn-notebook.html
+12:38:15 AM [vite] page reload dv9/notebooks/comparative-rag-notebook.html
+12:38:15 AM [vite] page reload dv9/notebooks/contextual-compression-notebook.html
+12:38:15 AM [vite] page reload dv9/notebooks/contextual-compression-notebook.html
+12:38:15 AM [vite] page reload dv9/notebooks/credit-fraud-notebook.html
+12:38:15 AM [vite] page reload dv9/notebooks/deep-scrape-agent-notebook.html
+12:38:15 AM [vite] page reload dv9/notebooks/credit-fraud-notebook.html
+12:38:15 AM [vite] page reload dv9/notebooks/deep-scrape-agent-notebook.html
+12:38:15 AM [vite] page reload dv9/notebooks/diffusion-vs-gan-notebook.html
+12:38:15 AM [vite] page reload dv9/notebooks/finetune-lora-notebook.html
+12:38:15 AM [vite] page reload dv9/notebooks/diffusion-vs-gan-notebook.html
+12:38:15 AM [vite] page reload dv9/notebooks/finetune-lora-notebook.html
+12:38:15 AM [vite] page reload dv9/notebooks/heart-disease-notebook.html
+12:38:16 AM [vite] page reload dv9/notebooks/house-price-notebook.html
+12:38:16 AM [vite] page reload dv9/notebooks/movie-recommender-notebook.html
+12:38:16 AM [vite] page reload dv9/notebooks/heart-disease-notebook.html
+12:38:16 AM [vite] page reload dv9/notebooks/movie-recommender-notebook.html
+12:38:16 AM [vite] page reload dv9/notebooks/msmarco-rag-scale-notebook.html
+12:38:16 AM [vite] page reload dv9/notebooks/sales-forecasting-notebook.html
+12:38:16 AM [vite] page reload dv9/notebooks/msmarco-rag-scale-notebook.html
+12:38:16 AM [vite] page reload dv9/notebooks/sentiment-notebook.html
+12:38:16 AM [vite] page reload dv9/notebooks/sales-forecasting-notebook.html
+12:38:16 AM [vite] page reload dv9/notebooks/sentiment-notebook.html
+12:38:16 AM [vite] page reload dv9/notebooks/speech-commands-notebook.html
+12:38:16 AM [vite] page reload dv9/notebooks/speech-commands-notebook.html
+12:38:19 AM [vite] page reload dv9/index.html

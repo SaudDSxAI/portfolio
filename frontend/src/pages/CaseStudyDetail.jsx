@@ -24,6 +24,7 @@ import AttendanceUIPreview from '../components/demos/AttendanceUIPreview';
 import RAGCaseStudyPage from './RAGCaseStudyPage';
 import FrozenTrainableDiagram from '../components/demos/FrozenTrainableDiagram';
 import PortfolioAssistantFlow from '../components/demos/PortfolioAssistantFlow';
+import VoiceAgentFlow from '../components/demos/VoiceAgentFlow';
 import TrainingCurvesComparison from '../components/demos/TrainingCurvesComparison';
 import FinetuneLoraCurves from '../components/demos/FinetuneLoraCurves';
 import ChurnResults from '../components/results/ChurnResults';
@@ -73,6 +74,7 @@ const DEMO_COMPONENTS = {
 const CUSTOM_ARCHITECTURE_COMPONENTS = {
   frozenTrainable: FrozenTrainableDiagram,
   portfolioAssistantFlow: PortfolioAssistantFlow,
+  voiceAgentFlow: VoiceAgentFlow,
 };
 
 // Same opt-in pattern for the charts section — a few projects have a

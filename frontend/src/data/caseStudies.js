@@ -2327,6 +2327,65 @@ export const caseStudies = {
         'Deliberately keeping a customer-facing assistant simple, citing real, already-measured failure modes of heavier agentic patterns (reformulation loops) built elsewhere in this portfolio as the reason not to port them over here',
       ],
     },
+    {
+      slug: 'voice-agent',
+      title: 'Talking to the Portfolio',
+      tagline:
+        'The same assistant, but you speak to it and it speaks back. Hands-free turn-taking, sentence-by-sentence audio so it starts replying before it has finished thinking, and you can cut it off mid-sentence.',
+      categoryKey: 'agentic',
+      summary:
+        "A voice layer over the chat assistant already running on this site. Press the mic and it just runs: it listens, works out when you have stopped talking, answers out loud, and starts listening again, with no push-to-talk and no send button. The agent underneath is unchanged, same session, same tools, so a conversation can start out loud and finish typed. Most of the engineering here is not the AI part, it is the two things that decide whether a voice interface feels alive or broken: how soon it starts replying, and whether you can interrupt it.",
+      github: '',
+      live: '',
+      tech: ['OpenAI Whisper / gpt-4o-mini-transcribe', 'gpt-4o-mini-tts', 'Web Audio API', 'MediaRecorder', 'Server-Sent Events', 'FastAPI', 'React'],
+      hasLiveDemo: true,
+      demoKey: 'openAssistant',
+      liveDemoHeading: 'Actually talk to it',
+      liveDemoBlurb: 'Opens the real widget on this site. Press the mic button and start talking, there is nothing else to press.',
+      accentColor: 'cyan',
+      icon: 'mic',
+      heroMetrics: [
+        { label: 'Turn-taking', value: 'Automatic' },
+        { label: 'Interruptible', value: 'Mid-sentence' },
+        { label: 'Audio starts', value: 'After sentence 1' },
+        { label: 'Session', value: 'Shared with text' },
+      ],
+      architectureBlurb: 'A loop rather than a request and response, with the reply voiced in pieces so it can start before the answer is finished.',
+      customArchitecture: 'voiceAgentFlow',
+      narrative: [
+        {
+          heading: 'Knowing when you have finished talking',
+          body: "With no button to release, something has to decide when your turn ends. A live analyser reads the microphone's loudness every animation frame, and the turn ends once that level has stayed below a speech threshold continuously for 700 milliseconds. The hangover is the whole trick: end it instantly and it clips you the first time you pause to think, make it too long and every single reply feels sluggish. It also waits until it has heard real speech at least once before arming, so room tone alone can never trigger a turn, and clips that turn out to be silence or shorter than about a third of a second are dropped locally rather than spent on an API call.",
+        },
+        {
+          heading: 'Why the first version felt slow, and what actually fixed it',
+          body: "The first working version was strictly sequential: transcribe the whole clip, generate the whole reply, synthesize the whole reply, send it, then play it. Every stage waited for the one before it to completely finish, so you heard nothing until the last word had been written, voiced and transferred. The fix was not a faster model, it was overlapping the stages. The reply is now streamed, and the moment one complete sentence exists it goes straight to speech and out to the browser while the rest is still being written. The browser plays clips from a queue, so every sentence after the first is synthesized while you are already listening to the one before it, and its cost disappears entirely. The perceived wait drops from the length of the whole turn to roughly the first sentence.",
+        },
+        {
+          heading: 'Interrupting turned out to be the hard part',
+          body: "In the first version the microphone was only monitored while listening, which meant that while the assistant was talking, nothing was watching, so there was literally nothing to interrupt with. Now the analyser runs in every state. Barge-in needs a higher bar than ordinary speech detection and has to be sustained for a moment, because the reply leaks back into the microphone through the speakers and the assistant must never interrupt itself. Pipelining then made this harder rather than easier: cutting in has to kill three things at once, the clip currently playing, every clip already queued behind it, and the server stream still generating more. Miss any one of the three and it carries on talking after being cut off.",
+        },
+        {
+          heading: 'The same answer, written for the ear instead of the eye',
+          body: "The text assistant is free to use headings, bullet lists and markdown. Read aloud, that same answer becomes an unbroken monotone drone, and any stray asterisk gets pronounced. Voice turns therefore get an extra instruction layer on top of the identical underlying prompt: never read a list out loud, name two or three things and stop, keep to two or three sentences, break long comma chains into separate sentences. Two safety nets sit behind that, because a prompt is a request rather than a guarantee. Anything that still arrives as markdown is stripped before synthesis, and the text is reshaped so each sentence sits on its own line, since every speech engine paces off punctuation. A dense paragraph in gets a dense monotone out.",
+        },
+        {
+          heading: 'A bug you only find by using it out loud',
+          body: "Testing this by speaking to it surfaced a failure that months of typing never would have. The transcriber kept mangling proper nouns: COTER Global came back as \"Cotro Globe\", \"Kauter Global\" and \"Gator Global\" across a single conversation, and Oval Labs became \"overlaps\". Because the assistant is deliberately fenced to only discuss its own work, an unrecognised company name looked like an off-topic question, and it refused to answer questions about a real employer. The fix was two-sided: the transcriber now receives a vocabulary hint listing the names it would otherwise have to guess phonetically, and the assistant is told that a name which sounds close to one of its own is a misheard version of that name rather than a stranger's company. Same conversation typed, no problem at all.",
+        },
+      ],
+      skillsDemonstrated: [
+        'Energy-based voice activity detection built directly on the Web Audio API, with a silence hangover, a minimum-speech guard and a maximum turn length, rather than importing a VAD library',
+        'Restructuring a strictly sequential pipeline into an overlapped one, streaming the model and synthesizing per sentence, so playback begins before generation has finished',
+        'Real barge-in: monitoring the microphone during playback, with a raised sustained threshold so the reply leaking through the speakers cannot interrupt itself',
+        'Correctly tearing down a pipelined stream on interrupt, cancelling in-flight playback, the queued clips behind it and the server-side generation together',
+        'Driving 60fps audio-reactive UI by mutating the DOM from the animation loop rather than through component state, and reading levels from two separate analysers depending on who holds the floor',
+        'Writing prompt instructions for spoken delivery rather than written output, with deterministic post-processing as a backstop instead of trusting the instruction alone',
+        'Diagnosing a cross-cutting failure (speech recognition mangling proper nouns, triggering a topic guardrail, causing wrong refusals) and fixing it at both the recognition and prompt layers',
+        'Adding a voice front-end to an existing agent without forking it: same session store, same tools, same conversation history across spoken and typed turns',
+        'Instrumenting every stage of a latency-sensitive pipeline separately, so optimisation targets a measured bottleneck rather than an assumed one',
+      ],
+    },
   ],
   vlm: [
     {
