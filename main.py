@@ -1,4 +1,5 @@
 import os
+import re
 import base64
 import json
 import uuid
@@ -935,8 +936,29 @@ a long answer.
 def build_messages(history: List, voice: bool = False) -> List[dict]:
     current_system_prompt = load_system_prompt()
     project_index_text = format_project_index(load_projects_data()["index"])
+
+    # The model otherwise has zero knowledge that a cap exists at all, so if
+    # asked "how many questions do I have left?" it just guesses — usually
+    # "unlimited" — which is exactly the kind of invented answer the rest of
+    # this prompt tells it never to give. Telling it the real number lets it
+    # answer honestly instead. `history` already includes this turn's own
+    # HumanMessage by the time build_messages runs (every call site appends
+    # before calling this), so the count below already reflects "after this
+    # message" correctly.
+    remaining = max(0, MAX_MESSAGES_PER_SESSION - session_message_count(history))
+    session_limit_text = (
+        f"SESSION LIMIT (factual, not for you to bring up unprompted): this chat is "
+        f"capped at {MAX_MESSAGES_PER_SESSION} messages per browser session to keep "
+        f"API costs bounded. {remaining} message(s) remain after this one. If asked "
+        f"how many questions/messages are left, or whether there's a limit at all, "
+        f"answer with this exact number honestly — never say it's unlimited or that "
+        f"you don't know. Once the cap is reached, the app automatically shows a "
+        f"message pointing to sauds6446@gmail.com; you don't need to mention that "
+        f"yourself unless asked."
+    )
+
     full_system = (
-        f"{current_system_prompt}\n\n---\n\n{SITE_MAP}\n\n---\n\n{project_index_text}"
+        f"{current_system_prompt}\n\n---\n\n{session_limit_text}\n\n---\n\n{SITE_MAP}\n\n---\n\n{project_index_text}"
     )
     if voice:
         full_system = f"{full_system}\n\n---\n\n{VOICE_STYLE_PROMPT}"
@@ -1217,24 +1239,100 @@ STT_VOCABULARY = (
 )
 
 
+# Whisper-family models are trained to continue the `prompt` text, not just be
+# biased by it. When a clip contains no intelligible speech (silence, room
+# noise, a stray tap, a mic that opened and closed), the model has nothing to
+# transcribe and its most likely continuation is the prompt itself — so it
+# returns STT_VOCABULARY back verbatim, or a chunk of it. Without this guard
+# that echo becomes the "transcript": it renders as the visitor's own caption
+# in the UI and gets appended to history as a real user message, which is why
+# the assistant then starts answering a prompt dump instead of a question.
+#
+# Same clip conditions also produce the well-known fixed hallucinations below
+# (artifacts of the model's training data — subtitle corpora full of these).
+_STT_HALLUCINATIONS = {
+    "thank you", "thanks for watching", "thanks for watching!",
+    "thank you for watching", "thank you very much", "you", "bye",
+    "please subscribe", "subscribe to my channel", "okay", "ok",
+    ".", "..", "...", "!", "?",
+}
+
+
+def _normalize_for_compare(text: str) -> str:
+    """Lowercase, strip punctuation, collapse whitespace — so an echo that
+    differs only in casing or trailing punctuation still matches."""
+    return " ".join(re.sub(r"[^\w\s]", " ", text.lower()).split())
+
+
+_STT_VOCAB_NORMALIZED = _normalize_for_compare(STT_VOCABULARY)
+_STT_VOCAB_WORDS = set(_STT_VOCAB_NORMALIZED.split())
+
+
+def _is_prompt_echo_or_noise(text: str) -> bool:
+    """True when the transcript isn't real speech and must be discarded.
+
+    Deliberately conservative: a real question from a visitor will naturally
+    contain words that AREN'T in the vocabulary prompt ("what", "how", "tell
+    me about"), so requiring a very high overlap ratio means a genuine
+    question that happens to mention COTER Global or RAG is never dropped.
+    """
+    normalized = _normalize_for_compare(text)
+    if not normalized:
+        return True
+
+    if normalized in _STT_HALLUCINATIONS:
+        return True
+
+    words = normalized.split()
+
+    # Direct echo: the model returned the prompt, or a contiguous slice of it.
+    # Gated on length because this is a substring test, and short utterances
+    # produce false positives against a long prompt — "hi" is a substring of
+    # "t-hi-s", so an unguarded check would silently swallow a real greeting.
+    # A genuine echo is never this short; short noise is covered above.
+    if len(words) >= 6 and (
+        normalized in _STT_VOCAB_NORMALIZED or _STT_VOCAB_NORMALIZED in normalized
+    ):
+        return True
+
+    # Partial/reordered echo. Only applied to long transcripts — a short reply
+    # like "RAG and LoRA?" is legitimately ~100% vocabulary words, so scoring
+    # it this way would wrongly discard it. Real spoken questions of this
+    # length always carry filler and question words from outside the prompt.
+    if len(words) >= 12:
+        overlap = sum(1 for w in words if w in _STT_VOCAB_WORDS) / len(words)
+        if overlap >= 0.85:
+            return True
+
+    return False
+
+
 def _transcribe(filename: str, audio_bytes: bytes, content_type: str) -> str:
     """STT with the same graceful downgrade as TTS — a slower transcription is
-    much better than a dead turn if the faster model isn't on this account."""
-    try:
+    much better than a dead turn if the faster model isn't on this account.
+
+    Returns "" for anything that isn't real speech, so every caller's existing
+    empty-transcript path handles it (no new failure mode to wire up).
+    """
+    def _run(model: str) -> str:
         result = openai_client.audio.transcriptions.create(
-            model=VOICE_STT_MODEL,
+            model=model,
             file=(filename, audio_bytes, content_type),
             prompt=STT_VOCABULARY,
         )
         return (result.text or "").strip()
+
+    try:
+        text = _run(VOICE_STT_MODEL)
     except Exception as e:
         print(f"⚠️ {VOICE_STT_MODEL} unavailable ({type(e).__name__}: {e}); falling back to whisper-1")
-        result = openai_client.audio.transcriptions.create(
-            model="whisper-1",
-            file=(filename, audio_bytes, content_type),
-            prompt=STT_VOCABULARY,
-        )
-        return (result.text or "").strip()
+        text = _run("whisper-1")
+
+    if _is_prompt_echo_or_noise(text):
+        print(f"🔇 discarded non-speech transcript: {text[:80]!r}")
+        return ""
+
+    return text
 
 
 def _synthesize_speech(text: str) -> bytes:
@@ -1309,7 +1407,19 @@ async def voice_chat(audio: UploadFile = File(...), session_id: Optional[str] = 
         user_text = _transcribe(filename, audio_bytes, audio.content_type or "audio/webm")
         t = mark("stt", t)
         if not user_text:
-            raise HTTPException(status_code=400, detail="Couldn't make out any speech in that clip")
+            # Same non-event as in the streaming endpoint: nothing intelligible
+            # in the clip. Return a benign empty turn rather than a 400 so the
+            # client can just go back to listening, and append nothing to
+            # history.
+            return {
+                "session_id": sid,
+                "transcript": "",
+                "response": "",
+                "audio_base64": None,
+                "audio_mime": None,
+                "no_speech": True,
+                "timings": timings,
+            }
 
         # Identical path to /chat from here on — same session store, same
         # build_messages/run_chat_completion, same tool-calling loop.
@@ -1401,6 +1511,7 @@ async def voice_chat_stream(audio: UploadFile = File(...), session_id: Optional[
     history = None
     stt_ms = 0
     limit_hit = False
+    no_speech = False
 
     # Session lookup and the limit check happen before anything else,
     # including reading the uploaded clip — a capped session is turned away
@@ -1425,10 +1536,17 @@ async def voice_chat_stream(audio: UploadFile = File(...), session_id: Optional[
             user_text = _transcribe(filename, audio_bytes, audio.content_type or "audio/webm")
             stt_ms = int((time.perf_counter() - t0) * 1000)
             if not user_text:
-                raise RuntimeError("Couldn't make out any speech in that clip")
-
-            history.append(HumanMessage(content=user_text))
-            messages = build_messages(history, voice=True)
+                # Not an error — the VAD just sent a clip with nothing
+                # intelligible in it (silence, a cough, background noise, or a
+                # transcript we discarded as prompt echo). Signalling this
+                # distinctly lets the client drop straight back to listening
+                # instead of showing a scary failure for a non-event. Nothing
+                # is appended to history, so it doesn't burn a capped message
+                # or pollute the conversation.
+                no_speech = True
+            else:
+                history.append(HumanMessage(content=user_text))
+                messages = build_messages(history, voice=True)
     except Exception as e:
         setup_error = f"{e}"
         print(f"❌ voice_chat_stream setup failed: {type(e).__name__}: {e}")
@@ -1442,6 +1560,11 @@ async def voice_chat_stream(audio: UploadFile = File(...), session_id: Optional[
             yield f"data: {json.dumps({'type': 'session', 'session_id': sid})}\n\n"
             yield f"data: {json.dumps({'type': 'text', 'content': SESSION_LIMIT_MESSAGE})}\n\n"
             yield f"data: {json.dumps({'type': 'done', 'response': SESSION_LIMIT_MESSAGE, 'stt_ms': 0, 'first_audio_ms': None, 'total_ms': int((time.perf_counter() - t0) * 1000)})}\n\n"
+            return
+
+        if no_speech:
+            yield f"data: {json.dumps({'type': 'session', 'session_id': sid})}\n\n"
+            yield f"data: {json.dumps({'type': 'no_speech'})}\n\n"
             return
 
         yield f"data: {json.dumps({'type': 'session', 'session_id': sid})}\n\n"

@@ -3,6 +3,33 @@ import VoiceMode from './VoiceMode';
 
 const API_URL = import.meta.env.VITE_API_URL || '';
 
+// Persisted to sessionStorage (not plain React state) so the per-session
+// message cap actually survives a page refresh. The backend counts messages
+// against a session_id; if that id only lived in React state, hitting
+// refresh mid-conversation silently started a brand new session with the
+// counter back at zero, which made the cap effectively untestable/unhittable
+// for anyone who reloaded the page. sessionStorage clears itself when the
+// tab/browser closes, which is exactly the "resets on new visit" behavior
+// this was built for.
+const SESSION_STORAGE_KEY = 'portfolio_chat_session_id';
+
+function readStoredSessionId() {
+  try {
+    return sessionStorage.getItem(SESSION_STORAGE_KEY);
+  } catch {
+    return null; // storage disabled/unavailable — fall back to in-memory only
+  }
+}
+
+function writeStoredSessionId(id) {
+  try {
+    if (id) sessionStorage.setItem(SESSION_STORAGE_KEY, id);
+    else sessionStorage.removeItem(SESSION_STORAGE_KEY);
+  } catch {
+    /* no-op */
+  }
+}
+
 // ===== Markdown Renderer (memoized so unchanged bubbles don't re-render) =====
 const MarkdownText = memo(function MarkdownText({ content }) {
  const renderMarkdown = (text) => {
@@ -123,7 +150,13 @@ export default function ChatWidget({ initialOpen = false, initialVoice = false }
  const [input, setInput] = useState('');
  const [isLoading, setIsLoading] = useState(false);
  const [isStreaming, setIsStreaming] = useState(false);
- const [sessionId, setSessionId] = useState(null);
+ const [sessionId, setSessionIdState] = useState(readStoredSessionId);
+ // Every update to sessionId also mirrors to sessionStorage, so a refresh
+ // picks the conversation's cap count back up instead of resetting it.
+ const setSessionId = useCallback((id) => {
+   setSessionIdState(id);
+   writeStoredSessionId(id);
+ }, []);
  const [isConnected, setIsConnected] = useState(false);
  const [showSuggestions, setShowSuggestions] = useState(true);
  const [hasNewMessage, setHasNewMessage] = useState(false);
@@ -193,11 +226,23 @@ export default function ChatWidget({ initialOpen = false, initialVoice = false }
  let rafId = null;
  const commit = () => {
  rafId = null;
- setViewport({
+ const next = {
  height: vv ? vv.height : window.innerHeight,
  offsetTop: vv ? vv.offsetTop : 0,
  width: vv ? vv.width : window.innerWidth,
- });
+ };
+ // Bail out when nothing actually moved. visualViewport fires `scroll`
+ // continuously during ordinary page scrolling on mobile, and committing
+ // a fresh object each time re-rendered this whole widget (including the
+ // full-screen, backdrop-blurred voice overlay) dozens of times a second
+ // for no layout change at all — visible as stutter on mid-range phones.
+ setViewport((prev) =>
+ prev.height === next.height &&
+ prev.offsetTop === next.offsetTop &&
+ prev.width === next.width
+ ? prev
+ : next
+ );
  };
  const schedule = () => {
  if (rafId != null) return;
@@ -229,9 +274,17 @@ export default function ChatWidget({ initialOpen = false, initialVoice = false }
  // scroll itself into view — without this, the background can still shift
  // during the keyboard's open animation, which is what made the whole
  // layout feel unstable.
+ //
+ // This must cover `voiceOpen` as well as `isOpen`. The voice overlay can be
+ // open while the typed panel is closed (launching via the mic button or the
+ // voice-agent demo button never opens the typed panel), and while it was
+ // omitted here the page behind the overlay stayed scrollable on mobile.
+ // Any stray scroll there moves the browser's URL bar, which resizes the
+ // visual viewport, which re-lays-out this `fixed inset-0` overlay — seen as
+ // the overlay flickering/"closing and reopening" for a fraction of a second.
  useEffect(() => {
  if (typeof document === 'undefined') return;
- if (isOpen && isMobileChat) {
+ if ((isOpen || voiceOpen) && isMobileChat) {
  const previousOverflow = document.body.style.overflow;
  const previousTouchAction = document.body.style.touchAction;
  document.body.style.overflow = 'hidden';
@@ -241,7 +294,7 @@ export default function ChatWidget({ initialOpen = false, initialVoice = false }
  document.body.style.touchAction = previousTouchAction;
  };
  }
- }, [isOpen, isMobileChat]);
+ }, [isOpen, voiceOpen, isMobileChat]);
 
  // Listen for external open events (from Navbar / Hero / Contact / the
  // voice-agent project's own demo button). 'openChat' opens the normal
@@ -517,6 +570,10 @@ export default function ChatWidget({ initialOpen = false, initialVoice = false }
  // VoiceMode.jsx). All it hands back is the finished turn, which we append
  // to this transcript so closing voice mode leaves the conversation intact
  // and continuable by typing.
+ // Stable identity so the memo'd VoiceMode isn't invalidated on every render
+ // by a freshly-allocated inline arrow.
+ const closeVoice = useCallback(() => setVoiceOpen(false), []);
+
  const handleVoiceTurn = useCallback(({ transcript, response }) => {
  setShowSuggestions(false);
  const now = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
@@ -748,7 +805,7 @@ export default function ChatWidget({ initialOpen = false, initialVoice = false }
 
  <VoiceMode
  open={voiceOpen}
- onClose={() => setVoiceOpen(false)}
+ onClose={closeVoice}
  apiUrl={API_URL}
  sessionId={sessionId}
  onSessionId={setSessionId}

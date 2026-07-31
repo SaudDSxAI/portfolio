@@ -579,3 +579,115 @@
 1:36:50 AM [vite] page reload dv15/notebooks/speech-commands-notebook.html
 1:36:50 AM [vite] page reload dv15/notebooks/sentiment-notebook.html
 1:36:52 AM [vite] page reload dv15/index.html
+1:58:52 AM [vite] hmr update /src/components/VoiceMode.jsx, /src/index.css
+1:58:59 AM [vite] hmr update /src/components/VoiceMode.jsx, /src/index.css
+1:59:17 AM [vite] hmr update /src/components/VoiceMode.jsx, /src/index.css
+1:59:27 AM [vite] hmr update /src/components/VoiceMode.jsx, /src/index.css
+2:03:18 AM [vite] hmr update /src/components/VoiceMode.jsx, /src/index.css
+2:03:22 AM [vite] hmr update /src/components/VoiceMode.jsx, /src/index.css
+2:03:37 AM [vite] hmr update /src/components/VoiceMode.jsx, /src/index.css
+2:03:45 AM [vite] hmr update /src/components/VoiceMode.jsx, /src/index.css
+2:03:59 AM [vite] page reload dv_inapp1/notebooks/anomaly-detection-notebook.html
+2:03:59 AM [vite] page reload dv_inapp1/notebooks/churn-notebook.html
+2:03:59 AM [vite] page reload dv_inapp1/notebooks/comparative-rag-notebook.html
+2:03:59 AM [vite] page reload dv_inapp1/notebooks/churn-notebook.html
+2:04:00 AM [vite] page reload dv_inapp1/notebooks/comparative-rag-notebook.html
+2:04:00 AM [vite] page reload dv_inapp1/notebooks/contextual-compression-notebook.html
+2:04:00 AM [vite] page reload dv_inapp1/notebooks/credit-fraud-notebook.html
+2:04:00 AM [vite] page reload dv_inapp1/notebooks/deep-scrape-agent-notebook.html
+2:04:00 AM [vite] page reload dv_inapp1/notebooks/credit-fraud-notebook.html
+2:04:00 AM [vite] page reload dv_inapp1/notebooks/deep-scrape-agent-notebook.html
+2:04:00 AM [vite] page reload dv_inapp1/notebooks/diffusion-vs-gan-notebook.html
+2:04:00 AM [vite] page reload dv_inapp1/notebooks/finetune-lora-notebook.html
+2:04:00 AM [vite] page reload dv_inapp1/notebooks/heart-disease-notebook.html
+2:04:00 AM [vite] page reload dv_inapp1/notebooks/house-price-notebook.html
+2:04:00 AM [vite] page reload dv_inapp1/notebooks/finetune-lora-notebook.html
+2:04:00 AM [vite] page reload dv_inapp1/notebooks/house-price-notebook.html
+2:04:00 AM [vite] page reload dv_inapp1/notebooks/movie-recommender-notebook.html
+2:04:00 AM [vite] page reload dv_inapp1/notebooks/msmarco-rag-scale-notebook.html
+2:04:00 AM [vite] page reload dv_inapp1/notebooks/sales-forecasting-notebook.html
+2:04:00 AM [vite] page reload dv_inapp1/notebooks/sentiment-notebook.html
+2:04:00 AM [vite] page reload dv_inapp1/notebooks/msmarco-rag-scale-notebook.html
+2:04:00 AM [vite] page reload dv_inapp1/notebooks/speech-commands-notebook.html
+2:04:00 AM [vite] page reload dv_inapp1/notebooks/sentiment-notebook.html
+2:04:02 AM [vite] page reload dv_inapp1/index.html
+2:09:00 AM [vite] hmr update /src/components/ChatWidget.jsx, /src/index.css
+2:09:04 AM [vite] hmr update /src/components/ChatWidget.jsx, /src/index.css
+2:09:58 AM [vite] page reload dv_inapp2/notebooks/anomaly-detection-notebook.html
+2:09:58 AM [vite] page reload dv_inapp2/notebooks/anomaly-detection-notebook.html
+2:09:58 AM [vite] page reload dv_inapp2/notebooks/churn-notebook.html
+2:09:58 AM [vite] page reload dv_inapp2/notebooks/comparative-rag-notebook.html
+2:09:58 AM [vite] page reload dv_inapp2/notebooks/contextual-compression-notebook.html
+2:09:58 AM [vite] page reload dv_inapp2/notebooks/churn-notebook.html
+2:09:58 AM [vite] page reload dv_inapp2/notebooks/contextual-compression-notebook.html
+2:09:58 AM [vite] page reload dv_inapp2/notebooks/credit-fraud-notebook.html
+2:09:58 AM [vite] page reload dv_inapp2/notebooks/credit-fraud-notebook.html
+2:09:58 AM [vite] page reload dv_inapp2/notebooks/deep-scrape-agent-notebook.html
+2:09:58 AM [vite] page reload dv_inapp2/notebooks/diffusion-vs-gan-notebook.html
+2:09:58 AM [vite] page reload dv_inapp2/notebooks/finetune-lora-notebook.html
+2:09:58 AM [vite] page reload dv_inapp2/notebooks/deep-scrape-agent-notebook.html
+2:09:58 AM [vite] page reload dv_inapp2/notebooks/heart-disease-notebook.html
+2:09:58 AM [vite] page reload dv_inapp2/notebooks/house-price-notebook.html
+2:09:58 AM [vite] page reload dv_inapp2/notebooks/finetune-lora-notebook.html
+2:09:58 AM [vite] page reload dv_inapp2/notebooks/house-price-notebook.html
+2:09:58 AM [vite] page reload dv_inapp2/notebooks/movie-recommender-notebook.html
+2:09:58 AM [vite] page reload dv_inapp2/notebooks/msmarco-rag-scale-notebook.html
+2:09:58 AM [vite] page reload dv_inapp2/notebooks/sales-forecasting-notebook.html
+2:09:58 AM [vite] page reload dv_inapp2/notebooks/msmarco-rag-scale-notebook.html
+2:09:58 AM [vite] page reload dv_inapp2/notebooks/sales-forecasting-notebook.html
+2:09:58 AM [vite] page reload dv_inapp2/notebooks/sentiment-notebook.html
+2:09:58 AM [vite] page reload dv_inapp2/notebooks/speech-commands-notebook.html
+2:09:59 AM [vite] page reload dv_inapp2/notebooks/speech-commands-notebook.html
+2:10:01 AM [vite] page reload dv_inapp2/index.html
+10:58:17 AM [vite] hmr update /src/components/VoiceMode.jsx, /src/index.css
+10:59:41 AM [vite] hmr update /src/components/ChatWidget.jsx, /src/index.css
+10:59:49 AM [vite] hmr update /src/components/ChatWidget.jsx, /src/index.css
+11:00:05 AM [vite] hmr update /src/components/VoiceMode.jsx, /src/index.css
+11:00:16 AM [vite] hmr update /src/components/VoiceMode.jsx, /src/index.css
+11:00:16 AM [vite] hmr invalidate /src/components/VoiceMode.jsx Could not Fast Refresh (export removed)
+11:00:16 AM [vite] hmr update /src/components/ChatWidget.jsx, /src/index.css
+11:00:26 AM [vite] hmr update /src/components/VoiceMode.jsx, /src/index.css
+11:00:27 AM [vite] hmr invalidate /src/components/VoiceMode.jsx Could not Fast Refresh (new export)
+11:00:27 AM [vite] hmr update /src/components/ChatWidget.jsx, /src/index.css
+11:00:31 AM [vite] hmr update /src/components/ChatWidget.jsx, /src/index.css
+11:00:37 AM [vite] hmr update /src/components/ChatWidget.jsx, /src/index.css
+11:01:04 AM [vite] page reload dv_fix1/notebooks/anomaly-detection-notebook.html
+11:01:04 AM [vite] page reload dv_fix1/notebooks/anomaly-detection-notebook.html
+11:01:04 AM [vite] page reload dv_fix1/notebooks/churn-notebook.html
+11:01:04 AM [vite] page reload dv_fix1/notebooks/comparative-rag-notebook.html
+11:01:04 AM [vite] page reload dv_fix1/notebooks/churn-notebook.html
+11:01:04 AM [vite] page reload dv_fix1/notebooks/comparative-rag-notebook.html
+11:01:04 AM [vite] page reload dv_fix1/notebooks/comparative-rag-notebook.html
+11:01:04 AM [vite] page reload dv_fix1/notebooks/contextual-compression-notebook.html
+11:01:04 AM [vite] page reload dv_fix1/notebooks/credit-fraud-notebook.html
+11:01:04 AM [vite] page reload dv_fix1/notebooks/contextual-compression-notebook.html
+11:01:04 AM [vite] page reload dv_fix1/notebooks/credit-fraud-notebook.html
+11:01:04 AM [vite] page reload dv_fix1/notebooks/credit-fraud-notebook.html
+11:01:04 AM [vite] page reload dv_fix1/notebooks/deep-scrape-agent-notebook.html
+11:01:05 AM [vite] page reload dv_fix1/notebooks/deep-scrape-agent-notebook.html
+11:01:05 AM [vite] page reload dv_fix1/notebooks/diffusion-vs-gan-notebook.html
+11:01:05 AM [vite] page reload dv_fix1/notebooks/deep-scrape-agent-notebook.html
+11:01:05 AM [vite] page reload dv_fix1/notebooks/diffusion-vs-gan-notebook.html
+11:01:05 AM [vite] page reload dv_fix1/notebooks/diffusion-vs-gan-notebook.html
+11:01:05 AM [vite] page reload dv_fix1/notebooks/finetune-lora-notebook.html
+11:01:05 AM [vite] page reload dv_fix1/notebooks/finetune-lora-notebook.html
+11:01:05 AM [vite] page reload dv_fix1/notebooks/heart-disease-notebook.html
+11:01:05 AM [vite] page reload dv_fix1/notebooks/heart-disease-notebook.html
+11:01:05 AM [vite] page reload dv_fix1/notebooks/house-price-notebook.html
+11:01:05 AM [vite] page reload dv_fix1/notebooks/house-price-notebook.html
+11:01:05 AM [vite] page reload dv_fix1/notebooks/house-price-notebook.html
+11:01:05 AM [vite] page reload dv_fix1/notebooks/movie-recommender-notebook.html
+11:01:05 AM [vite] page reload dv_fix1/notebooks/movie-recommender-notebook.html
+11:01:06 AM [vite] page reload dv_fix1/notebooks/movie-recommender-notebook.html
+11:01:06 AM [vite] page reload dv_fix1/notebooks/movie-recommender-notebook.html
+11:01:06 AM [vite] page reload dv_fix1/notebooks/msmarco-rag-scale-notebook.html
+11:01:06 AM [vite] page reload dv_fix1/notebooks/msmarco-rag-scale-notebook.html
+11:01:06 AM [vite] page reload dv_fix1/notebooks/sales-forecasting-notebook.html
+11:01:06 AM [vite] page reload dv_fix1/notebooks/sales-forecasting-notebook.html
+11:01:06 AM [vite] page reload dv_fix1/notebooks/sentiment-notebook.html
+11:01:06 AM [vite] page reload dv_fix1/notebooks/sales-forecasting-notebook.html
+11:01:06 AM [vite] page reload dv_fix1/notebooks/sentiment-notebook.html
+11:01:06 AM [vite] page reload dv_fix1/notebooks/speech-commands-notebook.html
+11:01:06 AM [vite] page reload dv_fix1/notebooks/speech-commands-notebook.html
+11:01:10 AM [vite] page reload dv_fix1/index.html
+11:01:10 AM [vite] page reload dv_fix1/index.html

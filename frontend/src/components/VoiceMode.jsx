@@ -1,4 +1,5 @@
-import { useState, useRef, useEffect, useCallback } from 'react';
+import { useState, useRef, useEffect, useCallback, memo } from 'react';
+import { detectInAppBrowser, tryOpenInAndroidChrome } from '../lib/inAppBrowser';
 
 /**
  * Hands-free voice conversation, in the shape people already expect from
@@ -52,6 +53,7 @@ const STATUS_LABEL = {
   thinking: 'Thinking',
   speaking: 'Speaking',
   error: 'Something went wrong',
+  blocked: 'Microphone blocked',
 };
 
 const HINT = {
@@ -59,13 +61,25 @@ const HINT = {
   listening: 'Just talk. It sends when you stop.',
   thinking: 'One moment.',
   speaking: 'Start talking any time to cut in.',
+  blocked: 'This app\'s built-in browser blocks microphone access.',
 };
 
-export default function VoiceMode({ open, onClose, apiUrl, sessionId, onSessionId, onTurn }) {
+// memo'd because this renders a full-screen `backdrop-blur-xl` overlay, which
+// is one of the most expensive things a mobile browser can repaint. Without
+// it, every unrelated parent state change (viewport events, a streamed chat
+// token) repainted the blur layer, which shows up as flicker on mid-range
+// phones. All props below are stable in the parent, so this genuinely skips.
+function VoiceMode({ open, onClose, apiUrl, sessionId, onSessionId, onTurn }) {
   const [status, setStatus] = useState('connecting');
   const [errorMsg, setErrorMsg] = useState('');
   const [userText, setUserText] = useState('');
   const [replyText, setReplyText] = useState('');
+  // Set when we're inside a social app's in-app browser (LinkedIn, Instagram,
+  // etc). These block microphone access at the wrapper level with no
+  // permission prompt at all, so there's nothing to retry — the fix is
+  // getting the visitor into their actual browser, not a code fix here.
+  const [blockedInfo, setBlockedInfo] = useState(null);
+  const [copied, setCopied] = useState(false);
 
   const streamRef = useRef(null);
   const audioCtxRef = useRef(null);
@@ -323,6 +337,15 @@ export default function VoiceMode({ open, onClose, apiUrl, sessionId, onSessionI
           if (data.type === 'session') {
             sessionRef.current = data.session_id;
             onSessionIdRef.current?.(data.session_id);
+          } else if (data.type === 'no_speech') {
+            // The clip had nothing intelligible in it (silence, noise, or a
+            // transcript the server discarded as prompt echo). Not an error
+            // and not a turn — don't touch the captions, don't notify the
+            // parent chat, just go straight back to listening so it feels
+            // like nothing happened.
+            streamDoneRef.current = true;
+            startListeningRef.current?.();
+            return;
           } else if (data.type === 'transcript') {
             turnTranscript = data.text || '';
             setUserText(turnTranscript);
@@ -440,6 +463,20 @@ export default function VoiceMode({ open, onClose, apiUrl, sessionId, onSessionI
     setErrorMsg('');
     setUserText('');
     setReplyText('');
+    setBlockedInfo(null);
+
+    // Check before ever calling getUserMedia. In a blocked in-app browser
+    // that call either throws with no useful error or silently never
+    // resolves — checking up front means we show the real, actionable
+    // explanation immediately instead of a confusing generic failure (or an
+    // overlay that just hangs on "Getting your mic ready").
+    const detected = detectInAppBrowser();
+    if (detected.isInApp) {
+      statusRef.current = 'blocked';
+      setStatus('blocked');
+      setBlockedInfo(detected);
+      return;
+    }
 
     let cancelled = false;
 
@@ -530,6 +567,7 @@ export default function VoiceMode({ open, onClose, apiUrl, sessionId, onSessionI
 
   const ringColor =
     status === 'error' ? 'ring-red-500/60'
+    : status === 'blocked' ? 'ring-amber-500/60'
     : status === 'speaking' ? 'ring-primary-400/70'
     : status === 'listening' ? 'ring-white/60'
     : 'ring-white/25';
@@ -586,7 +624,9 @@ export default function VoiceMode({ open, onClose, apiUrl, sessionId, onSessionI
         {STATUS_LABEL[status] || ''}
       </p>
       <p className="text-xs text-zinc-500 mb-8 text-center max-w-xs">
-        {status === 'error' ? errorMsg : HINT[status]}
+        {status === 'error' ? errorMsg
+          : status === 'blocked' ? `${blockedInfo?.name || 'This'} browser blocks microphone access, and there's no permission prompt to allow it.`
+          : HINT[status]}
       </p>
 
       {/* Live captions — the last thing you said and the last thing it said,
@@ -614,6 +654,51 @@ export default function VoiceMode({ open, onClose, apiUrl, sessionId, onSessionI
           Back to chat
         </button>
       )}
+
+      {status === 'blocked' && (
+        <div className="mt-6 w-full max-w-xs flex flex-col items-center gap-4">
+          <p className="text-xs text-zinc-400 text-center leading-relaxed">
+            {blockedInfo?.isIOS
+              ? 'Tap the ••• or share icon at the top or bottom of the screen and choose "Open in Safari".'
+              : blockedInfo?.isAndroid
+              ? 'Tap the menu icon (⋮) in the top corner and choose "Open in Chrome" or "Open in browser".'
+              : 'Open this link in your phone\'s regular browser (Safari or Chrome) instead of this app.'}
+          </p>
+
+          <div className="flex flex-col w-full gap-2.5">
+            {blockedInfo?.isAndroid && (
+              <button
+                onClick={tryOpenInAndroidChrome}
+                className="w-full px-5 py-2.5 rounded-xl bg-primary-500/90 hover:bg-primary-500 text-white text-sm font-semibold transition-all"
+              >
+                Try opening in Chrome
+              </button>
+            )}
+            <button
+              onClick={async () => {
+                try {
+                  await navigator.clipboard.writeText(window.location.href);
+                  setCopied(true);
+                  setTimeout(() => setCopied(false), 2000);
+                } catch {
+                  /* clipboard API unavailable — link stays visible below */
+                }
+              }}
+              className="w-full px-5 py-2.5 rounded-xl bg-white/10 hover:bg-white/15 text-white text-sm font-semibold border border-white/10 transition-all"
+            >
+              {copied ? 'Link copied' : 'Copy link'}
+            </button>
+            <button
+              onClick={onClose}
+              className="w-full px-5 py-2 text-zinc-500 hover:text-zinc-300 text-xs transition-all"
+            >
+              Back to chat
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
+
+export default memo(VoiceMode);
